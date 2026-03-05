@@ -1,1 +1,1 @@
-A Dragon's Guide to Gorwing a Hoard
+A Dragon's Guide to Growing a Hoard
