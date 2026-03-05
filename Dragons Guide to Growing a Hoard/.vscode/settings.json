@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Growing a Hoard.slnx"
+    "dotnet.defaultSolution": "Dragons Guide to Growing a Hoard.slnx"
 }
