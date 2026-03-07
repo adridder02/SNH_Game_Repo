@@ -1,0 +1,1 @@
+Temporary assets to be replaced at a later date.
