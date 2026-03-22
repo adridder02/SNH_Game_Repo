@@ -6,8 +6,9 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     [SerializeField] private Camera sceneCamera;
-    [SerializeField] private Vector3 lastPosition;
+   
     [SerializeField] LayerMask placemnetLayermask;
+    private Vector3 lastPosition;
 
     public Vector3 GetSelectedMapPosition()
     {
@@ -21,13 +22,11 @@ public class InputManager : MonoBehaviour
         if(Physics.Raycast(ray, out hit, 100, placemnetLayermask))
         {
             lastPosition = hit.point;
+            Debug.Log(lastPosition);
         }
     
         return lastPosition;
     }
 
-    public void Update()
-    {
-        GetSelectedMapPosition();
-    }
+
 }
