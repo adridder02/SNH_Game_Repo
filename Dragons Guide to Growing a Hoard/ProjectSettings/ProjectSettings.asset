@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: 9bdad9d91d0aea2478340161e095d2c6
+  productGUID: 8525ab56c4cecc845bab3b0572880f6f
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: Pre-Alpha
+  productName: Base game
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -843,14 +843,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Pre-Alpha
+  metroPackageName: Base game
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: Pre-Alpha
+  metroApplicationDescription: Base game
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -921,10 +921,10 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: 6a20e7db-040e-4d17-9c6c-14b76c897006
+  cloudProjectId: 5742175b-18af-455f-9f14-ce302ff737c3
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Pre-Alpha
+  projectName: Base game
   organizationId: hugamoon
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
