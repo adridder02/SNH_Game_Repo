@@ -12,6 +12,9 @@ GameObject:
   - component: {fileID: 6013193052579780644}
   - component: {fileID: 1644942921160664779}
   - component: {fileID: 5878191911990060552}
+  - component: {fileID: -784136136300839771}
+  - component: {fileID: -3279114997656597334}
+  - component: {fileID: 8027249345078763961}
   m_Layer: 0
   m_Name: SmallPot
   m_TagString: Untagged
@@ -62,8 +65,6 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -85,11 +86,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!136 &5878191911990060552
 CapsuleCollider:
@@ -114,3 +113,77 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &-784136136300839771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8420100053282082994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e16a041bee9a0f743b0b1f61c2c5f566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plantAnchor: {fileID: 0}
+  plantWaterMax: 10
+  plantWaterStart: 5
+  baseDrainRate: 0.3
+  sunDrainMultiplier: 0.4
+  currentSoil: 2
+  waterLevel: 0
+  hasSoil: 0
+  hasPlant: 0
+--- !u!114 &-3279114997656597334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8420100053282082994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6b95557e7067b4a8c58044c08c19c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  preferredSoil: 1
+  neutralSoil: 0
+  lightThresholdHigh: 0.6
+  lightThresholdLow: 0.25
+  waterThresholdHigh: 6
+  waterThresholdLow: 3
+  revivedMinScore: 5
+  intermediateMinScore: 2
+  lightSensor: {fileID: 0}
+  playerWatering: {fileID: 0}
+  revivedVisual: {fileID: 0}
+  intermediateVisual: {fileID: 0}
+  deadVisual: {fileID: 0}
+  currentState: 2
+  currentSoil: 2
+  isOnSoil: 0
+  lastTotalScore: 0
+  soilScore: 0
+  lightScore: 0
+  waterScore: 0
+--- !u!114 &8027249345078763961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8420100053282082994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebc9509558635bd41b4357c73112c826, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useDummyValues: 1
+  dummySunlight: 3
+  dummySoil: 4
+  dummyWater: 2
+  heightOffset: 2.2
+  canvasScale: 0.008
+  plantState: {fileID: 0}
+  lightSensor: {fileID: 0}
+  playerWatering: {fileID: 0}

@@ -922,11 +922,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c907e023c9f00e4d8bb0a8f3f6ce4f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zoomSpeed: 2
-  zoomLerpSpeed: 10
-  mouseSensitivity: 4.5
-  minDistance: 6
-  maxDistance: 30
 --- !u!114 &1253019386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1005,6 +1000,7 @@ GameObject:
   - component: {fileID: 1536018869}
   - component: {fileID: 1536018868}
   - component: {fileID: 1536018867}
+  - component: {fileID: 1536018873}
   m_Layer: 0
   m_Name: PlayerParent
   m_TagString: Untagged
@@ -1215,6 +1211,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1536018865}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1536018873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1536018865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40bb41ce936c98c4bb13078feed7a16c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactRange: 3
+  plantPrefabs: []
+  waterPerPress: 2
+  maxWaterPool: 20
+  poolRefillRate: 1.5
+  interactPromptRoot: {fileID: 0}
 --- !u!1 &1680566071
 GameObject:
   m_ObjectHideFlags: 0

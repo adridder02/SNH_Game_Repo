@@ -45,12 +45,16 @@ public class PlacementSystem : MonoBehaviour
         HandleModeToggleKeys();
         if (mode == Mode.None) return;
 
-        // scroll only in place mode
+        // scroll only in place mode — consume the event so camera zoom doesn't also fire
         if (mode == Mode.Placing)
         {
             float scroll = Mouse.current.scroll.ReadValue().y;
-            if (scroll > 0) CycleSelection(1);
-            else if (scroll < 0) CycleSelection(-1);
+            if (Mathf.Abs(scroll) > 0.01f)
+            {
+                if (scroll > 0) CycleSelection(1);
+                else            CycleSelection(-1);
+                // Don't return — still need to update hover this frame.
+            }
         }
 
         Vector3 mouseWorld = inputManager.GetSelectedMapPosition();
@@ -226,6 +230,11 @@ public class PlacementSystem : MonoBehaviour
             CellToWorldCentre(cell, data.size), Quaternion.identity);
         gridData.AddPlacement(gridKey, data.size, placed);
         gridVisual.MarkOccupied(cell, data.size);
+
+        // Initialise soil in the pot if it has a PotContents component.
+        PotContents contents = placed.GetComponent<PotContents>();
+        if (contents != null)
+            contents.Initialise(data.defaultSoil);
     }
 
     private void TryRemove(Vector2Int cell)
