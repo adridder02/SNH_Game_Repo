@@ -12,11 +12,15 @@ using TMPro;
 //   • Shows Sunlight / Soil / Water scores as 5 pips each
 //   • Shows plant state (Revived / Intermediate / Dead)
 //   • Always faces the camera
-//   • Supports dummy values for testing
+//   • Supports dummy values for testing (useDummyValues)
 //
-// NOTE:
-//   PlayerWatering has been fully removed.
-//   Water now comes from PotContents only.
+// CHANGES (FIX):
+//   • UI is now HIDDEN by default and only shows when the plant
+//     has soil AND the pot is not being moved.
+//   • Empty pot (no soil) → UI hidden completely
+//   • No plant → UI doesn't exist
+//   • All bars reflect actual game state, not dummy intermediate values
+//   • SetVisible() properly hides/shows during grab/move operations
 // =============================================================
 
 public class PlantUI : MonoBehaviour
@@ -25,7 +29,9 @@ public class PlantUI : MonoBehaviour
     // TESTING VALUES
     // ---------------------------------------------------------
     [Header("Dummy Values")]
-    public bool useDummyValues = true;
+    [Tooltip("Enable to drive pips with the sliders below instead of live game data. " +
+             "Turn OFF for production.")]
+    public bool useDummyValues = false;
 
     [Range(1, 5)] public int dummySunlight = 3;
     [Range(1, 5)] public int dummySoil = 4;
@@ -50,7 +56,6 @@ public class PlantUI : MonoBehaviour
     // ---------------------------------------------------------
     private Canvas canvasRef;
     private TextMeshProUGUI stateLabel;
-
     private Image[] sunPips;
     private Image[] soilPips;
     private Image[] waterPips;
@@ -58,23 +63,18 @@ public class PlantUI : MonoBehaviour
     // ---------------------------------------------------------
     // COLOURS
     // ---------------------------------------------------------
-    private static readonly Color ColRevived =
-        new Color(0.33f, 0.85f, 0.45f);
+    private static readonly Color ColRevived = new Color(0.33f, 0.85f, 0.45f);
+    private static readonly Color ColIntermediate = new Color(0.95f, 0.78f, 0.20f);
+    private static readonly Color ColDead = new Color(0.85f, 0.28f, 0.22f);
+    private static readonly Color ColPipFilled = new Color(1f, 1f, 1f, 0.95f);
+    private static readonly Color ColPipEmpty = new Color(1f, 1f, 1f, 0.18f);
+    private static readonly Color ColPanelBg = new Color(0.06f, 0.08f, 0.06f, 0.88f);
 
-    private static readonly Color ColIntermediate =
-        new Color(0.95f, 0.78f, 0.20f);
-
-    private static readonly Color ColDead =
-        new Color(0.85f, 0.28f, 0.22f);
-
-    private static readonly Color ColPipFilled =
-        new Color(1f, 1f, 1f, 0.95f);
-
-    private static readonly Color ColPipEmpty =
-        new Color(1f, 1f, 1f, 0.18f);
-
-    private static readonly Color ColPanelBg =
-        new Color(0.06f, 0.08f, 0.06f, 0.88f);
+    // ---------------------------------------------------------
+    // RUNTIME FLAGS
+    // ---------------------------------------------------------
+    private bool uiBuilt = false;
+    private bool isVisible = true;
 
     // ---------------------------------------------------------
     private void Start()
@@ -85,14 +85,71 @@ public class PlantUI : MonoBehaviour
         if (lightSensor == null)
             lightSensor = GetComponent<LightSensor>();
 
-        BuildUI();
+        // ── FIX: Don't build UI immediately ──
+        // Wait until we have soil or are in dummy mode.
+        // Update() will build it when appropriate.
     }
 
     // ---------------------------------------------------------
     private void Update()
     {
-        RefreshValues();
-        BillboardCanvas();
+        // ── FIX: Only build/show UI when appropriate ──
+        bool shouldShowUI = ShouldShowUI();
+
+        if (shouldShowUI && !uiBuilt)
+        {
+            BuildUI();
+            uiBuilt = true;
+        }
+
+        if (uiBuilt && canvasRef != null)
+        {
+            canvasRef.gameObject.SetActive(shouldShowUI && isVisible);
+
+            if (shouldShowUI && isVisible)
+            {
+                RefreshValues();
+                BillboardCanvas();
+            }
+        }
+    }
+
+    // ---------------------------------------------------------
+    // ShouldShowUI — determines whether UI should be visible.
+    // Returns false if:
+    //   • In dummy mode: never hide
+    //   • Otherwise: hide if pot has no soil
+    // ---------------------------------------------------------
+    private bool ShouldShowUI()
+    {
+        if (useDummyValues)
+            return true;
+
+        if (plantState == null)
+            return false;
+
+        // Check if the plant's pot has soil
+        PotContents pot = plantState.GetComponentInParent<PotContents>();
+        if (pot == null || !pot.HasSoil)
+            return false;
+
+        return true;
+    }
+
+    // ---------------------------------------------------------
+    // SetVisible — call this from grab/pick-up systems.
+    //   false → hides the canvas while being carried
+    //   true  → shows it again once placed
+    // ---------------------------------------------------------
+    public void SetVisible(bool visible)
+    {
+        isVisible = visible;
+
+        if (canvasRef != null)
+        {
+            bool shouldShow = ShouldShowUI() && isVisible;
+            canvasRef.gameObject.SetActive(shouldShow);
+        }
     }
 
     // =========================================================
@@ -109,25 +166,17 @@ public class PlantUI : MonoBehaviour
         canvasRef = canvasGO.AddComponent<Canvas>();
         canvasRef.renderMode = RenderMode.WorldSpace;
 
-        RectTransform canvasRect =
-            canvasGO.GetComponent<RectTransform>();
-
+        RectTransform canvasRect = canvasGO.GetComponent<RectTransform>();
         canvasRect.sizeDelta = new Vector2(260, 120);
 
-        CanvasScaler scaler =
-            canvasGO.AddComponent<CanvasScaler>();
-
+        CanvasScaler scaler = canvasGO.AddComponent<CanvasScaler>();
         scaler.dynamicPixelsPerUnit = 10f;
 
         canvasGO.AddComponent<GraphicRaycaster>();
 
         // Panel
-        GameObject panelGO =
-            CreateUIObject("Panel", canvasGO.transform);
-
-        RectTransform panelRect =
-            panelGO.GetComponent<RectTransform>();
-
+        GameObject panelGO = CreateUIObject("Panel", canvasGO.transform);
+        RectTransform panelRect = panelGO.GetComponent<RectTransform>();
         panelRect.anchorMin = Vector2.zero;
         panelRect.anchorMax = Vector2.one;
         panelRect.offsetMin = Vector2.zero;
@@ -136,29 +185,26 @@ public class PlantUI : MonoBehaviour
         Image panelImg = panelGO.AddComponent<Image>();
         panelImg.color = ColPanelBg;
 
-        // State Label
+        // State label
         stateLabel = CreateLabel(
             "StateLabel",
             panelGO.transform,
             new Vector2(0f, 0.72f),
             new Vector2(1f, 1f),
-            "● REVIVED",
+            "● DEAD",
             13,
-            ColRevived,
+            ColDead,
             FontStyles.Bold
         );
 
-        // Rows
+        // Stat rows
         sunPips = CreateStatRow(panelGO.transform, "Sunlight", 0.44f);
         soilPips = CreateStatRow(panelGO.transform, "Soil", 0.22f);
         waterPips = CreateStatRow(panelGO.transform, "Water", 0.02f);
     }
 
     // ---------------------------------------------------------
-    private Image[] CreateStatRow(
-        Transform parent,
-        string labelText,
-        float anchorY)
+    private Image[] CreateStatRow(Transform parent, string labelText, float anchorY)
     {
         float rowHeight = 0.20f;
 
@@ -173,7 +219,6 @@ public class PlantUI : MonoBehaviour
         );
 
         Image[] pips = new Image[5];
-
         float pipWidth = 0.10f;
         float spacing = 0.005f;
         float startX = 0.47f;
@@ -183,24 +228,15 @@ public class PlantUI : MonoBehaviour
             float x0 = startX + i * (pipWidth + spacing);
             float x1 = x0 + pipWidth;
 
-            GameObject pipGO =
-                CreateUIObject("Pip_" + i, parent);
-
-            RectTransform rt =
-                pipGO.GetComponent<RectTransform>();
-
-            rt.anchorMin =
-                new Vector2(x0, anchorY + 0.04f);
-
-            rt.anchorMax =
-                new Vector2(x1, anchorY + rowHeight - 0.04f);
-
+            GameObject pipGO = CreateUIObject("Pip_" + i, parent);
+            RectTransform rt = pipGO.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(x0, anchorY + 0.04f);
+            rt.anchorMax = new Vector2(x1, anchorY + rowHeight - 0.04f);
             rt.offsetMin = Vector2.zero;
             rt.offsetMax = Vector2.zero;
 
             Image img = pipGO.AddComponent<Image>();
             img.color = ColPipEmpty;
-
             pips[i] = img;
         }
 
@@ -209,28 +245,19 @@ public class PlantUI : MonoBehaviour
 
     // ---------------------------------------------------------
     private TextMeshProUGUI CreateLabel(
-        string name,
-        Transform parent,
-        Vector2 anchorMin,
-        Vector2 anchorMax,
-        string text,
-        int fontSize,
-        Color colour,
+        string name, Transform parent,
+        Vector2 anchorMin, Vector2 anchorMax,
+        string text, int fontSize, Color colour,
         FontStyles style = FontStyles.Normal)
     {
         GameObject go = CreateUIObject(name, parent);
-
-        RectTransform rt =
-            go.GetComponent<RectTransform>();
-
+        RectTransform rt = go.GetComponent<RectTransform>();
         rt.anchorMin = anchorMin;
         rt.anchorMax = anchorMax;
         rt.offsetMin = Vector2.zero;
         rt.offsetMax = Vector2.zero;
 
-        TextMeshProUGUI tmp =
-            go.AddComponent<TextMeshProUGUI>();
-
+        TextMeshProUGUI tmp = go.AddComponent<TextMeshProUGUI>();
         tmp.text = text;
         tmp.fontSize = fontSize;
         tmp.color = colour;
@@ -241,15 +268,10 @@ public class PlantUI : MonoBehaviour
     }
 
     // ---------------------------------------------------------
-    private GameObject CreateUIObject(
-        string name,
-        Transform parent)
+    private GameObject CreateUIObject(string name, Transform parent)
     {
-        GameObject go =
-            new GameObject(name, typeof(RectTransform));
-
+        GameObject go = new GameObject(name, typeof(RectTransform));
         go.transform.SetParent(parent, false);
-
         return go;
     }
 
@@ -270,36 +292,47 @@ public class PlantUI : MonoBehaviour
         }
         else
         {
-            // Sun
-            float lightRaw =
-                lightSensor != null
-                ? lightSensor.NormalisedIntensity
-                : 0f;
+            // ── FIX: All values now reflect actual game state ──
 
-            sunScore =
-                Mathf.RoundToInt(Mathf.Lerp(1, 5, lightRaw));
+            // --------------------------------------------------
+            // Sun — map normalised light (0-1) to pip count (1-5)
+            // --------------------------------------------------
+            float lightRaw = lightSensor != null ? lightSensor.NormalisedIntensity : 0f;
+            sunScore = Mathf.RoundToInt(Mathf.Lerp(1f, 5f, lightRaw));
 
-            // Soil
-            soilScore =
-                plantState != null
-                ? Mathf.Clamp(plantState.TotalScore - 2, 1, 5)
-                : 1;
+            // --------------------------------------------------
+            // Soil — PlantState.SoilScore is 0-2.
+            //   0 (wrong/none) → 1 pip
+            //   1 (neutral)    → 3 pips
+            //   2 (preferred)  → 5 pips
+            // --------------------------------------------------
+            if (plantState != null)
+            {
+                soilScore = plantState.SoilScore switch
+                {
+                    2 => 5,
+                    1 => 3,
+                    _ => 1
+                };
+            }
+            else
+            {
+                soilScore = 1;
+            }
 
-            // Water
-            PotContents pot =
-                plantState != null
+            // --------------------------------------------------
+            // Water — map WaterLevel (0-max) to pip count (1-5)
+            // --------------------------------------------------
+            PotContents pot = plantState != null
                 ? plantState.GetComponentInParent<PotContents>()
                 : null;
 
-            float waterRaw =
-                pot != null ? pot.WaterLevel : 0f;
+            float waterRaw = pot != null ? pot.WaterLevel : 0f;
+            float waterMax = pot != null ? pot.plantWaterMax : 10f;
 
-            float waterMax =
-                pot != null ? pot.plantWaterMax : 10f;
-
-            waterScore =
-                Mathf.RoundToInt(
-                    Mathf.Lerp(1, 5, waterRaw / waterMax));
+            waterScore = waterMax > 0f
+                ? Mathf.RoundToInt(Mathf.Lerp(1f, 5f, waterRaw / waterMax))
+                : 1;
 
             waterScore = Mathf.Max(1, waterScore);
         }
@@ -308,14 +341,14 @@ public class PlantUI : MonoBehaviour
         UpdatePips(soilPips, soilScore);
         UpdatePips(waterPips, waterScore);
 
-        UpdateStateLabel(sunScore, soilScore, waterScore);
+        UpdateStateLabel();
     }
 
     // ---------------------------------------------------------
-    private void UpdateStateLabel(
-        int sun,
-        int soil,
-        int water)
+    // UpdateStateLabel — always driven by PlantState.CurrentState
+    // when live data is active; falls back to pip average in dummy mode.
+    // ---------------------------------------------------------
+    private void UpdateStateLabel()
     {
         if (stateLabel == null) return;
 
@@ -340,8 +373,8 @@ public class PlantUI : MonoBehaviour
             }
         }
 
-        // Dummy mode
-        int avg = (sun + soil + water) / 3;
+        // Dummy mode — derive state from pip averages
+        int avg = (dummySunlight + dummySoil + dummyWater) / 3;
 
         if (avg >= 4)
         {
@@ -366,24 +399,17 @@ public class PlantUI : MonoBehaviour
         score = Mathf.Clamp(score, 1, 5);
 
         for (int i = 0; i < pips.Length; i++)
-        {
-            pips[i].color =
-                i < score ? ColPipFilled : ColPipEmpty;
-        }
+            pips[i].color = i < score ? ColPipFilled : ColPipEmpty;
     }
 
     // ---------------------------------------------------------
     private void BillboardCanvas()
     {
-        if (canvasRef == null || Camera.main == null)
-            return;
+        if (canvasRef == null || Camera.main == null) return;
 
         canvasRef.transform.LookAt(
-            canvasRef.transform.position +
-            Camera.main.transform.rotation * Vector3.forward,
-
-            Camera.main.transform.rotation *
-            Vector3.up
+            canvasRef.transform.position + Camera.main.transform.rotation * Vector3.forward,
+            Camera.main.transform.rotation * Vector3.up
         );
     }
 }

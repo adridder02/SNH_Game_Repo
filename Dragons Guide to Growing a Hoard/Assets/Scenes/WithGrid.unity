@@ -239,6 +239,7 @@ GameObject:
   - component: {fileID: 167841012}
   - component: {fileID: 167841011}
   - component: {fileID: 167841010}
+  - component: {fileID: 167841013}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -297,6 +298,20 @@ Transform:
   - {fileID: 733253317}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &167841013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 167841009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e030b9febbef39499364332fbce9fd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputActions: {fileID: -944628639613478452, guid: 96f9bf046802d4545868fdcc2b9f308a, type: 3}
+  playerController: {fileID: 1536018869}
 --- !u!1 &184050043
 GameObject:
   m_ObjectHideFlags: 0
@@ -1001,6 +1016,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c907e023c9f00e4d8bb0a8f3f6ce4f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zoomSpeed: 2
+  zoomLerpSpeed: 10
+  minDistance: 3
+  maxDistance: 31
+  mouseSensitivityX: 4.5
+  mouseSensitivityY: 4.5
+  minPitchAngle: -30
+  maxPitchAngle: 70
 --- !u!114 &1253019386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1214,8 +1237,13 @@ MonoBehaviour:
   speed: 5
   jumpHeight: 2
   gravity: -11
-  inputActions: {fileID: -944628639613478452, guid: 96f9bf046802d4545868fdcc2b9f308a, type: 3}
   shouldFaceMoveDirection: 1
+  doubleTapWindow: 0.3
+  flyLiftSpeed: 12
+  flyGroundGracePeriod: 0.4
+  flyVerticalSpeed: 5
+  flyPitchInfluence: 1
+  inputActions: {fileID: -944628639613478452, guid: 96f9bf046802d4545868fdcc2b9f308a, type: 3}
 --- !u!65 &1536018870
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1303,7 +1331,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactRange: 3
-  plantPrefabs: []
+  plantPrefabs:
+  - {fileID: 7611842129091570943, guid: 8e0410c2b1bbd3e4eb225cf9420149cd, type: 3}
   waterPerPress: 2
   maxWaterPool: 20
   poolRefillRate: 1.5

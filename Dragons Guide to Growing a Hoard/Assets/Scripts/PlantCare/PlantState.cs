@@ -1,5 +1,18 @@
 using UnityEngine;
 
+// =============================================================
+// PlantState.cs
+// -------------------------------------------------------------
+// Tracks the health state of a plant (Revived / Intermediate / Dead)
+// by combining soil, light, and water scores.
+//
+// CHANGES:
+//   • SoilScore, LightScore, WaterScore are now public so PlantUI
+//     can read individual scores directly (accurate pip display).
+//   • SetPotContents() now only sets isOnSoil if the pot actually
+//     has soil loaded — respects the "no soil by default" rule.
+// =============================================================
+
 // ---------------------------------------------------------------
 // PlantStateEnum
 // ---------------------------------------------------------------
@@ -66,8 +79,15 @@ public class PlantState : MonoBehaviour
     [SerializeField] private int lightScore = 0;
     [SerializeField] private int waterScore = 0;
 
+    // ---------------------------------------------------------------
+    // PUBLIC ACCESSORS
+    // PlantUI reads individual scores to drive each pip row accurately.
+    // ---------------------------------------------------------------
     public PlantStateEnum CurrentState => currentState;
     public int TotalScore => lastTotalScore;
+    public int SoilScore => soilScore;   // 0-2 → mapped to 1-5 pips by PlantUI
+    public int LightScore => lightScore;  // 0-2 → mapped to 1-5 pips by PlantUI
+    public int WaterScore => waterScore;  // 0-2 → mapped to 1-5 pips by PlantUI
     public LightSensor LightSensor => lightSensor;
 
     private PotContents ownerPot;
@@ -92,17 +112,41 @@ public class PlantState : MonoBehaviour
     }
 
     // ---------------------------------------------------------------
+    // SetPotContents — called by PotContents.AddPlant().
+    // Only marks the plant as being on soil if the pot already has
+    // soil loaded; otherwise soil score stays 0 until SetSoil() fires.
+    // ---------------------------------------------------------------
     public void SetPotContents(PotContents pot)
     {
         ownerPot = pot;
-        isOnSoil = true;
-        currentSoil = pot.CurrentSoil;
+
+        if (pot.HasSoil)
+        {
+            isOnSoil = true;
+            currentSoil = pot.CurrentSoil;
+        }
+        else
+        {
+            isOnSoil = false;
+        }
     }
 
+    // Called by PotContents.SetSoil() when the player changes the soil.
     public void OnSoilChanged(SoilKind newSoil)
     {
         currentSoil = newSoil;
         isOnSoil = true;
+    }
+
+    // ---------------------------------------------------------------
+    // SetVisible — called by grab/pick-up systems to hide the UI
+    // while the pot or plant is being held.
+    // (Delegates to PlantUI if one is present on the same object.)
+    // ---------------------------------------------------------------
+    public void SetUIVisible(bool visible)
+    {
+        PlantUI ui = GetComponent<PlantUI>();
+        if (ui != null) ui.SetVisible(visible);
     }
 
     // ---------------------------------------------------------------
@@ -118,12 +162,8 @@ public class PlantState : MonoBehaviour
 
         lastTotalScore = soilScore + lightScore + waterScore;
 
-        if (lastTotalScore >= revivedMinScore)
-            return PlantStateEnum.Revived;
-
-        if (lastTotalScore >= intermediateMinScore)
-            return PlantStateEnum.Intermediate;
-
+        if (lastTotalScore >= revivedMinScore) return PlantStateEnum.Revived;
+        if (lastTotalScore >= intermediateMinScore) return PlantStateEnum.Intermediate;
         return PlantStateEnum.Dead;
     }
 
@@ -151,7 +191,7 @@ public class PlantState : MonoBehaviour
     }
 
     // ---------------------------------------------------------------
-    // Legacy trigger support
+    // Legacy trigger support (soil patches placed directly in the scene)
     // ---------------------------------------------------------------
     private void OnTriggerEnter(Collider other)
     {

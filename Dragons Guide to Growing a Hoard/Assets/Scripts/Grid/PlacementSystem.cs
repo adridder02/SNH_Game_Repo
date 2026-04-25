@@ -314,6 +314,11 @@ public class PlacementSystem : MonoBehaviour
                 Quaternion.identity
             );
 
+        // ── FIX: Do NOT initialize the pot with soil ──
+        // The pot starts completely empty.
+        // PotContents.Awake() already sets hasSoil = false, waterLevel = 0.
+        // Player must add soil via PotInteraction menu.
+
         gridData.AddPlacement(key, data.size, placed);
         gridVisual.MarkOccupied(cell, data.size);
     }
@@ -349,6 +354,12 @@ public class PlacementSystem : MonoBehaviour
             movingObject = data.PlacedObject;
 
             gridData.RemovePlacement(data.Origin);
+
+            // ── FIX: Hide plant UI when picking up pot ──
+            PotContents pot = movingObject.GetComponent<PotContents>();
+            if (pot != null && pot.HasPlant && pot.Plant != null)
+                pot.Plant.SetUIVisible(false);
+
             movingObject.SetActive(false);
 
             SpawnPreviewFromObject(movingObject);
@@ -364,6 +375,11 @@ public class PlacementSystem : MonoBehaviour
                 CellToWorldCentre(cell, movingData.Size);
 
             movingObject.SetActive(true);
+
+            // ── FIX: Show plant UI when placing pot down ──
+            PotContents pot = movingObject.GetComponent<PotContents>();
+            if (pot != null && pot.HasPlant && pot.Plant != null)
+                pot.Plant.SetUIVisible(true);
 
             gridData.AddPlacement(
                 key,
@@ -381,6 +397,11 @@ public class PlacementSystem : MonoBehaviour
     private void PutMovingPotBack()
     {
         movingObject.SetActive(true);
+
+        // ── FIX: Show plant UI when putting pot back ──
+        PotContents pot = movingObject.GetComponent<PotContents>();
+        if (pot != null && pot.HasPlant && pot.Plant != null)
+            pot.Plant.SetUIVisible(true);
 
         gridData.AddPlacement(
             movingData.Origin,

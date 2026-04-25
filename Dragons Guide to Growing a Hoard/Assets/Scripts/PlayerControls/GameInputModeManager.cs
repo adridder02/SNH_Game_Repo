@@ -69,11 +69,14 @@ public class GameInputModeManager : MonoBehaviour
     {
         CurrentMode = InputMode.Placement;
 
-        gameplayMap?.Disable();
+        // KEEP gameplay enabled so player can still move
+        gameplayMap?.Enable();
+
+        // Disable camera look / zoom only
         cameraMap?.Disable();
 
         if (playerController != null)
-            playerController.SetMovementEnabled(false);
+            playerController.SetMovementEnabled(true);
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
