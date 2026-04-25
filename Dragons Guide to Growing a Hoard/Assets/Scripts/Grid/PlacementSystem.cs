@@ -2,59 +2,75 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// F to enter/exit placement mode. Right click will also exit. Scroll to switch between pots
-// G to enter grab and move and left click to confirm
-// X to enter remove mode and left click to confirm
 public class PlacementSystem : MonoBehaviour
 {
-    // * Inspector 
     [Header("References")]
     [SerializeField] private InputManager inputManager;
     [SerializeField] private GreenhouseSurface surface;
 
-    [Header("Pot types (1x1, 2x1, 2x2 …)")]
+    [Header("Pot Types")]
     [SerializeField] private List<PotData> availablePots;
 
     [Header("Preview")]
     [SerializeField] private bool showPreviewObject = true;
 
-    // * Placement Mode 
-    private enum Mode { None, Placing, Removing, Moving }
+    private enum Mode
+    {
+        None,
+        Placing,
+        Removing,
+        Moving
+    }
+
     private Mode mode = Mode.None;
 
-    // other vars
     private GridData gridData = new GridData();
     private GridVisual gridVisual;
+
     private int selectedIndex = 0;
     private Vector2Int lastHoveredCell = new Vector2Int(-999, -999);
+
     private GameObject previewObject;
 
     private PlacementData movingData;
     private GameObject movingObject;
 
+    public bool IsPlacementModeActive => mode != Mode.None;
 
     private void Start()
     {
-        if (surface == null) { Debug.LogError("PlacementSystem: No GreenhouseSurface assigned."); return; }
+        if (surface == null)
+        {
+            Debug.LogError("PlacementSystem: No GreenhouseSurface assigned.");
+            return;
+        }
+
         gridVisual = surface.GridVisual;
-        if (availablePots == null || availablePots.Count == 0) { Debug.LogError("PlacementSystem: No pot types."); return; }
+
+        if (availablePots == null || availablePots.Count == 0)
+        {
+            Debug.LogError("PlacementSystem: No pots assigned.");
+            return;
+        }
+
+        GameInputModeManager.Instance.SetGameplayMode();
     }
 
     private void Update()
     {
         HandleModeToggleKeys();
-        if (mode == Mode.None) return;
 
-        // scroll only in place mode — consume the event so camera zoom doesn't also fire
+        if (mode == Mode.None)
+            return;
+
         if (mode == Mode.Placing)
         {
             float scroll = Mouse.current.scroll.ReadValue().y;
-            if (Mathf.Abs(scroll) > 0.01f)
-            {
-                if (scroll > 0) CycleSelection(1);
-                else            CycleSelection(-1);
-                // Don't return — still need to update hover this frame.
-            }
+
+            if (scroll > 0f)
+                CycleSelection(1);
+            else if (scroll < 0f)
+                CycleSelection(-1);
         }
 
         Vector3 mouseWorld = inputManager.GetSelectedMapPosition();
@@ -63,7 +79,6 @@ public class PlacementSystem : MonoBehaviour
         {
             gridVisual.ClearHover();
             SetPreviewVisible(false);
-            lastHoveredCell = new Vector2Int(-999, -999);
             return;
         }
 
@@ -73,93 +88,116 @@ public class PlacementSystem : MonoBehaviour
             UpdateHoverVisual(hoveredCell);
         }
 
-        // move preview every frame for smooth motion
-        if (showPreviewObject && previewObject != null)
-            previewObject.transform.position = CellToWorldCentre(hoveredCell,
-                mode == Mode.Moving ? movingData.Size : availablePots[selectedIndex].size);
-
-        // left click action
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (previewObject != null)
         {
-            if (mode == Mode.Placing) TryPlace(hoveredCell);
-            else if (mode == Mode.Removing) TryRemove(hoveredCell);
-            else if (mode == Mode.Moving) TryPickupOrDrop(hoveredCell);
+            Vector2Int size =
+                mode == Mode.Moving && movingData != null
+                ? movingData.Size
+                : availablePots[selectedIndex].size;
+
+            previewObject.transform.position =
+                CellToWorldCentre(hoveredCell, size);
         }
 
-        // right click cancel
-        if (Mouse.current.rightButton.wasPressedThisFrame) CancelMode();
-    }
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            if (mode == Mode.Placing)
+                TryPlace(hoveredCell);
+            else if (mode == Mode.Removing)
+                TryRemove(hoveredCell);
+            else if (mode == Mode.Moving)
+                TryPickupOrDrop(hoveredCell);
+        }
 
-    // * Key handling 
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            CancelMode();
+        }
+    }
 
     private void HandleModeToggleKeys()
     {
-        if (Keyboard.current == null) return;
+        if (Keyboard.current == null)
+            return;
 
         if (Keyboard.current.fKey.wasPressedThisFrame)
         {
-            if (mode == Mode.Placing) CancelMode();
-            else EnterPlaceMode(selectedIndex);
+            if (mode == Mode.Placing)
+                CancelMode();
+            else
+                EnterPlaceMode(selectedIndex);
         }
 
         if (Keyboard.current.xKey.wasPressedThisFrame)
         {
-            if (mode == Mode.Removing) CancelMode();
-            else EnterRemoveMode();
+            if (mode == Mode.Removing)
+                CancelMode();
+            else
+                EnterRemoveMode();
         }
 
         if (Keyboard.current.gKey.wasPressedThisFrame)
         {
-            if (mode == Mode.Moving) CancelMode();
-            else EnterMoveMode();
+            if (mode == Mode.Moving)
+                CancelMode();
+            else
+                EnterMoveMode();
         }
     }
 
-    // * entrer / exit placement mode
-
     public void EnterPlaceMode(int potIndex)
     {
-        if (potIndex < 0 || potIndex >= availablePots.Count) return;
+        if (potIndex < 0 || potIndex >= availablePots.Count)
+            return;
+
         CancelMode();
+
         selectedIndex = potIndex;
         mode = Mode.Placing;
+
         gridVisual.SetVisible(true);
-        lastHoveredCell = new Vector2Int(-999, -999);
         SpawnPreview(availablePots[selectedIndex]);
+
+        GameInputModeManager.Instance.SetPlacementMode();
     }
 
     private void EnterRemoveMode()
     {
         CancelMode();
+
         mode = Mode.Removing;
         gridVisual.SetVisible(true);
-        lastHoveredCell = new Vector2Int(-999, -999);
+
+        GameInputModeManager.Instance.SetPlacementMode();
     }
 
     private void EnterMoveMode()
     {
         CancelMode();
+
         mode = Mode.Moving;
         gridVisual.SetVisible(true);
-        lastHoveredCell = new Vector2Int(-999, -999);
-        // movingData is null until the player clicks a pot to pick up
+
+        GameInputModeManager.Instance.SetPlacementMode();
     }
 
     private void CancelMode()
     {
-        // ff mid move, put the pot back
         if (mode == Mode.Moving && movingData != null)
             PutMovingPotBack();
 
         mode = Mode.None;
+
         movingData = null;
         movingObject = null;
-        gridVisual?.ClearHover();
-        gridVisual?.SetVisible(false);
-        DestroyPreview();
-    }
 
-    // * Hover visuals 
+        gridVisual.ClearHover();
+        gridVisual.SetVisible(false);
+
+        DestroyPreview();
+
+        GameInputModeManager.Instance.SetGameplayMode();
+    }
 
     private void UpdateHoverVisual(Vector2Int cell)
     {
@@ -170,187 +208,257 @@ public class PlacementSystem : MonoBehaviour
             case Mode.Placing:
                 {
                     PotData data = availablePots[selectedIndex];
-                    bool canFit = gridVisual.FootprintInBounds(cell, data.size);
-                    bool canPlace = canFit && gridData.CanPlace(ToGridVec3(cell), data.size);
-                    gridVisual.SetFootprint(cell, data.size,
-                        canPlace ? GridVisual.CellState.Valid : GridVisual.CellState.Invalid);
+
+                    bool canFit =
+                        gridVisual.FootprintInBounds(cell, data.size);
+
+                    bool canPlace =
+                        canFit &&
+                        gridData.CanPlace(ToGridVec3(cell), data.size);
+
+                    gridVisual.SetFootprint(
+                        cell,
+                        data.size,
+                        canPlace
+                            ? GridVisual.CellState.Valid
+                            : GridVisual.CellState.Invalid
+                    );
+
                     SetPreviewVisible(true);
                     break;
                 }
 
             case Mode.Removing:
                 {
-                    // highlight the whole section of whatever pot is under the cursor
-                    PlacementData data = gridData.GetPlacement(ToGridVec3(cell));
+                    PlacementData data =
+                        gridData.GetPlacement(ToGridVec3(cell));
+
                     if (data != null)
                     {
-                        Vector2Int origin = new Vector2Int(data.Origin.x, data.Origin.z);
-                        gridVisual.SetFootprint(origin, data.Size, GridVisual.CellState.Invalid);
+                        Vector2Int origin =
+                            new Vector2Int(data.Origin.x, data.Origin.z);
+
+                        gridVisual.SetFootprint(
+                            origin,
+                            data.Size,
+                            GridVisual.CellState.Invalid
+                        );
                     }
+
                     break;
                 }
 
-            case Mode.Moving when movingData == null:
+            case Mode.Moving:
                 {
-                    // if waiting to pick up highlight pot under cursor
-                    PlacementData data = gridData.GetPlacement(ToGridVec3(cell));
-                    if (data != null)
+                    if (movingData == null)
                     {
-                        Vector2Int origin = new Vector2Int(data.Origin.x, data.Origin.z);
-                        gridVisual.SetFootprint(origin, data.Size, GridVisual.CellState.Valid);
-                    }
-                    break;
-                }
+                        PlacementData data =
+                            gridData.GetPlacement(ToGridVec3(cell));
 
-            case Mode.Moving when movingData != null:
-                {
-                    // if carrying a pot show where it can be dropped
-                    bool canFit = gridVisual.FootprintInBounds(cell, movingData.Size);
-                    bool canPlace = canFit && gridData.CanPlace(ToGridVec3(cell), movingData.Size);
-                    gridVisual.SetFootprint(cell, movingData.Size,
-                        canPlace ? GridVisual.CellState.Valid : GridVisual.CellState.Invalid);
-                    SetPreviewVisible(true);
+                        if (data != null)
+                        {
+                            Vector2Int origin =
+                                new Vector2Int(data.Origin.x, data.Origin.z);
+
+                            gridVisual.SetFootprint(
+                                origin,
+                                data.Size,
+                                GridVisual.CellState.Valid
+                            );
+                        }
+                    }
+                    else
+                    {
+                        bool canFit =
+                            gridVisual.FootprintInBounds(cell, movingData.Size);
+
+                        bool canPlace =
+                            canFit &&
+                            gridData.CanPlace(
+                                ToGridVec3(cell),
+                                movingData.Size
+                            );
+
+                        gridVisual.SetFootprint(
+                            cell,
+                            movingData.Size,
+                            canPlace
+                                ? GridVisual.CellState.Valid
+                                : GridVisual.CellState.Invalid
+                        );
+
+                        SetPreviewVisible(true);
+                    }
+
                     break;
                 }
         }
     }
 
-    // * Action types
-
     private void TryPlace(Vector2Int cell)
     {
         PotData data = availablePots[selectedIndex];
-        if (!gridVisual.FootprintInBounds(cell, data.size)) return;
 
-        Vector3Int gridKey = ToGridVec3(cell);
-        if (!gridData.CanPlace(gridKey, data.size)) return;
-        if (data.potPrefab == null) return;
+        if (!gridVisual.FootprintInBounds(cell, data.size))
+            return;
 
-        GameObject placed = Instantiate(data.potPrefab,
-            CellToWorldCentre(cell, data.size), Quaternion.identity);
-        gridData.AddPlacement(gridKey, data.size, placed);
+        Vector3Int key = ToGridVec3(cell);
+
+        if (!gridData.CanPlace(key, data.size))
+            return;
+
+        GameObject placed =
+            Instantiate(
+                data.potPrefab,
+                CellToWorldCentre(cell, data.size),
+                Quaternion.identity
+            );
+
+        gridData.AddPlacement(key, data.size, placed);
         gridVisual.MarkOccupied(cell, data.size);
-
-        // Initialise soil in the pot if it has a PotContents component.
-        PotContents contents = placed.GetComponent<PotContents>();
-        if (contents != null)
-            contents.Initialise(data.defaultSoil);
     }
 
     private void TryRemove(Vector2Int cell)
     {
-        PlacementData data = gridData.GetPlacement(ToGridVec3(cell));
-        if (data == null) return;
+        PlacementData data =
+            gridData.GetPlacement(ToGridVec3(cell));
 
-        Vector2Int origin = new Vector2Int(data.Origin.x, data.Origin.z);
+        if (data == null)
+            return;
+
+        Vector2Int origin =
+            new Vector2Int(data.Origin.x, data.Origin.z);
+
         gridData.RemovePlacement(data.Origin);
         gridVisual.ClearFootprint(origin, data.Size);
-        Destroy(data.PlacedObject);
 
-        lastHoveredCell = new Vector2Int(-999, -999); // force hover refresh
+        Destroy(data.PlacedObject);
     }
 
     private void TryPickupOrDrop(Vector2Int cell)
     {
         if (movingData == null)
         {
-            // try to pick up
-            PlacementData data = gridData.GetPlacement(ToGridVec3(cell));
-            if (data == null) return;
+            PlacementData data =
+                gridData.GetPlacement(ToGridVec3(cell));
+
+            if (data == null)
+                return;
 
             movingData = data;
             movingObject = data.PlacedObject;
 
-            // remove from grid data but keep the GameObject
-            // hide it and show preview instead
-            Vector2Int origin = new Vector2Int(data.Origin.x, data.Origin.z);
             gridData.RemovePlacement(data.Origin);
-            gridVisual.ClearFootprint(origin, data.Size);
-
             movingObject.SetActive(false);
-            SpawnPreviewFromObject(movingObject, data.Size);
+
+            SpawnPreviewFromObject(movingObject);
         }
         else
         {
-            // try to drop
-            if (!gridVisual.FootprintInBounds(cell, movingData.Size)) return;
-            Vector3Int gridKey = ToGridVec3(cell);
-            if (!gridData.CanPlace(gridKey, movingData.Size)) return;
+            Vector3Int key = ToGridVec3(cell);
 
-            // move the real object to the new position
-            movingObject.transform.position = CellToWorldCentre(cell, movingData.Size);
+            if (!gridData.CanPlace(key, movingData.Size))
+                return;
+
+            movingObject.transform.position =
+                CellToWorldCentre(cell, movingData.Size);
+
             movingObject.SetActive(true);
 
-            gridData.AddPlacement(gridKey, movingData.Size, movingObject);
-            gridVisual.MarkOccupied(cell, movingData.Size);
+            gridData.AddPlacement(
+                key,
+                movingData.Size,
+                movingObject
+            );
 
             movingData = null;
             movingObject = null;
+
             DestroyPreview();
-            lastHoveredCell = new Vector2Int(-999, -999);
         }
     }
 
     private void PutMovingPotBack()
     {
-        if (movingObject == null) return;
         movingObject.SetActive(true);
-        gridData.AddPlacement(movingData.Origin, movingData.Size, movingObject);
-        gridVisual.MarkOccupied(
-            new Vector2Int(movingData.Origin.x, movingData.Origin.z), movingData.Size);
+
+        gridData.AddPlacement(
+            movingData.Origin,
+            movingData.Size,
+            movingObject
+        );
+
         DestroyPreview();
     }
 
-    // * Preview object (semi invis)
-
     private void SpawnPreview(PotData data)
     {
-        if (!showPreviewObject) return;
-        GameObject prefab = data.previewPrefab != null ? data.previewPrefab : data.potPrefab;
-        if (prefab == null) return;
+        if (!showPreviewObject)
+            return;
+
+        GameObject prefab =
+            data.previewPrefab != null
+            ? data.previewPrefab
+            : data.potPrefab;
+
         previewObject = Instantiate(prefab);
-        previewObject.name = "[Preview]";
-        foreach (var col in previewObject.GetComponentsInChildren<Collider>())
-            col.enabled = false;
+
+        foreach (Collider c in previewObject.GetComponentsInChildren<Collider>())
+            c.enabled = false;
     }
 
-    private void SpawnPreviewFromObject(GameObject source, Vector2Int size)
+    private void SpawnPreviewFromObject(GameObject source)
     {
-        if (!showPreviewObject) return;
+        if (!showPreviewObject)
+            return;
+
         previewObject = Instantiate(source);
-        previewObject.name = "[Preview]";
+
+        foreach (Collider c in previewObject.GetComponentsInChildren<Collider>())
+            c.enabled = false;
+
         previewObject.SetActive(true);
-        foreach (var col in previewObject.GetComponentsInChildren<Collider>())
-            col.enabled = false;
     }
 
     private void DestroyPreview()
     {
-        if (previewObject != null) { Destroy(previewObject); previewObject = null; }
+        if (previewObject != null)
+            Destroy(previewObject);
     }
 
-    private void SetPreviewVisible(bool v)
+    private void SetPreviewVisible(bool visible)
     {
-        if (previewObject != null) previewObject.SetActive(v);
+        if (previewObject != null)
+            previewObject.SetActive(visible);
     }
-
-    // * Helpers 
 
     private void CycleSelection(int dir)
     {
-        int next = (selectedIndex + dir + availablePots.Count) % availablePots.Count;
-        EnterPlaceMode(next);
+        selectedIndex += dir;
+
+        if (selectedIndex >= availablePots.Count)
+            selectedIndex = 0;
+
+        if (selectedIndex < 0)
+            selectedIndex = availablePots.Count - 1;
+
+        EnterPlaceMode(selectedIndex);
     }
 
     private Vector3 CellToWorldCentre(Vector2Int cell, Vector2Int size)
     {
         Vector3 origin = surface.GridOriginWorld;
         float cs = surface.CellSize;
+
         return new Vector3(
             origin.x + (cell.x + size.x * 0.5f) * cs,
             origin.y,
-            origin.z + (cell.y + size.y * 0.5f) * cs);
+            origin.z + (cell.y + size.y * 0.5f) * cs
+        );
     }
 
-    private static Vector3Int ToGridVec3(Vector2Int c) => new Vector3Int(c.x, 0, c.y);
+    private static Vector3Int ToGridVec3(Vector2Int c)
+    {
+        return new Vector3Int(c.x, 0, c.y);
+    }
 }

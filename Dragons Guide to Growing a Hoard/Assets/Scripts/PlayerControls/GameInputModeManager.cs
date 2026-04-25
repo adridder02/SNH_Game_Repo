@@ -1,0 +1,81 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class GameInputModeManager : MonoBehaviour
+{
+    public static GameInputModeManager Instance { get; private set; }
+
+    public enum InputMode
+    {
+        Gameplay,
+        Placement
+    }
+
+    [Header("References")]
+    [SerializeField] private InputActionAsset inputActions;
+    [SerializeField] private PlayerController playerController;
+
+    private InputActionMap gameplayMap;
+    private InputActionMap cameraMap;
+
+    public InputMode CurrentMode { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        if (inputActions == null)
+        {
+            Debug.LogError("GameInputModeManager: InputActionAsset not assigned.");
+            return;
+        }
+
+        gameplayMap = inputActions.FindActionMap("GamePlay", false);
+        cameraMap = inputActions.FindActionMap("Camera", false);
+
+        if (gameplayMap == null)
+            Debug.LogError("Missing Action Map: GamePlay");
+
+        if (cameraMap == null)
+            Debug.LogError("Missing Action Map: Camera");
+    }
+
+    private void Start()
+    {
+        SetGameplayMode();
+    }
+
+    public void SetGameplayMode()
+    {
+        CurrentMode = InputMode.Gameplay;
+
+        gameplayMap?.Enable();
+        cameraMap?.Enable();
+
+        if (playerController != null)
+            playerController.SetMovementEnabled(true);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    public void SetPlacementMode()
+    {
+        CurrentMode = InputMode.Placement;
+
+        gameplayMap?.Disable();
+        cameraMap?.Disable();
+
+        if (playerController != null)
+            playerController.SetMovementEnabled(false);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+}
