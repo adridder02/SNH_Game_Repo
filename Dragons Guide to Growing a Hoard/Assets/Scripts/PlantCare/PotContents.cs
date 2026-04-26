@@ -73,6 +73,13 @@ public class PotContents : MonoBehaviour
 
     // ---------------------------------------------------------------
     // AddPlant — spawns the plant prefab at the pot's anchor.
+    //
+    // NOTE ON SCALE:
+    //   We instantiate WITHOUT a parent so Unity applies the prefab's
+    //   world scale directly (no lossy-scale distortion from the
+    //   anchor). We then re-parent with worldPositionStays:true so
+    //   the plant keeps its correct world size and position even
+    //   when the pot or anchor has a non-unit scale.
     // ---------------------------------------------------------------
     public void AddPlant(GameObject prefab)
     {
@@ -80,12 +87,16 @@ public class PotContents : MonoBehaviour
 
         Transform anchor = plantAnchor != null ? plantAnchor : transform;
 
+        // Instantiate without a parent so the prefab's own scale is
+        // used as-is in world space (avoids lossy-scale inflation).
         GameObject go = UnityEngine.Object.Instantiate(
             prefab,
             anchor.position,
-            anchor.rotation,
-            anchor
+            anchor.rotation
         );
+
+        // Re-parent while keeping the world transform intact.
+        go.transform.SetParent(anchor, worldPositionStays: true);
 
         Plant = go.GetComponent<PlantState>();
 
