@@ -7,11 +7,25 @@ using UnityEngine;
 // by combining soil, light, and water scores.
 //
 // CHANGES:
-//   • SoilScore, LightScore, WaterScore are now public so PlantUI
-//     can read individual scores directly (accurate pip display).
-//   • SetPotContents() now only sets isOnSoil if the pot actually
-//     has soil loaded — respects the "no soil by default" rule.
+//   • PlantSize enum is defined here and reused by PotContents.cs
+//     as its potSize field type, so there is only ever one size
+//     enum in the project — no cross-type comparison errors.
+//   • SoilScore, LightScore, WaterScore are public so PlantUI
+//     can read individual scores directly.
+//   • SetPotContents() only sets isOnSoil when the pot already
+//     has soil loaded.
 // =============================================================
+
+// ---------------------------------------------------------------
+// PlantSize — shared by PlantState (plant prefabs) and
+// PotContents (pot GameObjects). One enum, no mismatch.
+// ---------------------------------------------------------------
+public enum PlantSize
+{
+    Small,
+    Medium,
+    Large
+}
 
 // ---------------------------------------------------------------
 // PlantStateEnum
@@ -25,6 +39,13 @@ public enum PlantStateEnum
 
 public class PlantState : MonoBehaviour
 {
+    // ---------------------------------------------------------------
+    // INSPECTOR — Size
+    // ---------------------------------------------------------------
+    [Header("Size")]
+    [Tooltip("Physical size of this plant. Must match the pot's PlantSize (potSize) for planting to succeed.")]
+    public PlantSize plantSize = PlantSize.Medium;
+
     // ---------------------------------------------------------------
     // INSPECTOR — Soil Preference
     // ---------------------------------------------------------------
@@ -81,13 +102,12 @@ public class PlantState : MonoBehaviour
 
     // ---------------------------------------------------------------
     // PUBLIC ACCESSORS
-    // PlantUI reads individual scores to drive each pip row accurately.
     // ---------------------------------------------------------------
     public PlantStateEnum CurrentState => currentState;
     public int TotalScore => lastTotalScore;
-    public int SoilScore => soilScore;   // 0-2 → mapped to 1-5 pips by PlantUI
-    public int LightScore => lightScore;  // 0-2 → mapped to 1-5 pips by PlantUI
-    public int WaterScore => waterScore;  // 0-2 → mapped to 1-5 pips by PlantUI
+    public int SoilScore => soilScore;
+    public int LightScore => lightScore;
+    public int WaterScore => waterScore;
     public LightSensor LightSensor => lightSensor;
 
     private PotContents ownerPot;
@@ -113,8 +133,6 @@ public class PlantState : MonoBehaviour
 
     // ---------------------------------------------------------------
     // SetPotContents — called by PotContents.AddPlant().
-    // Only marks the plant as being on soil if the pot already has
-    // soil loaded; otherwise soil score stays 0 until SetSoil() fires.
     // ---------------------------------------------------------------
     public void SetPotContents(PotContents pot)
     {
@@ -138,10 +156,6 @@ public class PlantState : MonoBehaviour
         isOnSoil = true;
     }
 
-    // ---------------------------------------------------------------
-    // SetVisible — called by grab/pick-up systems to hide the UI
-    // while the pot or plant is being held.
-    // (Delegates to PlantUI if one is present on the same object.)
     // ---------------------------------------------------------------
     public void SetUIVisible(bool visible)
     {
@@ -170,7 +184,6 @@ public class PlantState : MonoBehaviour
     private int CalculateSoilScore()
     {
         if (!isOnSoil) return 0;
-
         if (currentSoil == preferredSoil) return 2;
         if (currentSoil == neutralSoil) return 1;
         return 0;
@@ -197,7 +210,6 @@ public class PlantState : MonoBehaviour
     {
         SoilPatch patch = other.GetComponent<SoilPatch>();
         if (patch == null) return;
-
         isOnSoil = true;
         currentSoil = patch.soilKind;
     }
@@ -206,7 +218,6 @@ public class PlantState : MonoBehaviour
     {
         SoilPatch patch = other.GetComponent<SoilPatch>();
         if (patch == null) return;
-
         isOnSoil = false;
     }
 }

@@ -14,6 +14,23 @@ public class PlacementSystem : MonoBehaviour
     [Header("Preview")]
     [SerializeField] private bool showPreviewObject = true;
 
+    [Header("Audio - Placement SFX")]
+    [SerializeField] private AudioClip placeSoundClip;
+    [SerializeField] private AudioClip pickupSoundClip;
+    [SerializeField] private AudioClip dropSoundClip;
+    [SerializeField] private AudioClip removeSoundClip;
+    [Range(0f, 1f)]
+    [SerializeField] private float sfxVolume = 1f;
+
+    [Header("Audio - Ambient Music")]
+    [SerializeField] private AudioClip ambientMusicClip;
+    [Range(0f, 1f)]
+    [SerializeField] private float ambientVolume = 0.4f;
+    [SerializeField] private bool loopAmbientMusic = true;
+
+    private AudioSource sfxSource;
+    private AudioSource ambientSource;
+
     private enum Mode
     {
         None,
@@ -37,6 +54,27 @@ public class PlacementSystem : MonoBehaviour
 
     public bool IsPlacementModeActive => mode != Mode.None;
 
+    private void Awake()
+    {
+        // SFX source — short one-shot sounds
+        sfxSource = gameObject.AddComponent<AudioSource>();
+        sfxSource.playOnAwake = false;
+        sfxSource.loop = false;
+        sfxSource.volume = sfxVolume;
+
+        // Ambient source — looping background music
+        ambientSource = gameObject.AddComponent<AudioSource>();
+        ambientSource.playOnAwake = false;
+        ambientSource.loop = loopAmbientMusic;
+        ambientSource.volume = ambientVolume;
+
+        if (ambientMusicClip != null)
+        {
+            ambientSource.clip = ambientMusicClip;
+            ambientSource.Play();
+        }
+    }
+
     private void Start()
     {
         if (surface == null)
@@ -54,6 +92,19 @@ public class PlacementSystem : MonoBehaviour
         }
 
         GameInputModeManager.Instance.SetGameplayMode();
+    }
+
+    // Keep inspector-adjusted volumes live during Play Mode
+    private void OnValidate()
+    {
+        if (sfxSource != null)
+            sfxSource.volume = sfxVolume;
+
+        if (ambientSource != null)
+        {
+            ambientSource.volume = ambientVolume;
+            ambientSource.loop = loopAmbientMusic;
+        }
     }
 
     private void Update()
@@ -307,9 +358,6 @@ public class PlacementSystem : MonoBehaviour
         if (!gridData.CanPlace(key, data.size))
             return;
 
-        // ── FIX: Use the prefab's own rotation instead of Quaternion.identity
-        // so that any axis-conversion baked in during Blender→Unity import is
-        // respected, matching the preview which gets its rotation from the prefab.
         GameObject placed =
             Instantiate(
                 data.potPrefab,
@@ -317,13 +365,10 @@ public class PlacementSystem : MonoBehaviour
                 data.potPrefab.transform.rotation
             );
 
-        // ── Do NOT initialize the pot with soil ──
-        // The pot starts completely empty.
-        // PotContents.Awake() already sets hasSoil = false, waterLevel = 0.
-        // Player must add soil via PotInteraction menu.
-
         gridData.AddPlacement(key, data.size, placed);
         gridVisual.MarkOccupied(cell, data.size);
+
+        PlaySFX(placeSoundClip);
     }
 
     private void TryRemove(Vector2Int cell)
@@ -341,6 +386,8 @@ public class PlacementSystem : MonoBehaviour
         gridVisual.ClearFootprint(origin, data.Size);
 
         Destroy(data.PlacedObject);
+
+        PlaySFX(removeSoundClip);
     }
 
     private void TryPickupOrDrop(Vector2Int cell)
@@ -358,7 +405,6 @@ public class PlacementSystem : MonoBehaviour
 
             gridData.RemovePlacement(data.Origin);
 
-            // ── FIX: Hide plant UI when picking up pot ──
             PotContents pot = movingObject.GetComponent<PotContents>();
             if (pot != null && pot.HasPlant && pot.Plant != null)
                 pot.Plant.SetUIVisible(false);
@@ -366,6 +412,8 @@ public class PlacementSystem : MonoBehaviour
             movingObject.SetActive(false);
 
             SpawnPreviewFromObject(movingObject);
+
+            PlaySFX(pickupSoundClip);
         }
         else
         {
@@ -379,7 +427,6 @@ public class PlacementSystem : MonoBehaviour
 
             movingObject.SetActive(true);
 
-            // ── FIX: Show plant UI when placing pot down ──
             PotContents pot = movingObject.GetComponent<PotContents>();
             if (pot != null && pot.HasPlant && pot.Plant != null)
                 pot.Plant.SetUIVisible(true);
@@ -394,6 +441,8 @@ public class PlacementSystem : MonoBehaviour
             movingObject = null;
 
             DestroyPreview();
+
+            PlaySFX(dropSoundClip);
         }
     }
 
@@ -401,7 +450,6 @@ public class PlacementSystem : MonoBehaviour
     {
         movingObject.SetActive(true);
 
-        // ── FIX: Show plant UI when putting pot back ──
         PotContents pot = movingObject.GetComponent<PotContents>();
         if (pot != null && pot.HasPlant && pot.Plant != null)
             pot.Plant.SetUIVisible(true);
@@ -467,6 +515,15 @@ public class PlacementSystem : MonoBehaviour
             selectedIndex = availablePots.Count - 1;
 
         EnterPlaceMode(selectedIndex);
+    }
+
+    private void PlaySFX(AudioClip clip)
+    {
+        if (clip == null || sfxSource == null)
+            return;
+
+        sfxSource.volume = sfxVolume;
+        sfxSource.PlayOneShot(clip);
     }
 
     private Vector3 CellToWorldCentre(Vector2Int cell, Vector2Int size)

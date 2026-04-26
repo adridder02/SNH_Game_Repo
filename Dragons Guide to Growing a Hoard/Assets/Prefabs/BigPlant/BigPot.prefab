@@ -123,6 +123,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plantAnchor: {fileID: 0}
+  potSize: 2
+  claySoilPrefab: {fileID: 7622136031753506779, guid: 313d02b4c20ae4b4aa6dd7070c50bb87, type: 3}
+  loamSoilPrefab: {fileID: 7622136031753506779, guid: 313d02b4c20ae4b4aa6dd7070c50bb87, type: 3}
+  sandySoilPrefab: {fileID: 7622136031753506779, guid: 313d02b4c20ae4b4aa6dd7070c50bb87, type: 3}
+  clayMaterial: {fileID: 2100000, guid: 97e1609a0714ef34aaae06110f28666d, type: 2}
+  loamMaterial: {fileID: 2100000, guid: aa04b5e1d02c8e74aa0dff17ef7ee3b1, type: 2}
+  sandyMaterial: {fileID: 2100000, guid: e6f341860e588e34abbae233ffc22ed9, type: 2}
   plantWaterMax: 10
   baseDrainRate: 0.3
   sunDrainMultiplier: 0.4

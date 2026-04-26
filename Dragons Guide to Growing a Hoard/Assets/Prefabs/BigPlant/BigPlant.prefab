@@ -128,8 +128,9 @@ MonoBehaviour:
   dummySunlight: 3
   dummySoil: 4
   dummyWater: 2
-  heightOffset: 2.2
-  canvasScale: 0.008
+  hoverGap: 5
+  targetScreenHeight: 0.15
+  baseCanvasSize: {x: 2.6, y: 2.9}
   plantState: {fileID: 0}
   lightSensor: {fileID: 0}
 --- !u!114 &-3774266427495497571
@@ -144,6 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea6b95557e7067b4a8c58044c08c19c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  plantSize: 2
   preferredSoil: 1
   neutralSoil: 0
   lightThresholdHigh: 0.6
@@ -181,7 +183,11 @@ MonoBehaviour:
   obstacleLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  transparentLayer:
+    serializedVersion: 2
+    m_Bits: 0
   rayOriginOffset: 0.5
+  maxRaycastHits: 10
   rawIntensity: 0
   isInShadow: 0
   normalisedIntensity: 0

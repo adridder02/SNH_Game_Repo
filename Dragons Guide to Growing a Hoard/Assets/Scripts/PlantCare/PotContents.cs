@@ -10,6 +10,14 @@ using UnityEngine;
 //     until SetSoil() or Initialise() is explicitly called.
 //   • Water only drains when a plant is present (hasPlant).
 //   • waterLevel starts at 0; filled by the player via AddWater().
+//   • Soil prefabs: assign one prefab per SoilKind in the Inspector.
+//     When the player sets a soil type, the matching prefab is
+//     spawned at the plantAnchor. Its Renderer material is swapped
+//     to the corresponding soil material so each type looks distinct.
+//   • potSize uses PlantSize — the single shared size enum defined
+//     in PlantState.cs. Having one enum eliminates the type-mismatch
+//     compiler error that occurred when PotSize and PlantSize were
+//     two separate enums with the same values.
 // =============================================================
 
 [RequireComponent(typeof(Collider))]
@@ -19,6 +27,31 @@ public class PotContents : MonoBehaviour
     [Header("Setup")]
     public Transform plantAnchor;
 
+    [Tooltip("The physical size of this pot. Only plants with the matching PlantSize can be planted here.")]
+    public PlantSize potSize = PlantSize.Medium;
+
+    // ---------------------------------------------------------------
+    [Header("Soil Prefabs")]
+    [Tooltip("Prefab spawned inside the pot when Clay soil is chosen.")]
+    public GameObject claySoilPrefab;
+
+    [Tooltip("Prefab spawned inside the pot when Loam soil is chosen.")]
+    public GameObject loamSoilPrefab;
+
+    [Tooltip("Prefab spawned inside the pot when Sandy soil is chosen.")]
+    public GameObject sandySoilPrefab;
+
+    [Header("Soil Materials")]
+    [Tooltip("Material applied to the clay soil prefab's Renderer. Leave null to keep prefab default.")]
+    public Material clayMaterial;
+
+    [Tooltip("Material applied to the loam soil prefab's Renderer. Leave null to keep prefab default.")]
+    public Material loamMaterial;
+
+    [Tooltip("Material applied to the sandy soil prefab's Renderer. Leave null to keep prefab default.")]
+    public Material sandyMaterial;
+
+    // ---------------------------------------------------------------
     [Header("Water")]
     public float plantWaterMax = 10f;
     public float baseDrainRate = 0.3f;
@@ -27,19 +60,23 @@ public class PotContents : MonoBehaviour
     // ---------------------------------------------------------------
     [Header("Runtime")]
     [SerializeField] private SoilKind currentSoil = SoilKind.Loam;
-    [SerializeField] private float waterLevel = 0f;   // starts empty
-    [SerializeField] private bool hasSoil = false; // starts with no soil
+    [SerializeField] private float waterLevel = 0f;
+    [SerializeField] private bool hasSoil = false;
     [SerializeField] private bool hasPlant = false;
 
     public SoilKind CurrentSoil => currentSoil;
     public float WaterLevel => waterLevel;
     public bool HasSoil => hasSoil;
     public bool HasPlant => hasPlant;
+    public PlantSize PotSize => potSize;
 
     public PlantState Plant { get; private set; }
 
+    // Live reference to the spawned soil mesh inside the pot.
+    private GameObject currentSoilObject;
+
     // ---------------------------------------------------------------
-    // Awake — pot starts completely empty (no soil, no water, no plant).
+    // Awake — pot starts completely empty.
     // ---------------------------------------------------------------
     private void Awake()
     {
@@ -50,13 +87,13 @@ public class PotContents : MonoBehaviour
 
     // ---------------------------------------------------------------
     // Initialise — called by placement systems that pre-load a soil type.
-    // Water begins at 0; player must water the plant after placing it.
     // ---------------------------------------------------------------
     public void Initialise(SoilKind soil)
     {
         currentSoil = soil;
         hasSoil = true;
         waterLevel = 0f;
+        SpawnSoilPrefab(soil);
     }
 
     // ---------------------------------------------------------------
@@ -66,56 +103,112 @@ public class PotContents : MonoBehaviour
     {
         currentSoil = kind;
         hasSoil = true;
+        SpawnSoilPrefab(kind);
 
         if (Plant != null)
             Plant.OnSoilChanged(currentSoil);
     }
 
     // ---------------------------------------------------------------
-    // AddPlant — spawns the plant prefab at the pot's anchor.
-    //
-    // NOTE ON SCALE:
-    //   We instantiate WITHOUT a parent so Unity applies the prefab's
-    //   world scale directly (no lossy-scale distortion from the
-    //   anchor). We then re-parent with worldPositionStays:true so
-    //   the plant keeps its correct world size and position even
-    //   when the pot or anchor has a non-unit scale.
+    // SpawnSoilPrefab — destroys the previous soil object and spawns
+    // the one matching 'kind', then applies the per-kind material.
     // ---------------------------------------------------------------
-    public void AddPlant(GameObject prefab)
+    private void SpawnSoilPrefab(SoilKind kind)
     {
-        if (hasPlant) return;
+        // Remove previous soil visual.
+        if (currentSoilObject != null)
+        {
+            Destroy(currentSoilObject);
+            currentSoilObject = null;
+        }
+
+        GameObject prefabToSpawn = kind switch
+        {
+            SoilKind.Clay => claySoilPrefab,
+            SoilKind.Loam => loamSoilPrefab,
+            SoilKind.Sandy => sandySoilPrefab,
+            _ => null
+        };
+
+        Material materialToApply = kind switch
+        {
+            SoilKind.Clay => clayMaterial,
+            SoilKind.Loam => loamMaterial,
+            SoilKind.Sandy => sandyMaterial,
+            _ => null
+        };
+
+        if (prefabToSpawn == null)
+        {
+            Debug.LogWarning($"[PotContents] No soil prefab assigned for {kind}. " +
+                             "Drag a prefab into the Inspector slot.");
+            return;
+        }
 
         Transform anchor = plantAnchor != null ? plantAnchor : transform;
 
-        // Instantiate without a parent so the prefab's own scale is
-        // used as-is in world space (avoids lossy-scale inflation).
-        GameObject go = UnityEngine.Object.Instantiate(
-            prefab,
-            anchor.position,
-            anchor.rotation
-        );
+        // Instantiate at anchor position/rotation to preserve prefab's original scale
+        currentSoilObject = Instantiate(prefabToSpawn, anchor.position, anchor.rotation);
+        currentSoilObject.transform.SetParent(anchor, worldPositionStays: true);
 
-        // Re-parent while keeping the world transform intact.
+        // Reset to local zero while keeping world scale intact
+        currentSoilObject.transform.localPosition = Vector3.zero;
+        currentSoilObject.transform.localRotation = Quaternion.identity;
+        currentSoilObject.name = $"SoilVisual_{kind}";
+
+        // Apply the soil-specific material to every Renderer in the prefab.
+        if (materialToApply != null)
+        {
+            foreach (Renderer rend in currentSoilObject.GetComponentsInChildren<Renderer>())
+                rend.material = materialToApply;
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // AddPlant — returns false if already planted or size mismatches.
+    //
+    // Both candidate.plantSize and potSize are PlantSize values, so
+    // the != comparison is now valid (no cross-enum comparison).
+    // ---------------------------------------------------------------
+    public bool AddPlant(GameObject prefab)
+    {
+        if (hasPlant) return false;
+
+        // Size check — both sides are PlantSize, comparison is legal.
+        PlantState candidate = prefab.GetComponent<PlantState>();
+        if (candidate != null && candidate.plantSize != potSize)
+        {
+            Debug.LogWarning(
+                $"[PotContents] Size mismatch — plant is {candidate.plantSize} " +
+                $"but pot needs {potSize}. Plant not added.");
+            return false;
+        }
+
+        Transform anchor = plantAnchor != null ? plantAnchor : transform;
+
+        // Instantiate without a parent so world scale is applied correctly,
+        // then re-parent while keeping the world transform.
+        GameObject go = Object.Instantiate(prefab, anchor.position, anchor.rotation);
         go.transform.SetParent(anchor, worldPositionStays: true);
 
         Plant = go.GetComponent<PlantState>();
 
         if (Plant == null)
         {
-            UnityEngine.Object.Destroy(go);
-            UnityEngine.Debug.LogWarning("[PotContents] Plant prefab missing PlantState.");
-            return;
+            Object.Destroy(go);
+            Debug.LogWarning("[PotContents] Plant prefab missing PlantState.");
+            return false;
         }
 
         hasPlant = true;
         Plant.SetPotContents(this);
+        return true;
     }
 
     public void RemovePlant()
     {
         if (!hasPlant || Plant == null) return;
-
-        UnityEngine.Object.Destroy(Plant.gameObject);
+        Object.Destroy(Plant.gameObject);
         Plant = null;
         hasPlant = false;
     }
@@ -126,8 +219,7 @@ public class PotContents : MonoBehaviour
     public bool AddWater(float amount)
     {
         if (waterLevel >= plantWaterMax) return false;
-
-        waterLevel = UnityEngine.Mathf.Min(waterLevel + amount, plantWaterMax);
+        waterLevel = Mathf.Min(waterLevel + amount, plantWaterMax);
         return true;
     }
 
@@ -136,24 +228,21 @@ public class PotContents : MonoBehaviour
     // ---------------------------------------------------------------
     private void Update()
     {
-        // No plant, or already dry — nothing to drain.
         if (!hasPlant || waterLevel <= 0f) return;
 
         float drain = baseDrainRate;
-
         if (Plant != null && Plant.LightSensor != null)
             drain += Plant.LightSensor.NormalisedIntensity * sunDrainMultiplier;
 
-        waterLevel = UnityEngine.Mathf.Max(0f, waterLevel - drain * UnityEngine.Time.deltaTime);
+        waterLevel = Mathf.Max(0f, waterLevel - drain * Time.deltaTime);
     }
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         if (plantAnchor == null) return;
-
-        UnityEngine.Gizmos.color = UnityEngine.Color.green;
-        UnityEngine.Gizmos.DrawWireSphere(plantAnchor.position, 0.1f);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(plantAnchor.position, 0.1f);
     }
 #endif
 }

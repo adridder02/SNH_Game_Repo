@@ -1,7 +1,7 @@
 // =============================================================
 // PotInteraction.cs
 // -------------------------------------------------------------
-// Attach this to the Player.
+// Attach this script to the Player.
 //
 // HOW IT WORKS:
 //   - Each frame, a sphere cast finds the nearest PotContents
@@ -14,6 +14,14 @@
 //       • Has plant      → "Water Plant"
 //   - Clicking a menu button executes the action and closes the menu.
 //   - Press E again or walk away to close without acting.
+//
+// CHANGES:
+//   • AddPlant now reads the bool return from PotContents.AddPlant()
+//     and shows a size-mismatch warning label in the menu when the
+//     player tries to plant a wrong-size plant.
+//   • Plant list items now display the plant's size in brackets so
+//     the player can see at a glance which plants fit the current pot.
+//   • A "Pot size: X" header line is shown in the plant section.
 //
 // SETUP:
 //   1. Attach to the Player GameObject.
@@ -58,8 +66,14 @@ public class PotInteraction : MonoBehaviour
     public float poolRefillRate = 1.5f;
 
     [Header("UI — Interaction Prompt")]
-    [Tooltip("Optional world-space or screen-space label showing [E] Interact.")]
-    public GameObject interactPromptRoot;
+    [Tooltip("Display '[E] Interact' prompt above pots when in range.")]
+    public bool showInteractPrompt = true;
+    
+    [Tooltip("Height offset above the pot for the interact prompt.")]
+    public float promptHeightOffset = 1.5f;
+    
+    [Tooltip("World-space size of the interact prompt.")]
+    public Vector2 promptWorldSize = new Vector2(0.6f, 0.2f);
 
     // ---------------------------------------------------------------
     // Private state
@@ -68,12 +82,21 @@ public class PotInteraction : MonoBehaviour
     private PotContents nearbyPot;
     private bool menuOpen = false;
 
+    // Transient feedback message shown inside the open menu.
+    // Cleared each time the menu rebuilds.
+    private string pendingFeedbackMessage = null;
+
     // ── Runtime UI (built in code) ─────────────────────────────────
     private GameObject menuRoot;
     private Canvas menuCanvas;
-    private const float BTN_WIDTH = 220f;
+    private const float BTN_WIDTH = 240f;
     private const float BTN_HEIGHT = 38f;
     private const float BTN_GAP = 6f;
+
+    // Interact prompt UI
+    private GameObject promptRoot;
+    private Canvas promptCanvas;
+    private TextMeshProUGUI promptText;
 
     // ---------------------------------------------------------------
     // Start
@@ -82,6 +105,7 @@ public class PotInteraction : MonoBehaviour
     {
         playerWaterPool = maxWaterPool;
         BuildMenuCanvas();
+        if (showInteractPrompt) BuildInteractPrompt();
         CloseMenu();
     }
 
@@ -103,9 +127,8 @@ public class PotInteraction : MonoBehaviour
             nearbyPot = found;
         }
 
-        // Show/hide the [E] prompt
-        if (interactPromptRoot != null)
-            interactPromptRoot.SetActive(nearbyPot != null && !menuOpen);
+        // Update interact prompt position and visibility
+        UpdateInteractPrompt();
 
         // E — toggle menu
         if (Keyboard.current.eKey.wasPressedThisFrame)
@@ -167,6 +190,83 @@ public class PotInteraction : MonoBehaviour
     }
 
     // ===============================================================
+    // INTERACT PROMPT — [E] floating above the pot
+    // ===============================================================
+
+    private void BuildInteractPrompt()
+    {
+        // Create a world-space canvas that we'll reposition each frame
+        promptRoot = new GameObject("InteractPrompt");
+        DontDestroyOnLoad(promptRoot);
+
+        promptCanvas = promptRoot.AddComponent<Canvas>();
+        promptCanvas.renderMode = RenderMode.WorldSpace;
+        promptCanvas.sortingOrder = 50;
+
+        RectTransform canvasRect = promptRoot.GetComponent<RectTransform>();
+        canvasRect.sizeDelta = promptWorldSize * 100f; // High res
+        canvasRect.localScale = Vector3.one * 0.01f;   // Scale to world size
+
+        CanvasScaler scaler = promptRoot.AddComponent<CanvasScaler>();
+        scaler.dynamicPixelsPerUnit = 10f;
+
+        promptRoot.AddComponent<GraphicRaycaster>();
+
+        // Background panel
+        GameObject panel = CreateUIElement("Panel", promptRoot.transform);
+        RectTransform panelRT = panel.GetComponent<RectTransform>();
+        panelRT.anchorMin = Vector2.zero;
+        panelRT.anchorMax = Vector2.one;
+        panelRT.offsetMin = Vector2.zero;
+        panelRT.offsetMax = Vector2.zero;
+        Image panelImg = panel.AddComponent<Image>();
+        panelImg.color = new Color(0.1f, 0.12f, 0.1f, 0.85f);
+
+        // Text label
+        GameObject textGO = CreateUIElement("Text", panel.transform);
+        RectTransform textRT = textGO.GetComponent<RectTransform>();
+        textRT.anchorMin = Vector2.zero;
+        textRT.anchorMax = Vector2.one;
+        textRT.offsetMin = Vector2.zero;
+        textRT.offsetMax = Vector2.zero;
+
+        promptText = textGO.AddComponent<TextMeshProUGUI>();
+        promptText.text = "[E] Interact";
+        promptText.fontSize = 14;
+        promptText.color = new Color(0.9f, 0.95f, 0.9f);
+        promptText.fontStyle = FontStyles.Bold;
+        promptText.alignment = TextAlignmentOptions.Center;
+
+        promptRoot.SetActive(false); // Hidden by default
+    }
+
+    private void UpdateInteractPrompt()
+    {
+        if (!showInteractPrompt || promptRoot == null) return;
+
+        bool shouldShow = nearbyPot != null && !menuOpen;
+        promptRoot.SetActive(shouldShow);
+
+        if (shouldShow)
+        {
+            // Position above the pot
+            Vector3 potPos = nearbyPot.transform.position;
+            promptRoot.transform.position = potPos + Vector3.up * promptHeightOffset;
+
+            // Billboard toward camera
+            if (Camera.main != null)
+            {
+                Vector3 toCamera = Camera.main.transform.position - promptRoot.transform.position;
+                toCamera.y = 0f;
+                if (toCamera.sqrMagnitude > 0.0001f)
+                {
+                    promptRoot.transform.rotation = Quaternion.LookRotation(-toCamera);
+                }
+            }
+        }
+    }
+
+    // ===============================================================
     // MENU — build, open, close, populate
     // ===============================================================
 
@@ -186,31 +286,35 @@ public class PotInteraction : MonoBehaviour
 
     private void OpenMenu(PotContents pot)
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        GameInputModeManager.Instance?.SetPlacementMode();
 
         // Clear old buttons
         foreach (Transform child in menuRoot.transform)
             Destroy(child.gameObject);
 
         // Build action list based on pot state
-        List<(string label, System.Action action)> actions = new();
+        List<(string label, System.Action action, bool isWarning)> actions = new();
+
+        // ── Feedback message (e.g. size mismatch) ────────────────
+        if (pendingFeedbackMessage != null)
+        {
+            actions.Add((pendingFeedbackMessage, null, true)); // warning row
+            pendingFeedbackMessage = null;
+        }
 
         // ── Soil actions ──────────────────────────────────────────
         string soilHeader = pot.HasSoil ? "Change Soil:" : "Add Soil:";
-        actions.Add((soilHeader, null)); // section header (non-clickable)
+        actions.Add((soilHeader, null, false)); // section header (non-clickable)
 
         foreach (SoilKind kind in System.Enum.GetValues(typeof(SoilKind)))
         {
             SoilKind captured = kind; // closure capture
-            string indicator = (pot.HasSoil && pot.CurrentSoil == captured) ? " Y " : "";
+            string indicator = (pot.HasSoil && pot.CurrentSoil == captured) ? " ✓" : "";
             actions.Add(($"  {SoilDisplayName(captured)}{indicator}", () =>
             {
                 pot.SetSoil(captured);
-                // Re-open to reflect new state
-                OpenMenu(pot);
-            }
-            ));
+                OpenMenu(pot); // Re-open to reflect new state
+            }, false));
         }
 
         // ── Plant actions ─────────────────────────────────────────
@@ -220,22 +324,47 @@ public class PotInteraction : MonoBehaviour
             {
                 if (plantPrefabs.Count > 0)
                 {
-                    actions.Add(("Add Plant:", null)); // header
+                    // Show which size this pot accepts so the player knows
+                    // before clicking.
+                    actions.Add(($"Add Plant:  (pot size: {pot.PotSize})", null, false));
+
                     foreach (GameObject prefab in plantPrefabs)
                     {
                         GameObject captured = prefab;
+                        PlantState ps = prefab.GetComponent<PlantState>();
                         string plantName = prefab.name.Replace("(Clone)", "").Trim();
-                        actions.Add(($"  {plantName}", () =>
+
+                        // Label includes plant size so player can match at a glance.
+                        string sizeTag = ps != null ? $"[{ps.plantSize}]" : "[?]";
+                        bool fits = ps != null && ps.plantSize == pot.PotSize;
+
+                        // Dim the label slightly for wrong-size plants by prepending
+                        // a visual cue. The button is still clickable so the player
+                        // gets the warning message rather than silent failure.
+                        string prefix = fits ? "  " : "  ✗ ";
+                        actions.Add(($"{prefix}{plantName} {sizeTag}", () =>
                         {
-                            pot.AddPlant(captured);
-                            CloseMenu();
-                        }
-                        ));
+                            bool success = pot.AddPlant(captured);
+                            if (success)
+                            {
+                                CloseMenu();
+                            }
+                            else
+                            {
+                                // Show a human-readable mismatch message on re-open.
+                                string plantSizeStr = ps != null
+                                    ? ps.plantSize.ToString()
+                                    : "Unknown";
+                                pendingFeedbackMessage =
+                                    $"⚠  {plantName} is {plantSizeStr} — pot needs {pot.PotSize}";
+                                OpenMenu(pot);
+                            }
+                        }, false));
                     }
                 }
                 else
                 {
-                    actions.Add(("[No plant prefabs assigned]", null));
+                    actions.Add(("[No plant prefabs assigned]", null, false));
                 }
             }
             else
@@ -245,20 +374,18 @@ public class PotInteraction : MonoBehaviour
                 {
                     QuickWater(pot);
                     OpenMenu(pot); // refresh label
-                }
-                ));
+                }, false));
 
                 actions.Add(("Remove Plant", () =>
                 {
                     pot.RemovePlant();
                     CloseMenu();
-                }
-                ));
+                }, false));
             }
         }
 
         // ── Close button ──────────────────────────────────────────
-        actions.Add(("[ Close ]", CloseMenu));
+        actions.Add(("[ Close ]", CloseMenu, false));
 
         // ── Layout ────────────────────────────────────────────────
         float totalHeight = actions.Count * (BTN_HEIGHT + BTN_GAP) - BTN_GAP + 16f;
@@ -275,13 +402,13 @@ public class PotInteraction : MonoBehaviour
 
         for (int i = 0; i < actions.Count; i++)
         {
-            var (label, action) = actions[i];
+            var (label, action, isWarning) = actions[i];
             float y = startY - i * (BTN_HEIGHT + BTN_GAP);
             bool isHeader = action == null;
 
             if (isHeader)
             {
-                // Non-interactive section label
+                // Non-interactive section label or warning row
                 GameObject lblGO = CreateUIElement(label, panel.transform);
                 RectTransform lr = lblGO.GetComponent<RectTransform>();
                 lr.anchorMin = lr.anchorMax = new Vector2(0.5f, 0.5f);
@@ -290,7 +417,9 @@ public class PotInteraction : MonoBehaviour
                 TextMeshProUGUI txt = lblGO.AddComponent<TextMeshProUGUI>();
                 txt.text = label;
                 txt.fontSize = 12;
-                txt.color = new Color(0.65f, 0.85f, 0.65f);
+                txt.color = isWarning
+                    ? new Color(1f, 0.55f, 0.20f)          // amber for warnings
+                    : new Color(0.65f, 0.85f, 0.65f);      // green for headers
                 txt.fontStyle = FontStyles.Bold;
                 txt.alignment = TextAlignmentOptions.MidlineLeft;
             }
@@ -325,7 +454,11 @@ public class PotInteraction : MonoBehaviour
                 TextMeshProUGUI txt = txtGO.AddComponent<TextMeshProUGUI>();
                 txt.text = label;
                 txt.fontSize = 11;
-                txt.color = Color.white;
+                // Wrong-size plants are shown in a muted amber so they
+                // read as "selectable but not recommended".
+                txt.color = label.StartsWith("  ✗")
+                    ? new Color(0.9f, 0.65f, 0.3f)
+                    : Color.white;
                 txt.alignment = TextAlignmentOptions.MidlineLeft;
             }
         }
@@ -335,8 +468,7 @@ public class PotInteraction : MonoBehaviour
 
     private void CloseMenu()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        GameInputModeManager.Instance?.SetGameplayMode();
 
         foreach (Transform child in menuRoot.transform)
             Destroy(child.gameObject);
