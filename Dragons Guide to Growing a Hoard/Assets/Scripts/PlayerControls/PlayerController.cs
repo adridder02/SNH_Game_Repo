@@ -15,6 +15,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float gravity = -9.8f;
     [SerializeField] private bool shouldFaceMoveDirection = false;
 
+    [Header("Sprint")]
+    [Tooltip("Speed multiplier applied while holding Left or Right Shift.")]
+    [SerializeField] private float sprintMultiplier = 2f;
+
     [Header("Flying")]
     [Tooltip("Time window (seconds) to press Space a second time to enter fly mode.")]
     [SerializeField] private float doubleTapWindow = 0.3f;
@@ -54,6 +58,19 @@ public class PlayerController : MonoBehaviour
     // Ctrl is polled via Keyboard API — no InputActionAsset mutation needed
 
     private bool movementEnabled = true;
+
+    // ──────────────────────────────────────────────
+    //  Helpers
+    // ──────────────────────────────────────────────
+
+    /// <summary>Returns true when either Shift key is held.</summary>
+    private bool IsSprinting =>
+        Keyboard.current != null &&
+        (Keyboard.current.leftShiftKey.isPressed ||
+         Keyboard.current.rightShiftKey.isPressed);
+
+    /// <summary>Current speed, boosted by sprintMultiplier while sprinting.</summary>
+    private float CurrentSpeed => speed * (IsSprinting ? sprintMultiplier : 1f);
 
     // ──────────────────────────────────────────────
     //  Unity lifecycle
@@ -205,7 +222,7 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateFlyingLocomotion()
     {
-        // Horizontal — yaw-only camera direction
+        // Horizontal — yaw-only camera direction, sprint-aware
         Vector3 forward = cameraTransform.forward;
         Vector3 right = cameraTransform.right;
         forward.y = 0f;
@@ -214,7 +231,7 @@ public class PlayerController : MonoBehaviour
         right.Normalize();
 
         Vector3 horizontalMove =
-            (forward * moveInput.y + right * moveInput.x) * speed;
+            (forward * moveInput.y + right * moveInput.x) * CurrentSpeed;
 
         // Vertical
         float verticalMove = 0f;
@@ -231,16 +248,16 @@ public class PlayerController : MonoBehaviour
         {
             // Normal fly controls only after grace period
 
-            // Space held → ascend
+            // Space held → ascend (sprint multiplier applies here too)
             if (flyAscendHeld)
-                verticalMove += flyVerticalSpeed;
+                verticalMove += flyVerticalSpeed * (IsSprinting ? sprintMultiplier : 1f);
 
-            // Ctrl held → descend (polled directly — no InputActionAsset mutation)
+            // Ctrl held → descend (sprint multiplier applies here too)
             if (Keyboard.current != null &&
                 (Keyboard.current.leftCtrlKey.isPressed ||
                  Keyboard.current.rightCtrlKey.isPressed))
             {
-                verticalMove -= flyVerticalSpeed;
+                verticalMove -= flyVerticalSpeed * (IsSprinting ? sprintMultiplier : 1f);
             }
 
             // Camera pitch → nudge vertical ONLY while actively moving horizontally.
@@ -248,7 +265,7 @@ public class PlayerController : MonoBehaviour
             if (flyPitchInfluence > 0f && moveInput.sqrMagnitude > 0.01f)
             {
                 // cameraTransform.forward.y == sin(pitch): +1 straight up, -1 straight down
-                verticalMove += cameraTransform.forward.y * flyPitchInfluence * speed;
+                verticalMove += cameraTransform.forward.y * flyPitchInfluence * CurrentSpeed;
             }
 
             // Grounded → exit fly mode (only checked after grace period)
@@ -292,7 +309,7 @@ public class PlayerController : MonoBehaviour
         right.Normalize();
 
         Vector3 dir = forward * moveInput.y + right * moveInput.x;
-        controller.Move(dir * speed * Time.deltaTime);
+        controller.Move(dir * CurrentSpeed * Time.deltaTime);
 
         if (shouldFaceMoveDirection && dir.sqrMagnitude > 0.001f)
         {

@@ -307,14 +307,17 @@ public class PlacementSystem : MonoBehaviour
         if (!gridData.CanPlace(key, data.size))
             return;
 
+        // ── FIX: Use the prefab's own rotation instead of Quaternion.identity
+        // so that any axis-conversion baked in during Blender→Unity import is
+        // respected, matching the preview which gets its rotation from the prefab.
         GameObject placed =
             Instantiate(
                 data.potPrefab,
                 CellToWorldCentre(cell, data.size),
-                Quaternion.identity
+                data.potPrefab.transform.rotation
             );
 
-        // ── FIX: Do NOT initialize the pot with soil ──
+        // ── Do NOT initialize the pot with soil ──
         // The pot starts completely empty.
         // PotContents.Awake() already sets hasSoil = false, waterLevel = 0.
         // Player must add soil via PotInteraction menu.

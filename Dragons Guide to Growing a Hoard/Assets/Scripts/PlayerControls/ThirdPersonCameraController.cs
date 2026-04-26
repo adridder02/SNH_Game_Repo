@@ -20,6 +20,16 @@ public class ThirdPersonCameraController : MonoBehaviour
     [Tooltip("How far up the camera can look (e.g. 70).")]
     [SerializeField] private float maxPitchAngle = 70f;
 
+    [Header("Collision")]
+    [Tooltip("Layers the camera will collide with. Exclude the Player layer.")]
+    [SerializeField] private LayerMask collisionMask = ~0;         // everything by default
+    [Tooltip("How quickly the camera pulls in when a collision is detected.")]
+    [SerializeField] private float collisionPullInSpeed = 20f;
+    [Tooltip("How quickly the camera eases back out once the obstruction clears.")]
+    [SerializeField] private float collisionPullOutSpeed = 4f;
+    [Tooltip("Small buffer so the camera doesn't sit flush against a surface.")]
+    [SerializeField] private float collisionBuffer = 0.3f;
+
     // ── private ──────────────────────────────────────
     private PlayerControls controls;
     private CinemachineCamera cam;
@@ -29,6 +39,9 @@ public class ThirdPersonCameraController : MonoBehaviour
     private Vector2 scrollDelta;
     private float targetZoom;
     private float currentZoom;
+
+    // collision — tracks the radius we actually hand to Cinemachine each frame
+    private float collisionZoom;
 
     // ─────────────────────────────────────────────────
     void Start()
@@ -41,7 +54,7 @@ public class ThirdPersonCameraController : MonoBehaviour
         orbital = cam.GetComponent<CinemachineOrbitalFollow>();
         inputAxis = cam.GetComponent<CinemachineInputAxisController>();
 
-        targetZoom = currentZoom = orbital.Radius;
+        targetZoom = currentZoom = collisionZoom = orbital.Radius;
 
         ConfigureAxes();
     }
@@ -71,6 +84,7 @@ public class ThirdPersonCameraController : MonoBehaviour
             return;
         }
 
+        // ── Zoom intent ───────────────────────────────
         if (scrollDelta.y != 0f && orbital != null)
         {
             targetZoom = Mathf.Clamp(
@@ -80,7 +94,62 @@ public class ThirdPersonCameraController : MonoBehaviour
         }
 
         currentZoom = Mathf.Lerp(currentZoom, targetZoom, Time.deltaTime * zoomLerpSpeed);
-        orbital.Radius = currentZoom;
+
+        // ── Collision check ───────────────────────────
+        float desiredRadius = ResolveCollision(currentZoom);
+
+        float lerpSpeed = desiredRadius < collisionZoom
+            ? collisionPullInSpeed   // obstruction found  → snap in fast
+            : collisionPullOutSpeed; // obstruction gone   → ease back slowly
+
+        collisionZoom = Mathf.Lerp(collisionZoom, desiredRadius, Time.deltaTime * lerpSpeed);
+
+        orbital.Radius = collisionZoom;
+
+        // Re-apply pitch limits every frame — Cinemachine can drift these
+        // when the radius changes, causing the look-up range to shrink on zoom.
+        if (orbital != null)
+        {
+            orbital.VerticalAxis.Range = new Vector2(minPitchAngle, maxPitchAngle);
+            orbital.VerticalAxis.Wrap = false;
+        }
+    }
+
+    // ─────────────────────────────────────────────────
+    /// <summary>
+    /// Casts a ray from the follow target toward the ideal camera position.
+    /// Returns the safe radius (≤ currentZoom) that keeps the camera clear of geometry.
+    /// </summary>
+    private float ResolveCollision(float desiredRadius)
+    {
+        if (orbital == null) return desiredRadius;
+
+        // The follow target is whatever the orbital is tracking.
+        // We grab it from the CinemachineCamera's Follow transform.
+        Transform follow = cam.Follow;
+        if (follow == null) return desiredRadius;
+
+        // Direction from target toward where the camera wants to sit.
+        // CinemachineOrbitalFollow positions the camera behind/above the target
+        // along the orbit rig's current orientation — we approximate that with
+        // -cam.transform.forward, which is accurate once Cinemachine has updated.
+        Vector3 origin = follow.position;
+        Vector3 direction = -cam.transform.forward;
+
+        if (Physics.SphereCast(
+                origin,
+                collisionBuffer,
+                direction,
+                out RaycastHit hit,
+                desiredRadius,
+                collisionMask,
+                QueryTriggerInteraction.Ignore))
+        {
+            // Pull the camera in to just before the hit point.
+            return Mathf.Clamp(hit.distance, minDistance, desiredRadius);
+        }
+
+        return desiredRadius;
     }
 
     // ─────────────────────────────────────────────────
@@ -104,8 +173,6 @@ public class ThirdPersonCameraController : MonoBehaviour
         }
 
         // ── Pitch limits (via CinemachineOrbitalFollow.VerticalAxis) ──────
-        // VerticalAxis.Range clamps how many degrees up/down the camera can go.
-        // Wrap must be false, otherwise it loops past the limits.
         if (orbital != null)
         {
             orbital.VerticalAxis.Range = new Vector2(minPitchAngle, maxPitchAngle);

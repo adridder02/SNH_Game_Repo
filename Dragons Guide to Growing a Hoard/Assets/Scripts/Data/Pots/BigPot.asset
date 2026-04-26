@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PotData
   potName: Pot
   size: {x: 2, y: 2}
-  potPrefab: {fileID: 6630427354213791577, guid: 2311e9d3ef4f840488781e1760b56137, type: 3}
-  previewPrefab: {fileID: 6630427354213791577, guid: 2311e9d3ef4f840488781e1760b56137, type: 3}
+  potPrefab: {fileID: 3044046510021815365, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+  previewPrefab: {fileID: 3044046510021815365, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+  defaultSoil: 1
