@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +7,6 @@ public class GridData
     private Dictionary<Vector3Int, PlacementData> occupiedCells = new();
 
     // returns true if all cells required by size starting at origin are free
-    //public String GridPlacement = new string[10];
     public bool CanPlace(Vector3Int origin, Vector2Int size)
     {
         foreach (Vector3Int cell in GetCells(origin, size))
@@ -23,8 +21,6 @@ public class GridData
     public void AddPlacement(Vector3Int origin, Vector2Int size, GameObject placedObject)
     {
         PlacementData data = new PlacementData(origin, size, placedObject);
-        // going to use ocupide here to check the corordinets of aproximate barries.
-        
         foreach (Vector3Int cell in GetCells(origin, size))
             occupiedCells[cell] = data;
     }
