@@ -89,6 +89,7 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         gameplayMap.Enable();
+        flyAction.Enable();
         flyAction.performed += OnSpacePressed;
         flyAction.canceled += OnSpaceReleased;
     }
