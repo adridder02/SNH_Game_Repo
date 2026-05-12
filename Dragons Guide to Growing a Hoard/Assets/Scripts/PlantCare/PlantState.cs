@@ -1,25 +1,13 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-// =============================================================
+// ---------------------------------------------------------------
 // PlantState.cs
-// -------------------------------------------------------------
 // Tracks the health state of a plant (Revived / Intermediate / Dead)
-// by combining soil, light, and water scores.
-//
-// CHANGES:
-//   • PlantSize enum is defined here and reused by PotContents.cs
-//     as its potSize field type, so there is only ever one size
-//     enum in the project — no cross-type comparison errors.
-//   • SoilScore, LightScore, WaterScore are public so PlantUI
-//     can read individual scores directly.
-//   • SetPotContents() only sets isOnSoil when the pot already
-//     has soil loaded.
-// =============================================================
+// Adds per-prefab debuff behaviour that affects 4-way neighbours.
+// ---------------------------------------------------------------
 
-// ---------------------------------------------------------------
-// PlantSize — shared by PlantState (plant prefabs) and
-// PotContents (pot GameObjects). One enum, no mismatch.
-// ---------------------------------------------------------------
 public enum PlantSize
 {
     Small,
@@ -27,9 +15,6 @@ public enum PlantSize
     Large
 }
 
-// ---------------------------------------------------------------
-// PlantStateEnum
-// ---------------------------------------------------------------
 public enum PlantStateEnum
 {
     Revived,
@@ -89,6 +74,29 @@ public class PlantState : MonoBehaviour
     public GameObject deadVisual;
 
     // ---------------------------------------------------------------
+    // Debuff spec (per prefab)
+    // ---------------------------------------------------------------
+    [System.Serializable]
+    public class DebuffSpec
+    {
+        public bool enabled = false;
+        [Tooltip("Seconds between neighbour scans")]
+        public float scanInterval = 2f;
+        [Tooltip("Amount applied per tick for drain or light penalty")]
+        public float amountPerTick = 0.5f;
+        [Tooltip("Total duration of the debuff applied to a neighbour")]
+        public float duration = 5f;
+        [Tooltip("How often the debuff ticks on the target")]
+        public float tickInterval = 1f;
+        public bool transferStolenWaterToSelf = false;
+        public enum Mode { DrainWater, ReduceLight, ReduceSoilQuality }
+        public Mode mode = Mode.DrainWater;
+    }
+
+    [Header("Debuff (per prefab)")]
+    public DebuffSpec debuff = new DebuffSpec();
+
+    // ---------------------------------------------------------------
     // RUNTIME DEBUG
     // ---------------------------------------------------------------
     [Header("Runtime")]
@@ -112,6 +120,19 @@ public class PlantState : MonoBehaviour
 
     private PotContents ownerPot;
 
+    // Debuff runtime state
+    private float lightDebuffAmount = 0f; // subtract from measured light (0..1)
+    private int soilQualityPenalty = 0;   // subtract from soil score (integer)
+    private Coroutine scannerCoroutine;
+    private List<Coroutine> activeDebuffCoroutines = new List<Coroutine>();
+
+    private static readonly Vector3Int[] neighbourOffsets4 = new Vector3Int[] {
+        new Vector3Int(1,0,0),
+        new Vector3Int(-1,0,0),
+        new Vector3Int(0,0,1),
+        new Vector3Int(0,0,-1)
+    };
+
     // ---------------------------------------------------------------
     private void Awake()
     {
@@ -132,7 +153,8 @@ public class PlantState : MonoBehaviour
     }
 
     // ---------------------------------------------------------------
-    // SetPotContents — called by PotContents.AddPlant().
+    // SetPotContents — called by PotContents.AddPlant() or PlacementSystem.
+    // Starts/stops the neighbour scanner depending on debuff.enabled.
     // ---------------------------------------------------------------
     public void SetPotContents(PotContents pot)
     {
@@ -146,6 +168,21 @@ public class PlantState : MonoBehaviour
         else
         {
             isOnSoil = false;
+        }
+
+        // Start or stop neighbour scanner
+        if (debuff != null && debuff.enabled && ownerPot != null && ownerPot.GridData != null)
+        {
+            if (scannerCoroutine == null)
+                scannerCoroutine = StartCoroutine(NeighbourScanner());
+        }
+        else
+        {
+            if (scannerCoroutine != null)
+            {
+                StopCoroutine(scannerCoroutine);
+                scannerCoroutine = null;
+            }
         }
     }
 
@@ -169,7 +206,8 @@ public class PlantState : MonoBehaviour
         soilScore = CalculateSoilScore();
 
         float lightLevel = lightSensor != null ? lightSensor.NormalisedIntensity : 0f;
-        lightScore = ScoreValue(lightLevel, lightThresholdHigh, lightThresholdLow);
+        float adjustedLight = Mathf.Clamp01(lightLevel - lightDebuffAmount);
+        lightScore = ScoreValue(adjustedLight, lightThresholdHigh, lightThresholdLow);
 
         float waterLevel = ownerPot != null ? ownerPot.WaterLevel : 0f;
         waterScore = ScoreValue(waterLevel, waterThresholdHigh, waterThresholdLow);
@@ -184,9 +222,13 @@ public class PlantState : MonoBehaviour
     private int CalculateSoilScore()
     {
         if (!isOnSoil) return 0;
-        if (currentSoil == preferredSoil) return 2;
-        if (currentSoil == neutralSoil) return 1;
-        return 0;
+        int baseScore = 0;
+        if (currentSoil == preferredSoil) baseScore = 2;
+        else if (currentSoil == neutralSoil) baseScore = 1;
+        else baseScore = 0;
+
+        int final = Mathf.Max(0, baseScore - soilQualityPenalty);
+        return final;
     }
 
     private int ScoreValue(float value, float high, float low)
@@ -201,6 +243,105 @@ public class PlantState : MonoBehaviour
         if (revivedVisual) revivedVisual.SetActive(currentState == PlantStateEnum.Revived);
         if (intermediateVisual) intermediateVisual.SetActive(currentState == PlantStateEnum.Intermediate);
         if (deadVisual) deadVisual.SetActive(currentState == PlantStateEnum.Dead);
+    }
+
+    // ---------------------------------------------------------------
+    // Neighbour scanner: finds 4-way neighbours and applies debuffs.
+    // ---------------------------------------------------------------
+    private IEnumerator NeighbourScanner()
+    {
+        GridData grid = ownerPot.GridData;
+
+        while (true)
+        {
+            yield return new WaitForSeconds(Mathf.Max(0.1f, debuff.scanInterval));
+
+            // guard in case pot was removed
+            if (ownerPot == null || ownerPot.GridData == null) yield break;
+
+            Vector3Int origin = ownerPot.GridOrigin;
+
+            foreach (var offset in neighbourOffsets4)
+            {
+                Vector3Int neighbourCell = origin + offset;
+                PlacementData pd = grid.GetPlacement(neighbourCell);
+                if (pd == null) continue;
+
+                GameObject neighbourObj = pd.PlacedObject;
+                if (neighbourObj == null) continue;
+
+                PotContents neighbourPot = neighbourObj.GetComponent<PotContents>();
+                PlantState neighbourPlant = neighbourPot != null ? neighbourPot.Plant : null;
+
+                if (neighbourPlant == null) continue;
+
+                // send a debuff spec copy to the neighbour
+                DebuffSpec spec = new DebuffSpec {
+                    enabled = true,
+                    scanInterval = debuff.scanInterval,
+                    amountPerTick = debuff.amountPerTick,
+                    duration = debuff.duration,
+                    tickInterval = debuff.tickInterval,
+                    transferStolenWaterToSelf = debuff.transferStolenWaterToSelf,
+                    mode = debuff.mode
+                };
+
+                neighbourPlant.ApplyDebuffFromNeighbour(spec, this);
+            }
+        }
+    }
+
+    // Called on the target plant to receive a debuff from a neighbour
+    public void ApplyDebuffFromNeighbour(DebuffSpec spec, PlantState source)
+    {
+        Coroutine c = StartCoroutine(ReceiveDebuff(spec, source));
+        activeDebuffCoroutines.Add(c);
+    }
+
+    // ReceiveDebuff applies the effect to this plant for spec.duration
+    private IEnumerator ReceiveDebuff(DebuffSpec spec, PlantState source)
+    {
+        float elapsed = 0f;
+        float tick = Mathf.Max(0.01f, spec.tickInterval);
+
+        // accumulate non-drain penalties immediately
+        if (spec.mode == DebuffSpec.Mode.ReduceLight)
+            lightDebuffAmount += spec.amountPerTick;
+        else if (spec.mode == DebuffSpec.Mode.ReduceSoilQuality)
+            soilQualityPenalty += Mathf.RoundToInt(spec.amountPerTick);
+
+        while (elapsed < spec.duration)
+        {
+            if (spec.mode == DebuffSpec.Mode.DrainWater)
+            {
+                if (ownerPot != null)
+                {
+                    float available = ownerPot.WaterLevel;
+                    float steal = Mathf.Min(available, spec.amountPerTick);
+                    if (steal > 0f)
+                    {
+                        ownerPot.waterLevel = Mathf.Max(0f, ownerPot.WaterLevel - steal);
+
+                        if (spec.transferStolenWaterToSelf && source != null && source.ownerPot != null)
+                        {
+                            source.ownerPot.waterLevel += steal;
+                        }
+                    }
+                }
+            }
+
+            yield return new WaitForSeconds(tick);
+            elapsed += tick;
+        }
+
+        // remove accumulated penalties when debuff ends
+        if (spec.mode == DebuffSpec.Mode.ReduceLight)
+            lightDebuffAmount = Mathf.Max(0f, lightDebuffAmount - spec.amountPerTick);
+        else if (spec.mode == DebuffSpec.Mode.ReduceSoilQuality)
+            soilQualityPenalty = Mathf.Max(0, soilQualityPenalty - Mathf.RoundToInt(spec.amountPerTick));
+
+        // cleanup
+        activeDebuffCoroutines.RemoveAll(x => x == null);
     }
 
     // ---------------------------------------------------------------
@@ -219,5 +360,12 @@ public class PlantState : MonoBehaviour
         SoilPatch patch = other.GetComponent<SoilPatch>();
         if (patch == null) return;
         isOnSoil = false;
+    }
+
+    private void OnDestroy()
+    {
+        if (scannerCoroutine != null) StopCoroutine(scannerCoroutine);
+        foreach (var c in activeDebuffCoroutines) if (c != null) StopCoroutine(c);
+        activeDebuffCoroutines.Clear();
     }
 }

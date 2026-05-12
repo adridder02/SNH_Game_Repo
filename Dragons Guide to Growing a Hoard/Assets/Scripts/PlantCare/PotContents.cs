@@ -57,10 +57,14 @@ public class PotContents : MonoBehaviour
     public float baseDrainRate = 0.3f;
     public float sunDrainMultiplier = 0.4f;
 
+    [Header("Runtime")]
+    [Tooltip("Current water level used by PlantState debuffs and scoring")]
+    public float waterLevel = 0f;
+
     // ---------------------------------------------------------------
     [Header("Runtime")]
     [SerializeField] private SoilKind currentSoil = SoilKind.Loam;
-    [SerializeField] private float waterLevel = 0f;
+
     [SerializeField] private bool hasSoil = false;
     [SerializeField] private bool hasPlant = false;
 
@@ -74,6 +78,33 @@ public class PotContents : MonoBehaviour
 
     // Live reference to the spawned soil mesh inside the pot.
     private GameObject currentSoilObject;
+
+    // These fields are set by PlacementSystem when a pot is placed/moved
+    [HideInInspector] public Vector3Int GridOrigin;
+    [HideInInspector] public GridData GridData;
+
+    // Runtime state
+    // Called after placement or when a plant is added to this pot
+    public void CachePlantReference()
+    {
+        if (Plant == null)
+            Plant = GetComponentInChildren<PlantState>();
+    }
+
+    // Optional helper to clear grid references when removed
+    public void ClearGridInfo()
+    {
+        GridData = null;
+        GridOrigin = new Vector3Int(0, 0, 0);
+    }
+
+    // Example helper used by PlantState.SetPotContents
+    public void NotifyPlantSet()
+    {
+        CachePlantReference();
+        if (Plant != null)
+            Plant.SetPotContents(this);
+    }
 
     // ---------------------------------------------------------------
     // Awake — pot starts completely empty.

@@ -365,6 +365,18 @@ public class PlacementSystem : MonoBehaviour
                 data.potPrefab.transform.rotation
             );
 
+        //! --- Insertation
+        PotContents pc = placed.GetComponent<PotContents>();
+        if (pc != null)
+        {
+            pc.GridOrigin = key;        // key is the Vector3Int placement origin
+            pc.GridData = gridData;     // PlacementSystem's gridData instance
+            pc.CachePlantReference();
+            if (pc.Plant != null)
+                pc.Plant.SetPotContents(pc);
+        }
+        //!
+
         gridData.AddPlacement(key, data.size, placed);
         gridVisual.MarkOccupied(cell, data.size);
 
@@ -376,8 +388,14 @@ public class PlacementSystem : MonoBehaviour
         PlacementData data =
             gridData.GetPlacement(ToGridVec3(cell));
 
+        PotContents pc = data.PlacedObject.GetComponent<PotContents>();
+
         if (data == null)
             return;
+
+       
+        if (pc != null)
+            pc.ClearGridInfo();
 
         Vector2Int origin =
             new Vector2Int(data.Origin.x, data.Origin.z);
@@ -427,9 +445,24 @@ public class PlacementSystem : MonoBehaviour
 
             movingObject.SetActive(true);
 
-            PotContents pot = movingObject.GetComponent<PotContents>();
-            if (pot != null && pot.HasPlant && pot.Plant != null)
-                pot.Plant.SetUIVisible(true);
+            //PotContents pot = movingObject.GetComponent<PotContents>();
+            //if (pot != null && pot.HasPlant && pot.Plant != null)
+                //pot.Plant.SetUIVisible(true);
+
+            //! --- Insertation
+            PotContents pc = movingObject.GetComponent<PotContents>();
+            if (pc != null)
+            {
+                pc.GridOrigin = key;
+                pc.GridData = gridData;
+                pc.CachePlantReference();
+                if (pc.Plant != null)
+                {    
+                     pc.Plant.SetPotContents(pc);
+                     pc.Plant.SetUIVisible(true);
+                }
+            }
+            //!
 
             gridData.AddPlacement(
                 key,
