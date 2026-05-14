@@ -42,6 +42,8 @@ using System.Collections.Generic;
 /// </summary>
 public class ZoneHealth : MonoBehaviour
 {
+    public MiasmaController miasma; // used with zones zonehealth influnces the retraction and expantion.
+    
     // -------------------------------------------------------------------------
     // Inspector fields
     // -------------------------------------------------------------------------
@@ -82,7 +84,7 @@ public class ZoneHealth : MonoBehaviour
     // -------------------------------------------------------------------------
 
     /// <summary>Average happiness score of all plants in this zone (0–100).</summary>
-    public float ZoneHappiness { get; private set; } = 100f;
+    public float ZoneHappiness { get; private set; } = 0f;
 
     /// <summary>Number of plants currently detected in this zone.</summary>
     public int PlantCount { get; private set; } = 0;
@@ -115,6 +117,7 @@ public class ZoneHealth : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log(zoneName);
         _boxCollider = GetComponent<BoxCollider>();
 
         if (_boxCollider == null)
@@ -163,7 +166,7 @@ public class ZoneHealth : MonoBehaviour
         if (PlantCount == 0)
         {
             // Empty zone → treat as fully happy (nothing to neglect)
-            ZoneHappiness = 100f;
+            ZoneHappiness = 0f;
         }
         else
         {

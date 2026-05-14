@@ -1,3 +1,10 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:ProgressBar value="100" title="Miasma" name="MiasmaProg" style="-unity-background-image-tint-color: rgb(231, 231, 231); background-color: rgb(0, 255, 0);"/>
+    <ui:VisualElement>
+        <ui:ProgressBar name="MiasmaProg" title="Miasma Intensity" value="100" highValue="100"/>
+        <ui:Button text="Grow Miasma" clickable="OnGrowMiasmaButton" style="width: 112px;"/>
+        <ui:Button text="Reset Miasma" clickable="OnResetMiasmaButton" style="width: 114px;"/>
+        <ui:Label name="IntensityLabel" text="MIASMA INTENSITY: EASY"/>
+        <ui:Label name="PlantsAffected" text="PLANTS AFFECTED: 0"/>
+        <ui:Label name="NextIncrease" text="NEXT INCREASE: --"/>
+    </ui:VisualElement>
 </ui:UXML>

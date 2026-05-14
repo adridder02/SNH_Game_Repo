@@ -97,6 +97,15 @@ public class PlantState : MonoBehaviour
     public DebuffSpec debuff = new DebuffSpec();
 
     // ---------------------------------------------------------------
+    // MIASMA EFFECTS
+    // ---------------------------------------------------------------
+    [Header("Miasma Effects")]
+    [SerializeField] private float miasmaLightPenalty = 0f;
+    [SerializeField] private int miasmaSoilPenalty = 0;
+    [SerializeField] private float miasmaWaterDrainMultiplier = 1f;
+    [SerializeField] private bool isMiasmaDebuffActive = false;
+
+    // ---------------------------------------------------------------
     // RUNTIME DEBUG
     // ---------------------------------------------------------------
     [Header("Runtime")]
@@ -117,12 +126,13 @@ public class PlantState : MonoBehaviour
     public int LightScore => lightScore;
     public int WaterScore => waterScore;
     public LightSensor LightSensor => lightSensor;
+    public float GetWaterDrainMultiplier() => isMiasmaDebuffActive ? miasmaWaterDrainMultiplier : 1f;
 
     private PotContents ownerPot;
 
     // Debuff runtime state
-    private float lightDebuffAmount = 0f; // subtract from measured light (0..1)
-    private int soilQualityPenalty = 0;   // subtract from soil score (integer)
+    private float lightDebuffAmount = 0f;
+    private int soilQualityPenalty = 0;
     private Coroutine scannerCoroutine;
     private List<Coroutine> activeDebuffCoroutines = new List<Coroutine>();
 
@@ -194,6 +204,32 @@ public class PlantState : MonoBehaviour
     }
 
     // ---------------------------------------------------------------
+    // MIASMA METHODS
+    // ---------------------------------------------------------------
+    public void ApplyMiasmaDebuff(float lightPenalty, int soilPenalty, float waterDrainMultiplier)
+    {
+        // Accumulate penalties over time (permanent until soil replacement)
+        miasmaLightPenalty = Mathf.Clamp01(miasmaLightPenalty + lightPenalty);
+        miasmaSoilPenalty += soilPenalty;
+        miasmaWaterDrainMultiplier = Mathf.Max(1f, waterDrainMultiplier);
+        isMiasmaDebuffActive = true;
+        
+        // Clamp soil penalty to reasonable max
+        miasmaSoilPenalty = Mathf.Min(miasmaSoilPenalty, 5);
+        
+        Debug.Log($"[PlantState] Miasma debuff - Light: -{miasmaLightPenalty}, Soil: -{miasmaSoilPenalty}, Water: x{miasmaWaterDrainMultiplier}");
+    }
+
+    public void ResetMiasmaEffects()
+    {
+        miasmaLightPenalty = 0f;
+        miasmaSoilPenalty = 0;
+        miasmaWaterDrainMultiplier = 1f;
+        isMiasmaDebuffActive = false;
+        Debug.Log($"[PlantState] Miasma effects reset for {gameObject.name}");
+    }
+
+    // ---------------------------------------------------------------
     public void SetUIVisible(bool visible)
     {
         PlantUI ui = GetComponent<PlantUI>();
@@ -206,7 +242,7 @@ public class PlantState : MonoBehaviour
         soilScore = CalculateSoilScore();
 
         float lightLevel = lightSensor != null ? lightSensor.NormalisedIntensity : 0f;
-        float adjustedLight = Mathf.Clamp01(lightLevel - lightDebuffAmount);
+        float adjustedLight = Mathf.Clamp01(lightLevel - lightDebuffAmount - miasmaLightPenalty);
         lightScore = ScoreValue(adjustedLight, lightThresholdHigh, lightThresholdLow);
 
         float waterLevel = ownerPot != null ? ownerPot.WaterLevel : 0f;
@@ -227,7 +263,9 @@ public class PlantState : MonoBehaviour
         else if (currentSoil == neutralSoil) baseScore = 1;
         else baseScore = 0;
 
-        int final = Mathf.Max(0, baseScore - soilQualityPenalty);
+        // Apply miasma permanent soil penalty
+        int totalPenalty = soilQualityPenalty + miasmaSoilPenalty;
+        int final = Mathf.Max(0, baseScore - totalPenalty);
         return final;
     }
 
@@ -256,7 +294,6 @@ public class PlantState : MonoBehaviour
         {
             yield return new WaitForSeconds(Mathf.Max(0.1f, debuff.scanInterval));
 
-            // guard in case pot was removed
             if (ownerPot == null || ownerPot.GridData == null) yield break;
 
             Vector3Int origin = ownerPot.GridOrigin;
@@ -275,7 +312,6 @@ public class PlantState : MonoBehaviour
 
                 if (neighbourPlant == null) continue;
 
-                // send a debuff spec copy to the neighbour
                 DebuffSpec spec = new DebuffSpec {
                     enabled = true,
                     scanInterval = debuff.scanInterval,
@@ -291,20 +327,17 @@ public class PlantState : MonoBehaviour
         }
     }
 
-    // Called on the target plant to receive a debuff from a neighbour
     public void ApplyDebuffFromNeighbour(DebuffSpec spec, PlantState source)
     {
         Coroutine c = StartCoroutine(ReceiveDebuff(spec, source));
         activeDebuffCoroutines.Add(c);
     }
 
-    // ReceiveDebuff applies the effect to this plant for spec.duration
     private IEnumerator ReceiveDebuff(DebuffSpec spec, PlantState source)
     {
         float elapsed = 0f;
         float tick = Mathf.Max(0.01f, spec.tickInterval);
 
-        // accumulate non-drain penalties immediately
         if (spec.mode == DebuffSpec.Mode.ReduceLight)
             lightDebuffAmount += spec.amountPerTick;
         else if (spec.mode == DebuffSpec.Mode.ReduceSoilQuality)
@@ -334,13 +367,11 @@ public class PlantState : MonoBehaviour
             elapsed += tick;
         }
 
-        // remove accumulated penalties when debuff ends
         if (spec.mode == DebuffSpec.Mode.ReduceLight)
             lightDebuffAmount = Mathf.Max(0f, lightDebuffAmount - spec.amountPerTick);
         else if (spec.mode == DebuffSpec.Mode.ReduceSoilQuality)
             soilQualityPenalty = Mathf.Max(0, soilQualityPenalty - Mathf.RoundToInt(spec.amountPerTick));
 
-        // cleanup
         activeDebuffCoroutines.RemoveAll(x => x == null);
     }
 

@@ -15,9 +15,9 @@ using UnityEngine;
 //     spawned at the plantAnchor. Its Renderer material is swapped
 //     to the corresponding soil material so each type looks distinct.
 //   • potSize uses PlantSize — the single shared size enum defined
-//     in PlantState.cs. Having one enum eliminates the type-mismatch
-//     compiler error that occurred when PotSize and PlantSize were
-//     two separate enums with the same values.
+//     in PlantState.cs.
+//   • Miasma integration: water drain rate is multiplied by
+//     miasma's water drain multiplier when plant is affected.
 // =============================================================
 
 [RequireComponent(typeof(Collider))]
@@ -83,7 +83,16 @@ public class PotContents : MonoBehaviour
     [HideInInspector] public Vector3Int GridOrigin;
     [HideInInspector] public GridData GridData;
 
-    // Runtime state
+    // ---------------------------------------------------------------
+    // Awake — pot starts completely empty.
+    // ---------------------------------------------------------------
+    private void Awake()
+    {
+        waterLevel = 0f;
+        hasSoil = false;
+        hasPlant = false;
+    }
+
     // Called after placement or when a plant is added to this pot
     public void CachePlantReference()
     {
@@ -107,16 +116,6 @@ public class PotContents : MonoBehaviour
     }
 
     // ---------------------------------------------------------------
-    // Awake — pot starts completely empty.
-    // ---------------------------------------------------------------
-    private void Awake()
-    {
-        waterLevel = 0f;
-        hasSoil = false;
-        hasPlant = false;
-    }
-
-    // ---------------------------------------------------------------
     // Initialise — called by placement systems that pre-load a soil type.
     // ---------------------------------------------------------------
     public void Initialise(SoilKind soil)
@@ -129,6 +128,7 @@ public class PotContents : MonoBehaviour
 
     // ---------------------------------------------------------------
     // SetSoil — called from PotInteraction when the player picks a soil.
+    // Also resets miasma effects when soil is replaced.
     // ---------------------------------------------------------------
     public void SetSoil(SoilKind kind)
     {
@@ -136,8 +136,14 @@ public class PotContents : MonoBehaviour
         hasSoil = true;
         SpawnSoilPrefab(kind);
 
+        // Reset miasma effects when soil is replaced
         if (Plant != null)
+        {
+            Plant.ResetMiasmaEffects();
             Plant.OnSoilChanged(currentSoil);
+        }
+        
+        Debug.Log($"[PotContents] Soil set to {kind} - Miasma effects reset");
     }
 
     // ---------------------------------------------------------------
@@ -197,15 +203,11 @@ public class PotContents : MonoBehaviour
 
     // ---------------------------------------------------------------
     // AddPlant — returns false if already planted or size mismatches.
-    //
-    // Both candidate.plantSize and potSize are PlantSize values, so
-    // the != comparison is now valid (no cross-enum comparison).
     // ---------------------------------------------------------------
     public bool AddPlant(GameObject prefab)
     {
         if (hasPlant) return false;
 
-        // Size check — both sides are PlantSize, comparison is legal.
         PlantState candidate = prefab.GetComponent<PlantState>();
         if (candidate != null && candidate.plantSize != potSize)
         {
@@ -217,8 +219,6 @@ public class PotContents : MonoBehaviour
 
         Transform anchor = plantAnchor != null ? plantAnchor : transform;
 
-        // Instantiate without a parent so world scale is applied correctly,
-        // then re-parent while keeping the world transform.
         GameObject go = Object.Instantiate(prefab, anchor.position, anchor.rotation);
         go.transform.SetParent(anchor, worldPositionStays: true);
 
@@ -256,16 +256,31 @@ public class PotContents : MonoBehaviour
 
     // ---------------------------------------------------------------
     // Update — water only drains while a plant is in the pot.
+    // Now includes miasma water drain multiplier.
     // ---------------------------------------------------------------
     private void Update()
     {
         if (!hasPlant || waterLevel <= 0f) return;
 
         float drain = baseDrainRate;
+        
+        // Add sun-based drain
         if (Plant != null && Plant.LightSensor != null)
             drain += Plant.LightSensor.NormalisedIntensity * sunDrainMultiplier;
+        
+        // Apply miasma water drain multiplier if plant is affected
+        if (Plant != null)
+            drain *= Plant.GetWaterDrainMultiplier();
 
         waterLevel = Mathf.Max(0f, waterLevel - drain * Time.deltaTime);
+    }
+
+    // ---------------------------------------------------------------
+    // ReplaceSoil — public method to manually replace soil and reset miasma
+    // ---------------------------------------------------------------
+    public void ReplaceSoil(SoilKind newSoil)
+    {
+        SetSoil(newSoil);
     }
 
 #if UNITY_EDITOR
