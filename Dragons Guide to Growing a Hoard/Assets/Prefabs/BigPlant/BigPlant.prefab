@@ -162,6 +162,14 @@ MonoBehaviour:
   revivedVisual: {fileID: 0}
   intermediateVisual: {fileID: 0}
   deadVisual: {fileID: 0}
+  debuff:
+    enabled: 1
+    scanInterval: 2
+    amountPerTick: 0.5
+    duration: 5
+    tickInterval: 1
+    transferStolenWaterToSelf: 1
+    mode: 2
   currentState: 2
   currentSoil: 2
   isOnSoil: 0

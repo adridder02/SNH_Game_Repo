@@ -33,6 +33,15 @@ public class PlayerController : MonoBehaviour
 
     [Header("Input")]
     [SerializeField] private InputActionAsset inputActions;
+    
+    [SerializeField] private Animator animator;
+
+    // Animator hashes — faster than string lookups
+    private static readonly int HashSpeed      = Animator.StringToHash("Speed");
+    private static readonly int HashIsGrounded = Animator.StringToHash("IsGrounded");
+    private static readonly int HashIsFlying   = Animator.StringToHash("IsFlying");
+    private static readonly int HashJump       = Animator.StringToHash("Jump");
+        
 
     // ──────────────────────────────────────────────
     //  Private state
@@ -183,8 +192,23 @@ public class PlayerController : MonoBehaviour
                 UpdateFlyingLocomotion();
                 break;
         }
+
+        UpdateAnimator();
     }
 
+    private void UpdateAnimator()
+    {
+        if (animator == null) return;
+
+        // Use moveInput directly — responds to your keybindings instantly
+        float inputMagnitude = moveInput.magnitude; // 0 = idle, 1 = walking
+
+        float normalised = inputMagnitude * (IsSprinting ? sprintMultiplier : 1f);
+
+        animator.SetFloat(HashSpeed, normalised, 0.1f, Time.deltaTime);
+        animator.SetBool(HashIsGrounded, controller.isGrounded);
+        animator.SetBool(HashIsFlying, locomotionState == LocomotionState.Flying);
+    }
     // ──────────────────────────────────────────────
     //  Normal locomotion (walk + gravity)
     // ──────────────────────────────────────────────
@@ -208,6 +232,7 @@ public class PlayerController : MonoBehaviour
     private void Jump()
     {
         velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        animator?.SetTrigger(HashJump); 
     }
 
     // ──────────────────────────────────────────────
@@ -219,6 +244,7 @@ public class PlayerController : MonoBehaviour
         velocity = Vector3.zero;
         flyGroundGraceTimer = flyGroundGracePeriod; // ignore isGrounded briefly
         Debug.Log("[PlayerController] Fly mode ON");
+        animator?.SetBool(HashIsFlying, true);
     }
 
     private void UpdateFlyingLocomotion()
@@ -295,6 +321,7 @@ public class PlayerController : MonoBehaviour
         velocity = Vector3.zero;
         flyAscendHeld = false;
         Debug.Log("[PlayerController] Fly mode OFF – landed");
+        animator?.SetBool(HashIsFlying, false);
     }
 
     // ──────────────────────────────────────────────
