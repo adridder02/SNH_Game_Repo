@@ -34,19 +34,20 @@ public class PlayerController : MonoBehaviour
     [Header("Input")]
     [SerializeField] private InputActionAsset inputActions;
     
-    [SerializeField] private Animator animator;
+   /*[SerializeField] private Animator animator;
 
     // Animator hashes — faster than string lookups
     private static readonly int HashSpeed      = Animator.StringToHash("Speed");
     private static readonly int HashIsGrounded = Animator.StringToHash("IsGrounded");
     private static readonly int HashIsFlying   = Animator.StringToHash("IsFlying");
     private static readonly int HashJump       = Animator.StringToHash("Jump");
-        
+    */
 
     // ──────────────────────────────────────────────
     //  Private state
     // ──────────────────────────────────────────────
     private enum LocomotionState { Grounded, Jumping, Flying }
+    private playerAnimation playerAnim;
 
     private InputActionMap gameplayMap;
     private InputAction flyAction;   // Existing "Fly" action (Space)
@@ -93,6 +94,11 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         controller = GetComponent<CharacterController>();
+        playerAnim = GetComponent<playerAnimation>(); 
+        if (playerAnim == null)
+        {
+            Debug.LogError("playerAnimation component is missing from " + gameObject.name);
+        }
     }
 
     private void OnEnable()
@@ -160,14 +166,15 @@ public class PlayerController : MonoBehaviour
                 if (Time.time - lastSpacePressTime <= doubleTapWindow)
                     EnterFlyMode();
                 else
-                    lastSpacePressTime = Time.time; // reset window, no double-jump
+                    lastSpacePressTime = Time.time;
                 break;
 
             case LocomotionState.Flying:
                 flyAscendHeld = true;
+                // REMOVED: playerAnim.fly(); // Don't call this every frame!
                 break;
         }
-    }
+}
 
     private void OnSpaceReleased(InputAction.CallbackContext ctx)
     {
@@ -198,17 +205,61 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateAnimator()
     {
-        if (animator == null) return;
+        if (playerAnim == null) return;
 
-        // Use moveInput directly — responds to your keybindings instantly
-        float inputMagnitude = moveInput.magnitude; // 0 = idle, 1 = walking
+        // Grounded locomotion
+        if (locomotionState == LocomotionState.Grounded)
+        {
+            float inputMagnitude = moveInput.magnitude;
+            bool isSprinting = IsSprinting;
 
-        float normalised = inputMagnitude * (IsSprinting ? sprintMultiplier : 1f);
+            if (inputMagnitude > 0.8f && isSprinting)
+            {
+                playerAnim.setRunning();
+            }
+            else if (inputMagnitude > 0.1f)
+            {
+                playerAnim.setWalking();
+            }
+            else
+            {
+                playerAnim.setIdel();
+            }
+        }
 
-        animator.SetFloat(HashSpeed, normalised, 0.1f, Time.deltaTime);
-        animator.SetBool(HashIsGrounded, controller.isGrounded);
-        animator.SetBool(HashIsFlying, locomotionState == LocomotionState.Flying);
+        // Flying locomotion
+        if (locomotionState == LocomotionState.Flying)
+        {
+            float inputMagnitude = moveInput.magnitude;
+
+            if (inputMagnitude > 0.1f || flyAscendHeld ||
+                (Keyboard.current != null &&
+                (Keyboard.current.leftCtrlKey.isPressed || Keyboard.current.rightCtrlKey.isPressed)))
+            {
+                // Player is actively moving in the air
+                playerAnim.setWalking();
+
+            }
+            else
+            {
+                // Player is idle in the air
+                playerAnim.setIdel();
+            }
+        }
+
+        // Landing transition
+        if (locomotionState != LocomotionState.Flying && controller.isGrounded)
+        {
+            if (!wasGrounded)
+            {
+                playerAnim.setJumpFalse();
+                playerAnim.notInAir();
+            }
+        }
+
+        wasGrounded = controller.isGrounded;
     }
+    private bool wasGrounded = true;
     // ──────────────────────────────────────────────
     //  Normal locomotion (walk + gravity)
     // ──────────────────────────────────────────────
@@ -232,7 +283,8 @@ public class PlayerController : MonoBehaviour
     private void Jump()
     {
         velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        animator?.SetTrigger(HashJump); 
+        //animator?.SetTrigger(HashJump); 
+        playerAnim.jump();
     }
 
     // ──────────────────────────────────────────────
@@ -244,7 +296,8 @@ public class PlayerController : MonoBehaviour
         velocity = Vector3.zero;
         flyGroundGraceTimer = flyGroundGracePeriod; // ignore isGrounded briefly
         Debug.Log("[PlayerController] Fly mode ON");
-        animator?.SetBool(HashIsFlying, true);
+        //animator?.SetBool(HashIsFlying, true);
+        playerAnim.fly();
     }
 
     private void UpdateFlyingLocomotion()
@@ -298,6 +351,7 @@ public class PlayerController : MonoBehaviour
             // Grounded → exit fly mode (only checked after grace period)
             if (controller.isGrounded)
             {
+                //playerAnim.setJumpFalse();
                 ExitFlyMode();
                 return;
             }
@@ -321,7 +375,9 @@ public class PlayerController : MonoBehaviour
         velocity = Vector3.zero;
         flyAscendHeld = false;
         Debug.Log("[PlayerController] Fly mode OFF – landed");
-        animator?.SetBool(HashIsFlying, false);
+        //animator?.SetBool(HashIsFlying, false);
+        playerAnim.notInAir();
+
     }
 
     // ──────────────────────────────────────────────
