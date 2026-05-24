@@ -151,14 +151,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDummyValues: 0
-  dummySunlight: 3
-  dummySoil: 4
-  dummyWater: 2
+  dummyState: 1
+  useManualHeight: 0
+  manualHeightOffset: 1
   hoverGap: 4
   targetScreenHeight: 0.15
-  baseCanvasSize: {x: 2.6, y: 2.9}
+  pipSize: 22
+  pipGap: 7
+  pipPadding: 1
   plantState: {fileID: 0}
-  lightSensor: {fileID: 0}
 --- !u!114 &1170168595591519494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,6 +173,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plantSize: 0
+  potPlacementOffset: 0.8
+  potPlacementRotation: {x: 90, y: 0, z: 0}
   preferredSoil: 1
   neutralSoil: 0
   lightThresholdHigh: 0.6

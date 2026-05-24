@@ -31,6 +31,15 @@ public class PlantState : MonoBehaviour
     [Tooltip("Physical size of this plant. Must match the pot's PlantSize (potSize) for planting to succeed.")]
     public PlantSize plantSize = PlantSize.Medium;
 
+    [Header("Pot Placement")]
+    [Tooltip("Per-plant vertical fine-tune when placed in a pot. Stacks on top of the pot's plantSurfaceOffset. " +
+             "Positive = higher, negative = lower.")]
+    public float potPlacementOffset = 0f;
+
+    [Tooltip("Euler rotation applied when placed in a pot. Corrects plants that appear rotated " +
+             "incorrectly after planting. Example: (0, 90, 0) rotates 90 degrees around Y.")]
+    public Vector3 potPlacementRotation = Vector3.zero;
+
     // ---------------------------------------------------------------
     // INSPECTOR — Soil Preference
     // ---------------------------------------------------------------
@@ -213,10 +222,10 @@ public class PlantState : MonoBehaviour
         miasmaSoilPenalty += soilPenalty;
         miasmaWaterDrainMultiplier = Mathf.Max(1f, waterDrainMultiplier);
         isMiasmaDebuffActive = true;
-        
+
         // Clamp soil penalty to reasonable max
         miasmaSoilPenalty = Mathf.Min(miasmaSoilPenalty, 5);
-        
+
         Debug.Log($"[PlantState] Miasma debuff - Light: -{miasmaLightPenalty}, Soil: -{miasmaSoilPenalty}, Water: x{miasmaWaterDrainMultiplier}");
     }
 
@@ -312,7 +321,8 @@ public class PlantState : MonoBehaviour
 
                 if (neighbourPlant == null) continue;
 
-                DebuffSpec spec = new DebuffSpec {
+                DebuffSpec spec = new DebuffSpec
+                {
                     enabled = true,
                     scanInterval = debuff.scanInterval,
                     amountPerTick = debuff.amountPerTick,

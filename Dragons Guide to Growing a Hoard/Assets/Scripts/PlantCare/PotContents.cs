@@ -27,8 +27,15 @@ public class PotContents : MonoBehaviour
     [Header("Setup")]
     public Transform plantAnchor;
 
-    [Tooltip("The physical size of this pot. Only plants with the matching PlantSize can be planted here.")]
+    [Tooltip("When true this pot is a permanent world object. It cannot be placed or moved via the grid " +
+             "system, accepts plants of any size, and is never registered with PlacementSystem.")]
+    public bool isStaticPot = false;
+
+    [Tooltip("The physical size of this pot. Ignored for static pots — they accept any plant size.")]
     public PlantSize potSize = PlantSize.Medium;
+
+    [Tooltip("Extra upward nudge applied after surface-snapping. Increase if the plant still clips; decrease if it floats above the soil.")]
+    public float plantSurfaceOffset = 0f;
 
     // ---------------------------------------------------------------
     [Header("Soil Prefabs")]
@@ -41,6 +48,9 @@ public class PotContents : MonoBehaviour
     [Tooltip("Prefab spawned inside the pot when Sandy soil is chosen.")]
     public GameObject sandySoilPrefab;
 
+    [Tooltip("Prefab spawned inside the pot when Water soil is chosen (e.g. a water-surface mesh).")]
+    public GameObject waterSoilPrefab;
+
     [Header("Soil Materials")]
     [Tooltip("Material applied to the clay soil prefab's Renderer. Leave null to keep prefab default.")]
     public Material clayMaterial;
@@ -50,6 +60,9 @@ public class PotContents : MonoBehaviour
 
     [Tooltip("Material applied to the sandy soil prefab's Renderer. Leave null to keep prefab default.")]
     public Material sandyMaterial;
+
+    [Tooltip("Material applied to the water soil prefab's Renderer. Leave null to keep prefab default.")]
+    public Material waterMaterial;
 
     // ---------------------------------------------------------------
     [Header("Water")]
@@ -73,6 +86,7 @@ public class PotContents : MonoBehaviour
     public bool HasSoil => hasSoil;
     public bool HasPlant => hasPlant;
     public PlantSize PotSize => potSize;
+    public bool IsStatic => isStaticPot;
 
     public PlantState Plant { get; private set; }
 
@@ -122,7 +136,7 @@ public class PotContents : MonoBehaviour
     {
         currentSoil = soil;
         hasSoil = true;
-        waterLevel = 0f;
+        waterLevel = (soil == SoilKind.Water) ? plantWaterMax : 0f;
         SpawnSoilPrefab(soil);
     }
 
@@ -134,6 +148,11 @@ public class PotContents : MonoBehaviour
     {
         currentSoil = kind;
         hasSoil = true;
+
+        // Water soil is always saturated — fill immediately on switch.
+        if (kind == SoilKind.Water)
+            waterLevel = plantWaterMax;
+
         SpawnSoilPrefab(kind);
 
         // Reset miasma effects when soil is replaced
@@ -142,7 +161,7 @@ public class PotContents : MonoBehaviour
             Plant.ResetMiasmaEffects();
             Plant.OnSoilChanged(currentSoil);
         }
-        
+
         Debug.Log($"[PotContents] Soil set to {kind} - Miasma effects reset");
     }
 
@@ -164,6 +183,7 @@ public class PotContents : MonoBehaviour
             SoilKind.Clay => claySoilPrefab,
             SoilKind.Loam => loamSoilPrefab,
             SoilKind.Sandy => sandySoilPrefab,
+            SoilKind.Water => waterSoilPrefab,
             _ => null
         };
 
@@ -172,6 +192,7 @@ public class PotContents : MonoBehaviour
             SoilKind.Clay => clayMaterial,
             SoilKind.Loam => loamMaterial,
             SoilKind.Sandy => sandyMaterial,
+            SoilKind.Water => waterMaterial,
             _ => null
         };
 
@@ -209,7 +230,9 @@ public class PotContents : MonoBehaviour
         if (hasPlant) return false;
 
         PlantState candidate = prefab.GetComponent<PlantState>();
-        if (candidate != null && candidate.plantSize != potSize)
+
+        // Static pots accept any plant size; only enforce size for normal grid pots.
+        if (!isStaticPot && candidate != null && candidate.plantSize != potSize)
         {
             Debug.LogWarning(
                 $"[PotContents] Size mismatch — plant is {candidate.plantSize} " +
@@ -219,8 +242,8 @@ public class PotContents : MonoBehaviour
 
         Transform anchor = plantAnchor != null ? plantAnchor : transform;
 
+        // Spawn without a parent first so world-space Renderer bounds are accurate.
         GameObject go = Object.Instantiate(prefab, anchor.position, anchor.rotation);
-        go.transform.SetParent(anchor, worldPositionStays: true);
 
         Plant = go.GetComponent<PlantState>();
 
@@ -230,6 +253,40 @@ public class PotContents : MonoBehaviour
             Debug.LogWarning("[PotContents] Plant prefab missing PlantState.");
             return false;
         }
+
+        // Per-plant placement overrides (set on PlantState in the Inspector).
+        float perPlantOffset = Plant.potPlacementOffset;
+        Vector3 perPlantEuler = Plant.potPlacementRotation;
+
+        // Apply the per-plant rotation BEFORE measuring bounds so the
+        // renderer extents reflect the actual in-pot orientation.
+        go.transform.rotation = anchor.rotation * Quaternion.Euler(perPlantEuler);
+
+        // Surface-snap: lift the plant so its lowest renderer bound sits flush
+        // with the anchor's Y, preventing it from clipping into the soil.
+        // If the prefab has no Renderers the pivot stays at the anchor as-is.
+        float lowestY = float.MaxValue;
+        foreach (Renderer rend in go.GetComponentsInChildren<Renderer>())
+        {
+            if (rend.bounds.min.y < lowestY)
+                lowestY = rend.bounds.min.y;
+        }
+
+        // Combined offset: pot-wide baseline + per-plant fine-tune.
+        float totalOffset = plantSurfaceOffset + perPlantOffset;
+
+        if (lowestY < float.MaxValue)
+        {
+            float snapOffset = anchor.position.y - lowestY + totalOffset;
+            go.transform.position += new Vector3(0f, snapOffset, 0f);
+        }
+        else if (totalOffset != 0f)
+        {
+            go.transform.position += new Vector3(0f, totalOffset, 0f);
+        }
+
+        // Parent after snapping so the corrected world position is preserved.
+        go.transform.SetParent(anchor, worldPositionStays: true);
 
         hasPlant = true;
         Plant.SetPotContents(this);
@@ -262,12 +319,19 @@ public class PotContents : MonoBehaviour
     {
         if (!hasPlant || waterLevel <= 0f) return;
 
+        // Water soil keeps the medium permanently saturated — no draining.
+        if (currentSoil == SoilKind.Water)
+        {
+            waterLevel = plantWaterMax;
+            return;
+        }
+
         float drain = baseDrainRate;
-        
+
         // Add sun-based drain
         if (Plant != null && Plant.LightSensor != null)
             drain += Plant.LightSensor.NormalisedIntensity * sunDrainMultiplier;
-        
+
         // Apply miasma water drain multiplier if plant is affected
         if (Plant != null)
             drain *= Plant.GetWaterDrainMultiplier();

@@ -68,10 +68,10 @@ public class PotInteraction : MonoBehaviour
     [Header("UI — Interaction Prompt")]
     [Tooltip("Display '[E] Interact' prompt above pots when in range.")]
     public bool showInteractPrompt = true;
-    
+
     [Tooltip("Height offset above the pot for the interact prompt.")]
     public float promptHeightOffset = 1.5f;
-    
+
     [Tooltip("World-space size of the interact prompt.")]
     public Vector2 promptWorldSize = new Vector2(0.6f, 0.2f);
 
@@ -325,9 +325,11 @@ public class PotInteraction : MonoBehaviour
             {
                 if (plantPrefabs.Count > 0)
                 {
-                    // Show which size this pot accepts so the player knows
-                    // before clicking.
-                    actions.Add(($"Add Plant:  (pot size: {pot.PotSize})", null, false));
+                    // For static pots every plant fits; for grid pots show the size constraint.
+                    string potSizeHeader = pot.IsStatic
+                        ? "Add Plant:  (accepts any size)"
+                        : $"Add Plant:  (pot size: {pot.PotSize})";
+                    actions.Add((potSizeHeader, null, false));
 
                     foreach (GameObject prefab in plantPrefabs)
                     {
@@ -335,14 +337,12 @@ public class PotInteraction : MonoBehaviour
                         PlantState ps = prefab.GetComponent<PlantState>();
                         string plantName = prefab.name.Replace("(Clone)", "").Trim();
 
-                        // Label includes plant size so player can match at a glance.
                         string sizeTag = ps != null ? $"[{ps.plantSize}]" : "[?]";
-                        bool fits = ps != null && ps.plantSize == pot.PotSize;
 
-                        // Dim the label slightly for wrong-size plants by prepending
-                        // a visual cue. The button is still clickable so the player
-                        // gets the warning message rather than silent failure.
+                        // Static pots accept every size — always show as a valid fit.
+                        bool fits = pot.IsStatic || (ps != null && ps.plantSize == pot.PotSize);
                         string prefix = fits ? "  " : "  ✗ ";
+
                         actions.Add(($"{prefix}{plantName} {sizeTag}", () =>
                         {
                             bool success = pot.AddPlant(captured);
@@ -352,7 +352,6 @@ public class PotInteraction : MonoBehaviour
                             }
                             else
                             {
-                                // Show a human-readable mismatch message on re-open.
                                 string plantSizeStr = ps != null
                                     ? ps.plantSize.ToString()
                                     : "Unknown";
@@ -399,7 +398,7 @@ public class PotInteraction : MonoBehaviour
         panelRT.sizeDelta = new Vector2(BTN_WIDTH + 20f, totalHeight);
         panelRT.anchoredPosition = Vector2.zero;
         Image panelImg = panel.AddComponent<Image>();
-        panelImg.color = new Color(0.06f, 0.08f, 0.06f, 0.92f);
+        panelImg.color = Color.black;
 
         for (int i = 0; i < actions.Count; i++)
         {
@@ -409,7 +408,6 @@ public class PotInteraction : MonoBehaviour
 
             if (isHeader)
             {
-                // Non-interactive section label or warning row
                 GameObject lblGO = CreateUIElement(label, panel.transform);
                 RectTransform lr = lblGO.GetComponent<RectTransform>();
                 lr.anchorMin = lr.anchorMax = new Vector2(0.5f, 0.5f);
@@ -418,15 +416,12 @@ public class PotInteraction : MonoBehaviour
                 TextMeshProUGUI txt = lblGO.AddComponent<TextMeshProUGUI>();
                 txt.text = label;
                 txt.fontSize = 12;
-                txt.color = isWarning
-                    ? new Color(1f, 0.55f, 0.20f)          // amber for warnings
-                    : new Color(0.65f, 0.85f, 0.65f);      // green for headers
+                txt.color = isWarning ? new Color(1f, 0.4f, 0.4f) : Color.white;
                 txt.fontStyle = FontStyles.Bold;
                 txt.alignment = TextAlignmentOptions.MidlineLeft;
             }
             else
             {
-                // Clickable button
                 GameObject btnGO = CreateUIElement("Btn_" + i, panel.transform);
                 RectTransform br = btnGO.GetComponent<RectTransform>();
                 br.anchorMin = br.anchorMax = new Vector2(0.5f, 0.5f);
@@ -434,17 +429,16 @@ public class PotInteraction : MonoBehaviour
                 br.anchoredPosition = new Vector2(0f, y);
 
                 Image bg = btnGO.AddComponent<Image>();
-                bg.color = new Color(0.15f, 0.20f, 0.15f, 0.85f);
+                bg.color = Color.black;
 
                 Button btn = btnGO.AddComponent<Button>();
                 System.Action captured = action;
                 btn.onClick.AddListener(() => captured?.Invoke());
 
-                // Hover tint
                 ColorBlock cb = btn.colors;
                 cb.normalColor = Color.white;
-                cb.highlightedColor = new Color(0.75f, 1f, 0.75f);
-                cb.pressedColor = new Color(0.55f, 0.85f, 0.55f);
+                cb.highlightedColor = new Color(0.75f, 0.75f, 0.75f);
+                cb.pressedColor = new Color(0.5f, 0.5f, 0.5f);
                 btn.colors = cb;
                 btn.targetGraphic = bg;
 
@@ -455,11 +449,7 @@ public class PotInteraction : MonoBehaviour
                 TextMeshProUGUI txt = txtGO.AddComponent<TextMeshProUGUI>();
                 txt.text = label;
                 txt.fontSize = 11;
-                // Wrong-size plants are shown in a muted amber so they
-                // read as "selectable but not recommended".
-                txt.color = label.StartsWith("  ✗")
-                    ? new Color(0.9f, 0.65f, 0.3f)
-                    : Color.white;
+                txt.color = label.StartsWith("  ✗") ? new Color(0.6f, 0.6f, 0.6f) : Color.white;
                 txt.alignment = TextAlignmentOptions.MidlineLeft;
             }
         }
@@ -496,6 +486,7 @@ public class PotInteraction : MonoBehaviour
         SoilKind.Clay => "Clay  (moisture-retaining)",
         SoilKind.Loam => "Loam  (rich & balanced)",
         SoilKind.Sandy => "Sandy (fast-draining)",
+        SoilKind.Water => "Water (permanently saturated)",
         _ => kind.ToString()
     };
 

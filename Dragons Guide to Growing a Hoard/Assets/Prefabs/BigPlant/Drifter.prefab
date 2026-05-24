@@ -30,13 +30,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2650251699068457546}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.017807266, y: -0.69734335, z: -0.019185243, w: 0.7162591}
+  m_LocalRotation: {x: 0.0009253145, y: -0.6975585, z: -0.0009504759, w: 0.7165267}
   m_LocalPosition: {x: 22.496525, y: 0.50470525, z: 18.794592}
   m_LocalScale: {x: 1.4151912, y: 1.4151912, z: 1.4151913}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -88.463, z: -0.152}
 --- !u!33 &7683409985280520240
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -129,14 +129,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDummyValues: 0
-  dummySunlight: 3
-  dummySoil: 4
-  dummyWater: 2
+  dummyState: 1
+  useManualHeight: 0
+  manualHeightOffset: 1
   hoverGap: 5
   targetScreenHeight: 0.15
-  baseCanvasSize: {x: 2.6, y: 2.9}
+  pipSize: 22
+  pipGap: 7
+  pipPadding: 1
   plantState: {fileID: 0}
-  lightSensor: {fileID: 0}
 --- !u!114 &-6814717730686776371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,6 +151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plantSize: 2
+  potPlacementOffset: 0.8
+  potPlacementRotation: {x: 90, y: 0, z: 0}
   preferredSoil: 1
   neutralSoil: 0
   lightThresholdHigh: 0.6

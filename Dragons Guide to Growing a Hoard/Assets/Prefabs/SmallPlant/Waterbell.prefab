@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1108434111351597028
+--- !u!1 &7443154059041681990
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,50 +8,50 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1074371860170524962}
-  - component: {fileID: 4239368289089152198}
-  - component: {fileID: 2768458489375567202}
-  - component: {fileID: 6476096880060626803}
-  - component: {fileID: 3777626941411188743}
-  - component: {fileID: 5406378468432258178}
-  - component: {fileID: 6790803248347742446}
+  - component: {fileID: 1955891490479576715}
+  - component: {fileID: 1864759724960991727}
+  - component: {fileID: 4259422891479122347}
+  - component: {fileID: 7613040284816816673}
+  - component: {fileID: 6633453404819236254}
+  - component: {fileID: -1693417367247938532}
+  - component: {fileID: 4688223070293238866}
   m_Layer: 0
-  m_Name: Sundial
+  m_Name: Waterbell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1074371860170524962
+--- !u!4 &1955891490479576715
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1108434111351597028}
+  m_GameObject: {fileID: 7443154059041681990}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 17.787935, y: 0.43709326, z: 54.594074}
-  m_LocalScale: {x: 3.422124, y: 3.422124, z: 3.422124}
+  m_LocalRotation: {x: -0.013508577, y: -0.7069778, z: 0.013508662, w: 0.7069778}
+  m_LocalPosition: {x: 17.663273, y: 0.67546546, z: -65.54323}
+  m_LocalScale: {x: 1.39125, y: 1.39125, z: 1.39125}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &4239368289089152198
+--- !u!33 &1864759724960991727
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1108434111351597028}
-  m_Mesh: {fileID: 4441726058306313487, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
---- !u!23 &2768458489375567202
+  m_GameObject: {fileID: 7443154059041681990}
+  m_Mesh: {fileID: 8330056501644901671, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!23 &4259422891479122347
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1108434111351597028}
+  m_GameObject: {fileID: 7443154059041681990}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -70,7 +70,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6a2d736145192ea42b4a7b22493ecf08, type: 2}
+  - {fileID: 2100000, guid: b89b578b9a950e94cb576e44a3042708, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -94,13 +94,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &6476096880060626803
+--- !u!64 &7613040284816816673
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1108434111351597028}
+  m_GameObject: {fileID: 7443154059041681990}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -115,79 +115,14 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 4441726058306313487, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
---- !u!114 &3777626941411188743
+  m_Mesh: {fileID: 8330056501644901671, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &6633453404819236254
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1108434111351597028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebc9509558635bd41b4357c73112c826, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  useDummyValues: 0
-  dummySunlight: 3
-  dummySoil: 4
-  dummyWater: 2
-  hoverGap: 5
-  targetScreenHeight: 0.15
-  baseCanvasSize: {x: 2.6, y: 2.9}
-  plantState: {fileID: 0}
-  lightSensor: {fileID: 0}
---- !u!114 &5406378468432258178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1108434111351597028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea6b95557e7067b4a8c58044c08c19c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  plantSize: 2
-  preferredSoil: 1
-  neutralSoil: 0
-  lightThresholdHigh: 0.6
-  lightThresholdLow: 0.25
-  waterThresholdHigh: 6
-  waterThresholdLow: 3
-  revivedMinScore: 5
-  intermediateMinScore: 2
-  lightSensor: {fileID: 0}
-  revivedVisual: {fileID: 0}
-  intermediateVisual: {fileID: 0}
-  deadVisual: {fileID: 0}
-  debuff:
-    enabled: 1
-    scanInterval: 2
-    amountPerTick: 0.5
-    duration: 5
-    tickInterval: 1
-    transferStolenWaterToSelf: 1
-    mode: 2
-  miasmaLightPenalty: 0
-  miasmaSoilPenalty: 0
-  miasmaWaterDrainMultiplier: 1
-  isMiasmaDebuffActive: 0
-  currentState: 2
-  currentSoil: 2
-  isOnSoil: 0
-  lastTotalScore: 0
-  soilScore: 0
-  lightScore: 0
-  waterScore: 0
---- !u!114 &6790803248347742446
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1108434111351597028}
+  m_GameObject: {fileID: 7443154059041681990}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2587ee5c9d93c24cb429211f232afba, type: 3}
@@ -203,3 +138,71 @@ MonoBehaviour:
   rawIntensity: 0
   isInShadow: 0
   normalisedIntensity: 0
+--- !u!114 &-1693417367247938532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154059041681990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebc9509558635bd41b4357c73112c826, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useDummyValues: 0
+  dummyState: 1
+  useManualHeight: 0
+  manualHeightOffset: 1
+  hoverGap: 4
+  targetScreenHeight: 0.15
+  pipSize: 22
+  pipGap: 7
+  pipPadding: 1
+  plantState: {fileID: 0}
+--- !u!114 &4688223070293238866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154059041681990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6b95557e7067b4a8c58044c08c19c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plantSize: 0
+  potPlacementOffset: 1
+  potPlacementRotation: {x: 90, y: 0, z: 0}
+  preferredSoil: 1
+  neutralSoil: 0
+  lightThresholdHigh: 0.6
+  lightThresholdLow: 0.25
+  waterThresholdHigh: 6
+  waterThresholdLow: 3
+  revivedMinScore: 5
+  intermediateMinScore: 2
+  lightSensor: {fileID: 0}
+  revivedVisual: {fileID: 0}
+  intermediateVisual: {fileID: 0}
+  deadVisual: {fileID: 0}
+  debuff:
+    enabled: 0
+    scanInterval: 2
+    amountPerTick: 0.5
+    duration: 5
+    tickInterval: 1
+    transferStolenWaterToSelf: 0
+    mode: 0
+  miasmaLightPenalty: 0
+  miasmaSoilPenalty: 0
+  miasmaWaterDrainMultiplier: 1
+  isMiasmaDebuffActive: 0
+  currentState: 2
+  currentSoil: 2
+  isOnSoil: 0
+  lastTotalScore: 0
+  soilScore: 0
+  lightScore: 0
+  waterScore: 0

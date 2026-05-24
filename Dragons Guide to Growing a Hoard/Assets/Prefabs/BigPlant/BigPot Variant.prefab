@@ -9,6 +9,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: potSize
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: isStaticPot
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: waterMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 3eec692de4cc51941a0bbe7771e9fdbe, type: 2}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
       propertyPath: claySoilPrefab
       value: 
       objectReference: {fileID: 3815546891322180988, guid: 7edc2f9160beb2944b331ee4e39c40a7, type: 3}
@@ -20,21 +32,29 @@ PrefabInstance:
       propertyPath: sandySoilPrefab
       value: 
       objectReference: {fileID: 3815546891322180988, guid: 7edc2f9160beb2944b331ee4e39c40a7, type: 3}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: waterSoilPrefab
+      value: 
+      objectReference: {fileID: 3815546891322180988, guid: 7edc2f9160beb2944b331ee4e39c40a7, type: 3}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: plantSurfaceOffset
+      value: 1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 3044046510021815365, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
       propertyPath: m_Name
       value: BigPot Variant
       objectReference: {fileID: 0}
     - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
       propertyPath: m_LocalScale.x
-      value: 5.100088
+      value: 3.5674095
       objectReference: {fileID: 0}
     - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
       propertyPath: m_LocalScale.y
-      value: 5.100088
+      value: 3.5674095
       objectReference: {fileID: 0}
     - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
       propertyPath: m_LocalScale.z
-      value: 9.91
+      value: 6.9318466
       objectReference: {fileID: 0}
     - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
       propertyPath: m_LocalPosition.x

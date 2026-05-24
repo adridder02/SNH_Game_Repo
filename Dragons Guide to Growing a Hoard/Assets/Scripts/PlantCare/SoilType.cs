@@ -30,7 +30,8 @@ public enum SoilKind
 {
     Clay,   // Heavy, moisture-retaining soil
     Loam,   // Rich, balanced soil — the most fertile
-    Sandy   // Light, fast-draining soil
+    Sandy,  // Light, fast-draining soil
+    Water   // Hydroponic / aquatic growing medium — constantly saturated
 }
 
 // ------------------------------------------------------------------
@@ -74,6 +75,9 @@ public class SoilPatch : MonoBehaviour
                 break;
             case SoilKind.Sandy:
                 rend.material.color = new Color(0.85f, 0.78f, 0.55f); // Pale tan
+                break;
+            case SoilKind.Water:
+                rend.material.color = new Color(0.18f, 0.52f, 0.85f); // Clear blue
                 break;
         }
     }

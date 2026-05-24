@@ -63,6 +63,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -84,9 +86,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!64 &-8180194533520961988
 MeshCollider:
@@ -123,17 +127,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plantAnchor: {fileID: 0}
+  isStaticPot: 0
   potSize: 0
+  plantSurfaceOffset: 0
   claySoilPrefab: {fileID: 1981260749521629902, guid: 8d37ce2db3671ef4eb9df9ae561ab0f7, type: 3}
   loamSoilPrefab: {fileID: 1981260749521629902, guid: 8d37ce2db3671ef4eb9df9ae561ab0f7, type: 3}
   sandySoilPrefab: {fileID: 1981260749521629902, guid: 8d37ce2db3671ef4eb9df9ae561ab0f7, type: 3}
+  waterSoilPrefab: {fileID: 1981260749521629902, guid: 8d37ce2db3671ef4eb9df9ae561ab0f7, type: 3}
   clayMaterial: {fileID: 2100000, guid: 97e1609a0714ef34aaae06110f28666d, type: 2}
   loamMaterial: {fileID: 2100000, guid: aa04b5e1d02c8e74aa0dff17ef7ee3b1, type: 2}
   sandyMaterial: {fileID: 2100000, guid: e6f341860e588e34abbae233ffc22ed9, type: 2}
+  waterMaterial: {fileID: 2100000, guid: 3eec692de4cc51941a0bbe7771e9fdbe, type: 2}
   plantWaterMax: 10
   baseDrainRate: 0.3
   sunDrainMultiplier: 0.4
-  currentSoil: 1
   waterLevel: 0
+  currentSoil: 1
   hasSoil: 0
   hasPlant: 0
+  GridOrigin: {x: 0, y: 0, z: 0}
