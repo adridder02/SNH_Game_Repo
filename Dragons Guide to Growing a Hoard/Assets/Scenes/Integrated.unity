@@ -550,7 +550,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.3859645, y: 0.0000007158785, z: -0.0000002995118, w: 0.92251366}
-  m_LocalPosition: {x: 0, y: -2.3894124, z: 9.694245}
+  m_LocalPosition: {x: 0, y: -2.6894135, z: 9.694245}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1243,7 +1243,7 @@ Transform:
   m_GameObject: {fileID: 1253019379}
   serializedVersion: 2
   m_LocalRotation: {x: 0.35947737, y: -0.33585346, z: 0.14051555, w: 0.8592054}
-  m_LocalPosition: {x: -6.574246, y: -2.3894124, z: 7.124443}
+  m_LocalPosition: {x: -6.574246, y: -2.6894135, z: 7.124443}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1515,7 +1515,7 @@ Transform:
   m_GameObject: {fileID: 1536018865}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -16.9, z: 24}
+  m_LocalPosition: {x: 0, y: -17.2, z: 24}
   m_LocalScale: {x: 0.41511905, y: 0.33054, z: 2.3026125}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -2191,6 +2191,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1536018866}
     m_Modifications:
+    - target: {fileID: 4102112908330331728, guid: aae3da16f6ed85d4bb8faae933b9bfd4, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: feed2ab40160a8044a7097cd8cf533e8, type: 2}
     - target: {fileID: 7242171043556926710, guid: aae3da16f6ed85d4bb8faae933b9bfd4, type: 3}
       propertyPath: m_Name
       value: Dragon_ApplyTransform
@@ -2235,6 +2239,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8999407487328178395, guid: aae3da16f6ed85d4bb8faae933b9bfd4, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a00ff4f8fec52ec43a185207b8f4e842, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
