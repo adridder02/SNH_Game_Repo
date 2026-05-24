@@ -184,6 +184,18 @@ MonoBehaviour:
   revivedVisual: {fileID: 0}
   intermediateVisual: {fileID: 0}
   deadVisual: {fileID: 0}
+  debuff:
+    enabled: 0
+    scanInterval: 2
+    amountPerTick: 0.5
+    duration: 5
+    tickInterval: 1
+    transferStolenWaterToSelf: 0
+    mode: 0
+  miasmaLightPenalty: 0
+  miasmaSoilPenalty: 0
+  miasmaWaterDrainMultiplier: 1
+  isMiasmaDebuffActive: 0
   currentState: 2
   currentSoil: 2
   isOnSoil: 0

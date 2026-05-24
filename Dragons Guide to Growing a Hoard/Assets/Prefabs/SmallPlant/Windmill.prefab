@@ -1,0 +1,205 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6160393185916373558
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1121463163313873988}
+  - component: {fileID: 269747443456194149}
+  - component: {fileID: 7799830689589487912}
+  - component: {fileID: 464616855718545522}
+  - component: {fileID: 7035613872642806097}
+  - component: {fileID: -4441528183351098693}
+  - component: {fileID: -8777199277730143429}
+  m_Layer: 0
+  m_Name: Windmill
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1121463163313873988
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160393185916373558}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.7009766, y: -0.01637251, z: 0.7125364, w: 0.025605917}
+  m_LocalPosition: {x: 18.087425, y: 0.62607026, z: -61.95541}
+  m_LocalScale: {x: 4.6164765, y: 4.6164765, z: 4.616476}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &269747443456194149
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160393185916373558}
+  m_Mesh: {fileID: -112859248700104106, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!23 &7799830689589487912
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160393185916373558}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 1e69f9d94a609e44aab10be3d0cf0cac, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &464616855718545522
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160393185916373558}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -112859248700104106, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &7035613872642806097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160393185916373558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2587ee5c9d93c24cb429211f232afba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directionalLight: {fileID: 0}
+  maxLightIntensity: 3
+  checkForObstacles: 1
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  rayOriginOffset: 0.5
+  rawIntensity: 0
+  isInShadow: 0
+  normalisedIntensity: 0
+--- !u!114 &-4441528183351098693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160393185916373558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebc9509558635bd41b4357c73112c826, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useDummyValues: 0
+  dummySunlight: 3
+  dummySoil: 4
+  dummyWater: 2
+  hoverGap: 4
+  targetScreenHeight: 0.15
+  baseCanvasSize: {x: 2.6, y: 2.9}
+  plantState: {fileID: 0}
+  lightSensor: {fileID: 0}
+--- !u!114 &-8777199277730143429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160393185916373558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6b95557e7067b4a8c58044c08c19c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plantSize: 0
+  preferredSoil: 1
+  neutralSoil: 0
+  lightThresholdHigh: 0.6
+  lightThresholdLow: 0.25
+  waterThresholdHigh: 6
+  waterThresholdLow: 3
+  revivedMinScore: 5
+  intermediateMinScore: 2
+  lightSensor: {fileID: 0}
+  revivedVisual: {fileID: 0}
+  intermediateVisual: {fileID: 0}
+  deadVisual: {fileID: 0}
+  debuff:
+    enabled: 0
+    scanInterval: 2
+    amountPerTick: 0.5
+    duration: 5
+    tickInterval: 1
+    transferStolenWaterToSelf: 0
+    mode: 0
+  miasmaLightPenalty: 0
+  miasmaSoilPenalty: 0
+  miasmaWaterDrainMultiplier: 1
+  isMiasmaDebuffActive: 0
+  currentState: 2
+  currentSoil: 2
+  isOnSoil: 0
+  lastTotalScore: 0
+  soilScore: 0
+  lightScore: 0
+  waterScore: 0
