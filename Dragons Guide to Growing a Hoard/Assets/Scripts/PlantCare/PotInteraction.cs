@@ -287,6 +287,7 @@ public class PotInteraction : MonoBehaviour
     private void OpenMenu(PotContents pot)
     {
         GameInputModeManager.Instance?.SetPlacementMode();
+        ThirdPersonCameraController.CameraLocked = true;
 
         // Clear old buttons
         foreach (Transform child in menuRoot.transform)
@@ -469,6 +470,7 @@ public class PotInteraction : MonoBehaviour
     private void CloseMenu()
     {
         GameInputModeManager.Instance?.SetGameplayMode();
+        ThirdPersonCameraController.CameraLocked = false;
 
         foreach (Transform child in menuRoot.transform)
             Destroy(child.gameObject);

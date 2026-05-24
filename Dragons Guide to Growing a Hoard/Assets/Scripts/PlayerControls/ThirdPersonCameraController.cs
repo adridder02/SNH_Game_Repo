@@ -43,6 +43,8 @@ public class ThirdPersonCameraController : MonoBehaviour
     // collision — tracks the radius we actually hand to Cinemachine each frame
     private float collisionZoom;
 
+    public static bool CameraLocked = false;
+
     // ─────────────────────────────────────────────────
     void Start()
     {
@@ -76,13 +78,17 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     void Update()
     {
-        if (GameInputModeManager.Instance != null &&
-            GameInputModeManager.Instance.CurrentMode ==
-            GameInputModeManager.InputMode.Placement)
+        // CameraLocked = true  → menu is open, lock the camera.
+        // Placement mode alone (grid mode via F, no menu) → camera stays free.
+        if (CameraLocked)
         {
             scrollDelta = Vector2.zero;
+            if (inputAxis != null) inputAxis.enabled = false;
             return;
         }
+
+        // Re-enable look input when not locked
+        if (inputAxis != null) inputAxis.enabled = true;
 
         // ── Zoom intent ───────────────────────────────
         if (scrollDelta.y != 0f && orbital != null)
