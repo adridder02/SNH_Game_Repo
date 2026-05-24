@@ -95,7 +95,7 @@ public class MiasmaController : MonoBehaviour
                 transform.localScale += new Vector3(rateOfMiasma, rateOfMiasma, rateOfMiasma)*Time.deltaTime;
                 currentSize = transform.localScale.x;
                 
-                Debug.Log($"Miasma grew to: {currentSize}");
+                // Debug.Log($"Miasma grew to: {currentSize}");
             }
         
         }

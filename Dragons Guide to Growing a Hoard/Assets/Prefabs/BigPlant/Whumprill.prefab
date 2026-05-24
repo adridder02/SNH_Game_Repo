@@ -132,7 +132,7 @@ MonoBehaviour:
   dummyState: 1
   useManualHeight: 0
   manualHeightOffset: 1
-  hoverGap: 5
+  hoverGap: 1.5
   targetScreenHeight: 0.15
   pipSize: 22
   pipGap: 7

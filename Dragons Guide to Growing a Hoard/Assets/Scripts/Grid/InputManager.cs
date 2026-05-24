@@ -1,31 +1,40 @@
-using System.Runtime.Serialization;
-using Unity.Cinemachine;
 using UnityEngine.InputSystem;
 using UnityEngine;
-using Unity.Mathematics;
 
 public class InputManager : MonoBehaviour
 {
     [SerializeField] private Camera sceneCamera;
-    [SerializeField] LayerMask placemnetLayermask;
+
+    // !! IMPORTANT: the greenhouse surface plane(s) MUST be on a layer included
+    // in this mask, AND they must have a Collider component, otherwise the
+    // raycast will never hit and placement will silently fail at (0,0,0).
+    [SerializeField] private LayerMask placementLayerMask;
+
+    [SerializeField] private bool debugRaycast = false;
+
     private Vector3 lastPosition;
+
+    private void Awake()
+    {
+        if (sceneCamera == null)
+            sceneCamera = Camera.main;
+    }
 
     public Vector3 GetSelectedMapPosition()
     {
-        /* //!uses the old input system
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = sceneCamera.nearClipPlane; 
-        */
+        if (sceneCamera == null)
+            return lastPosition;
+
         Ray ray = sceneCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        RaycastHit hit;
-        if(Physics.Raycast(ray, out hit, 100, placemnetLayermask))
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 200f, placementLayerMask))
         {
             lastPosition = hit.point;
-            //Debug.Log(lastPosition);
         }
-    
+
+        if (debugRaycast)
+            Debug.Log($"[InputManager] Raycast hit: {lastPosition} | LayerMask value: {placementLayerMask.value}");
+
         return lastPosition;
     }
-
-
 }
