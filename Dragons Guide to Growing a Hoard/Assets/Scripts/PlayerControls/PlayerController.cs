@@ -13,7 +13,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed = 5f;
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private float gravity = -9.8f;
-    [SerializeField] private bool shouldFaceMoveDirection = false;
+    
+    [SerializeField] private bool shouldFaceMoveDirection = true; 
 
     [Header("Sprint")]
     [Tooltip("Speed multiplier applied while holding Left or Right Shift.")]
@@ -349,7 +350,7 @@ public class PlayerController : MonoBehaviour
             }
 
             // Grounded → exit fly mode (only checked after grace period)
-            if (controller.isGrounded)
+            if (controller.isGrounded && verticalMove <= 0f)
             {
                 //playerAnim.setJumpFalse();
                 ExitFlyMode();
@@ -360,13 +361,25 @@ public class PlayerController : MonoBehaviour
         controller.Move((horizontalMove + Vector3.up * verticalMove) * Time.deltaTime);
 
         // Optional: face horizontal movement direction
+        // full flight direction (horizontal + vertical intent) 
         if (shouldFaceMoveDirection && horizontalMove.sqrMagnitude > 0.001f)
         {
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                Quaternion.LookRotation(horizontalMove.normalized, Vector3.up),
-                10f * Time.deltaTime);
+            // Combine horizontal movement with vertical intent for a true flight direction
+            float verticalIntent = cameraTransform.forward.y * flyPitchInfluence;
+            Vector3 flightDirection = horizontalMove.normalized + Vector3.up * verticalIntent;
+
+            if (flightDirection.sqrMagnitude > 0.001f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(flightDirection.normalized, Vector3.up);
+
+                transform.rotation = Quaternion.Slerp(
+                    transform.rotation,
+                    targetRotation,
+                    10f * Time.deltaTime);
+            }
         }
+
+
     }
 
     private void ExitFlyMode()
@@ -374,10 +387,13 @@ public class PlayerController : MonoBehaviour
         locomotionState = LocomotionState.Grounded;
         velocity = Vector3.zero;
         flyAscendHeld = false;
-        Debug.Log("[PlayerController] Fly mode OFF – landed");
-        //animator?.SetBool(HashIsFlying, false);
-        playerAnim.notInAir();
 
+        // Level the dragon out when landing
+        Vector3 flatForward = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
+        if (flatForward.sqrMagnitude > 0.001f)
+            transform.rotation = Quaternion.LookRotation(flatForward, Vector3.up);
+
+        playerAnim.notInAir();
     }
 
     // ──────────────────────────────────────────────

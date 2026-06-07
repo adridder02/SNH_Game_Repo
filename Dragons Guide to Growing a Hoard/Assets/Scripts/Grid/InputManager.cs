@@ -11,14 +11,18 @@ public class InputManager : MonoBehaviour
     [SerializeField] private LayerMask placementLayerMask;
 
     [SerializeField] private bool debugRaycast = false;
-
+  
     private Vector3 lastPosition;
 
     private void Awake()
     {
         if (sceneCamera == null)
             sceneCamera = Camera.main;
+
+    
     }
+    
+
 
     public Vector3 GetSelectedMapPosition()
     {
