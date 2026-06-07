@@ -202,6 +202,21 @@ public class PlayerController : MonoBehaviour
         }
 
         UpdateAnimator();
+      
+    }
+     /*  */
+    //Collision Detection test
+    void OnCollisionEnter(Collision collision) 
+    {
+		GameObject otherObj = collision.gameObject;
+		Debug.Log("Collided with: " + otherObj.name);
+
+        if (locomotionState == LocomotionState.Grounded && !otherObj.name.Contains("Floor")  && !otherObj.name.Contains("Placable") && !otherObj.name.Contains("Pot") )
+        {
+            Jump();
+            locomotionState = LocomotionState.Jumping;
+            lastSpacePressTime = Time.time;
+        }
     }
 
     private void UpdateAnimator()
