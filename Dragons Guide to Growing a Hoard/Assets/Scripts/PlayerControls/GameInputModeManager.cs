@@ -17,8 +17,7 @@ public class GameInputModeManager : MonoBehaviour
 
     private InputActionMap gameplayMap;
     private InputActionMap cameraMap;
-    private bool CursorState = false;
-
+   
     public InputMode CurrentMode { get; private set; }
 
     private void Awake()
@@ -52,21 +51,9 @@ public class GameInputModeManager : MonoBehaviour
         SetGameplayMode();
     }
     
-    //Making the cursor visable so we can see it //!needs placement mode testing
+   
     void Update()
-    {
-       Mouse mouse = Mouse.current;
-       if (mouse.rightButton.wasPressedThisFrame)
-       {   
-           
-           
-           if (CursorState == false)
-           { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; CursorState = true; }
-           else
-           { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; CursorState = false; }
-           
-       }
-    }
+    {}
 
     public void SetGameplayMode()
     {

@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     // ──────────────────────────────────────────────
@@ -35,6 +36,10 @@ public class PlayerController : MonoBehaviour
     [Header("Input")]
     [SerializeField] private InputActionAsset inputActions;
     
+    //how we get the buttons
+    public Button Exit;
+    public Button Restart;
+    private bool escPressed = false;
    /*[SerializeField] private Animator animator;
 
     // Animator hashes — faster than string lookups
@@ -100,6 +105,11 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("playerAnimation component is missing from " + gameObject.name);
         }
+
+        Exit.gameObject.SetActive(escPressed);
+        Restart.gameObject.SetActive(escPressed);
+
+      
     }
 
     private void OnEnable()
@@ -202,16 +212,39 @@ public class PlayerController : MonoBehaviour
         }
 
         UpdateAnimator();
-      
+        MenuVisiablity();
     }
-     /*  */
+    //Menu stuff
+
+    void MenuVisiablity()
+    {
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            escPressed = !escPressed; // toggle
+
+            Exit.gameObject.SetActive(escPressed);
+            Restart.gameObject.SetActive(escPressed);
+
+            if (escPressed)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
+    }
     //Collision Detection test
     void OnCollisionEnter(Collision collision) 
     {
 		GameObject otherObj = collision.gameObject;
 		Debug.Log("Collided with: " + otherObj.name);
-
-        if (locomotionState == LocomotionState.Grounded && !otherObj.name.Contains("Floor")  && !otherObj.name.Contains("Placable") && !otherObj.name.Contains("Pot") )
+        
+        //!I'll make a better check system
+        if (locomotionState == LocomotionState.Grounded && !otherObj.name.Contains("Floor")  && !otherObj.name.Contains("Placable") && !otherObj.name.Contains("Pot") && !otherObj.name.Contains("Table") )
         {
             Jump();
             locomotionState = LocomotionState.Jumping;
