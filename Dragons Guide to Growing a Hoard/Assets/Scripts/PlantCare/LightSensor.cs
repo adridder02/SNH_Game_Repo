@@ -29,6 +29,7 @@ public class LightSensor : MonoBehaviour
 {
     // ---------------------------------------------------------------
     // INSPECTOR — Light source
+    //!GOING TO USE AREA LIGHT INSTEAD TO SEE IF THIS WORKS
     // ---------------------------------------------------------------
     [Header("Directional Light")]
     [Tooltip("Drag your scene's Directional Light here, or leave empty to auto-find.")]
@@ -79,7 +80,7 @@ public class LightSensor : MonoBehaviour
         Light[] allLights = FindObjectsByType<Light>(FindObjectsSortMode.None);
         foreach (Light l in allLights)
         {
-            if (l.type == LightType.Directional)
+            if (l.type == LightType.Rectangle)
             {
                 directionalLight = l;
                 Debug.Log($"[LightSensor] Auto-found directional light: '{l.name}'.");
@@ -104,7 +105,7 @@ public class LightSensor : MonoBehaviour
 
         // Read the raw intensity from the Unity Light component.
         rawIntensity = directionalLight.intensity;
-
+        Debug.Log("Raw Light Intensity felt " + rawIntensity);
         // Optionally check whether the plant is occluded by geometry.
         isInShadow = checkForObstacles && IsPlantInShadow();
 
@@ -113,6 +114,8 @@ public class LightSensor : MonoBehaviour
         normalisedIntensity = isInShadow
             ? 0f
             : Mathf.Clamp01(rawIntensity / maxLightIntensity);
+             Debug.Log("Light Intensity felt " + Mathf.Clamp01(rawIntensity / maxLightIntensity));
+
     }
 
     // ---------------------------------------------------------------
