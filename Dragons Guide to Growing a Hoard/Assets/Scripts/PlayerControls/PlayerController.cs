@@ -310,6 +310,7 @@ public class PlayerController : MonoBehaviour
     {
         locomotionState = LocomotionState.Flying;
         velocity = Vector3.zero;
+        ThirdPersonCameraController.setCameraZoomLimitOnFly(true);
         flyGroundGraceTimer = flyGroundGracePeriod; // ignore isGrounded briefly
         Debug.Log("[PlayerController] Fly mode ON");
         //animator?.SetBool(HashIsFlying, true);
@@ -402,7 +403,7 @@ public class PlayerController : MonoBehaviour
         locomotionState = LocomotionState.Grounded;
         velocity = Vector3.zero;
         flyAscendHeld = false;
-
+        ThirdPersonCameraController.setCameraZoomLimitOnFly(false);
         // Level the dragon out when landing
         Vector3 flatForward = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
         if (flatForward.sqrMagnitude > 0.001f)
