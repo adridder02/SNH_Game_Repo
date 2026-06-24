@@ -264,7 +264,7 @@ public class PlacementSystem : MonoBehaviour
     }
 
     public void EnterPlaceMode(int potIndex)
-    {
+    { // lock camera here....
         if (potIndex < 0 || potIndex >= availablePots.Count)
             return;
 
@@ -329,7 +329,7 @@ public class PlacementSystem : MonoBehaviour
     }
 
     private void CancelMode()
-    {
+    {// unlock camera here...
         if (mode == Mode.Moving && movingData != null)
             PutMovingPotBack();
 

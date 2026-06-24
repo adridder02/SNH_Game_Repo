@@ -92,6 +92,7 @@ public class PotContents : MonoBehaviour
 
     // Live reference to the spawned soil mesh inside the pot.
     private GameObject currentSoilObject;
+    private GameObject currentPlantPrefab;
 
     // These fields are set by PlacementSystem when a pot is placed/moved
     [HideInInspector] public Vector3Int GridOrigin;
@@ -229,6 +230,7 @@ public class PotContents : MonoBehaviour
     {
         if (hasPlant) return false;
 
+        currentPlantPrefab = prefab;
         PlantState candidate = prefab.GetComponent<PlantState>();
 
         // Static pots accept any plant size; only enforce size for normal grid pots.
@@ -293,12 +295,30 @@ public class PotContents : MonoBehaviour
         return true;
     }
 
-    public void RemovePlant()
+   public void RemovePlant(PlayerInventory dragonInventory)
     {
         if (!hasPlant || Plant == null) return;
-        Object.Destroy(Plant.gameObject);
+        
+        // Store reference before destroying
+        GameObject plantToDestroy = Plant.gameObject;
+        GameObject prefabToReturn = currentPlantPrefab;
+        
+        // Add to inventory first
+        if (prefabToReturn != null && dragonInventory != null)
+        {
+            dragonInventory.AddPlantToInventory(prefabToReturn);
+        }
+        
+        // Clear references BEFORE destroying
         Plant = null;
+        currentPlantPrefab = null;
         hasPlant = false;
+        
+        // Now destroy the plant
+        if (plantToDestroy != null)
+        {
+            Destroy(plantToDestroy);
+        }
     }
 
     // ---------------------------------------------------------------

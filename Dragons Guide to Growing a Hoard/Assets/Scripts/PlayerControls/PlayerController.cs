@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] private float speed = 5f;
-    [SerializeField] private float jumpHeight = 2f;
+    [SerializeField] private float jumpHeight = 5f;//changed jump hieght
     [SerializeField] private float gravity = -9.8f;
     
     [SerializeField] private bool shouldFaceMoveDirection = true; 
