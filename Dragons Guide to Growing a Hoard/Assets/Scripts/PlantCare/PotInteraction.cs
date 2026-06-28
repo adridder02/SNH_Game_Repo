@@ -82,6 +82,11 @@ public class PotInteraction : MonoBehaviour
     private PotContents nearbyPot;
     private bool menuOpen = false;
 
+    // The OutlineEffect currently switched on, if any. Tracked here so we
+    // always know exactly which one to turn off — never rely on scanning
+    // for "whatever's outlined right now."
+    private OutlineEffect currentOutline;
+
     // Transient feedback message shown inside the open menu.
     // Cleared each time the menu rebuilds.
     private string pendingFeedbackMessage = null;
@@ -109,6 +114,11 @@ public class PotInteraction : MonoBehaviour
         CloseMenu();
     }
 
+    private void OnDisable()
+    {
+        ClearCurrentOutline();
+    }
+
     // ---------------------------------------------------------------
     // Update — scan for pots, handle E, handle Q watering
     // ---------------------------------------------------------------
@@ -124,7 +134,10 @@ public class PotInteraction : MonoBehaviour
         if (found != nearbyPot)
         {
             if (menuOpen) CloseMenu();
+
+            ClearCurrentOutline();
             nearbyPot = found;
+            ApplyOutlineFor(nearbyPot);
         }
 
         // Update interact prompt position and visibility
@@ -165,6 +178,25 @@ public class PotInteraction : MonoBehaviour
             if (d < bestD) { bestD = d; best = pot; }
         }
         return best;
+    }
+
+    // ---------------------------------------------------------------
+    // Outline helpers — only the plant gets outlined, and only if the
+    // pot actually has one. Safe to call with a null/plantless pot.
+    // ---------------------------------------------------------------
+    private void ApplyOutlineFor(PotContents pot)
+    {
+        if (pot == null || !pot.HasPlant || pot.Plant == null) return;
+
+        currentOutline = pot.Plant.GetComponent<OutlineEffect>();
+        currentOutline?.SetOutline(true);
+    }
+
+    private void ClearCurrentOutline()
+    {
+        if (currentOutline == null) return;
+        currentOutline.SetOutline(false);
+        currentOutline = null;
     }
 
     // ---------------------------------------------------------------
@@ -349,6 +381,11 @@ public class PotInteraction : MonoBehaviour
                             if (success)
                             {
                                 CloseMenu();
+
+                                // We're standing right at this pot, so reflect
+                                // the new plant in the outline immediately.
+                                if (pot == nearbyPot)
+                                    ApplyOutlineFor(pot);
                             }
                             else
                             {
@@ -378,6 +415,7 @@ public class PotInteraction : MonoBehaviour
 
                 actions.Add(("Remove Plant", () =>
                 {
+                    ClearCurrentOutline();
                     pot.RemovePlant();
                     CloseMenu();
                 }, false));

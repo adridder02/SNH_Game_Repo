@@ -19,10 +19,8 @@ public class InputManager : MonoBehaviour
         if (sceneCamera == null)
             sceneCamera = Camera.main;
 
-    
     }
     
-
 
     public Vector3 GetSelectedMapPosition()
     {

@@ -241,10 +241,10 @@ public class PlayerController : MonoBehaviour
     void OnCollisionEnter(Collision collision) 
     {
 		GameObject otherObj = collision.gameObject;
-		Debug.Log("Collided with: " + otherObj.name);
+		//Debug.Log("Collided with: " + otherObj.name);
         
         //!I'll make a better check system
-        if (locomotionState == LocomotionState.Grounded && !otherObj.name.Contains("Floor")  && !otherObj.name.Contains("Placable") && !otherObj.name.Contains("Pot") && !otherObj.name.Contains("Table") )
+        if (locomotionState == LocomotionState.Grounded && !otherObj.name.Contains("Floor")  && !otherObj.name.Contains("Placeable (") && !otherObj.name.Contains("Pot") && !otherObj.name.Contains("Table") )
         {
             Jump();
             locomotionState = LocomotionState.Jumping;
