@@ -15,9 +15,10 @@ GameObject:
   - component: {fileID: 2042900339340082103}
   - component: {fileID: -825048163419283497}
   - component: {fileID: 7247543077432733209}
+  - component: {fileID: -3803754973526584587}
   m_Layer: 0
   m_Name: Melodybloom
-  m_TagString: Untagged
+  m_TagString: Selectable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -206,3 +207,18 @@ MonoBehaviour:
   soilScore: 0
   lightScore: 0
   waterScore: 0
+--- !u!114 &-3803754973526584587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7106053868976010694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.05
+  outlineShader: {fileID: 0}

@@ -1320,8 +1320,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15212338, y: 0.000000030525463, z: -0.000000004698318, w: 0.98836154}
-  m_LocalPosition: {x: 93.749374, y: -4.709414, z: 16.306526}
+  m_LocalRotation: {x: 0.3859645, y: 0.00000071525574, z: -0.00000029802322, w: 0.9225137}
+  m_LocalPosition: {x: 93.749374, y: 5.290586, z: 16.306526}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1653,7 +1653,7 @@ GameObject:
   - component: {fileID: 465881498}
   - component: {fileID: 465881497}
   - component: {fileID: 465881495}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Placeable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3413,8 +3413,6 @@ GameObject:
   - component: {fileID: 1393679878}
   - component: {fileID: 1393679877}
   - component: {fileID: 1393679876}
-  - component: {fileID: 1393679881}
-  - component: {fileID: 1393679882}
   m_Layer: 0
   m_Name: ThirdPersonCam
   m_TagString: Untagged
@@ -3430,8 +3428,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1393679874}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.13490252, y: 0.4567808, z: -0.07030528, w: 0.8764758}
-  m_LocalPosition: {x: -28.002037, y: 23.590586, z: 9.443381}
+  m_LocalRotation: {x: 0.3422721, y: 0.4263485, z: -0.17837723, w: 0.8180821}
+  m_LocalPosition: {x: -28.00204, y: -2.689414, z: 9.443385}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3503,20 +3501,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   zoomSpeed: 2
   zoomLerpSpeed: 10
-  minDistance: 10
-  maxDistance: 20
+  minDistance: 3
+  maxDistance: 31
   mouseSensitivityX: 4.5
   mouseSensitivityY: 4.5
-  transparentMask:
+  minPitchAngle: -72
+  maxPitchAngle: 70
+  collisionMask:
     serializedVersion: 2
-    m_Bits: 127
-  fadeSpeed: 1
-  targetAlpha: 0.2
+    m_Bits: 4294967295
   collisionPullInSpeed: 20
   collisionPullOutSpeed: 4
   collisionBuffer: 0.3
-  showDebugBox: 1
-  enableDebugLogs: 0
 --- !u!114 &1393679878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3540,7 +3536,7 @@ MonoBehaviour:
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
   TargetOffset: {x: 0, y: 0, z: 0}
-  Damping: {x: 0, y: 0}
+  Damping: {x: 0.5, y: 0.5}
   Lookahead:
     Enabled: 0
     Time: 0
@@ -3558,10 +3554,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5d7c088409d9a40b7b09aa707777f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetOffset: {x: 0, y: 0, z: 0}
+  TargetOffset: {x: 0, y: 10, z: 0}
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 0, y: 0, z: 0}
+    PositionDamping: {x: 0.2, y: 0.2, z: 0.2}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
@@ -3652,54 +3648,6 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
---- !u!65 &1393679881
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1393679874}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 128
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 2}
-  m_Center: {x: 0, y: 0, z: 1}
---- !u!54 &1393679882
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1393679874}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!1 &1460219916
 GameObject:
   m_ObjectHideFlags: 0
@@ -4455,7 +4403,7 @@ Transform:
   m_GameObject: {fileID: 1716038453}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.4621596, z: -0, w: 0.8867968}
-  m_LocalPosition: {x: 117.53, y: -28.3, z: 33.85}
+  m_LocalPosition: {x: 117.53, y: 7.98, z: 33.85}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -5908,7 +5856,7 @@ GameObject:
   - component: {fileID: 6322800345872223555}
   - component: {fileID: 6095578678043295610}
   - component: {fileID: 4440948893329168591}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10545,7 +10493,7 @@ GameObject:
   - component: {fileID: 6022248449503033632}
   - component: {fileID: 2612405024021834983}
   - component: {fileID: 6022248449503033633}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Cube.091
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12426,7 +12374,7 @@ GameObject:
   - component: {fileID: 5172061350591641765}
   - component: {fileID: 8412742147510455875}
   - component: {fileID: 1937953555}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: 2ndflooor.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15386,7 +15334,7 @@ GameObject:
   - component: {fileID: 2885840732402998597}
   - component: {fileID: 8194329585717904531}
   - component: {fileID: 1599403163}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Cube.046
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16218,7 +16166,7 @@ GameObject:
   - component: {fileID: 711389847069074116}
   - component: {fileID: 8450786030026726506}
   - component: {fileID: 8450786030026726507}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Cube.012
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18469,7 +18417,7 @@ GameObject:
   - component: {fileID: 5651565458965601079}
   - component: {fileID: 2003362164876193251}
   - component: {fileID: 4440948893329168587}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Floor.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18648,7 +18596,7 @@ GameObject:
   - component: {fileID: 4474039243897604649}
   - component: {fileID: 4325043197673361649}
   - component: {fileID: 1927119662}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Tree.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21469,7 +21417,7 @@ GameObject:
   - component: {fileID: 6454118748592381695}
   - component: {fileID: 8753941004136736543}
   - component: {fileID: 971036623}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Water
   m_TagString: Untagged
   m_Icon: {fileID: 0}
