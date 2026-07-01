@@ -99,7 +99,7 @@ public class GridVisual : MonoBehaviour
 
                 var go = GameObject.CreatePrimitive(PrimitiveType.Quad);
                 go.name = $"Cell_{x}_{z}";
-                go.transform.SetParent(transform, worldPositionStays: false);
+                go.transform.SetParent(transform, worldPositionStays: true);
 
                 // destroy the collider ( otherswise it interfears with raycasts)
                 Destroy(go.GetComponent<Collider>());

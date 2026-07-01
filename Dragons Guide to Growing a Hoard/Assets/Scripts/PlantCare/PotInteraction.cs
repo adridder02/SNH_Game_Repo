@@ -10,7 +10,7 @@
 //   - The menu shows only the actions that make sense right now:
 //       • No soil        → "Add Soil" (pick type)
 //       • Has soil       → "Change Soil" (pick type)
-//       • Has soil, no plant → "Add Plant" (pick from plantPrefabs list)
+//       • Has soil, no plant → "Add Plant" (pick from dragonInventory list)
 //       • Has plant      → "Water Plant"
 //   - Clicking a menu button executes the action and closes the menu.
 //   - Press E again or walk away to close without acting.
@@ -25,7 +25,7 @@
 //
 // SETUP:
 //   1. Attach to the Player GameObject.
-//   2. Fill plantPrefabs with your plant prefabs (need PlantState).
+//   2. Fill dragonInventory with your plant prefabs (need PlantState).
 //   3. Adjust interactRange so it feels natural.
 //   4. Optionally set a UI Canvas for the interaction prompt.
 //
@@ -53,7 +53,7 @@ public class PotInteraction : MonoBehaviour
     [Header("Plant Prefabs")]
     [Tooltip("List of plant prefabs the player can add to a pot. " +
              "Each must have a PlantState component attached.")]
-    public List<GameObject> plantPrefabs = new List<GameObject>();
+    public PlayerInventory dragonInventory;
 
     [Header("Watering")]
     [Tooltip("How much water is added per Q press when watering.")]
@@ -82,10 +82,6 @@ public class PotInteraction : MonoBehaviour
     private PotContents nearbyPot;
     private bool menuOpen = false;
 
-    // The OutlineEffect currently switched on, if any. Tracked here so we
-    // always know exactly which one to turn off — never rely on scanning
-    // for "whatever's outlined right now."
-    private OutlineEffect currentOutline;
 
     // Transient feedback message shown inside the open menu.
     // Cleared each time the menu rebuilds.
@@ -108,7 +104,23 @@ public class PotInteraction : MonoBehaviour
     // ---------------------------------------------------------------
     private void Start()
     {
-        playerWaterPool = maxWaterPool;
+        // Find the PlayerInventory component on the same GameObject or in the scene
+        if (dragonInventory == null)
+        {
+            dragonInventory = GetComponent<PlayerInventory>();
+            
+            if (dragonInventory == null)
+            {
+                dragonInventory = FindObjectOfType<PlayerInventory>();
+                
+                if (dragonInventory == null)
+                {
+                    Debug.LogError("PlayerInventory not found! Please assign it in the Inspector.");
+                }
+            }
+        }
+        
+        playerWaterPool = dragonInventory.getWaterPool();
         BuildMenuCanvas();
         if (showInteractPrompt) BuildInteractPrompt();
         CloseMenu();
@@ -125,7 +137,7 @@ public class PotInteraction : MonoBehaviour
     private void Update()
     {
         // Passive water refill
-        playerWaterPool = Mathf.Min(playerWaterPool + poolRefillRate * Time.deltaTime, maxWaterPool);
+        //playerWaterPool = Mathf.Min(playerWaterPool + poolRefillRate * Time.deltaTime, maxWaterPool);
 
         // Scan for nearest pot
         PotContents found = FindNearestPot();
@@ -209,14 +221,15 @@ public class PotInteraction : MonoBehaviour
             Debug.Log("[PotInteraction] No plant in this pot — nothing to water.");
             return;
         }
-        if (playerWaterPool <= 0f)
+        if (dragonInventory.getWaterPool() <= 0f)
         {
             Debug.Log("[PotInteraction] Water pool empty. Wait for refill.");
             return;
         }
-        float transfer = Mathf.Min(waterPerPress, playerWaterPool);
-        if (pot.AddWater(transfer))
-            playerWaterPool -= transfer;
+        float transfer = Mathf.Min(waterPerPress, dragonInventory.getWaterPool());
+        if (pot.AddWater(transfer)){
+            dragonInventory.reduceWaterPool(transfer);   
+        }
         else
             Debug.Log("[PotInteraction] Pot is already full.");
     }
@@ -318,6 +331,12 @@ public class PotInteraction : MonoBehaviour
 
     private void OpenMenu(PotContents pot)
     {
+        // Add this null check at the VERY START
+        if (pot == null || pot.gameObject == null)
+        {
+            Debug.LogWarning("Tried to open menu for a destroyed or null pot");
+            return;
+        }
         GameInputModeManager.Instance?.SetPlacementMode();
         ThirdPersonCameraController.CameraLocked = true;
 
@@ -351,35 +370,43 @@ public class PotInteraction : MonoBehaviour
         }
 
         // ── Plant actions ─────────────────────────────────────────
-        if (pot.HasSoil)
+        if (pot != null && pot.HasSoil)
         {
             if (!pot.HasPlant)
             {
-                if (plantPrefabs.Count > 0)
+                if (dragonInventory != null && dragonInventory.GetInventory().Count > 0)
                 {
-                    // For static pots every plant fits; for grid pots show the size constraint.
                     string potSizeHeader = pot.IsStatic
                         ? "Add Plant:  (accepts any size)"
                         : $"Add Plant:  (pot size: {pot.PotSize})";
                     actions.Add((potSizeHeader, null, false));
 
-                    foreach (GameObject prefab in plantPrefabs)
+                    foreach (GameObject prefab in dragonInventory.GetInventory())
                     {
+                        if (prefab == null) continue; // Skip null prefabs
+                        
                         GameObject captured = prefab;
                         PlantState ps = prefab.GetComponent<PlantState>();
                         string plantName = prefab.name.Replace("(Clone)", "").Trim();
 
                         string sizeTag = ps != null ? $"[{ps.plantSize}]" : "[?]";
 
-                        // Static pots accept every size — always show as a valid fit.
                         bool fits = pot.IsStatic || (ps != null && ps.plantSize == pot.PotSize);
                         string prefix = fits ? "  " : "  ✗ ";
 
                         actions.Add(($"{prefix}{plantName} {sizeTag}", () =>
                         {
+                            if (pot == null || pot.gameObject == null)
+                            {
+                                Debug.LogWarning("Pot was destroyed before plant could be added");
+                                CloseMenu();
+                                return;
+                            }
+                            
                             bool success = pot.AddPlant(captured);
                             if (success)
                             {
+                                dragonInventory.RemoveFirstPlant(captured);
                                 CloseMenu();
 
                                 // We're standing right at this pot, so reflect
@@ -401,22 +428,27 @@ public class PotInteraction : MonoBehaviour
                 }
                 else
                 {
-                    actions.Add(("[No plant prefabs assigned]", null, false));
+                    actions.Add(("[No plants Available]", null, false));
                 }
             }
             else
             {
                 // Has plant — offer watering and removal
-                actions.Add(($"Water Plant  (pool: {playerWaterPool:F1})", () =>
+                actions.Add(($"Water Plant  (pool: {dragonInventory.getWaterPool():F1})", () =>
                 {
-                    QuickWater(pot);
-                    OpenMenu(pot); // refresh label
+                    if (pot != null) QuickWater(pot);
+                    if (pot != null && pot.gameObject != null) OpenMenu(pot);
+                    else CloseMenu();
                 }, false));
 
                 actions.Add(("Remove Plant", () =>
                 {
                     ClearCurrentOutline();
                     pot.RemovePlant();
+                    if (pot != null && dragonInventory != null)
+                    {
+                        pot.RemovePlant(dragonInventory);
+                    }
                     CloseMenu();
                 }, false));
             }

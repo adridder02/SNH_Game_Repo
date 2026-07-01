@@ -444,22 +444,6 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: b28b7a0b-846f-48fc-b109-125d1b80da8d
     m_ActionName: 'GamePlay/Look[/Mouse/delta]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1626900288}
-        m_TargetAssemblyTypeName: UI_Inventory_Script, Assembly-CSharp
-        m_MethodName: ToggleInventory
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 8c1fa552-24c4-4623-9f80-9e1e903f01d5
-    m_ActionName: 'GamePlay/Inventory[/Keyboard/i]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: GamePlay
@@ -489,8 +473,6 @@ MonoBehaviour:
   flyVerticalSpeed: 5
   flyPitchInfluence: 1
   inputActions: {fileID: -944628639613478452, guid: 96f9bf046802d4545868fdcc2b9f308a, type: 3}
-  Exit: {fileID: 219163160}
-  Restart: {fileID: 1809882409}
 --- !u!65 &74016815
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -583,7 +565,6 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1503386468}
-  - {fileID: 1626900287}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -97.753, z: 0}
 --- !u!114 &74016819
@@ -744,8 +725,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
   plantsInInventory: []
   inventorySize: 0
-  maxInventorySize: 9
-  maxWaterRefill: 20
 --- !u!1 &92721601
 GameObject:
   m_ObjectHideFlags: 0
@@ -1288,8 +1267,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 7443154059041681990, guid: 1585d53afbc80614582b370de8cda904, type: 3}
-  plantName: Plant
-  plantIcon: {fileID: 0}
 --- !u!65 &248568732
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2041,8 +2018,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 6703200343087572510, guid: e1bd2a8906563cb4f808c03663bb7eae, type: 3}
-  plantName: Plant
-  plantIcon: {fileID: 0}
 --- !u!65 &524777666
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2298,8 +2273,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 6397339370049151978, guid: f6ae0fd546c583d4295b4d12e60ee02d, type: 3}
-  plantName: Plant
-  plantIcon: {fileID: 0}
 --- !u!65 &632722950
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3234,184 +3207,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d7825db8d1b18647863159addc550c8, type: 3}
---- !u!43 &1006578860
-Mesh:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: GeneratedGrassBlade
-  serializedVersion: 12
-  m_SubMeshes:
-  - serializedVersion: 2
-    firstByte: 0
-    indexCount: 18
-    topology: 0
-    baseVertex: 0
-    firstVertex: 0
-    vertexCount: 8
-    localAABB:
-      m_Center: {x: 0, y: 0.5, z: 0}
-      m_Extent: {x: 0.05, y: 0.5, z: 0}
-  m_Shapes:
-    vertices: []
-    shapes: []
-    channels: []
-    fullWeights: []
-  m_BindPose: []
-  m_BoneNameHashes: 
-  m_RootBoneNameHash: 0
-  m_BonesAABB: []
-  m_VariableBoneCountWeights:
-    m_Data: 
-  m_MeshCompression: 0
-  m_IsReadable: 1
-  m_KeepVertices: 1
-  m_KeepIndices: 1
-  m_IndexFormat: 0
-  m_IndexBuffer: 000002000100010002000300020004000300030004000500040006000500050006000700
-  m_VertexData:
-    serializedVersion: 3
-    m_VertexCount: 8
-    m_Channels:
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 12
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 24
-      format: 0
-      dimension: 4
-    - stream: 0
-      offset: 40
-      format: 0
-      dimension: 2
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    m_DataSize: 384
-    _typelessdata: cdcc4cbd00000000000000000000000000000000000080bf0000000000000000000000000000803f0000000000000000cdcc4c3d00000000000000000000000000000000ffff7fbf0000000000000000000000000000803f0000803f00000000898808bdabaaaa3e000000000000000000000000000080bfabaaaa3eabaaaa3eabaaaa3e0000803f00000000abaaaa3e8988083dabaaaa3e000000000000000000000000ffff7fbfabaaaa3eabaaaa3eabaaaa3e0000803f0000803fabaaaa3e888888bcabaa2a3f000000000000000000000000000080bfabaa2a3fabaa2a3fabaa2a3f0000803f00000000abaa2a3f8888883cabaa2a3f000000000000000000000000000080bfabaa2a3fabaa2a3fabaa2a3f0000803f0000803fabaa2a3f000000800000803f000000000000000000000000000080bf0000803f0000803f0000803f0000803f000000000000803f000000000000803f000000000000000000000000000000000000803f0000803f0000803f0000803f0000803f0000803f
-  m_CompressedMesh:
-    m_Vertices:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UV:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Normals:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Tangents:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Weights:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_NormalSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_TangentSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_FloatColors:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_BoneIndices:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Triangles:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UVInfo: 0
-  m_LocalAABB:
-    m_Center: {x: 0, y: 0.5, z: 0}
-    m_Extent: {x: 0.05, y: 0.5, z: 0}
-  m_MeshUsageFlags: 0
-  m_CookingOptions: 30
-  m_BakedConvexCollisionMesh: 
-  m_BakedTriangleCollisionMesh: 
-  'm_MeshMetrics[0]': 1
-  'm_MeshMetrics[1]': 1
-  m_MeshOptimizationFlags: 1
-  m_StreamData:
-    serializedVersion: 2
-    offset: 0
-    size: 0
-    path: 
-  m_MeshLodInfo:
-    serializedVersion: 2
-    m_LodSelectionCurve:
-      serializedVersion: 1
-      m_LodSlope: 0
-      m_LodBias: 0
-    m_NumLevels: 1
-    m_SubMeshes:
-    - serializedVersion: 2
-      m_Levels:
-      - serializedVersion: 1
-        m_IndexStart: 0
-        m_IndexCount: 0
 --- !u!1 &1046433394
 GameObject:
   m_ObjectHideFlags: 0
@@ -3725,120 +3520,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d7825db8d1b18647863159addc550c8, type: 3}
---- !u!1 &1259791373
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1259791377}
-  - component: {fileID: 1259791376}
-  - component: {fileID: 1259791375}
-  - component: {fileID: 1259791374}
-  m_Layer: 9
-  m_Name: Water
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!136 &1259791374
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1259791373}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
---- !u!23 &1259791375
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1259791373}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 84a73b698a16d6e40902fb5e87aad793, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &1259791376
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1259791373}
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &1259791377
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1259791373}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 67.8, y: -10.5, z: -1.7}
-  m_LocalScale: {x: 3.12, y: 2.04, z: 3.47}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1323237024
 GameObject:
   m_ObjectHideFlags: 0
@@ -3872,8 +3553,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 7106053868976010694, guid: 6cf00a1e2fb7a3e439e9aa4a4d49e137, type: 3}
-  plantName: Plant
-  plantIcon: {fileID: 0}
 --- !u!65 &1323237026
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5098,75 +4777,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3048851310703494, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
---- !u!1 &1626900286
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1626900287}
-  - component: {fileID: 1626900289}
-  - component: {fileID: 1626900288}
-  m_Layer: 5
-  m_Name: UIDoc_inventory
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1626900287
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1626900286}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.753294, z: -0, w: 0.65768397}
-  m_LocalPosition: {x: -42.60299, y: 27.893753, z: 42.135662}
-  m_LocalScale: {x: 0.44086614, y: 3.0253525, z: 2.224845}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 74016818}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1626900288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1626900286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6520da5e6edc58846aae3d1a9f892c72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_Inventory_Script
-  playerInventory: {fileID: 74016822}
---- !u!114 &1626900289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1626900286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
-  m_PanelSettings: {fileID: 11400000, guid: 23a4841d6d4a9a64595576723ce7d0fe, type: 2}
-  m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 75d97ba69af83e94596c532707d4a4fe, type: 3}
-  m_SortingOrder: 0
-  m_Position: 0
-  m_WorldSpaceSizeMode: 1
-  m_WorldSpaceWidth: 1920
-  m_WorldSpaceHeight: 1080
-  m_PivotReferenceSize: 0
-  m_Pivot: 0
-  m_WorldSpaceCollider: {fileID: 0}
 --- !u!1001 &1685297431
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5307,17 +4917,6 @@ Transform:
   - {fileID: 1393679875}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -55.053, z: 0}
---- !u!114 &1809882409 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 274159321183826503, guid: 527bb085f53873140847fcc1081ec965, type: 3}
-  m_PrefabInstance: {fileID: 8842540240531936093}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &1814211581
 GameObject:
   m_ObjectHideFlags: 0
@@ -6077,8 +5676,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 2775176059256192284, guid: a652209b9c817cd419181350c1ec215c, type: 3}
-  plantName: Plant
-  plantIcon: {fileID: 0}
 --- !u!1 &2096065623
 GameObject:
   m_ObjectHideFlags: 0
@@ -6250,8 +5847,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 3147640831792386703, guid: 41465438df12e0d4abc075ae4336a258, type: 3}
-  plantName: Plant
-  plantIcon: {fileID: 0}
 --- !u!65 &2144453300
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8198,7 +7793,7 @@ GameObject:
   - component: {fileID: 813381695958754359}
   m_Layer: 0
   m_Name: Verdant Algae
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8216,7 +7811,7 @@ GameObject:
   - component: {fileID: 813381695926985259}
   m_Layer: 0
   m_Name: Verdant Algae
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8234,7 +7829,7 @@ GameObject:
   - component: {fileID: 813381695855858363}
   m_Layer: 0
   m_Name: Verdant Algae
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8252,7 +7847,7 @@ GameObject:
   - component: {fileID: 813381696131268098}
   m_Layer: 0
   m_Name: Verdant Algae
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8270,7 +7865,7 @@ GameObject:
   - component: {fileID: 813381696106897864}
   m_Layer: 0
   m_Name: Verdant Algae
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8288,7 +7883,7 @@ GameObject:
   - component: {fileID: 813381695306466483}
   m_Layer: 0
   m_Name: Verdant Algae
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8306,7 +7901,7 @@ GameObject:
   - component: {fileID: 813381695187310040}
   m_Layer: 0
   m_Name: Verdant Algae
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8324,7 +7919,7 @@ GameObject:
   - component: {fileID: 813381694929347912}
   m_Layer: 0
   m_Name: Verdant Algae
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9052,7 +8647,7 @@ GameObject:
   - component: {fileID: 6476096880023233388}
   m_Layer: 0
   m_Name: Sundial Cactus
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9069,11 +8664,9 @@ GameObject:
   - component: {fileID: 4239368287415267494}
   - component: {fileID: 2768458491057322242}
   - component: {fileID: 6476096878520886035}
-  - component: {fileID: 6476096878520886037}
-  - component: {fileID: 6476096878520886036}
   m_Layer: 0
   m_Name: Sundial Cactus
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9092,7 +8685,7 @@ GameObject:
   - component: {fileID: 6476096878466650660}
   m_Layer: 0
   m_Name: Sundial Cactus
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10115,7 +9708,7 @@ GameObject:
   - component: {fileID: 713111820593035490}
   m_Layer: 0
   m_Name: Whumpril
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10134,7 +9727,7 @@ GameObject:
   - component: {fileID: 713111820281508697}
   m_Layer: 0
   m_Name: Whumpril
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10153,7 +9746,7 @@ GameObject:
   - component: {fileID: 713111821086852032}
   m_Layer: 0
   m_Name: Whumpril
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11778,7 +11371,7 @@ GameObject:
   - component: {fileID: 8096330631364292474}
   m_Layer: 0
   m_Name: Drifter
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11797,7 +11390,7 @@ GameObject:
   - component: {fileID: 8096330632366887858}
   m_Layer: 0
   m_Name: Drifter
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11816,7 +11409,7 @@ GameObject:
   - component: {fileID: 8096330632102485775}
   m_Layer: 0
   m_Name: Drifter
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12081,7 +11674,7 @@ GameObject:
   - component: {fileID: 7110677182469252363}
   m_Layer: 0
   m_Name: Pollen Puff
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12100,7 +11693,7 @@ GameObject:
   - component: {fileID: 7110677182455594491}
   m_Layer: 0
   m_Name: Pollen Puff
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12119,7 +11712,7 @@ GameObject:
   - component: {fileID: 7110677182487680856}
   m_Layer: 0
   m_Name: Pollen Puff
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12138,7 +11731,7 @@ GameObject:
   - component: {fileID: 7110677183225747061}
   m_Layer: 0
   m_Name: Pollen Puff
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12157,7 +11750,7 @@ GameObject:
   - component: {fileID: 7110677183491478042}
   m_Layer: 0
   m_Name: Pollen Puff
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12176,7 +11769,7 @@ GameObject:
   - component: {fileID: 7110677182683737302}
   m_Layer: 0
   m_Name: Pollen Puff
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12213,7 +11806,7 @@ GameObject:
   - component: {fileID: 33486973666724253}
   m_Layer: 0
   m_Name: The Maw-Jaw
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12919,7 +12512,7 @@ GameObject:
   - component: {fileID: 1635069028714931588}
   m_Layer: 0
   m_Name: Glowcap
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12938,7 +12531,7 @@ GameObject:
   - component: {fileID: 1635069029065768854}
   m_Layer: 0
   m_Name: Glowcap
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12957,7 +12550,7 @@ GameObject:
   - component: {fileID: 1635069027123543857}
   m_Layer: 0
   m_Name: Glowcap
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12976,7 +12569,7 @@ GameObject:
   - component: {fileID: 1635069027632588698}
   m_Layer: 0
   m_Name: Glowcap
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12995,7 +12588,7 @@ GameObject:
   - component: {fileID: 1635069027407620976}
   m_Layer: 0
   m_Name: Glowcap
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13014,7 +12607,7 @@ GameObject:
   - component: {fileID: 1635069027769226692}
   m_Layer: 0
   m_Name: Glowcap
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13659,7 +13252,7 @@ GameObject:
   - component: {fileID: 1395151290218687686}
   m_Layer: 0
   m_Name: Clovenwick
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13678,7 +13271,7 @@ GameObject:
   - component: {fileID: 1395151290205232540}
   m_Layer: 0
   m_Name: Clovenwick
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13697,7 +13290,7 @@ GameObject:
   - component: {fileID: 1395151289126289812}
   m_Layer: 0
   m_Name: Clovenwick
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13716,7 +13309,7 @@ GameObject:
   - component: {fileID: 1395151289123875891}
   m_Layer: 0
   m_Name: Clovenwick
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16121,7 +15714,7 @@ GameObject:
   - component: {fileID: 4927584041276495913}
   m_Layer: 0
   m_Name: Dewdropper
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16140,7 +15733,7 @@ GameObject:
   - component: {fileID: 4927584040299851480}
   m_Layer: 0
   m_Name: Dewdropper
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16159,7 +15752,7 @@ GameObject:
   - component: {fileID: 4927584040620643134}
   m_Layer: 0
   m_Name: Dewdropper
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17633,7 +17226,7 @@ GameObject:
   - component: {fileID: 464616855847756236}
   m_Layer: 0
   m_Name: Windmill Aster
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17652,7 +17245,7 @@ GameObject:
   - component: {fileID: 464616855931373980}
   m_Layer: 0
   m_Name: Windmill Aster
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17671,7 +17264,7 @@ GameObject:
   - component: {fileID: 464616857123625852}
   m_Layer: 0
   m_Name: Windmill Aster
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17903,7 +17496,7 @@ GameObject:
   - component: {fileID: 3159654004819036688}
   m_Layer: 0
   m_Name: The Deluge Catcher
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18258,67 +17851,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4441726058306313487, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
---- !u!114 &6476096878520886036
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1108434113033810820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.05
-  outlineShader: {fileID: 0}
---- !u!114 &6476096878520886037
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1108434113033810820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea6b95557e7067b4a8c58044c08c19c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlantState
-  plantSize: 0
-  potPlacementOffset: 0
-  potPlacementRotation: {x: 0, y: 0, z: 0}
-  preferredSoil: 1
-  neutralSoil: 0
-  lightThresholdHigh: 0.6
-  lightThresholdLow: 0.25
-  waterThresholdHigh: 6
-  waterThresholdLow: 3
-  revivedMinScore: 5
-  intermediateMinScore: 2
-  lightSensor: {fileID: 0}
-  revivedVisual: {fileID: 0}
-  intermediateVisual: {fileID: 0}
-  deadVisual: {fileID: 0}
-  debuff:
-    enabled: 0
-    scanInterval: 2
-    amountPerTick: 0.5
-    duration: 5
-    tickInterval: 1
-    transferStolenWaterToSelf: 0
-    mode: 0
-  miasmaLightPenalty: 0
-  miasmaSoilPenalty: 0
-  miasmaWaterDrainMultiplier: 1
-  isMiasmaDebuffActive: 0
-  currentState: 2
-  currentSoil: 2
-  isOnSoil: 0
-  lastTotalScore: 0
-  soilScore: 0
-  lightScore: 0
-  waterScore: 0
 --- !u!64 &6476096880023233388
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -18683,7 +18215,7 @@ GameObject:
   - component: {fileID: 5161463336742968768}
   m_Layer: 0
   m_Name: Bubble Blossom
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18702,7 +18234,7 @@ GameObject:
   - component: {fileID: 5161463337114361734}
   m_Layer: 0
   m_Name: Bubble Blossom
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18721,7 +18253,7 @@ GameObject:
   - component: {fileID: 5161463335835968843}
   m_Layer: 0
   m_Name: Bubble Blossom
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19276,7 +18808,7 @@ GameObject:
   - component: {fileID: 6553551281968635862}
   m_Layer: 0
   m_Name: Melodybloom
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19295,7 +18827,7 @@ GameObject:
   - component: {fileID: 6553551282074068029}
   m_Layer: 0
   m_Name: Melodybloom
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19314,7 +18846,7 @@ GameObject:
   - component: {fileID: 6553551281286174300}
   m_Layer: 0
   m_Name: Melodybloom
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19333,7 +18865,7 @@ GameObject:
   - component: {fileID: 6553551283129172670}
   m_Layer: 0
   m_Name: Melodybloom
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19644,7 +19176,6 @@ GameObject:
   - component: {fileID: 5651565458965601079}
   - component: {fileID: 2003362164876193251}
   - component: {fileID: 4440948893329168587}
-  - component: {fileID: 7302730963028417734}
   m_Layer: 0
   m_Name: Floor.002
   m_TagString: Untagged
@@ -19652,27 +19183,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &7302730963028417734
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7302730963028417733}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 54.319733, y: 60.800667, z: 1.9047459}
-  m_Center: {x: -22.687862, y: 1.6746727, z: -3.2988348}
 --- !u!4 &7306305287929671793
 Transform:
   m_ObjectHideFlags: 0
@@ -19866,7 +19376,7 @@ GameObject:
   - component: {fileID: 7613040285280289441}
   m_Layer: 0
   m_Name: Waterbell
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19885,7 +19395,7 @@ GameObject:
   - component: {fileID: 7613040285220587884}
   m_Layer: 0
   m_Name: Waterbell
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19904,7 +19414,7 @@ GameObject:
   - component: {fileID: 7613040285820075031}
   m_Layer: 0
   m_Name: Waterbell
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19923,7 +19433,7 @@ GameObject:
   - component: {fileID: 7613040284510583599}
   m_Layer: 0
   m_Name: Waterbell
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19942,7 +19452,7 @@ GameObject:
   - component: {fileID: 7613040284836984320}
   m_Layer: 0
   m_Name: Waterbell
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19961,7 +19471,7 @@ GameObject:
   - component: {fileID: 7613040284714903093}
   m_Layer: 0
   m_Name: Waterbell
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20043,7 +19553,7 @@ GameObject:
   - component: {fileID: 4762233998678574767}
   m_Layer: 0
   m_Name: The Luminary
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22257,7 +21767,7 @@ GameObject:
   - component: {fileID: 8857077381460762829}
   m_Layer: 0
   m_Name: Sparkmint
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22298,7 +21808,7 @@ GameObject:
   - component: {fileID: 8857077381757582226}
   m_Layer: 0
   m_Name: Sparkmint
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22339,7 +21849,7 @@ GameObject:
   - component: {fileID: 8857077382301159423}
   m_Layer: 0
   m_Name: Sparkmint
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22380,7 +21890,7 @@ GameObject:
   - component: {fileID: 8857077382925983889}
   m_Layer: 0
   m_Name: Sparkmint
-  m_TagString: Selectable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22804,7 +22314,6 @@ SceneRoots:
   - {fileID: 8842540240531936093}
   - {fileID: 2066640467}
   - {fileID: 248568735}
-  - {fileID: 1259791377}
   - {fileID: 524777669}
   - {fileID: 2144453303}
   - {fileID: 1323237029}

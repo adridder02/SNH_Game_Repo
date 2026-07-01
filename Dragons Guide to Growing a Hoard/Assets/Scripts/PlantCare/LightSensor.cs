@@ -105,7 +105,7 @@ public class LightSensor : MonoBehaviour
 
         // Read the raw intensity from the Unity Light component.
         rawIntensity = directionalLight.intensity;
-        Debug.Log("Raw Light Intensity felt " + rawIntensity);
+//        Debug.Log("Raw Light Intensity felt " + rawIntensity);
         // Optionally check whether the plant is occluded by geometry.
         isInShadow = checkForObstacles && IsPlantInShadow();
 
@@ -114,7 +114,7 @@ public class LightSensor : MonoBehaviour
         normalisedIntensity = isInShadow
             ? 0f
             : Mathf.Clamp01(rawIntensity / maxLightIntensity);
-             Debug.Log("Light Intensity felt " + Mathf.Clamp01(rawIntensity / maxLightIntensity));
+//             Debug.Log("Light Intensity felt " + Mathf.Clamp01(rawIntensity / maxLightIntensity));
 
     }
 
