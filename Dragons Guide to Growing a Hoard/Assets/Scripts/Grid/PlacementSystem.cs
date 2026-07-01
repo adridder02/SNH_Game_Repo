@@ -35,6 +35,8 @@ public class PlacementSystem : MonoBehaviour
     private AudioSource sfxSource;
     private AudioSource ambientSource;
 
+    [Header("Tutorial Ref")]
+    [SerializeField] private Tutorial tut;
     private enum Mode
     {
         None,
@@ -519,6 +521,9 @@ public class PlacementSystem : MonoBehaviour
             Debug.Log($"TryPlace: Successfully placed pot '{placed.name}' at {worldPos}");
 
         PlaySFX(placeSoundClip);
+        if(tut != null){
+            tut.movePot();
+        }
     }
 
     private void TryRemove(Vector2Int cell)
@@ -549,6 +554,9 @@ public class PlacementSystem : MonoBehaviour
         Destroy(data.PlacedObject);
 
         PlaySFX(removeSoundClip);
+        if(tut != null){
+            tut.addedPotToInventory();
+        }
     }
 
     private void TryPickupOrDrop(Vector2Int cell)

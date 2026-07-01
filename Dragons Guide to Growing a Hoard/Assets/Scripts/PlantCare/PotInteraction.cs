@@ -82,6 +82,7 @@ public class PotInteraction : MonoBehaviour
     private PotContents nearbyPot;
     private bool menuOpen = false;
 
+
     // Transient feedback message shown inside the open menu.
     // Cleared each time the menu rebuilds.
     private string pendingFeedbackMessage = null;
@@ -199,8 +200,9 @@ public class PotInteraction : MonoBehaviour
             return;
         }
         float transfer = Mathf.Min(waterPerPress, dragonInventory.getWaterPool());
-        if (pot.AddWater(transfer))
-            dragonInventory.reduceWaterPool(transfer);
+        if (pot.AddWater(transfer)){
+            dragonInventory.reduceWaterPool(transfer);   
+        }
         else
             Debug.Log("[PotInteraction] Pot is already full.");
     }

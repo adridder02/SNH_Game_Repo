@@ -73,7 +73,9 @@ public class PotContents : MonoBehaviour
     [Header("Runtime")]
     [Tooltip("Current water level used by PlantState debuffs and scoring")]
     public float waterLevel = 0f;
-
+    
+    [Header("Tutorial Object")]
+    [SerializeField] private Tutorial tut;
     // ---------------------------------------------------------------
     [Header("Runtime")]
     [SerializeField] private SoilKind currentSoil = SoilKind.Loam;
@@ -92,7 +94,8 @@ public class PotContents : MonoBehaviour
 
     // Live reference to the spawned soil mesh inside the pot.
     private GameObject currentSoilObject;
-    private GameObject currentPlantPrefab;
+    [Header("Start Plant")]
+    [SerializeField] private GameObject currentPlantPrefab;
 
     // These fields are set by PlacementSystem when a pot is placed/moved
     [HideInInspector] public Vector3Int GridOrigin;
@@ -106,6 +109,72 @@ public class PotContents : MonoBehaviour
         waterLevel = 0f;
         hasSoil = false;
         hasPlant = false;
+        
+        if(this.currentPlantPrefab){// aslo add tutorial boollean to say this is only for the tutorial
+            SetSoil(currentSoil);
+            //currentPlantPrefab = prefab;
+            PlantState candidate = currentPlantPrefab.GetComponent<PlantState>();
+
+            // Static pots accept any plant size; only enforce size for normal grid pots.
+            if (!isStaticPot && candidate != null && candidate.plantSize != potSize)
+            {
+                Debug.LogWarning(
+                    $"[PotContents] Size mismatch — plant is {candidate.plantSize} " +
+                    $"but pot needs {potSize}. Plant not added.");
+                //return false;
+            }
+
+            Transform anchor = plantAnchor != null ? plantAnchor : transform;
+
+            // Spawn without a parent first so world-space Renderer bounds are accurate.
+            GameObject go = Object.Instantiate(currentPlantPrefab, anchor.position, anchor.rotation);
+
+            Plant = go.GetComponent<PlantState>();
+
+            if (Plant == null)
+            {
+                Object.Destroy(go);
+                Debug.LogWarning("[PotContents] Plant prefab missing PlantState.");
+                //return false;
+            }
+
+            // Per-plant placement overrides (set on PlantState in the Inspector).
+            float perPlantOffset = Plant.potPlacementOffset;
+            Vector3 perPlantEuler = Plant.potPlacementRotation;
+
+            // Apply the per-plant rotation BEFORE measuring bounds so the
+            // renderer extents reflect the actual in-pot orientation.
+            go.transform.rotation = anchor.rotation * Quaternion.Euler(perPlantEuler);
+
+            // Surface-snap: lift the plant so its lowest renderer bound sits flush
+            // with the anchor's Y, preventing it from clipping into the soil.
+            // If the prefab has no Renderers the pivot stays at the anchor as-is.
+            float lowestY = float.MaxValue;
+            foreach (Renderer rend in go.GetComponentsInChildren<Renderer>())
+            {
+                if (rend.bounds.min.y < lowestY)
+                    lowestY = rend.bounds.min.y;
+            }
+
+            // Combined offset: pot-wide baseline + per-plant fine-tune.
+            float totalOffset = plantSurfaceOffset + perPlantOffset;
+
+            if (lowestY < float.MaxValue)
+            {
+                float snapOffset = anchor.position.y - lowestY + totalOffset;
+                go.transform.position += new Vector3(0f, snapOffset, 0f);
+            }
+            else if (totalOffset != 0f)
+            {
+                go.transform.position += new Vector3(0f, totalOffset, 0f);
+            }
+
+            // Parent after snapping so the corrected world position is preserved.
+            go.transform.SetParent(anchor, worldPositionStays: true);
+
+            hasPlant = true;
+            Plant.SetPotContents(this);
+        }
     }
 
     // Called after placement or when a plant is added to this pot
@@ -220,6 +289,8 @@ public class PotContents : MonoBehaviour
         {
             foreach (Renderer rend in currentSoilObject.GetComponentsInChildren<Renderer>())
                 rend.material = materialToApply;
+            if(tut !=null)
+                tut.addedSoil();
         }
     }
 
@@ -292,6 +363,8 @@ public class PotContents : MonoBehaviour
 
         hasPlant = true;
         Plant.SetPotContents(this);
+        if(tut != null)
+            tut.plantedSeed();
         return true;
     }
 
@@ -317,6 +390,8 @@ public class PotContents : MonoBehaviour
         // Now destroy the plant
         if (plantToDestroy != null)
         {
+            if(tut != null)
+                tut.removedPlant();
             Destroy(plantToDestroy);
         }
     }
@@ -328,6 +403,8 @@ public class PotContents : MonoBehaviour
     {
         if (waterLevel >= plantWaterMax) return false;
         waterLevel = Mathf.Min(waterLevel + amount, plantWaterMax);
+        if(tut != null)
+            tut.addedWater(); 
         return true;
     }
 

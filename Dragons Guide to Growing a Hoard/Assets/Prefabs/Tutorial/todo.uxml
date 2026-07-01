@@ -1,0 +1,13 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="tutorial_UI" style="flex-grow: 1;">
+        <ui:GroupBox name="TaskList" style="height: 281px; width: 237px; right: 0; position: absolute; background-color: rgba(90, 90, 90, 0.72);">
+            <ui:Label text="Tasks:" name="Tasks" style="background-color: rgba(255, 255, 255, 0.58);"/>
+            <ui:Toggle label="" text="Remove plant from pot." name="Task1"/>
+            <ui:Toggle label="" text="Add pot to inventory" name="Task2"/>
+            <ui:Toggle label="" text="Place Pot on the sunny area " name="Task3"/>
+            <ui:Toggle label="" text="Place Soil into the Pot" name="Task4"/>
+            <ui:Toggle label="" text="Plant the plant in the Pot" name="Task5"/>
+            <ui:Toggle label="" text="Add water to the plant" name="Task6"/>
+        </ui:GroupBox>
+    </ui:VisualElement>
+</ui:UXML>
