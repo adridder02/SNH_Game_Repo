@@ -244,7 +244,7 @@ public class PlayerController : MonoBehaviour
 		//Debug.Log("Collided with: " + otherObj.name);
         
         //!I'll make a better check system
-        if (locomotionState == LocomotionState.Grounded && !otherObj.name.Contains("Floor")  && !otherObj.name.Contains("Placeable (") && !otherObj.name.Contains("Pot") && !otherObj.name.Contains("Table") )
+        if (locomotionState == LocomotionState.Grounded && ( !otherObj.name.Contains("Floor")  || !otherObj.name.Contains("Placeable (") || !otherObj.name.Contains("Pot") || !otherObj.name.Contains("Table") ))
         {
             Jump();
             locomotionState = LocomotionState.Jumping;

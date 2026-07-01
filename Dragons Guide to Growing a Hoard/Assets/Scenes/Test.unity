@@ -2841,6 +2841,184 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d7825db8d1b18647863159addc550c8, type: 3}
+--- !u!43 &1006578860
+Mesh:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GeneratedGrassBlade
+  serializedVersion: 12
+  m_SubMeshes:
+  - serializedVersion: 2
+    firstByte: 0
+    indexCount: 18
+    topology: 0
+    baseVertex: 0
+    firstVertex: 0
+    vertexCount: 8
+    localAABB:
+      m_Center: {x: 0, y: 0.5, z: 0}
+      m_Extent: {x: 0.05, y: 0.5, z: 0}
+  m_Shapes:
+    vertices: []
+    shapes: []
+    channels: []
+    fullWeights: []
+  m_BindPose: []
+  m_BoneNameHashes: 
+  m_RootBoneNameHash: 0
+  m_BonesAABB: []
+  m_VariableBoneCountWeights:
+    m_Data: 
+  m_MeshCompression: 0
+  m_IsReadable: 1
+  m_KeepVertices: 1
+  m_KeepIndices: 1
+  m_IndexFormat: 0
+  m_IndexBuffer: 000002000100010002000300020004000300030004000500040006000500050006000700
+  m_VertexData:
+    serializedVersion: 3
+    m_VertexCount: 8
+    m_Channels:
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 3
+    - stream: 0
+      offset: 12
+      format: 0
+      dimension: 3
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 24
+      format: 0
+      dimension: 4
+    - stream: 0
+      offset: 40
+      format: 0
+      dimension: 2
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    m_DataSize: 384
+    _typelessdata: cdcc4cbd00000000000000000000000000000000000080bf0000000000000000000000000000803f0000000000000000cdcc4c3d00000000000000000000000000000000ffff7fbf0000000000000000000000000000803f0000803f00000000898808bdabaaaa3e000000000000000000000000000080bfabaaaa3eabaaaa3eabaaaa3e0000803f00000000abaaaa3e8988083dabaaaa3e000000000000000000000000ffff7fbfabaaaa3eabaaaa3eabaaaa3e0000803f0000803fabaaaa3e888888bcabaa2a3f000000000000000000000000000080bfabaa2a3fabaa2a3fabaa2a3f0000803f00000000abaa2a3f8888883cabaa2a3f000000000000000000000000000080bfabaa2a3fabaa2a3fabaa2a3f0000803f0000803fabaa2a3f000000800000803f000000000000000000000000000080bf0000803f0000803f0000803f0000803f000000000000803f000000000000803f000000000000000000000000000000000000803f0000803f0000803f0000803f0000803f0000803f
+  m_CompressedMesh:
+    m_Vertices:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_UV:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Normals:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Tangents:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Weights:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_NormalSigns:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_TangentSigns:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_FloatColors:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_BoneIndices:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Triangles:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_UVInfo: 0
+  m_LocalAABB:
+    m_Center: {x: 0, y: 0.5, z: 0}
+    m_Extent: {x: 0.05, y: 0.5, z: 0}
+  m_MeshUsageFlags: 0
+  m_CookingOptions: 30
+  m_BakedConvexCollisionMesh: 
+  m_BakedTriangleCollisionMesh: 
+  'm_MeshMetrics[0]': 1
+  'm_MeshMetrics[1]': 1
+  m_MeshOptimizationFlags: 1
+  m_StreamData:
+    serializedVersion: 2
+    offset: 0
+    size: 0
+    path: 
+  m_MeshLodInfo:
+    serializedVersion: 2
+    m_LodSelectionCurve:
+      serializedVersion: 1
+      m_LodSlope: 0
+      m_LodBias: 0
+    m_NumLevels: 1
+    m_SubMeshes:
+    - serializedVersion: 2
+      m_Levels:
+      - serializedVersion: 1
+        m_IndexStart: 0
+        m_IndexCount: 0
 --- !u!1 &1046433394
 GameObject:
   m_ObjectHideFlags: 0
@@ -3154,6 +3332,62 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d7825db8d1b18647863159addc550c8, type: 3}
+--- !u!1 &1227763370
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1227763372}
+  - component: {fileID: 1227763371}
+  m_Layer: 0
+  m_Name: GrassArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1227763371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1227763370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8949a641eb51d4b4497cc3f682278690, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GrassScatter
+  areaSize: {x: 10, y: 10}
+  densityPerSqm: 10
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  bladeMesh: {fileID: 1006578860}
+  grassMaterial: {fileID: 2100000, guid: 9941085e569fa754682dd57c93d4fa6c, type: 2}
+  minHeight: 0.8
+  maxHeight: 3
+  minWidth: 0.8
+  maxWidth: 1.1
+  randomSeed: 0
+--- !u!4 &1227763372
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1227763370}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -17.81, y: -15.31, z: -2.44}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1367397641
 GameObject:
   m_ObjectHideFlags: 0
@@ -7929,6 +8163,7 @@ GameObject:
   - component: {fileID: 4239368287415267494}
   - component: {fileID: 2768458491057322242}
   - component: {fileID: 6476096878520886035}
+  - component: {fileID: 6476096878520886037}
   - component: {fileID: 6476096878520886036}
   m_Layer: 0
   m_Name: Sundial Cactus
@@ -17126,13 +17361,58 @@ MonoBehaviour:
   m_GameObject: {fileID: 1108434113033810820}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b226d64d5b650c489ec2590a77cb1a0, type: 3}
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ObjectOutline
-  OutlinedObject: {fileID: 0}
-  WriteObject: {fileID: 0}
-  ApplyOutline: {fileID: 0}
-  sceneCamera: {fileID: 330585545}
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.05
+  outlineShader: {fileID: 0}
+--- !u!114 &6476096878520886037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108434113033810820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6b95557e7067b4a8c58044c08c19c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantState
+  plantSize: 0
+  potPlacementOffset: 0
+  potPlacementRotation: {x: 0, y: 0, z: 0}
+  preferredSoil: 1
+  neutralSoil: 0
+  lightThresholdHigh: 0.6
+  lightThresholdLow: 0.25
+  waterThresholdHigh: 6
+  waterThresholdLow: 3
+  revivedMinScore: 5
+  intermediateMinScore: 2
+  lightSensor: {fileID: 0}
+  revivedVisual: {fileID: 0}
+  intermediateVisual: {fileID: 0}
+  deadVisual: {fileID: 0}
+  debuff:
+    enabled: 0
+    scanInterval: 2
+    amountPerTick: 0.5
+    duration: 5
+    tickInterval: 1
+    transferStolenWaterToSelf: 0
+    mode: 0
+  miasmaLightPenalty: 0
+  miasmaSoilPenalty: 0
+  miasmaWaterDrainMultiplier: 1
+  isMiasmaDebuffActive: 0
+  currentState: 2
+  currentSoil: 2
+  isOnSoil: 0
+  lastTotalScore: 0
+  soilScore: 0
+  lightScore: 0
+  waterScore: 0
 --- !u!64 &6476096880023233388
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -21594,3 +21874,4 @@ SceneRoots:
   - {fileID: 1701788158}
   - {fileID: 92721602}
   - {fileID: 8842540240531936093}
+  - {fileID: 1227763372}

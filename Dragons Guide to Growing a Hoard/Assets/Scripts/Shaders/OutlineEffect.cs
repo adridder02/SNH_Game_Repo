@@ -26,7 +26,7 @@ public class OutlineEffect : MonoBehaviour
 {
     [Header("Outline Appearance")]
     public Color outlineColor = new Color(1f, 0.85f, 0.2f, 1f);
-    [Range(0f, 0.1f)] public float outlineWidth = 0.05f;
+    [Range(0f, 0.1f)] public float outlineWidth = 0.02f;
 
     [Tooltip("Leave empty to auto-find Custom/InvertedHullOutline.")]
     public Shader outlineShader;
