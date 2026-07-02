@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -825048163419283497}
   - component: {fileID: 7247543077432733209}
   - component: {fileID: -3803754973526584587}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Melodybloom
   m_TagString: Selectable
   m_Icon: {fileID: 0}

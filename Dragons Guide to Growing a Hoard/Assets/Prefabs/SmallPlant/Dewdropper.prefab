@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 782658817062869513}
   - component: {fileID: 1170168595591519494}
   - component: {fileID: -861078862449864002}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Dewdropper
   m_TagString: Selectable
   m_Icon: {fileID: 0}

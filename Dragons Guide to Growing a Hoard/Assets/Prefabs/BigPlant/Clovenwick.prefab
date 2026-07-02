@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -7952131424117648928}
   - component: {fileID: 8236061752540885117}
   - component: {fileID: 873892640486821792}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Clovenwick
   m_TagString: Selectable
   m_Icon: {fileID: 0}

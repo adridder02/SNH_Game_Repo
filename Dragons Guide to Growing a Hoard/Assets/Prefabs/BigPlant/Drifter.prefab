@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -6814717730686776371}
   - component: {fileID: 483069002037345463}
   - component: {fileID: -7067466375878971726}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Drifter
   m_TagString: Selectable
   m_Icon: {fileID: 0}

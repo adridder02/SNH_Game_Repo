@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8038424507315894243}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PermaBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,6 +158,10 @@ PrefabInstance:
     - target: {fileID: 3815546891322180988, guid: 7edc2f9160beb2944b331ee4e39c40a7, type: 3}
       propertyPath: m_Name
       value: BigSoil Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 3815546891322180988, guid: 7edc2f9160beb2944b331ee4e39c40a7, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

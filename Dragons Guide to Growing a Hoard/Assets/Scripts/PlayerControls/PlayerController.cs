@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpHeight = 5f;//changed jump hieght
     [SerializeField] private float gravity = -9.8f;
     
+    //Finding layers to jump from 
+    [SerializeField] private LayerMask groundLayers;
     [SerializeField] private bool shouldFaceMoveDirection = true; 
 
     [Header("Sprint")]
@@ -30,6 +32,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float flyGroundGracePeriod = 0.4f;
     [Tooltip("Vertical speed while flying (Space = up, Ctrl = down).")]
     [SerializeField] private float flyVerticalSpeed = 5f;
+
     [Tooltip("How strongly camera pitch steers vertical movement while flying (0 = off).")]
     [SerializeField] private float flyPitchInfluence = 1f;
 
@@ -57,22 +60,17 @@ public class PlayerController : MonoBehaviour
 
     private InputActionMap gameplayMap;
     private InputAction flyAction;   // Existing "Fly" action (Space)
-
     private CharacterController controller;
 
     private Vector2 moveInput;
     private Vector3 velocity;   // gravity / jump velocity (unused during Flying)
-
     private LocomotionState locomotionState = LocomotionState.Grounded;
-
     // Double-tap tracking
     private float lastSpacePressTime = -999f;
-
     // Flying vertical intent
     private bool flyAscendHeld;       // Space held while flying
     private float flyGroundGraceTimer; // countdown after entering fly, ignores isGrounded
     // Ctrl is polled via Keyboard API — no InputActionAsset mutation needed
-
     private bool movementEnabled = true;
 
     // ──────────────────────────────────────────────
@@ -241,15 +239,13 @@ public class PlayerController : MonoBehaviour
     void OnCollisionEnter(Collision collision) 
     {
 		GameObject otherObj = collision.gameObject;
-		//Debug.Log("Collided with: " + otherObj.name);
-        
-        //!I'll make a better check system
-        if (locomotionState == LocomotionState.Grounded && ( !otherObj.name.Contains("Floor")  || !otherObj.name.Contains("Placeable (") || !otherObj.name.Contains("Pot") || !otherObj.name.Contains("Table") ))
+		if (locomotionState == LocomotionState.Grounded && ((groundLayers.value & (1 << otherObj.layer)) != 0))
         {
             Jump();
             locomotionState = LocomotionState.Jumping;
             lastSpacePressTime = Time.time;
         }
+
     }
 
     private void UpdateAnimator()

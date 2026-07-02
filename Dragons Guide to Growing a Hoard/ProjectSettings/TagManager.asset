@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Selectable
+  - Jump
   layers:
   - Default
   - TransparentFX
@@ -16,8 +17,8 @@ TagManager:
   - mainInteration
   - Plant_Seeds
   - WaterRefill
-  - 
-  - 
+  - Jump
+  - DragonLayer
   - 
   - 
   - 

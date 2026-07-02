@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -4441528183351098693}
   - component: {fileID: -8777199277730143429}
   - component: {fileID: 5314149311368919232}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Windmill Aster
   m_TagString: Selectable
   m_Icon: {fileID: 0}

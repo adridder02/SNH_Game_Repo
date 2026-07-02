@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 9160826608870829536}
   - component: {fileID: 5714424194937587928}
   - component: {fileID: -5143957146791985451}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Bubble Blossom
   m_TagString: Selectable
   m_Icon: {fileID: 0}

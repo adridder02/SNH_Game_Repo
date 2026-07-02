@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6926184064024015116}
   - component: {fileID: -3345069727297567439}
   - component: {fileID: 6869571386960432020}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Glowcap
   m_TagString: Selectable
   m_Icon: {fileID: 0}

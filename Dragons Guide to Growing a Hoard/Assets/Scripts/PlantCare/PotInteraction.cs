@@ -81,6 +81,11 @@ public class PotInteraction : MonoBehaviour
     private float playerWaterPool;
     private PotContents nearbyPot;
     private bool menuOpen = false;
+    
+    // The OutlineEffect currently switched on, if any. Tracked here so we
+    // always know exactly which one to turn off — never rely on scanning
+    // for "whatever's outlined right now."
+    private OutlineEffect currentOutline;
 
 
     // Transient feedback message shown inside the open menu.
@@ -441,16 +446,13 @@ public class PotInteraction : MonoBehaviour
                     else CloseMenu();
                 }, false));
 
-                actions.Add(("Remove Plant", () =>
-                {
-                    ClearCurrentOutline();
-                    pot.RemovePlant();
-                    if (pot != null && dragonInventory != null)
-                    {
-                        pot.RemovePlant(dragonInventory);
-                    }
-                    CloseMenu();
-                }, false));
+            System.Action removePlant = () =>
+            {
+                ClearCurrentOutline();
+                pot.RemovePlant(dragonInventory);
+                CloseMenu();
+            };
+            actions.Add(("Remove Plant", removePlant, false));
             }
         }
 

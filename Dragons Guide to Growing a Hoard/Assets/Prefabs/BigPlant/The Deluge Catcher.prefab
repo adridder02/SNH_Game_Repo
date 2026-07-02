@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -1741920768658100749}
   - component: {fileID: 2435506623170784878}
   - component: {fileID: 2830285115181103567}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: The Deluge Catcher
   m_TagString: Selectable
   m_Icon: {fileID: 0}

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -6757567160752018129}
   - component: {fileID: -1960662949177041206}
   - component: {fileID: -3711956283511735493}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: The Luminary
   m_TagString: Selectable
   m_Icon: {fileID: 0}

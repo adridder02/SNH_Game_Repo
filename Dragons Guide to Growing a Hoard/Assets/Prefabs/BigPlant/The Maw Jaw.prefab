@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -6909841350774721014}
   - component: {fileID: 2787491488839937528}
   - component: {fileID: 4748312365908003470}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: The Maw Jaw
   m_TagString: Selectable
   m_Icon: {fileID: 0}

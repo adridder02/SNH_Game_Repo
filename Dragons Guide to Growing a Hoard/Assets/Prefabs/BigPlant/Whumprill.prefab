@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 7321155063053929954}
   - component: {fileID: -7082575937553902930}
   - component: {fileID: -1600758623779020536}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Whumprill
   m_TagString: Selectable
   m_Icon: {fileID: 0}

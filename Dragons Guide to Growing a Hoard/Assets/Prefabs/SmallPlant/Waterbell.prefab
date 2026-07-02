@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -1693417367247938532}
   - component: {fileID: 4688223070293238866}
   - component: {fileID: -7003582614352320832}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Waterbell
   m_TagString: Selectable
   m_Icon: {fileID: 0}

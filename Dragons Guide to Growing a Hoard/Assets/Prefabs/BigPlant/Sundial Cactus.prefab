@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5406378468432258178}
   - component: {fileID: -2700072728668390068}
   - component: {fileID: 6790803248347742446}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Sundial Cactus
   m_TagString: Selectable
   m_Icon: {fileID: 0}

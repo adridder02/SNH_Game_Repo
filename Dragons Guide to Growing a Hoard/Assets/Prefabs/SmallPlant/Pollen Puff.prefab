@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -3683318718654918685}
   - component: {fileID: 24104484423768064}
   - component: {fileID: -8238049841213695308}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pollen Puff
   m_TagString: Selectable
   m_Icon: {fileID: 0}

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3977777423709383443}
   - component: {fileID: -8180194533520961988}
   - component: {fileID: 3202033141660521252}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SmallPot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,7 +142,9 @@ MonoBehaviour:
   baseDrainRate: 0.3
   sunDrainMultiplier: 0.4
   waterLevel: 0
+  tut: {fileID: 0}
   currentSoil: 1
   hasSoil: 0
   hasPlant: 0
+  currentPlantPrefab: {fileID: 0}
   GridOrigin: {x: 0, y: 0, z: 0}
