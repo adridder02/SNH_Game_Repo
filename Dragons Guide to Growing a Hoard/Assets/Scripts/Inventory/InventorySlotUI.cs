@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 
 [RequireComponent(typeof(RectTransform))]
-public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     [Header("Wire these up on the prefab")]
     [SerializeField] private Image icon;
@@ -96,5 +96,18 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             transform.SetParent(originalParent, false);
             rectTransform.anchoredPosition = originalAnchoredPosition;
         }
+    }
+
+    /// <summary>
+    /// A plain click (pointer down+up with no meaningful movement) opens the
+    /// Plant detail panel. This fires independently of the drag handlers above —
+    /// Unity's EventSystem only invokes OnBeginDrag/OnDrag/OnEndDrag once the
+    /// pointer moves past its drag threshold, so an actual drag never also
+    /// triggers OnPointerClick, and a real click never triggers the drag events.
+    /// </summary>
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (Instance == null || controller == null) return;
+        controller.ShowPlantDetail(Instance);
     }
 }

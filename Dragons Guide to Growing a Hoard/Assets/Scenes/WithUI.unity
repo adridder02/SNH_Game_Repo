@@ -2058,9 +2058,19 @@ MonoBehaviour:
   inventoryRoot: {fileID: 819452744}
   gridPanel: {fileID: 1424584572}
   availablePanel: {fileID: 18600308}
+  availablePanelRoot: {fileID: 526091125}
   gridSlotTemplate: {fileID: 1147452103}
   availableSlotTemplate: {fileID: 1259478779}
   backButton: {fileID: 1283648383}
+  plantPanel: {fileID: 1859103248}
+  plantPanelImage: {fileID: 301771468}
+  plantPanelName: {fileID: 2108728234}
+  plantPanelCloseButton: {fileID: 0}
+  allFilterButton: {fileID: 1892068904}
+  sunnyFilterButton: {fileID: 1655000337}
+  darkFilterButton: {fileID: 1485891964}
+  waterFilterButton: {fileID: 1499971586}
+  deadFilterButton: {fileID: 1987168712}
   cellSizePx: 90
   cellGapPx: 4
   availableColumns: 4
@@ -4394,9 +4404,11 @@ RectTransform:
   - {fileID: 1630827315}
   - {fileID: 1340209737}
   - {fileID: 526091126}
-  - {fileID: 1004106587}
+  - {fileID: 1424584572}
   - {fileID: 375973124}
   - {fileID: 1859103249}
+  - {fileID: 1004106587}
+  - {fileID: 1690841550}
   - {fileID: 1283648380}
   m_Father: {fileID: 922120458}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4417,7 +4429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78626c39f75d57746b417666cb334fdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
-  gridWidth: 4
+  gridWidth: 5
   gridHeight: 5
   maxWaterRefill: 20
 --- !u!1 &822406318 stripped
@@ -5012,7 +5024,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &922120455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5234,7 +5246,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 725410817}
   m_HandleRect: {fileID: 725410816}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -5391,7 +5403,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1004106587
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5404,7 +5416,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1424584572}
   - {fileID: 967134286}
   m_Father: {fileID: 819452745}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5425,7 +5436,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ScrollRect
-  m_Content: {fileID: 1424584572}
+  m_Content: {fileID: 0}
   m_Horizontal: 0
   m_Vertical: 1
   m_MovementType: 2
@@ -6560,8 +6571,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -403, y: 492}
-  m_SizeDelta: {x: 266.9093, y: 272.4126}
+  m_AnchoredPosition: {x: -412.79636, y: 501.9982}
+  m_SizeDelta: {x: 247.3168, y: 252.416}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1147452100
 MonoBehaviour:
@@ -8300,12 +8311,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1147452099}
-  m_Father: {fileID: 1004106587}
+  m_Father: {fileID: 819452745}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -0.0009765625, y: -0.00024414062}
-  m_SizeDelta: {x: 1134.5684, y: 1300}
+  m_AnchoredPosition: {x: 1304, y: -527}
+  m_SizeDelta: {x: 1134.5684, y: 1266.2896}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1432317863 stripped
 GameObject:
@@ -10139,7 +10150,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1690841550
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10153,11 +10164,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 861228364}
-  m_Father: {fileID: 1859103249}
+  m_Father: {fileID: 819452745}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -19.000004}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1695332545 stripped
@@ -10718,7 +10729,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1690841550}
   - {fileID: 301771467}
   - {fileID: 2108728233}
   m_Father: {fileID: 819452745}
@@ -17185,8 +17195,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 1108434111351597028, guid: a6b2440c9fcf97c4a8e8f0060dbe96fe, type: 3}
-  plantName: Plant
+  plantName: Sundial Cactus
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!64 &6476096878520886035
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -17222,8 +17233,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 1108434111351597028, guid: a6b2440c9fcf97c4a8e8f0060dbe96fe, type: 3}
-  plantName: Plant
+  plantName: Sundial Cactus
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!64 &6476096880023233388
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -17259,8 +17271,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 1108434111351597028, guid: a6b2440c9fcf97c4a8e8f0060dbe96fe, type: 3}
-  plantName: Plant
+  plantName: Sundial Cactus
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!64 &6553551281286174300
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -17738,8 +17751,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 2775176059256192284, guid: a652209b9c817cd419181350c1ec215c, type: 3}
-  plantName: Plant
+  plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!33 &7407644071502374395
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -17761,8 +17775,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 2775176059256192284, guid: a652209b9c817cd419181350c1ec215c, type: 3}
-  plantName: Plant
+  plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!33 &7407644071775445396
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -17784,8 +17799,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 2775176059256192284, guid: a652209b9c817cd419181350c1ec215c, type: 3}
-  plantName: Plant
+  plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!33 &7407644072647991481
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -17807,8 +17823,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 2775176059256192284, guid: a652209b9c817cd419181350c1ec215c, type: 3}
-  plantName: Plant
+  plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!33 &7407644072680933914
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -17830,8 +17847,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 2775176059256192284, guid: a652209b9c817cd419181350c1ec215c, type: 3}
-  plantName: Plant
+  plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!33 &7407644072696828650
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -17853,8 +17871,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 2775176059256192284, guid: a652209b9c817cd419181350c1ec215c, type: 3}
-  plantName: Plant
+  plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!1 &7443154057475115718
 GameObject:
   m_ObjectHideFlags: 0

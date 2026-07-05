@@ -210,13 +210,15 @@ public class HarvestNodeContainer : MonoBehaviour
             return;
         }
 
-        // Add to the shared inventory — PotInteraction reads from the same list,
-        // so the plant will appear in the planting menu immediately.
-        playerInventory.AddPlantToInventory(prefab);
+        // Same entry point the collision-based collection uses: tries the
+        // grid first, falls back to Available if the grid has no room.
+        // Pass the icon, detail image, and name too — plant prefabs are 3D and
+        // have no SpriteRenderer, so these getters are the only source the
+        // inventory slot / detail panel can display.
+        playerInventory.AddPlantToInventory(plantPrefab, plant.GetPlantIcon(), plant.GetPlantImage(), plant.GetPlantName());
 
-        string plantName = collectable.GetPlantName();
-        ShowFeedback($"{harvestMessage} {plantName}");
-        Debug.Log($"[HarvestNodeContainer] Harvested {plantName} -> inventory now has {playerInventory.GetInventorySize()} item(s).");
+        Debug.Log($"[HarvestNodeContainer] Harvested: {node.name}");
+        ShowFeedback($"{harvestMessage}  ({node.name})");
 
         // Hide the node so it cannot be harvested again.
         // Re-enable it later if you want respawning behaviour.

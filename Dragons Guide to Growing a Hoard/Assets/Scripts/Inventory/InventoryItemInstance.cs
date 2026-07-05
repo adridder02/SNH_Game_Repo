@@ -23,6 +23,11 @@ public class InventoryItemInstance
     public readonly PlantSize size;
     public readonly Vector2Int footprint;
 
+    // Filter-bar tag (Sunny/Dark/Water/Dead) — read from PlantState, same
+    // component/lookup as size. Defaults to Sunny if there's no PlantState,
+    // matching the same "missing component" fallback pattern as size below.
+    public readonly PlantType plantType;
+
     // The UI icon to show for this item. Plant prefabs are 3D objects meant
     // for planting into pots — they don't carry a SpriteRenderer — so this
     // comes from CollectablePlant.plantIcon (passed in via
@@ -32,16 +37,31 @@ public class InventoryItemInstance
     // to whatever InventorySlotUI can find.
     public readonly Sprite icon;
 
+    // The larger "info card" image shown in the Plant detail panel — deliberately
+    // separate from icon (the small slot thumbnail). Comes from
+    // CollectablePlant.GetPlantImage() via PlayerInventory.AddPlantToInventory.
+    // Null if the harvest source never supplied one.
+    public readonly Sprite displayImage;
+
+    // Human-readable name for the detail panel. Prefers the name passed in from
+    // CollectablePlant.GetPlantName(); falls back to a cleaned-up prefab name
+    // (stripping the "(Clone)" suffix Unity appends) if none was supplied.
+    public readonly string displayName;
+
     public int gridX = -1;
     public int gridY = -1;
 
     public bool IsInGrid => gridX >= 0 && gridY >= 0;
 
-    public InventoryItemInstance(GameObject prefab, Sprite icon = null)
+    public InventoryItemInstance(GameObject prefab, Sprite icon = null, Sprite displayImage = null, string displayName = null)
     {
         instanceId = Guid.NewGuid().ToString();
         plantPrefab = prefab;
         this.icon = icon;
+        this.displayImage = displayImage;
+        this.displayName = !string.IsNullOrEmpty(displayName)
+            ? displayName
+            : (prefab != null ? prefab.name.Replace("(Clone)", "").Trim() : "Unknown");
 
         // GetComponentInChildren, not GetComponent: PlantState commonly lives on a child
         // mesh object rather than the prefab root. GetComponent-only would silently miss
@@ -52,6 +72,7 @@ public class InventoryItemInstance
                               "(checked root + children) — defaulting size to Small. This plant won't " +
                               "match any pot correctly until PlantState is added.");
         size = ps != null ? ps.plantSize : PlantSize.Small;
+        plantType = ps != null ? ps.plantType : PlantType.Sunny;
         footprint = PlantSizeUtility.GetFootprint(size);
     }
 }

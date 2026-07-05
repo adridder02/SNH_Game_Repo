@@ -8,7 +8,11 @@ public class CollectablePlant : MonoBehaviour
              "planting into pots), NOT this scene object itself.")]
     [SerializeField] private GameObject plantPrefab;
     [SerializeField] private string plantName = "Plant";
-    [SerializeField] private Sprite plantIcon; // Optional: for UI
+    [SerializeField] private Sprite plantIcon; // Optional: small icon shown in grid/available slots
+    [Tooltip("Larger reference image shown in the Plant detail panel when the player clicks an item. " +
+             "This is intentionally separate from Plant Icon — the icon is the small slot thumbnail, " +
+             "this is the bigger 'info card' image.")]
+    [SerializeField] private Sprite plantImage;
 
     public GameObject GetPlantPrefab()
     {
@@ -29,5 +33,11 @@ public class CollectablePlant : MonoBehaviour
     public Sprite GetPlantIcon()
     {
         return plantIcon;
+    }
+
+    /// <summary>The larger detail-panel image. Falls back to the icon if none was assigned, so the panel is never blank.</summary>
+    public Sprite GetPlantImage()
+    {
+        return plantImage != null ? plantImage : plantIcon;
     }
 }

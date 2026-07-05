@@ -93,7 +93,7 @@ public class PlayerInventory : MonoBehaviour
                 GameObject plantPrefab = plant.GetPlantPrefab();
                 if (plantPrefab != null)
                 {
-                    AddPlantToInventory(plantPrefab, plant.GetPlantIcon());
+                    AddPlantToInventory(plantPrefab, plant.GetPlantIcon(), plant.GetPlantImage(), plant.GetPlantName());
                     Destroy(collision.gameObject);
                     Debug.Log($"Collected: {plantPrefab.name}. Inventory: {GetInventorySize()} items ({GetGridItems().Count} in grid, {GetAvailableItems().Count} in Available)");
                 }
@@ -128,8 +128,11 @@ public class PlayerInventory : MonoBehaviour
     /// one — plant prefabs are 3D and have no SpriteRenderer, so this is the
     /// only way the inventory slot gets an icon to display. Callers that don't
     /// have an icon (e.g. returning a plant from a pot) can omit it.
+    /// Also pass the larger detail image (CollectablePlant.GetPlantImage()) and
+    /// display name (CollectablePlant.GetPlantName()) when available — these
+    /// feed the Plant detail panel and are deliberately separate from the icon.
     /// </summary>
-    public bool AddPlantToInventory(GameObject plantPrefab, Sprite icon = null)
+    public bool AddPlantToInventory(GameObject plantPrefab, Sprite icon = null, Sprite displayImage = null, string displayName = null)
     {
         if (plantPrefab == null)
         {
@@ -137,7 +140,7 @@ public class PlayerInventory : MonoBehaviour
             return false;
         }
 
-        var instance = new InventoryItemInstance(plantPrefab, icon);
+        var instance = new InventoryItemInstance(plantPrefab, icon, displayImage, displayName);
         bool placedInGrid = grid.TryAutoPlace(instance);
         items.Add(instance);
 

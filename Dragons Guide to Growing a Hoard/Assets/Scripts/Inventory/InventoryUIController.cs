@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -49,9 +50,15 @@ public class InventoryUIController : MonoBehaviour
     [SerializeField] private GameObject inventoryRoot;
     [Tooltip("Container for grid items. Anchor/pivot must be top-left (0,1).")]
     [SerializeField] private RectTransform gridPanel;
-    [Tooltip("Container for Available overflow items. Anchor/pivot must be top-left (0,1), " +
-             "same as gridPanel — this script lays items out manually, no layout group needed.")]
+    [Tooltip("Container for Available overflow items — assign this to the AvailableGrid child (NOT the " +
+             "top-level AvailablePanel), since this is the RectTransform items are actually laid out and " +
+             "drag-dropped into. Anchor/pivot must be top-left (0,1), same as gridPanel — this script lays " +
+             "items out manually, no layout group needed.")]
     [SerializeField] private RectTransform availablePanel;
+    [Tooltip("The top-level Available panel GameObject (the one that also contains the 'Available' header " +
+             "text). Used ONLY to show/hide the whole Available section when the Plant detail panel opens — " +
+             "separate from availablePanel above, which is just the grid of items.")]
+    [SerializeField] private GameObject availablePanelRoot;
     [Tooltip("An existing slot GameObject already placed in your grid (e.g. 'Container' under SlotsContainer). " +
              "It gets hidden at startup and cloned for every item — no prefab asset needed.")]
     [SerializeField] private InventorySlotUI gridSlotTemplate;
@@ -61,6 +68,33 @@ public class InventoryUIController : MonoBehaviour
     [SerializeField] private InventorySlotUI availableSlotTemplate;
     [Tooltip("Optional close/back button.")]
     [SerializeField] private Button backButton;
+
+    [Header("Plant Detail Panel")]
+    [Tooltip("The detail panel GameObject shown when the player clicks a plant (in the grid or Available). " +
+             "Hidden by default — Available is what shows when the inventory first opens.")]
+    [SerializeField] private GameObject plantPanel;
+    [Tooltip("Image component on the Plant panel that shows the plant's larger detail image " +
+             "(CollectablePlant.plantImage) — this is intentionally NOT the small slot icon.")]
+    [SerializeField] private Image plantPanelImage;
+    [Tooltip("Text component on the Plant panel that shows the plant's name.")]
+    [SerializeField] private TMPro.TextMeshProUGUI plantPanelName;
+    [Tooltip("Optional close/back button on the Plant panel that returns to the Available view. " +
+             "If you don't want a dedicated button, add a Button component to the panel's " +
+             "background image instead and assign that here.")]
+    [SerializeField] private Button plantPanelCloseButton;
+
+    [Header("Filter Bar")]
+    [Tooltip("Infinity icon — explicitly shows everything (clears the filter). This is the one that's " +
+             "selected/highlighted by default when the inventory opens with no filter active.")]
+    [SerializeField] private Button allFilterButton;
+    [Tooltip("Sun icon — filters both panels down to PlantType.Sunny plants.")]
+    [SerializeField] private Button sunnyFilterButton;
+    [Tooltip("Moon icon — filters both panels down to PlantType.Dark plants.")]
+    [SerializeField] private Button darkFilterButton;
+    [Tooltip("Wave icon — filters both panels down to PlantType.Water plants.")]
+    [SerializeField] private Button waterFilterButton;
+    [Tooltip("Skull icon — filters both panels down to PlantType.Dead plants.")]
+    [SerializeField] private Button deadFilterButton;
 
     [Header("Layout")]
     [Tooltip("Pixel size of one grid cell. Item visuals are drawn at footprint * cellSizePx.")]
@@ -96,6 +130,10 @@ public class InventoryUIController : MonoBehaviour
     private int overlayGridHeight = -1;
     private InventoryItemInstance draggedInstance;
 
+    // null = no filter active, i.e. show everything (this is the default — there's
+    // deliberately no "All" button; not selecting any filter button already means "all").
+    private PlantType? activeFilter = null;
+
     void Awake()
     {
         rootCanvas = GetComponentInParent<Canvas>();
@@ -121,6 +159,16 @@ public class InventoryUIController : MonoBehaviour
 
         if (backButton != null)
             backButton.onClick.AddListener(ToggleInventory);
+
+        if (plantPanelCloseButton != null)
+            plantPanelCloseButton.onClick.AddListener(HidePlantDetail);
+
+        if (allFilterButton != null) allFilterButton.onClick.AddListener(() => SetFilter(null));
+        if (sunnyFilterButton != null) sunnyFilterButton.onClick.AddListener(() => ToggleFilter(PlantType.Sunny));
+        if (darkFilterButton != null) darkFilterButton.onClick.AddListener(() => ToggleFilter(PlantType.Dark));
+        if (waterFilterButton != null) waterFilterButton.onClick.AddListener(() => ToggleFilter(PlantType.Water));
+        if (deadFilterButton != null) deadFilterButton.onClick.AddListener(() => ToggleFilter(PlantType.Dead));
+        RefreshFilterButtonVisuals();
 
         // These are live scene objects being used as clone templates — hide the
         // originals so they don't show up as a phantom extra slot.
@@ -222,6 +270,118 @@ public class InventoryUIController : MonoBehaviour
     {
         if (inventoryRoot != null)
             inventoryRoot.SetActive(visible);
+
+        // Available is the default view every time the inventory opens (or closes) —
+        // never leave the Plant detail panel showing from a previous session.
+        HidePlantDetail();
+
+        // Re-apply here too (not just Awake) — EventSystem.current can still be null
+        // during this script's own Awake depending on scene script execution order,
+        // so the "All" button might not have actually been selected yet back then.
+        if (visible) RefreshFilterButtonVisuals();
+    }
+
+    // ------------------------------------------------------------
+    // PLANT DETAIL PANEL — shown when the player clicks a plant in
+    // the grid or Available. Called by InventorySlotUI.OnPointerClick.
+    // ------------------------------------------------------------
+    private string detailInstanceId = null;
+
+    /// <summary>
+    /// Populates and shows the Plant detail panel for the clicked item.
+    /// Clicking the SAME item again (with no dedicated close button) closes
+    /// it back to the default Available/grid view — this is the toggle that
+    /// replaces having a separate close button.
+    /// </summary>
+    public void ShowPlantDetail(InventoryItemInstance instance)
+    {
+        if (instance == null || plantPanel == null) return;
+
+        if (plantPanel.activeSelf && detailInstanceId == instance.instanceId)
+        {
+            HidePlantDetail();
+            return;
+        }
+
+        if (plantPanelImage != null)
+        {
+            // displayImage is the larger "info card" image — deliberately distinct
+            // from instance.icon, which is only the small slot thumbnail. Fall back
+            // to the icon so the panel isn't blank if no detail image was assigned.
+            Sprite detail = instance.displayImage != null ? instance.displayImage : instance.icon;
+            plantPanelImage.sprite = detail;
+            plantPanelImage.enabled = detail != null;
+        }
+
+        if (plantPanelName != null)
+            plantPanelName.text = instance.displayName;
+
+        detailInstanceId = instance.instanceId;
+        plantPanel.SetActive(true);
+
+        // Hide the whole Available panel — including its "Available" header text,
+        // since that lives on the parent (availablePanelRoot), not on the item
+        // container (availablePanel/AvailableGrid) — while the detail view is up.
+        // The grid panel is intentionally left alone; it was never meant to hide here.
+        if (availablePanelRoot != null) availablePanelRoot.SetActive(false);
+    }
+
+    /// <summary>Hides the Plant detail panel, returning the player to the default Available view.</summary>
+    public void HidePlantDetail()
+    {
+        detailInstanceId = null;
+        if (plantPanel != null)
+            plantPanel.SetActive(false);
+
+        if (availablePanelRoot != null) availablePanelRoot.SetActive(true);
+    }
+
+    // ------------------------------------------------------------
+    // FILTER BAR — sun/moon/wave/skull icons filter both the grid and
+    // Available panels down to one PlantType. There's no "All" button:
+    // clicking the active filter's icon again just turns it back off.
+    // ------------------------------------------------------------
+
+    private void ToggleFilter(PlantType type)
+    {
+        SetFilter(activeFilter == type ? (PlantType?)null : type);
+    }
+
+    private void SetFilter(PlantType? type)
+    {
+        activeFilter = type;
+        RefreshFilterButtonVisuals();
+        RefreshUI();
+    }
+
+    private void RefreshFilterButtonVisuals()
+    {
+        // Each filter button already has its own "active" look configured via
+        // Sprite Swap (Selected Sprite = all_active_hover.png etc.), so all we
+        // need to do is make the active filter's button the EventSystem's
+        // "selected" object — that's what drives the Selected Sprite. null
+        // (no type filter) maps to allFilterButton, so "All" reads as selected
+        // by default and whenever a filter is cleared — not deselected outright.
+        Button activeButton = GetFilterButton(activeFilter);
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(activeButton != null ? activeButton.gameObject : null);
+    }
+
+    private Button GetFilterButton(PlantType? type)
+    {
+        if (type == null) return allFilterButton;
+        if (type == PlantType.Sunny) return sunnyFilterButton;
+        if (type == PlantType.Dark) return darkFilterButton;
+        if (type == PlantType.Water) return waterFilterButton;
+        if (type == PlantType.Dead) return deadFilterButton;
+        return null;
+    }
+
+    /// <summary>Applies the active filter (if any) to a list of items for display.</summary>
+    private List<InventoryItemInstance> ApplyFilter(List<InventoryItemInstance> source)
+    {
+        if (activeFilter == null) return source;
+        return source.Where(i => i.plantType == activeFilter.Value).ToList();
     }
 
     // ------------------------------------------------------------
@@ -253,7 +413,7 @@ public class InventoryUIController : MonoBehaviour
             if (visual != null) Destroy(visual.gameObject);
         slotVisuals.Clear();
 
-        foreach (var instance in playerInventory.GetGridItems())
+        foreach (var instance in ApplyFilter(playerInventory.GetGridItems()))
         {
             InventorySlotUI slot = CreateSlot(instance, gridPanel, gridSlotTemplate);
             RectTransform rt = slot.GetComponent<RectTransform>();
@@ -269,7 +429,7 @@ public class InventoryUIController : MonoBehaviour
         }
 
         InventorySlotUI availableTemplate = availableSlotTemplate != null ? availableSlotTemplate : gridSlotTemplate;
-        var availableItems = playerInventory.GetAvailableItems();
+        var availableItems = ApplyFilter(playerInventory.GetAvailableItems());
         int columns = Mathf.Max(1, availableColumns);
 
         // IMPORTANT: availablePanel's size is NOT touched here — it stays at

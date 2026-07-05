@@ -22,6 +22,18 @@ public enum PlantStateEnum
     Dead
 }
 
+// The filter "tag" for this plant, used by the inventory's Filter bar
+// (sun/moon/wave/skull icons). Deliberately separate from PlantStateEnum
+// above — that's the plant's live health status (Revived/Intermediate/Dead),
+// this is a fixed classification of what kind of plant it is.
+public enum PlantType
+{
+    Sunny,
+    Dark,
+    Water,
+    Dead
+}
+
 public class PlantState : MonoBehaviour
 {
     // ---------------------------------------------------------------
@@ -30,6 +42,11 @@ public class PlantState : MonoBehaviour
     [Header("Size")]
     [Tooltip("Physical size of this plant. Must match the pot's PlantSize (potSize) for planting to succeed.")]
     public PlantSize plantSize = PlantSize.Medium;
+
+    [Header("Type")]
+    [Tooltip("Which filter category this plant belongs to (shown as the sun/moon/wave/skull icons " +
+             "in the inventory's Filter bar).")]
+    public PlantType plantType = PlantType.Sunny;
 
     [Header("Pot Placement")]
     [Tooltip("Per-plant vertical fine-tune when placed in a pot. Stacks on top of the pot's plantSurfaceOffset. " +
