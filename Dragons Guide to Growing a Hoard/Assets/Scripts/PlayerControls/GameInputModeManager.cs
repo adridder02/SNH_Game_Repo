@@ -8,7 +8,8 @@ public class GameInputModeManager : MonoBehaviour
     public enum InputMode
     {
         Gameplay,
-        Placement
+        Placement,
+        UI
     }
 
     [Header("References")]
@@ -84,5 +85,29 @@ public class GameInputModeManager : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+
+    /// <summary>
+    /// Used while a full-screen UI panel (inventory, menus, etc.) is open.
+    /// Movement and camera look/zoom are disabled, but the GamePlay map
+    /// stays enabled so actions like "Inventory" (used to close the panel
+    /// again) keep firing.
+    /// </summary>
+    public void SetUIMode()
+    {
+        CurrentMode = InputMode.UI;
+
+        // Keep GamePlay map enabled — the Inventory toggle action needs to
+        // keep firing so the player can close the inventory again.
+        gameplayMap?.Enable();
+
+        // Stop camera look / zoom
+        cameraMap?.Disable();
+
+        if (playerController != null)
+            playerController.SetMovementEnabled(false);
+
+        // Cursor is handled by InventoryUIController itself, so it's left
+        // alone here.
     }
 }

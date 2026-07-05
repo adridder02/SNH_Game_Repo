@@ -28,6 +28,12 @@ public class PotData : ScriptableObject
     [Tooltip("How many grid cells this pot occupies. Examples: (1,1), (2,1), (2,2).")]
     public Vector2Int size = Vector2Int.one;
 
+    [Tooltip("The PlantSize this pot is designed for. PlantState.plantSize must match this for planting " +
+             "to succeed (see PotContents.AddPlant). This is also the single source of truth the " +
+             "inventory UI uses to look up how many grid cells a given PlantSize should occupy — " +
+             "see PlantSizeRegistry.")]
+    public PlantSize correspondingPlantSize = PlantSize.Medium;
+
     [Header("Prefabs")]
     [Tooltip("The actual pot GameObject placed in the scene.")]
     public GameObject potPrefab;

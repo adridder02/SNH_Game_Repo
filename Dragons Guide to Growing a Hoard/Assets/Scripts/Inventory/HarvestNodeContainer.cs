@@ -30,6 +30,9 @@ public class HarvestNodeContainer : MonoBehaviour
     [Tooltip("The player's transform. Drag your Player GameObject here.")]
     public Transform player;
 
+    [Tooltip("The player's inventory. Auto-found in Start() if left empty.")]
+    public PlayerInventory playerInventory;
+
     [Header("Interaction")]
     [Tooltip("How close the player must be to a node to see the prompt.")]
     public float interactRange = 2.5f;
@@ -62,6 +65,9 @@ public class HarvestNodeContainer : MonoBehaviour
     // =========================================================
     private void Start()
     {
+        if (playerInventory == null)
+            playerInventory = FindObjectOfType<PlayerInventory>();
+
         CacheChildren();
         BuildPromptUI();
         BuildFeedbackUI();
@@ -148,13 +154,36 @@ public class HarvestNodeContainer : MonoBehaviour
     // =========================================================
     private void OnHarvest(Transform node)
     {
-        Debug.Log($"[HarvestNodeContainer] Harvested: {node.name}");
+        CollectablePlant plant = node.GetComponent<CollectablePlant>();
+        if (plant == null)
+        {
+            Debug.LogWarning($"[HarvestNodeContainer] {node.name} has no CollectablePlant component — nothing to harvest.");
+            return;
+        }
 
+        if (playerInventory == null)
+        {
+            Debug.LogWarning("[HarvestNodeContainer] No PlayerInventory found — cannot harvest.");
+            return;
+        }
+
+        GameObject plantPrefab = plant.GetPlantPrefab();
+        if (plantPrefab == null)
+        {
+            Debug.LogWarning($"[HarvestNodeContainer] {node.name} has no plant prefab assigned.");
+            return;
+        }
+
+        // Same entry point the collision-based collection uses: tries the
+        // grid first, falls back to Available if the grid has no room.
+        playerInventory.AddPlantToInventory(plantPrefab);
+
+        Debug.Log($"[HarvestNodeContainer] Harvested: {node.name}");
         ShowFeedback($"{harvestMessage}  ({node.name})");
 
-        // TODO: add to inventory, play animation, disable node, etc.
-        // e.g.  InventoryManager.Instance.Add(node.GetComponent<NodeData>().item);
-        //       node.gameObject.SetActive(false);
+        // Node is done for now. Swap for a respawn-timer coroutine if these
+        // nodes should regrow rather than disappear permanently.
+        node.gameObject.SetActive(false);
     }
 
     // =========================================================
