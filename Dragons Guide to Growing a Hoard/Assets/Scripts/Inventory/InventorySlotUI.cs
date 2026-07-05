@@ -3,21 +3,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
-// =============================================================
-// InventorySlotUI.cs
-// -------------------------------------------------------------
-// Lives on the slot PREFAB (uGUI, not UI Toolkit). Represents one
-// InventoryItemInstance visually, whether it's parented under the
-// grid panel or the Available panel, and handles the drag itself.
-//
-// PREFAB SETUP:
-//   • Root: Image (RectTransform) — the slot background. Add a
-//     CanvasGroup here too (or let Awake add one automatically).
-//   • Child "Icon": Image — the plant sprite.
-//   • Child "Label": TextMeshProUGUI — the plant name.
-//   • Both Icon and Label should have Raycast Target UNCHECKED,
-//     so drag events always hit the root slot, not its children.
-// =============================================================
 [RequireComponent(typeof(RectTransform))]
 public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -49,11 +34,17 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         controller = owningController;
         rootCanvas = canvas;
 
-        Sprite sprite = GetIcon(instance.plantPrefab);
+        Sprite sprite = instance.icon != null ? instance.icon : GetIcon(instance.plantPrefab);
         if (icon != null)
         {
             icon.sprite = sprite;
             icon.enabled = sprite != null;
+
+            RectTransform iconRect = icon.rectTransform;
+            iconRect.anchorMin = Vector2.zero;
+            iconRect.anchorMax = Vector2.one;
+            iconRect.offsetMin = iconRect.offsetMax = Vector2.zero;
+            icon.preserveAspect = true;
         }
         if (label != null)
             label.text = GetDisplayName(instance.plantPrefab);
@@ -62,7 +53,7 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private static Sprite GetIcon(GameObject prefab)
     {
         if (prefab == null) return null;
-        SpriteRenderer sr = prefab.GetComponent<SpriteRenderer>();
+        SpriteRenderer sr = prefab.GetComponentInChildren<SpriteRenderer>();
         return sr != null ? sr.sprite : null;
     }
 
@@ -76,17 +67,19 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         originalParent = transform.parent;
         originalAnchoredPosition = rectTransform.anchoredPosition;
 
-        // Reparent to the canvas root so the dragged icon renders above every panel.
-        transform.SetParent(rootCanvas.transform, worldPositionStays: true);
+        transform.SetParent(rootCanvas.transform, true);
         transform.SetAsLastSibling();
 
-        canvasGroup.blocksRaycasts = false; // let drop-target rects receive the raycast underneath
+        canvasGroup.blocksRaycasts = false;
         canvasGroup.alpha = 0.85f;
+
+        controller.BeginDragHighlight(Instance);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        rectTransform.anchoredPosition += eventData.delta / rootCanvas.scaleFactor;
+        rectTransform.position = eventData.position;   // Best for root canvas dragging
+        controller.UpdateDragHighlight(eventData);
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -94,14 +87,13 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         canvasGroup.blocksRaycasts = true;
         canvasGroup.alpha = 1f;
 
+        controller.EndDragHighlight();
+
         bool handled = controller.HandleDrop(this, eventData);
 
         if (!handled)
         {
-            // Invalid drop (occupied cell, dropped outside both panels, etc.) — snap back.
-            // On success, PlayerInventory.OnInventoryChanged triggers a full RefreshUI(),
-            // which will destroy/rebuild this slot in its new, correct location anyway.
-            transform.SetParent(originalParent, worldPositionStays: false);
+            transform.SetParent(originalParent, false);
             rectTransform.anchoredPosition = originalAnchoredPosition;
         }
     }

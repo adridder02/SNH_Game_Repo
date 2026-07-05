@@ -31,7 +31,14 @@ public class PotContents : MonoBehaviour
              "system, accepts plants of any size, and is never registered with PlacementSystem.")]
     public bool isStaticPot = false;
 
-    [Tooltip("The physical size of this pot. Ignored for static pots — they accept any plant size.")]
+    [Tooltip("Optional: the PotData asset this pot instance was spawned from. When assigned, this becomes " +
+             "the single source of truth for potSize (see SyncPotSizeFromData below) — leave it null only " +
+             "for pots that were hand-authored directly in the scene without going through PotData.")]
+    public PotData potData;
+
+    [Tooltip("The physical size of this pot. Ignored for static pots — they accept any plant size. " +
+             "If 'Pot Data' above is assigned, this is auto-synced from potData.correspondingPlantSize " +
+             "every Awake/OnValidate — don't hand-edit it in that case, it'll just get overwritten.")]
     public PlantSize potSize = PlantSize.Medium;
 
     [Tooltip("Extra upward nudge applied after surface-snapping. Increase if the plant still clips; decrease if it floats above the soil.")]
@@ -102,10 +109,31 @@ public class PotContents : MonoBehaviour
     [HideInInspector] public GridData GridData;
 
     // ---------------------------------------------------------------
+    // SyncPotSizeFromData — PotData is the source of truth for potSize
+    // whenever one is assigned. Called from Awake (runtime) and
+    // OnValidate (editor, so the Inspector reflects it immediately
+    // after you drag a PotData asset in).
+    // ---------------------------------------------------------------
+    private void SyncPotSizeFromData()
+    {
+        if (potData != null)
+            potSize = potData.correspondingPlantSize;
+    }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        SyncPotSizeFromData();
+    }
+#endif
+
+    // ---------------------------------------------------------------
     // Awake — pot starts completely empty.
     // ---------------------------------------------------------------
     private void Awake()
     {
+        SyncPotSizeFromData();
+
         waterLevel = 0f;
         hasSoil = false;
         hasPlant = false;
@@ -113,7 +141,7 @@ public class PotContents : MonoBehaviour
         if(this.currentPlantPrefab){// aslo add tutorial boollean to say this is only for the tutorial
             SetSoil(currentSoil);
             //currentPlantPrefab = prefab;
-            PlantState candidate = currentPlantPrefab.GetComponent<PlantState>();
+            PlantState candidate = currentPlantPrefab.GetComponentInChildren<PlantState>();
 
             // Static pots accept any plant size; only enforce size for normal grid pots.
             if (!isStaticPot && candidate != null && candidate.plantSize != potSize)
@@ -129,7 +157,7 @@ public class PotContents : MonoBehaviour
             // Spawn without a parent first so world-space Renderer bounds are accurate.
             GameObject go = Object.Instantiate(currentPlantPrefab, anchor.position, anchor.rotation);
 
-            Plant = go.GetComponent<PlantState>();
+            Plant = go.GetComponentInChildren<PlantState>();
 
             if (Plant == null)
             {
@@ -302,7 +330,7 @@ public class PotContents : MonoBehaviour
         if (hasPlant) return false;
 
         currentPlantPrefab = prefab;
-        PlantState candidate = prefab.GetComponent<PlantState>();
+        PlantState candidate = prefab.GetComponentInChildren<PlantState>();
 
         // Static pots accept any plant size; only enforce size for normal grid pots.
         if (!isStaticPot && candidate != null && candidate.plantSize != potSize)
@@ -318,7 +346,7 @@ public class PotContents : MonoBehaviour
         // Spawn without a parent first so world-space Renderer bounds are accurate.
         GameObject go = Object.Instantiate(prefab, anchor.position, anchor.rotation);
 
-        Plant = go.GetComponent<PlantState>();
+        Plant = go.GetComponentInChildren<PlantState>();
 
         if (Plant == null)
         {

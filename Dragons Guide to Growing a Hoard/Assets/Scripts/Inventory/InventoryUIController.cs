@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using Unity.Cinemachine;
 
 // =============================================================
 // InventoryUIController.cs  (uGUI Canvas version)
@@ -70,11 +71,30 @@ public class InventoryUIController : MonoBehaviour
              "this script positions Available slots manually, same as it does for the grid.")]
     [SerializeField] private int availableColumns = 4;
 
+    [Header("Drag Highlight")]
+    [Tooltip("Color for empty grid cells while dragging.")]
+    [SerializeField] private Color emptyCellColor = new Color(1f, 1f, 1f, 0.12f);
+    [Tooltip("Color for already-occupied grid cells while dragging.")]
+    [SerializeField] private Color occupiedCellColor = new Color(1f, 0.35f, 0.35f, 0.18f);
+    [Tooltip("Color for the footprint under the cursor when the drop would be valid.")]
+    [SerializeField] private Color validDropColor = new Color(0.4f, 1f, 0.4f, 0.55f);
+    [Tooltip("Color for the footprint under the cursor when the drop would be invalid.")]
+    [SerializeField] private Color invalidDropColor = new Color(1f, 0.3f, 0.3f, 0.55f);
+
     private Canvas rootCanvas;
     private bool isInventoryOpen = false;
     private PlayerControls playerControls;
     private InputAction inventoryAction;
     private readonly Dictionary<string, InventorySlotUI> slotVisuals = new Dictionary<string, InventorySlotUI>();
+
+    // Grid cell highlight overlay — one Image per cell, built lazily and kept
+    // in sync with the grid's current dimensions. Lives at the back of
+    // gridPanel's hierarchy so item slots (instantiated after it) always
+    // render on top.
+    private Image[,] cellOverlays;
+    private int overlayGridWidth = -1;
+    private int overlayGridHeight = -1;
+    private InventoryItemInstance draggedInstance;
 
     void Awake()
     {
@@ -134,33 +154,70 @@ public class InventoryUIController : MonoBehaviour
         playerControls?.Dispose();
     }
 
+    void Update()
+    {
+        // Escape closes the inventory, same as clicking Back. Only acts while
+        // open so Escape doesn't do anything unexpected when it's closed.
+        if (isInventoryOpen && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            ToggleInventory();
+        }
+    }
+
     private void OnInventoryPerformed(InputAction.CallbackContext context)
     {
         ToggleInventory();
     }
 
-    public void ToggleInventory()
+        public void ToggleInventory()
     {
         isInventoryOpen = !isInventoryOpen;
         SetInventoryVisible(isInventoryOpen);
+
+        var playerController = FindAnyObjectByType<PlayerController>();
+        var camController = FindAnyObjectByType<ThirdPersonCameraController>();
 
         if (isInventoryOpen)
         {
             UnityEngine.Cursor.lockState = CursorLockMode.None;
             UnityEngine.Cursor.visible = true;
+            
             GameInputModeManager.Instance?.SetUIMode();
             ThirdPersonCameraController.CameraLocked = true;
+
+            if (playerController != null)
+                playerController.SetMovementEnabled(false);
+
+            // Disable camera input to prevent drift
+            if (camController != null)
+            {
+                var inputAxis = camController.GetComponent<Unity.Cinemachine.CinemachineInputAxisController>();
+                if (inputAxis != null)
+                    inputAxis.enabled = false;
+            }
+
             RefreshUI();
         }
         else
         {
             UnityEngine.Cursor.lockState = CursorLockMode.Locked;
             UnityEngine.Cursor.visible = false;
+            
             GameInputModeManager.Instance?.SetGameplayMode();
             ThirdPersonCameraController.CameraLocked = false;
+
+            if (playerController != null)
+                playerController.SetMovementEnabled(true);
+
+            // Re-enable camera
+            if (camController != null)
+            {
+                var inputAxis = camController.GetComponent<Unity.Cinemachine.CinemachineInputAxisController>();
+                if (inputAxis != null)
+                    inputAxis.enabled = true;
+            }
         }
     }
-
     void SetInventoryVisible(bool visible)
     {
         if (inventoryRoot != null)
@@ -179,13 +236,18 @@ public class InventoryUIController : MonoBehaviour
             return;
         }
 
-        // GridPanel keeps whatever size you gave it in the Inspector (matched to
-        // your background art). We derive cell size FROM the panel, not the other
-        // way around — this used to forcibly shrink GridPanel to
-        // (GridWidth * cellSizePx), which is why items were rendering as tiny
-        // squares floating in the middle of a much bigger painted frame.
-        float cellW = gridPanel.rect.width / Mathf.Max(1, playerInventory.GridWidth);
-        float cellH = gridPanel.rect.height / Mathf.Max(1, playerInventory.GridHeight);
+        // Uniform square cell size, read from the template on the canvas (see
+        // GetGridCellSize) — NOT derived by dividing gridPanel's width/height
+        // independently, which produced rectangular cells whenever the panel's
+        // aspect ratio didn't exactly match GridWidth:GridHeight.
+        float cellW = GetGridCellSize();
+        float cellH = cellW;
+
+        // Keep the cell-highlight overlay in sync with the grid's current
+        // size/geometry. Cheap for typical grid sizes, and correctly handles
+        // ExpandGrid() changing dimensions mid-game.
+        EnsureCellOverlays();
+        LayoutCellOverlays();
 
         foreach (var visual in slotVisuals.Values)
             if (visual != null) Destroy(visual.gameObject);
@@ -209,13 +271,17 @@ public class InventoryUIController : MonoBehaviour
         InventorySlotUI availableTemplate = availableSlotTemplate != null ? availableSlotTemplate : gridSlotTemplate;
         var availableItems = playerInventory.GetAvailableItems();
         int columns = Mathf.Max(1, availableColumns);
-        int rows = Mathf.CeilToInt(availableItems.Count / (float)columns);
 
-        // Manual layout — no GridLayoutGroup/ContentSizeFitter involved, so there's
-        // nothing fighting these values on the same frame. Mirrors the top-left,
-        // row/column math used for gridPanel above.
-        availablePanel.sizeDelta = new Vector2(columns * cellSizePx, Mathf.Max(1, rows) * cellSizePx);
-
+        // IMPORTANT: availablePanel's size is NOT touched here — it stays at
+        // whatever fixed size you set up on the canvas, exactly like gridPanel.
+        // It used to be resized every refresh to just fit the current item
+        // count (columns * cellSizePx wide, rows * cellSizePx tall), which
+        // shrank the panel's actual RectTransform down to near-zero whenever
+        // Available was empty or sparse. HandleDrop/UpdateDragHighlight test
+        // drops against this RectTransform's rect, so a shrunken panel meant
+        // most of what you could visually see as "the Available area" wasn't
+        // actually droppable. Leaving the size alone makes the whole designed
+        // rect droppable at all times, regardless of how many items are in it.
         for (int i = 0; i < availableItems.Count; i++)
         {
             InventorySlotUI slot = CreateSlot(availableItems[i], availablePanel, availableTemplate);
@@ -233,6 +299,41 @@ public class InventoryUIController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// The size (in px) of ONE 1x1 grid cell. Read directly from gridSlotTemplate's
+    /// own RectTransform — the size you've already set up by hand on the canvas —
+    /// rather than derived by dividing gridPanel's width/height by column/row count.
+    /// Dividing the panel only produces square cells if the panel's aspect ratio
+    /// happens to exactly match GridWidth:GridHeight; any mismatch stretches cells
+    /// into rectangles, which is what caused 2x2 items to render as long slabs
+    /// instead of squares.
+    /// </summary>
+    private float GetGridCellSize()
+    {
+        if (gridSlotTemplate != null)
+        {
+            RectTransform templateRect = gridSlotTemplate.GetComponent<RectTransform>();
+            if (templateRect != null)
+            {
+                float w = templateRect.rect.width;
+                float h = templateRect.rect.height;
+                if (w > 0f && h > 0f)
+                    return Mathf.Min(w, h); // guards against the template being slightly non-square
+            }
+        }
+
+        // Fallback if no template is assigned yet: derive a square cell size that
+        // fits within the panel on whichever axis is tighter.
+        if (gridPanel != null && playerInventory != null)
+        {
+            return Mathf.Min(
+                gridPanel.rect.width / Mathf.Max(1, playerInventory.GridWidth),
+                gridPanel.rect.height / Mathf.Max(1, playerInventory.GridHeight));
+        }
+
+        return cellSizePx;
+    }
+
     InventorySlotUI CreateSlot(InventoryItemInstance instance, RectTransform parent, InventorySlotUI template)
     {
         InventorySlotUI slot = Instantiate(template, parent);
@@ -240,6 +341,142 @@ public class InventoryUIController : MonoBehaviour
         slot.Initialize(instance, this, rootCanvas);
         slotVisuals[instance.instanceId] = slot;
         return slot;
+    }
+
+    // ------------------------------------------------------------
+    // GRID CELL HIGHLIGHT — shows available/occupied cells while
+    // dragging, and the drop footprint under the cursor.
+    // Called by InventorySlotUI's drag handlers.
+    // ------------------------------------------------------------
+
+    /// <summary>Call from InventorySlotUI.OnBeginDrag.</summary>
+    public void BeginDragHighlight(InventoryItemInstance instance)
+    {
+        draggedInstance = instance;
+        EnsureCellOverlays();
+        LayoutCellOverlays();
+        PaintBaseOverlayState();
+    }
+
+    /// <summary>Call from InventorySlotUI.OnDrag (every frame while dragging).</summary>
+    public void UpdateDragHighlight(PointerEventData eventData)
+    {
+        if (draggedInstance == null || cellOverlays == null || playerInventory == null) return;
+
+        // Reset to the base empty/occupied state, then paint the footprint
+        // under the cursor on top of it.
+        PaintBaseOverlayState();
+
+        if (!RectTransformUtility.RectangleContainsScreenPoint(gridPanel, eventData.position, eventData.pressEventCamera))
+            return;
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            gridPanel, eventData.position, eventData.pressEventCamera, out Vector2 local);
+
+        float cellW = GetGridCellSize();
+        float cellH = cellW;
+
+        int originX = Mathf.FloorToInt(local.x / cellW);
+        int originY = Mathf.FloorToInt(-local.y / cellH);
+
+        bool valid = playerInventory.Grid.CanPlaceAt(originX, originY, draggedInstance.footprint, draggedInstance.instanceId);
+        Color highlight = valid ? validDropColor : invalidDropColor;
+
+        for (int x = originX; x < originX + draggedInstance.footprint.x; x++)
+        {
+            for (int y = originY; y < originY + draggedInstance.footprint.y; y++)
+            {
+                if (x < 0 || y < 0 || x >= overlayGridWidth || y >= overlayGridHeight) continue;
+                cellOverlays[x, y].color = highlight;
+            }
+        }
+    }
+
+    /// <summary>Call from InventorySlotUI.OnEndDrag, before HandleDrop.</summary>
+    public void EndDragHighlight()
+    {
+        draggedInstance = null;
+        if (cellOverlays == null) return;
+        foreach (var img in cellOverlays)
+            if (img != null) img.color = Color.clear;
+    }
+
+    private void EnsureCellOverlays()
+    {
+        if (playerInventory == null || gridPanel == null) return;
+
+        int w = playerInventory.GridWidth;
+        int h = playerInventory.GridHeight;
+
+        if (cellOverlays != null && overlayGridWidth == w && overlayGridHeight == h)
+            return;
+
+        if (cellOverlays != null)
+        {
+            foreach (var img in cellOverlays)
+                if (img != null) Destroy(img.gameObject);
+        }
+
+        overlayGridWidth = w;
+        overlayGridHeight = h;
+        cellOverlays = new Image[w, h];
+
+        for (int x = 0; x < w; x++)
+        {
+            for (int y = 0; y < h; y++)
+            {
+                GameObject go = new GameObject($"CellOverlay_{x}_{y}", typeof(RectTransform));
+                go.transform.SetParent(gridPanel, false);
+                go.transform.SetAsFirstSibling(); // stay behind item slots, which are instantiated afterwards
+
+                Image img = go.AddComponent<Image>();
+                img.raycastTarget = false; // never intercept the drag's pointer events
+                img.color = Color.clear;
+                cellOverlays[x, y] = img;
+            }
+        }
+    }
+
+    private void LayoutCellOverlays()
+    {
+        if (cellOverlays == null || playerInventory == null) return;
+
+        float cellW = GetGridCellSize();
+        float cellH = cellW;
+
+        for (int x = 0; x < overlayGridWidth; x++)
+        {
+            for (int y = 0; y < overlayGridHeight; y++)
+            {
+                Image img = cellOverlays[x, y];
+                if (img == null) continue;
+
+                RectTransform rt = img.rectTransform;
+                rt.anchorMin = new Vector2(0f, 1f);
+                rt.anchorMax = new Vector2(0f, 1f);
+                rt.pivot = new Vector2(0f, 1f);
+                rt.sizeDelta = new Vector2(cellW - cellGapPx, cellH - cellGapPx);
+                rt.anchoredPosition = new Vector2(
+                    x * cellW + cellGapPx * 0.5f,
+                    -(y * cellH + cellGapPx * 0.5f));
+            }
+        }
+    }
+
+    /// <summary>Paints every cell empty/occupied (ignoring the item currently being dragged).</summary>
+    private void PaintBaseOverlayState()
+    {
+        if (cellOverlays == null || playerInventory == null) return;
+
+        for (int x = 0; x < overlayGridWidth; x++)
+        {
+            for (int y = 0; y < overlayGridHeight; y++)
+            {
+                InventoryItemInstance occupant = playerInventory.Grid.GetItemAt(x, y);
+                bool occupied = occupant != null && occupant.instanceId != draggedInstance?.instanceId;
+                cellOverlays[x, y].color = occupied ? occupiedCellColor : emptyCellColor;
+            }
+        }
     }
 
     // ------------------------------------------------------------
@@ -256,8 +493,8 @@ public class InventoryUIController : MonoBehaviour
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 gridPanel, eventData.position, eventData.pressEventCamera, out Vector2 local);
 
-            float cellW = gridPanel.rect.width / Mathf.Max(1, playerInventory.GridWidth);
-            float cellH = gridPanel.rect.height / Mathf.Max(1, playerInventory.GridHeight);
+            float cellW = GetGridCellSize();
+            float cellH = cellW;
 
             int cellX = Mathf.FloorToInt(local.x / cellW);
             int cellY = Mathf.FloorToInt(-local.y / cellH); // gridPanel pivot is top-left, so local.y <= 0 going down

@@ -176,7 +176,9 @@ public class HarvestNodeContainer : MonoBehaviour
 
         // Same entry point the collision-based collection uses: tries the
         // grid first, falls back to Available if the grid has no room.
-        playerInventory.AddPlantToInventory(plantPrefab);
+        // Pass the icon too — plant prefabs are 3D and have no SpriteRenderer,
+        // so GetPlantIcon() is the only source the inventory slot can display.
+        playerInventory.AddPlantToInventory(plantPrefab, plant.GetPlantIcon());
 
         Debug.Log($"[HarvestNodeContainer] Harvested: {node.name}");
         ShowFeedback($"{harvestMessage}  ({node.name})");

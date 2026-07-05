@@ -37,7 +37,36 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField] private float maxWaterRefill = 20f;
     private float waterPool = 20f;
 
-    private InventoryGrid grid;
+    private InventoryGrid _grid;
+
+    /// <summary>
+    /// Backing access for the grid. Normally set in Awake(), but if this
+    /// GameObject started inactive (e.g. accidentally nested under a UI
+    /// panel that's hidden by default, or a player rig not yet active on
+    /// spawn), Awake() won't have run yet the first time something tries
+    /// to use the inventory — Unity only calls Awake() once a GameObject
+    /// first becomes active. Rather than NullReferenceException on that
+    /// first access, lazily create the grid here so things keep working,
+    /// but log a warning since the real fix is making sure PlayerInventory
+    /// lives on an always-active object.
+    /// </summary>
+    private InventoryGrid grid
+    {
+        get
+        {
+            if (_grid == null)
+            {
+                Debug.LogWarning("[PlayerInventory] Grid was accessed before Awake() ran — creating it now " +
+                                 "as a fallback. This usually means this GameObject started inactive (e.g. " +
+                                 "nested under a UI panel that's hidden by default), since Awake() only runs " +
+                                 "once a GameObject first becomes active. Move PlayerInventory onto an " +
+                                 "always-active object to avoid relying on this fallback.", this);
+                _grid = new InventoryGrid(gridWidth, gridHeight);
+            }
+            return _grid;
+        }
+        set => _grid = value;
+    }
     private readonly List<InventoryItemInstance> items = new List<InventoryItemInstance>();
 
     /// <summary>Fired whenever the grid or available contents change, so the UI can redraw.</summary>
@@ -64,7 +93,7 @@ public class PlayerInventory : MonoBehaviour
                 GameObject plantPrefab = plant.GetPlantPrefab();
                 if (plantPrefab != null)
                 {
-                    AddPlantToInventory(plantPrefab);
+                    AddPlantToInventory(plantPrefab, plant.GetPlantIcon());
                     Destroy(collision.gameObject);
                     Debug.Log($"Collected: {plantPrefab.name}. Inventory: {GetInventorySize()} items ({GetGridItems().Count} in grid, {GetAvailableItems().Count} in Available)");
                 }
@@ -95,8 +124,12 @@ public class PlayerInventory : MonoBehaviour
     /// Adds a new plant instance to the inventory: tries the grid first,
     /// falls back to Available. This is the single entry point used by
     /// both node-harvesting and "remove plant from pot".
+    /// Pass the plant's UI icon (CollectablePlant.GetPlantIcon()) when you have
+    /// one — plant prefabs are 3D and have no SpriteRenderer, so this is the
+    /// only way the inventory slot gets an icon to display. Callers that don't
+    /// have an icon (e.g. returning a plant from a pot) can omit it.
     /// </summary>
-    public bool AddPlantToInventory(GameObject plantPrefab)
+    public bool AddPlantToInventory(GameObject plantPrefab, Sprite icon = null)
     {
         if (plantPrefab == null)
         {
@@ -104,7 +137,7 @@ public class PlayerInventory : MonoBehaviour
             return false;
         }
 
-        var instance = new InventoryItemInstance(plantPrefab);
+        var instance = new InventoryItemInstance(plantPrefab, icon);
         bool placedInGrid = grid.TryAutoPlace(instance);
         items.Add(instance);
 

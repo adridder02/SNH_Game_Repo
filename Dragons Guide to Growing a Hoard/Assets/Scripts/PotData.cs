@@ -7,14 +7,22 @@ using UnityEngine;
 // placement system.
 //
 // Create via:
-// Assets → Create → Greenhouse → Pot Data
+// Assets -> Create -> Greenhouse -> Pot Data
 //
 // Each PotData describes:
-//   • Pot display name.
-//   • The prefab to place in the world.
-//   • Optional semi-transparent preview prefab.
-//   • How many grid cells the pot occupies.
-//   • Default soil kind when placed.
+//   - Pot display name.
+//   - The prefab to place in the world.
+//   - Optional semi-transparent preview prefab.
+//   - How many grid cells the pot occupies (derived - see below).
+//   - Default soil kind when placed.
+//
+// SIZE - SINGLE SOURCE OF TRUTH:
+//   `size` is no longer set by hand. It's computed from
+//   `correspondingPlantSize` via PlantSizeRegistry. Want this pot
+//   to be a 4x4? Don't touch this asset - go to the PlantSizeRegistry
+//   asset and set the Large entry's footprint to (4,4). That change
+//   applies to every Large pot AND every Large plant (inventory
+//   footprint included) at once.
 // =============================================================
 
 [CreateAssetMenu(fileName = "NewPotData", menuName = "Greenhouse/Pot Data")]
@@ -25,14 +33,18 @@ public class PotData : ScriptableObject
     public string potName = "Pot";
 
     [Header("Grid")]
-    [Tooltip("How many grid cells this pot occupies. Examples: (1,1), (2,1), (2,2).")]
-    public Vector2Int size = Vector2Int.one;
-
-    [Tooltip("The PlantSize this pot is designed for. PlantState.plantSize must match this for planting " +
-             "to succeed (see PotContents.AddPlant). This is also the single source of truth the " +
-             "inventory UI uses to look up how many grid cells a given PlantSize should occupy — " +
-             "see PlantSizeRegistry.")]
+    [Tooltip("The PlantSize category this pot belongs to. This is the ONLY size knob you set - the actual " +
+             "footprint (below) is looked up from the PlantSizeRegistry asset, so every pot and plant sharing " +
+             "this size stays in lockstep. To change what 'Large' (etc.) actually measures, edit the " +
+             "PlantSizeRegistry asset, not this field.")]
     public PlantSize correspondingPlantSize = PlantSize.Medium;
+
+    /// <summary>
+    /// How many grid cells this pot occupies - derived from correspondingPlantSize via
+    /// PlantSizeRegistry. Read-only by design: change the registry's entry for this size
+    /// if you want a different footprint, don't override it per-pot.
+    /// </summary>
+    public Vector2Int size => PlantSizeRegistry.GetFootprint(correspondingPlantSize);
 
     [Header("Prefabs")]
     [Tooltip("The actual pot GameObject placed in the scene.")]
