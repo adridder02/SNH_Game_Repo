@@ -86,6 +86,7 @@ public class PotInteraction : MonoBehaviour
     // always know exactly which one to turn off — never rely on scanning
     // for "whatever's outlined right now."
     private OutlineEffect currentOutline;
+    private OutlineEffect potOutline;
 
 
     // Transient feedback message shown inside the open menu.
@@ -201,21 +202,32 @@ public class PotInteraction : MonoBehaviour
     // Outline helpers — only the plant gets outlined, and only if the
     // pot actually has one. Safe to call with a null/plantless pot.
     // ---------------------------------------------------------------
+   // Add this alongside 'currentOutline' in your fields if you haven't already
+
     private void ApplyOutlineFor(PotContents pot)
     {
-        if (pot == null || !pot.HasPlant || pot.Plant == null) return;
+        if (pot == null) return;
 
-        currentOutline = pot.Plant.GetComponent<OutlineEffect>();
-        currentOutline?.SetOutline(true);
+        // Always highlight the pot itself
+        potOutline = pot.GetComponent<OutlineEffect>();
+        potOutline?.SetOutline(true);
+
+        // Only highlight the plant if one is actually present
+        if (pot.HasPlant && pot.Plant != null)
+        {
+            currentOutline = pot.Plant.GetComponent<OutlineEffect>();
+            currentOutline?.SetOutline(true);
+        }
     }
 
     private void ClearCurrentOutline()
     {
-        if (currentOutline == null) return;
-        currentOutline.SetOutline(false);
+        currentOutline?.SetOutline(false);
         currentOutline = null;
-    }
 
+        potOutline?.SetOutline(false);
+        potOutline = null;
+    }
     // ---------------------------------------------------------------
     // Quick water (Q key)
     // ---------------------------------------------------------------

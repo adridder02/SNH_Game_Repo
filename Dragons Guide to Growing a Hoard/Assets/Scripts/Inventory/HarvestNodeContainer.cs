@@ -58,6 +58,8 @@ public class HarvestNodeContainer : MonoBehaviour
     private float feedbackTimer = 0f;
 
     private Transform currentNode = null;
+    private Transform previousNode = null;
+    private OutlineEffect currentOutline;
 
     // =========================================================
     private void Start()
@@ -87,6 +89,13 @@ public class HarvestNodeContainer : MonoBehaviour
 
         currentNode = FindClosestNode();
 
+        if (currentNode != previousNode)
+        {
+            ClearCurrentOutline();
+            ApplyOutlineFor(currentNode);
+            previousNode = currentNode;
+        }
+
         UpdatePrompt();
         UpdateFeedback();
 
@@ -101,6 +110,24 @@ public class HarvestNodeContainer : MonoBehaviour
         }
     }
 
+
+
+    // ---------------------------------------------------------------
+    // Outline helpers — highlights whichever harvest node is currently
+    // in range. Safe to call with a null node (does nothing).
+    // ---------------------------------------------------------------
+    private void ApplyOutlineFor(Transform node)
+    {
+        if (node == null) return;
+        currentOutline = node.GetComponent<OutlineEffect>();
+        currentOutline?.SetOutline(true);
+    }
+
+    private void ClearCurrentOutline()
+    {
+        currentOutline?.SetOutline(false);
+        currentOutline = null;
+    }
     // =========================================================
     private Transform FindClosestNode()
     {
@@ -282,6 +309,7 @@ public class HarvestNodeContainer : MonoBehaviour
     // =========================================================
     private void OnDestroy()
     {
+        ClearCurrentOutline();
         if (promptRoot != null) Destroy(promptRoot);
         if (feedbackRoot != null) Destroy(feedbackRoot);
     }

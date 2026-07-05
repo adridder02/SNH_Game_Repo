@@ -14491,7 +14491,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8479433265171536801, guid: bec4ee8f0a3318840ba5713a5285b698, type: 3}
       propertyPath: maxWidth
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8479433265171536801, guid: bec4ee8f0a3318840ba5713a5285b698, type: 3}
       propertyPath: minWidth
@@ -14507,11 +14507,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8479433265171536801, guid: bec4ee8f0a3318840ba5713a5285b698, type: 3}
       propertyPath: minHeight
-      value: 2.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8479433265171536801, guid: bec4ee8f0a3318840ba5713a5285b698, type: 3}
       propertyPath: densityPerSqm
-      value: 35
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 8479433265171536801, guid: bec4ee8f0a3318840ba5713a5285b698, type: 3}
       propertyPath: groundMask.m_Bits
