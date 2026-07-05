@@ -61,8 +61,6 @@ public class HarvestNodeContainer : MonoBehaviour
     private float feedbackTimer = 0f;
 
     private Transform currentNode = null;
-    private Transform previousNode = null;
-    private OutlineEffect currentOutline;
 
     // =========================================================
     private void Start()
@@ -95,13 +93,6 @@ public class HarvestNodeContainer : MonoBehaviour
 
         currentNode = FindClosestNode();
 
-        if (currentNode != previousNode)
-        {
-            ClearCurrentOutline();
-            ApplyOutlineFor(currentNode);
-            previousNode = currentNode;
-        }
-
         UpdatePrompt();
         UpdateFeedback();
 
@@ -116,24 +107,6 @@ public class HarvestNodeContainer : MonoBehaviour
         }
     }
 
-
-
-    // ---------------------------------------------------------------
-    // Outline helpers — highlights whichever harvest node is currently
-    // in range. Safe to call with a null node (does nothing).
-    // ---------------------------------------------------------------
-    private void ApplyOutlineFor(Transform node)
-    {
-        if (node == null) return;
-        currentOutline = node.GetComponent<OutlineEffect>();
-        currentOutline?.SetOutline(true);
-    }
-
-    private void ClearCurrentOutline()
-    {
-        currentOutline?.SetOutline(false);
-        currentOutline = null;
-    }
     // =========================================================
     private Transform FindClosestNode()
     {
@@ -181,32 +154,23 @@ public class HarvestNodeContainer : MonoBehaviour
     // =========================================================
     private void OnHarvest(Transform node)
     {
-        // Every harvest node needs a CollectablePlant component that holds
-        // the plant prefab reference — the same prefab PotInteraction plants.
-        CollectablePlant collectable = node.GetComponent<CollectablePlant>();
-
-        if (collectable == null)
+        CollectablePlant plant = node.GetComponent<CollectablePlant>();
+        if (plant == null)
         {
-            Debug.LogWarning($"[HarvestNodeContainer] {node.name} has no CollectablePlant component — nothing added to inventory.");
+            Debug.LogWarning($"[HarvestNodeContainer] {node.name} has no CollectablePlant component — nothing to harvest.");
             return;
         }
 
         if (playerInventory == null)
         {
-            Debug.LogWarning("[HarvestNodeContainer] PlayerInventory reference is not assigned in the Inspector.");
+            Debug.LogWarning("[HarvestNodeContainer] No PlayerInventory found — cannot harvest.");
             return;
         }
 
-        if (playerInventory.IsInventoryFull())
+        GameObject plantPrefab = plant.GetPlantPrefab();
+        if (plantPrefab == null)
         {
-            ShowFeedback("Inventory full!");
-            return;
-        }
-
-        GameObject prefab = collectable.GetPlantPrefab();
-        if (prefab == null)
-        {
-            Debug.LogWarning($"[HarvestNodeContainer] CollectablePlant on {node.name} has no prefab assigned.");
+            Debug.LogWarning($"[HarvestNodeContainer] {node.name} has no plant prefab assigned.");
             return;
         }
 
@@ -220,11 +184,9 @@ public class HarvestNodeContainer : MonoBehaviour
         Debug.Log($"[HarvestNodeContainer] Harvested: {node.name}");
         ShowFeedback($"{harvestMessage}  ({node.name})");
 
-        // Hide the node so it cannot be harvested again.
-        // Re-enable it later if you want respawning behaviour.
-        ClearCurrentOutline();
+        // Node is done for now. Swap for a respawn-timer coroutine if these
+        // nodes should regrow rather than disappear permanently.
         node.gameObject.SetActive(false);
-        ClearCurrentOutline();
     }
 
     // =========================================================
@@ -352,7 +314,6 @@ public class HarvestNodeContainer : MonoBehaviour
     // =========================================================
     private void OnDestroy()
     {
-        ClearCurrentOutline();
         if (promptRoot != null) Destroy(promptRoot);
         if (feedbackRoot != null) Destroy(feedbackRoot);
     }
