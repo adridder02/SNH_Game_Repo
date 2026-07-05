@@ -403,7 +403,7 @@ public class PotInteraction : MonoBehaviour
                         if (prefab == null) continue; // Skip null prefabs
                         
                         GameObject captured = prefab;
-                        PlantState ps = prefab.GetComponent<PlantState>();
+                        PlantState ps = prefab.GetComponentInChildren<PlantState>();
                         string plantName = prefab.name.Replace("(Clone)", "").Trim();
 
                         string sizeTag = ps != null ? $"[{ps.plantSize}]" : "[?]";

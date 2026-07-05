@@ -30,7 +30,7 @@ public class HarvestNodeContainer : MonoBehaviour
     [Tooltip("The player's transform. Drag your Player GameObject here.")]
     public Transform player;
 
-    [Tooltip("The player's inventory. Harvested plants are added here and become available in PotInteraction.")]
+    [Tooltip("The player's inventory. Auto-found in Start() if left empty.")]
     public PlayerInventory playerInventory;
 
     [Header("Interaction")]
@@ -67,6 +67,9 @@ public class HarvestNodeContainer : MonoBehaviour
     // =========================================================
     private void Start()
     {
+        if (playerInventory == null)
+            playerInventory = FindObjectOfType<PlayerInventory>();
+
         CacheChildren();
         BuildPromptUI();
         BuildFeedbackUI();
@@ -219,6 +222,7 @@ public class HarvestNodeContainer : MonoBehaviour
         // Re-enable it later if you want respawning behaviour.
         ClearCurrentOutline();
         node.gameObject.SetActive(false);
+        ClearCurrentOutline();
     }
 
     // =========================================================
