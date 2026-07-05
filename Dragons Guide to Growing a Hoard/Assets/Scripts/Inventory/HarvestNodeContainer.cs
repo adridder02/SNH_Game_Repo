@@ -30,6 +30,9 @@ public class HarvestNodeContainer : MonoBehaviour
     [Tooltip("The player's transform. Drag your Player GameObject here.")]
     public Transform player;
 
+    [Tooltip("The player's inventory. Harvested plants are added here and become available in PotInteraction.")]
+    public PlayerInventory playerInventory;
+
     [Header("Interaction")]
     [Tooltip("How close the player must be to a node to see the prompt.")]
     public float interactRange = 2.5f;
@@ -175,13 +178,47 @@ public class HarvestNodeContainer : MonoBehaviour
     // =========================================================
     private void OnHarvest(Transform node)
     {
-        Debug.Log($"[HarvestNodeContainer] Harvested: {node.name}");
+        // Every harvest node needs a CollectablePlant component that holds
+        // the plant prefab reference — the same prefab PotInteraction plants.
+        CollectablePlant collectable = node.GetComponent<CollectablePlant>();
 
-        ShowFeedback($"{harvestMessage}  ({node.name})");
+        if (collectable == null)
+        {
+            Debug.LogWarning($"[HarvestNodeContainer] {node.name} has no CollectablePlant component — nothing added to inventory.");
+            return;
+        }
 
-        // TODO: add to inventory, play animation, disable node, etc.
-        // e.g.  InventoryManager.Instance.Add(node.GetComponent<NodeData>().item);
-        //       node.gameObject.SetActive(false);
+        if (playerInventory == null)
+        {
+            Debug.LogWarning("[HarvestNodeContainer] PlayerInventory reference is not assigned in the Inspector.");
+            return;
+        }
+
+        if (playerInventory.IsInventoryFull())
+        {
+            ShowFeedback("Inventory full!");
+            return;
+        }
+
+        GameObject prefab = collectable.GetPlantPrefab();
+        if (prefab == null)
+        {
+            Debug.LogWarning($"[HarvestNodeContainer] CollectablePlant on {node.name} has no prefab assigned.");
+            return;
+        }
+
+        // Add to the shared inventory — PotInteraction reads from the same list,
+        // so the plant will appear in the planting menu immediately.
+        playerInventory.AddPlantToInventory(prefab);
+
+        string plantName = collectable.GetPlantName();
+        ShowFeedback($"{harvestMessage} {plantName}");
+        Debug.Log($"[HarvestNodeContainer] Harvested {plantName} -> inventory now has {playerInventory.GetInventorySize()} item(s).");
+
+        // Hide the node so it cannot be harvested again.
+        // Re-enable it later if you want respawning behaviour.
+        ClearCurrentOutline();
+        node.gameObject.SetActive(false);
     }
 
     // =========================================================
