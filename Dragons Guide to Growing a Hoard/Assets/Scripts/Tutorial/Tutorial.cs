@@ -40,7 +40,7 @@ public class Tutorial : MonoBehaviour
     }
 
 
-    public void removedPlant(){//DOne in PotContents.cs
+    public void removedPlant(){//Done in PotContents.cs
         if(this.removePlant)
             return;
 

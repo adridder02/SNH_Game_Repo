@@ -19,8 +19,8 @@ TagManager:
   - WaterRefill
   - Jump
   - DragonLayer
-  - 
-  - 
+  - NonPlacement
+  - Indicator
   - 
   - 
   - 

@@ -61,6 +61,8 @@ public class HarvestNodeContainer : MonoBehaviour
     private float feedbackTimer = 0f;
 
     private Transform currentNode = null;
+    private Transform previousNode = null;
+    private OutlineEffect currentOutline;
 
     // =========================================================
     private void Start()
@@ -93,6 +95,13 @@ public class HarvestNodeContainer : MonoBehaviour
 
         currentNode = FindClosestNode();
 
+        if (currentNode != previousNode)
+        {
+            ClearCurrentOutline();
+            ApplyOutlineFor(currentNode);
+            previousNode = currentNode;
+        }
+
         UpdatePrompt();
         UpdateFeedback();
 
@@ -107,6 +116,24 @@ public class HarvestNodeContainer : MonoBehaviour
         }
     }
 
+
+
+    // ---------------------------------------------------------------
+    // Outline helpers — highlights whichever harvest node is currently
+    // in range. Safe to call with a null node (does nothing).
+    // ---------------------------------------------------------------
+    private void ApplyOutlineFor(Transform node)
+    {
+        if (node == null) return;
+        currentOutline = node.GetComponent<OutlineEffect>();
+        currentOutline?.SetOutline(true);
+    }
+
+    private void ClearCurrentOutline()
+    {
+        currentOutline?.SetOutline(false);
+        currentOutline = null;
+    }
     // =========================================================
     private Transform FindClosestNode()
     {
@@ -154,38 +181,48 @@ public class HarvestNodeContainer : MonoBehaviour
     // =========================================================
     private void OnHarvest(Transform node)
     {
-        CollectablePlant plant = node.GetComponent<CollectablePlant>();
-        if (plant == null)
+        // Every harvest node needs a CollectablePlant component that holds
+        // the plant prefab reference — the same prefab PotInteraction plants.
+        CollectablePlant collectable = node.GetComponent<CollectablePlant>();
+
+        if (collectable == null)
         {
-            Debug.LogWarning($"[HarvestNodeContainer] {node.name} has no CollectablePlant component — nothing to harvest.");
+            Debug.LogWarning($"[HarvestNodeContainer] {node.name} has no CollectablePlant component — nothing added to inventory.");
             return;
         }
 
         if (playerInventory == null)
         {
-            Debug.LogWarning("[HarvestNodeContainer] No PlayerInventory found — cannot harvest.");
+            Debug.LogWarning("[HarvestNodeContainer] PlayerInventory reference is not assigned in the Inspector.");
             return;
         }
 
-        GameObject plantPrefab = plant.GetPlantPrefab();
-        if (plantPrefab == null)
+        if (playerInventory.IsInventoryFull())
         {
-            Debug.LogWarning($"[HarvestNodeContainer] {node.name} has no plant prefab assigned.");
+            ShowFeedback("Inventory full!");
             return;
         }
 
-        // Same entry point the collision-based collection uses: tries the
-        // grid first, falls back to Available if the grid has no room.
-        // Pass the icon too — plant prefabs are 3D and have no SpriteRenderer,
-        // so GetPlantIcon() is the only source the inventory slot can display.
-        playerInventory.AddPlantToInventory(plantPrefab, plant.GetPlantIcon());
+        GameObject prefab = collectable.GetPlantPrefab();
+        if (prefab == null)
+        {
+            Debug.LogWarning($"[HarvestNodeContainer] CollectablePlant on {node.name} has no prefab assigned.");
+            return;
+        }
 
-        Debug.Log($"[HarvestNodeContainer] Harvested: {node.name}");
-        ShowFeedback($"{harvestMessage}  ({node.name})");
+        // Add to the shared inventory — PotInteraction reads from the same list,
+        // so the plant will appear in the planting menu immediately.
+        playerInventory.AddPlantToInventory(prefab);
 
-        // Node is done for now. Swap for a respawn-timer coroutine if these
-        // nodes should regrow rather than disappear permanently.
+        string plantName = collectable.GetPlantName();
+        ShowFeedback($"{harvestMessage} {plantName}");
+        Debug.Log($"[HarvestNodeContainer] Harvested {plantName} -> inventory now has {playerInventory.GetInventorySize()} item(s).");
+
+        // Hide the node so it cannot be harvested again.
+        // Re-enable it later if you want respawning behaviour.
+        ClearCurrentOutline();
         node.gameObject.SetActive(false);
+        ClearCurrentOutline();
     }
 
     // =========================================================
@@ -313,6 +350,7 @@ public class HarvestNodeContainer : MonoBehaviour
     // =========================================================
     private void OnDestroy()
     {
+        ClearCurrentOutline();
         if (promptRoot != null) Destroy(promptRoot);
         if (feedbackRoot != null) Destroy(feedbackRoot);
     }
