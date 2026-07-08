@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -38,7 +39,6 @@ public class PlayerController : MonoBehaviour
 
     [Header("Input")]
     [SerializeField] private InputActionAsset inputActions;
-    
     private bool escPressed = false;
 
     /*[SerializeField] private Animator animator;
@@ -79,8 +79,9 @@ public class PlayerController : MonoBehaviour
     /// <summary>Returns true when either Shift key is held.</summary>
     private bool IsSprinting =>
         Keyboard.current != null &&
-        (Keyboard.current.leftShiftKey.isPressed ||
-         Keyboard.current.rightShiftKey.isPressed);
+        Keyboard.current.leftShiftKey.isPressed //||
+         //Keyboard.current.rightShiftKey.isPressed)
+         ;
 
     /// <summary>Current speed, boosted by sprintMultiplier while sprinting.</summary>
     private float CurrentSpeed => speed * (IsSprinting ? sprintMultiplier : 1f);
@@ -106,6 +107,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("playerAnimation component is missing from " + gameObject.name);
         }
+     
     }
 
     private void OnEnable()
