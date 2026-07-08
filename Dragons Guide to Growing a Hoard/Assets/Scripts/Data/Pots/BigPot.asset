@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BigPot
   m_EditorClassIdentifier: Assembly-CSharp::PotData
   potName: Pot
-  size: {x: 2, y: 2}
+  correspondingPlantSize: 2
   potPrefab: {fileID: 3044046510021815365, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
   previewPrefab: {fileID: 3044046510021815365, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
   defaultSoil: 1
