@@ -45,6 +45,8 @@ public class GridVisual : MonoBehaviour
 
         BuildMaterials();
         BuildCellQuads();
+        if(!Tutorial.tutorialStageComplete())
+            Tutorial.setGridOnTable();
     }
 
     private void BuildMaterials()
@@ -99,7 +101,7 @@ public class GridVisual : MonoBehaviour
 
                 var go = GameObject.CreatePrimitive(PrimitiveType.Quad);
                 go.name = $"Cell_{x}_{z}";
-                go.transform.SetParent(transform, worldPositionStays: true);
+                go.transform.SetParent(transform, worldPositionStays: false);//BK changed this to false
 
                 // destroy the collider ( otherswise it interfears with raycasts)
                 Destroy(go.GetComponent<Collider>());
@@ -208,14 +210,48 @@ public class GridVisual : MonoBehaviour
 
     public bool WorldToCell(Vector3 worldPos, out Vector2Int cell)
     {
+        float epsilon = 0.001f; // Small tolerance for edge cases
+        
         float lx = worldPos.x - originWorld.x;
         float lz = worldPos.z - originWorld.z;
-
-        int cx = Mathf.FloorToInt(lx / cellSize);
-        int cz = Mathf.FloorToInt(lz / cellSize);
-
+        
+        // Add epsilon to help with floating point precision at edges
+        int cx = Mathf.FloorToInt((lx + epsilon) / cellSize);
+        int cz = Mathf.FloorToInt((lz + epsilon) / cellSize);
+        
         cell = new Vector2Int(cx, cz);
-        return InBounds(cx, cz);
+        
+        // Check if within bounds with tolerance
+        if (InBounds(cx, cz))
+        {
+            return true;
+        }
+        
+        // If slightly out of bounds, try to clamp to nearest valid cell
+        // This happens when the mouse is exactly at the edge
+        if (cx == -1 || cx == dimensions.x || cz == -1 || cz == dimensions.y)
+        {
+            // Clamp to valid range
+            cx = Mathf.Clamp(cx, 0, dimensions.x - 1);
+            cz = Mathf.Clamp(cz, 0, dimensions.y - 1);
+            cell = new Vector2Int(cx, cz);
+            
+            // Check if this clamped position is actually close to the mouse
+            Vector3 cellCenter = originWorld + new Vector3(
+                cx * cellSize + cellSize * 0.5f,
+                0f,
+                cz * cellSize + cellSize * 0.5f);
+            
+            float distance = Vector3.Distance(
+                new Vector3(worldPos.x, 0, worldPos.z),
+                new Vector3(cellCenter.x, 0, cellCenter.z));
+            
+            // If the mouse is within half a cell of this clamped position, it's valid
+            if (distance <= cellSize * 0.6f)
+                return true;
+        }
+        
+        return false;
     }
 
     public bool InBounds(int x, int z) =>
@@ -223,14 +259,54 @@ public class GridVisual : MonoBehaviour
 
     public bool InBounds(Vector2Int c) => InBounds(c.x, c.y);
 
-    public bool FootprintInBounds(Vector2Int origin, Vector2Int size)
+   public bool FootprintInBounds(Vector2Int origin, Vector2Int size)
     {
-        return InBounds(origin.x, origin.y) &&
-               InBounds(origin.x + size.x - 1, origin.y + size.y - 1);
+        // Add tolerance for edge cases
+        float epsilon = 0.001f;
+        
+        // Check if the footprint is within bounds with tolerance
+        // The footprint must be completely inside the grid
+        bool valid = origin.x >= -epsilon && 
+                    origin.y >= -epsilon &&
+                    origin.x + size.x <= dimensions.x + epsilon &&
+                    origin.y + size.y <= dimensions.y + epsilon;
+        
+        if (!valid)
+            return false;
+        
+        // Double-check with integer bounds (stricter check)
+        // This ensures we don't place things that are partially off the grid
+        if (origin.x < 0 || origin.y < 0 ||
+            origin.x + size.x > dimensions.x ||
+            origin.y + size.y > dimensions.y)
+        {
+            // If it's only off by a small amount due to floating point, clamp it
+            if (origin.x < 0 && origin.x > -0.5f) 
+                return false; // Too far off, reject
+            if (origin.y < 0 && origin.y > -0.5f)
+                return false;
+            if (origin.x + size.x > dimensions.x && origin.x + size.x < dimensions.x + 0.5f)
+                return false;
+            if (origin.y + size.y > dimensions.y && origin.y + size.y < dimensions.y + 0.5f)
+                return false;
+            
+            return false;
+        }
+        
+        return true;
     }
 
     // * Helpers 
-
+    public Vector3 GetCellCenter(Vector2Int cell)
+    {
+        if (!InBounds(cell.x, cell.y))
+            return Vector3.zero;
+        
+        return originWorld + new Vector3(
+            cell.x * cellSize + cellSize * 0.5f,
+            0f,
+            cell.y * cellSize + cellSize * 0.5f);
+    }
     private Material StateToMat(CellState s) => s switch
     {
         CellState.Valid => matValid,

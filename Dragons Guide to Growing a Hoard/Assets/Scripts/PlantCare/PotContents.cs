@@ -317,8 +317,9 @@ public class PotContents : MonoBehaviour
         {
             foreach (Renderer rend in currentSoilObject.GetComponentsInChildren<Renderer>())
                 rend.material = materialToApply;
-            if(tut !=null)
-                tut.addedSoil();
+            if(Tutorial.inTut == true){
+                Tutorial.addedSoil();
+            }
         }
     }
 
@@ -391,8 +392,9 @@ public class PotContents : MonoBehaviour
 
         hasPlant = true;
         Plant.SetPotContents(this);
-        if(tut != null)
-            tut.plantedSeed();
+        if(Tutorial.inTut == true){
+            Tutorial.plantedSeed();
+        }
         return true;
     }
 
@@ -418,8 +420,8 @@ public class PotContents : MonoBehaviour
         // Now destroy the plant
         if (plantToDestroy != null)
         {
-            if(tut != null)
-                tut.removedPlant();
+            if(Tutorial.inTut == true)
+                Tutorial.removedPlant();
             Destroy(plantToDestroy);
         }
     }
@@ -431,8 +433,9 @@ public class PotContents : MonoBehaviour
     {
         if (waterLevel >= plantWaterMax) return false;
         waterLevel = Mathf.Min(waterLevel + amount, plantWaterMax);
-        if(tut != null)
-            tut.addedWater(); 
+        if(Tutorial.inTut == true){
+            Tutorial.addedWater();
+        }
         return true;
     }
 

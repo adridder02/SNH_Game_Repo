@@ -9,5 +9,6 @@
             <ui:Toggle label="" text="Plant the plant in the Pot" name="Task5"/>
             <ui:Toggle label="" text="Add water to the plant" name="Task6"/>
         </ui:GroupBox>
+        <ui:Label text="Label" name="Dir" style="height: 88px; width: 250px; -unity-text-align: upper-left; -unity-background-image-tint-color: rgb(191, 191, 191); background-color: rgba(154, 154, 154, 0.39); padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px;"/>
     </ui:VisualElement>
 </ui:UXML>

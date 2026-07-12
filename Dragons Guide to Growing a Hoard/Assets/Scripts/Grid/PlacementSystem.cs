@@ -470,6 +470,11 @@ public class PlacementSystem : MonoBehaviour
         PotData data = availablePots[selectedIndex];
         GridVisual gridVisual = activeSurface.GridVisual;
         GridData gridData = surfaceGridData[activeSurface];
+        
+        // Safety clamp - ensure cell is within bounds
+        Vector2Int gridDims = activeSurface.GridDimensions;
+        cell.x = Mathf.Clamp(cell.x, 0, gridDims.x - 1);
+        cell.y = Mathf.Clamp(cell.y, 0, gridDims.y - 1);
 
         if (debugMode)
             Debug.Log($"TryPlace: Attempting to place pot at cell {cell} on surface '{activeSurface.name}'");
@@ -521,9 +526,10 @@ public class PlacementSystem : MonoBehaviour
             Debug.Log($"TryPlace: Successfully placed pot '{placed.name}' at {worldPos}");
 
         PlaySFX(placeSoundClip);
-        if(tut != null){
-            tut.movePot();
+        if(Tutorial.inTut == true){
+            Tutorial.movePot();
         }
+        Tutorial.setGridOnTable();
     }
 
     private void TryRemove(Vector2Int cell)
@@ -554,9 +560,6 @@ public class PlacementSystem : MonoBehaviour
         Destroy(data.PlacedObject);
 
         PlaySFX(removeSoundClip);
-        if(tut != null){
-            tut.addedPotToInventory();
-        }
     }
 
     private void TryPickupOrDrop(Vector2Int cell)
@@ -723,46 +726,47 @@ public class PlacementSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// Determines which GreenhouseSurface the given world position is over.
-    /// Returns null if not over any surface.
-    /// </summary>
-    private GreenhouseSurface GetSurfaceAtPosition(Vector3 worldPos)
+/// Determines which GreenhouseSurface the given world position is over.
+/// Returns null if not over any surface.
+/// </summary>
+private GreenhouseSurface GetSurfaceAtPosition(Vector3 worldPos)
+{
+    // Find the closest surface to the mouse position (based on XZ plane)
+    GreenhouseSurface closestSurface = null;
+    float closestYDist = float.MaxValue;
+    float epsilon = 0.001f; // Small tolerance for edge detection
+
+    foreach (var surface in surfaces)
     {
-        // Find the closest surface to the mouse position (based on XZ plane)
-        GreenhouseSurface closestSurface = null;
-        float closestYDist = float.MaxValue;
+        if (surface == null || surface.GridVisual == null)
+            continue;
 
-        foreach (var surface in surfaces)
+        Vector3 origin = surface.GridOriginWorld;
+        Vector2Int dims = surface.GridDimensions;
+        float cellSize = surface.CellSize;
+
+        // Calculate the bounds of this surface on the XZ plane WITH TOLERANCE
+        float minX = origin.x - epsilon;
+        float maxX = origin.x + dims.x * cellSize + epsilon;
+        float minZ = origin.z - epsilon;
+        float maxZ = origin.z + dims.y * cellSize + epsilon;
+
+        // Check if the worldPos is within the XZ bounds of this surface
+        if (worldPos.x >= minX && worldPos.x <= maxX &&
+            worldPos.z >= minZ && worldPos.z <= maxZ)
         {
-            if (surface == null || surface.GridVisual == null)
-                continue;
-
-            Vector3 origin = surface.GridOriginWorld;
-            Vector2Int dims = surface.GridDimensions;
-            float cellSize = surface.CellSize;
-
-            // Calculate the bounds of this surface on the XZ plane
-            float minX = origin.x;
-            float maxX = origin.x + dims.x * cellSize;
-            float minZ = origin.z;
-            float maxZ = origin.z + dims.y * cellSize;
-
-            // Check if the worldPos is within the XZ bounds of this surface
-            if (worldPos.x >= minX && worldPos.x <= maxX &&
-                worldPos.z >= minZ && worldPos.z <= maxZ)
+            // This position is within the XZ bounds
+            // Check if it's the closest surface vertically
+            float yDist = Mathf.Abs(worldPos.y - origin.y);
+            if (yDist < closestYDist)
             {
-                // This position is within the XZ bounds
-                // Check if it's the closest surface vertically
-                float yDist = Mathf.Abs(worldPos.y - origin.y);
-                if (yDist < closestYDist)
-                {
-                    closestYDist = yDist;
-                    closestSurface = surface;
-                }
+                closestYDist = yDist;
+                closestSurface = surface;
             }
         }
+    }
 
-        return closestSurface;
+    return closestSurface;
     }
 
     private Vector3 CellToWorldCentre(Vector2Int cell, Vector2Int size, GreenhouseSurface surface)

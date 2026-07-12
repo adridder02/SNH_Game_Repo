@@ -145,14 +145,20 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        // Reset collision state
-        isCollidingWithPullObject = false;
-        collisionDistance = 0f;
-        currentCollidingObject = null;
-        
-        if (enableDebugLogs)
+        // FIX: only clear collision state if the object exiting is the one we're
+        // actually tracking. Previously this cleared state whenever ANY collider
+        // exited, even if a different (still-overlapping) collider was closer and
+        // still active - causing the camera to snap out and immediately snap back in.
+        if (other.gameObject == currentCollidingObject)
         {
-            Debug.Log($"Camera exited collision with: {other.gameObject.name}");
+            isCollidingWithPullObject = false;
+            collisionDistance = 0f;
+            currentCollidingObject = null;
+
+            if (enableDebugLogs)
+            {
+                Debug.Log($"Camera exited collision with: {other.gameObject.name}");
+            }
         }
     }
 
@@ -183,19 +189,34 @@ public class ThirdPersonCameraController : MonoBehaviour
 
         if (inputAxis != null) inputAxis.enabled = true;
 
+        // FIX: clamp deltaTime for all smoothing math below. Any external
+        // hitch (heavy synchronous work elsewhere in the scene, GC pause,
+        // asset streaming, etc.) can cause Time.deltaTime to spike for a
+        // single frame; multiplying that spike into Mathf.Lerp's interpolant
+        // pushes values almost instantly to their target, reading as a
+        // camera "snap". Capping it means the worst case is one slightly
+        // slower-than-usual smoothing step instead of a visible jump.
+        float dt = Mathf.Min(Time.deltaTime, 0.05f); // never treat a frame as slower than 20 fps for smoothing purposes
+
         // Zoom intent
-        if (scrollDelta.y != 0f && orbital != null)
+        // FIX: base this on currentZoom (the player's intended distance), not on
+        // orbital.Radius. orbital.Radius gets overwritten every frame with
+        // collisionZoom (the collision-adjusted value), so computing the new
+        // target from it created a feedback loop: after any wall-pull-in, the
+        // next scroll would zoom from the shrunk distance instead of from where
+        // the player actually had the camera, causing snapping/jumping.
+        if (scrollDelta.y != 0f)
         {
             targetZoom = Mathf.Clamp(
-                orbital.Radius - scrollDelta.y * zoomSpeed,
+                currentZoom - scrollDelta.y * zoomSpeed,
                 minDistance, maxDistance);
             scrollDelta = Vector2.zero;
         }
 
-        currentZoom = Mathf.Lerp(currentZoom, targetZoom, Time.deltaTime * zoomLerpSpeed);
+        currentZoom = Mathf.Lerp(currentZoom, targetZoom, dt * zoomLerpSpeed);
 
         // Handle both systems
-        HandleCameraPullAndTransparency();
+        HandleCameraPullAndTransparency(dt);
 
         // Apply the final radius
         orbital.Radius = collisionZoom;
@@ -208,7 +229,7 @@ public class ThirdPersonCameraController : MonoBehaviour
         }
     }
 
-    private void HandleCameraPullAndTransparency()
+    private void HandleCameraPullAndTransparency(float dt)
     {
         Transform follow = cam.Follow;
         if (follow == null) return;
@@ -220,10 +241,10 @@ public class ThirdPersonCameraController : MonoBehaviour
             ? collisionPullInSpeed
             : collisionPullOutSpeed;
         
-        collisionZoom = Mathf.Lerp(collisionZoom, desiredRadius, Time.deltaTime * lerpSpeed);
+        collisionZoom = Mathf.Lerp(collisionZoom, desiredRadius, dt * lerpSpeed);
 
         // Handle transparency for all other layers using Raycast
-        HandleTransparencyForOtherLayers();
+        HandleTransparencyForOtherLayers(dt);
     }
 
     /// <summary>
@@ -249,7 +270,7 @@ public class ThirdPersonCameraController : MonoBehaviour
     /// <summary>
     /// Handles transparency for objects NOT handled by the collision box
     /// </summary>
-    private void HandleTransparencyForOtherLayers()
+    private void HandleTransparencyForOtherLayers(float dt)
     {
         Transform follow = cam.Follow;
         if (follow == null) return;
@@ -304,7 +325,7 @@ public class ThirdPersonCameraController : MonoBehaviour
         }
         
         // Update alpha values
-        UpdateAlphas();
+        UpdateAlphas(dt);
     }
 
     /// <summary>
@@ -407,14 +428,14 @@ public class ThirdPersonCameraController : MonoBehaviour
         activeFades.Remove(renderer);
     }
 
-    private void UpdateAlphas()
+    private void UpdateAlphas(float dt)
     {
         foreach (Renderer renderer in activeFades)
         {
             if (renderer == null) continue;
             
             float current = currentAlphas[renderer];
-            float newAlpha = Mathf.Lerp(current, targetAlpha, Time.deltaTime * fadeSpeed);
+            float newAlpha = Mathf.Lerp(current, targetAlpha, dt * fadeSpeed);
             currentAlphas[renderer] = newAlpha;
             SetRendererAlpha(renderer, newAlpha);
         }

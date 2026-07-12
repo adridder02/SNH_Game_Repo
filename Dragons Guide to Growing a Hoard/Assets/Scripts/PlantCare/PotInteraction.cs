@@ -354,9 +354,11 @@ public class PotInteraction : MonoBehaviour
             Debug.LogWarning("Tried to open menu for a destroyed or null pot");
             return;
         }
+
         GameInputModeManager.Instance?.SetPlacementMode();
         ThirdPersonCameraController.CameraLocked = true;
-
+        if(!Tutorial.tutorialStageComplete())
+            Tutorial.onPickUpPot();
         // Clear old buttons
         foreach (Transform child in menuRoot.transform)
             Destroy(child.gameObject);
@@ -370,7 +372,6 @@ public class PotInteraction : MonoBehaviour
             actions.Add((pendingFeedbackMessage, null, true)); // warning row
             pendingFeedbackMessage = null;
         }
-
         // ── Soil actions ──────────────────────────────────────────
         string soilHeader = pot.HasSoil ? "Change Soil:" : "Add Soil:";
         actions.Add((soilHeader, null, false)); // section header (non-clickable)
@@ -462,6 +463,7 @@ public class PotInteraction : MonoBehaviour
             {
                 ClearCurrentOutline();
                 pot.RemovePlant(dragonInventory);
+                
                 CloseMenu();
             };
             actions.Add(("Remove Plant", removePlant, false));

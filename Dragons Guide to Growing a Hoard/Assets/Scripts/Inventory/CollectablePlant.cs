@@ -27,6 +27,7 @@ public class CollectablePlant : MonoBehaviour
 
     public string GetPlantName()
     {
+        
         return plantName;
     }
 

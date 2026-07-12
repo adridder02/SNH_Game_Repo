@@ -7,13 +7,16 @@ using System.Data;
 public class LevelLoader : MonoBehaviour
 {   
     public Animator transition;
-    public float transitionTime = 1f;
+    public static float delay = 0f;
+    public float transitionTime = 5f;
 
     void Update()
     {
-       if (Keyboard.current.rightShiftKey.isPressed)
-       { LoadNextLevel();}
-
+       if (Tutorial.tutorialStageComplete())
+        {
+            Debug.Log("Done with Tut");
+            LoadNextLevel();
+        }
     }
     public void LoadNextLevel()
     {   

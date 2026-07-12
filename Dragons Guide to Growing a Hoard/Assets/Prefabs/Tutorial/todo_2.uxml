@@ -1,0 +1,9 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="all" style="flex-grow: 1;">
+        <ui:GroupBox name="box" style="width: 221px; position: absolute; height: 194px; background-color: rgba(0, 0, 0, 0.51);">
+            <ui:RadioButtonGroup label="" choices="Place one small pot,Place one Medium  pot, Place one large pot" name="R_group" style="color: rgb(255, 250, 250);"/>
+            <ui:Label text="0" name="count" style="width: 40px; -unity-text-align: middle-center; color: rgb(255, 250, 250); height: 40px;"/>
+            <ui:Label text="How many plants are planted." name="plant" style="width: 162px; -unity-text-align: middle-left; color: rgb(255, 250, 250); white-space: pre-wrap; position: absolute; top: 110px; left: 49px;"/>
+        </ui:GroupBox>
+    </ui:VisualElement>
+</ui:UXML>

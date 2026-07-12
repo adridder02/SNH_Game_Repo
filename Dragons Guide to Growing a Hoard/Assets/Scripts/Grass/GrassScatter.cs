@@ -10,8 +10,17 @@
 // Uses Graphics.DrawMeshInstanced, batched in groups of 1023
 // (Unity's per-call instancing cap), so it scales from a handful
 // of blades to tens of thousands without a compute shader.
+//
+// FIX: instance generation (including all the ground raycasts) is
+// now spread across multiple frames with a per-frame budget instead
+// of running as one big synchronous loop in a single Update() call.
+// For large/dense fields the old approach could fire thousands of
+// Physics.Raycast calls in one frame, causing a frame-time spike
+// large enough to visibly snap anything driven by Time.deltaTime
+// elsewhere in the scene (e.g. camera smoothing/lerps).
 // =============================================================
 
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -43,11 +52,25 @@ public class GrassScatter : MonoBehaviour
     [Header("Regeneration")]
     public int randomSeed = 0;
 
+    [Header("Performance")]
+    [Tooltip("Max ground raycasts to perform per frame while (re)generating. Keeps large/dense fields from spiking frame time.")]
+    public int maxRaycastsPerFrame = 200;
+
     private List<Matrix4x4[]> batches = new List<Matrix4x4[]>();
     private bool dirty = true;
+    private Coroutine generationRoutine;
 
     private void OnValidate() => dirty = true;
     private void OnEnable() => dirty = true;
+
+    private void OnDisable()
+    {
+        if (generationRoutine != null)
+        {
+            StopCoroutine(generationRoutine);
+            generationRoutine = null;
+        }
+    }
 
     private void Update()
     {
@@ -56,8 +79,26 @@ public class GrassScatter : MonoBehaviour
             if (bladeMesh == null)
                 bladeMesh = GenerateDefaultBladeMesh();
 
-            GenerateInstances();
             dirty = false;
+
+            // FIX: don't block the frame with a huge synchronous raycast loop.
+            // In Play mode, spread the work across frames via coroutine.
+            // In edit mode (no coroutines outside Play), fall back to a
+            // frame-budgeted manual pump so the editor still doesn't hitch
+            // as hard on huge fields (see EditorApplication hookup below).
+            if (generationRoutine != null)
+                StopCoroutine(generationRoutine);
+
+            if (Application.isPlaying)
+            {
+                generationRoutine = StartCoroutine(GenerateInstancesBudgeted());
+            }
+            else
+            {
+                // Edit-mode preview: still budget it, just pump manually
+                // across editor updates instead of using a coroutine.
+                StartEditModeGeneration();
+            }
         }
 
         if (grassMaterial == null || bladeMesh == null) return;
@@ -68,53 +109,134 @@ public class GrassScatter : MonoBehaviour
     }
 
     // ---------------------------------------------------------------
-    // GenerateInstances — scatters points across areaSize, raycasts
-    // down to find ground height, and bakes the results into
-    // fixed-size batches ready for DrawMeshInstanced.
+    // Budgeted generation: scatters points across areaSize, raycasts
+    // down to find ground height, and bakes results into fixed-size
+    // batches ready for DrawMeshInstanced — but only processes up to
+    // maxRaycastsPerFrame points before yielding to the next frame.
     // ---------------------------------------------------------------
-    private void GenerateInstances()
+    private IEnumerator GenerateInstancesBudgeted()
     {
-        batches.Clear();
-
         int count = Mathf.Max(0, Mathf.RoundToInt(areaSize.x * areaSize.y * densityPerSqm));
-        if (count == 0) return;
+
+        List<Matrix4x4[]> newBatches = new List<Matrix4x4[]>();
+
+        if (count == 0)
+        {
+            batches = newBatches;
+            yield break;
+        }
 
         System.Random rng = new System.Random(randomSeed);
         List<Matrix4x4> current = new List<Matrix4x4>(BATCH_SIZE);
+        int processedThisFrame = 0;
 
         for (int i = 0; i < count; i++)
         {
-            float x = ((float)rng.NextDouble() - 0.5f) * areaSize.x;
-            float z = ((float)rng.NextDouble() - 0.5f) * areaSize.y;
-            Vector3 origin = transform.TransformPoint(new Vector3(x, 50f, z));
-
-            Vector3 groundPos;
-            if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, 200f, groundMask))
-                groundPos = hit.point;
-            else
-                groundPos = transform.TransformPoint(new Vector3(x, 0f, z)); // fallback: flat at this object's Y
-
-            float yRot = (float)rng.NextDouble() * 360f;
-            float heightScale = Mathf.Lerp(minHeight, maxHeight, (float)rng.NextDouble());
-            float widthScale = Mathf.Lerp(minWidth, maxWidth, (float)rng.NextDouble());
-
-            Matrix4x4 m = Matrix4x4.TRS(
-                groundPos,
-                Quaternion.Euler(0f, yRot, 0f),
-                new Vector3(widthScale, heightScale, widthScale));
-
-            current.Add(m);
+            AddBladeInstance(rng, current);
+            processedThisFrame++;
 
             if (current.Count == BATCH_SIZE)
             {
-                batches.Add(current.ToArray());
+                newBatches.Add(current.ToArray());
                 current.Clear();
+            }
+
+            if (processedThisFrame >= maxRaycastsPerFrame)
+            {
+                processedThisFrame = 0;
+                yield return null; // give the frame back
             }
         }
 
         if (current.Count > 0)
-            batches.Add(current.ToArray());
+            newBatches.Add(current.ToArray());
+
+        // Swap in the finished result atomically so we never render a
+        // half-built set while still generating.
+        batches = newBatches;
+        generationRoutine = null;
     }
+
+    private void AddBladeInstance(System.Random rng, List<Matrix4x4> current)
+    {
+        float x = ((float)rng.NextDouble() - 0.5f) * areaSize.x;
+        float z = ((float)rng.NextDouble() - 0.5f) * areaSize.y;
+        Vector3 origin = transform.TransformPoint(new Vector3(x, 50f, z));
+
+        Vector3 groundPos;
+        // FIX: explicitly ignore triggers. Physics.Raycast otherwise follows
+        // the global "Queries Hit Triggers" project setting, which can cause
+        // ground-height sampling to land on trigger volumes (e.g. gameplay
+        // triggers, camera collision boxes) instead of actual ground geometry.
+        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, 200f, groundMask, QueryTriggerInteraction.Ignore))
+            groundPos = hit.point;
+        else
+            groundPos = transform.TransformPoint(new Vector3(x, 0f, z)); // fallback: flat at this object's Y
+
+        float yRot = (float)rng.NextDouble() * 360f;
+        float heightScale = Mathf.Lerp(minHeight, maxHeight, (float)rng.NextDouble());
+        float widthScale = Mathf.Lerp(minWidth, maxWidth, (float)rng.NextDouble());
+
+        Matrix4x4 m = Matrix4x4.TRS(
+            groundPos,
+            Quaternion.Euler(0f, yRot, 0f),
+            new Vector3(widthScale, heightScale, widthScale));
+
+        current.Add(m);
+    }
+
+#if UNITY_EDITOR
+    // Edit-mode (not playing) budgeted generation, driven by the editor's
+    // update loop rather than a coroutine (coroutines don't tick outside Play).
+    private void StartEditModeGeneration()
+    {
+        System.Random rng = new System.Random(randomSeed);
+        int count = Mathf.Max(0, Mathf.RoundToInt(areaSize.x * areaSize.y * densityPerSqm));
+        int index = 0;
+        List<Matrix4x4[]> newBatches = new List<Matrix4x4[]>();
+        List<Matrix4x4> current = new List<Matrix4x4>(BATCH_SIZE);
+
+        if (count == 0)
+        {
+            batches = newBatches;
+            return;
+        }
+
+        void Step()
+        {
+            int processed = 0;
+            while (index < count && processed < maxRaycastsPerFrame)
+            {
+                AddBladeInstance(rng, current);
+                if (current.Count == BATCH_SIZE)
+                {
+                    newBatches.Add(current.ToArray());
+                    current.Clear();
+                }
+                index++;
+                processed++;
+            }
+
+            if (index >= count)
+            {
+                if (current.Count > 0) newBatches.Add(current.ToArray());
+                batches = newBatches;
+                UnityEditor.EditorApplication.update -= stepHandler;
+            }
+        }
+
+        stepHandler = Step;
+        UnityEditor.EditorApplication.update += stepHandler;
+    }
+
+    private UnityEditor.EditorApplication.CallbackFunction stepHandler;
+#else
+    private void StartEditModeGeneration()
+    {
+        // Builds don't hit this path (Update only calls it when !Application.isPlaying,
+        // which cannot happen in a standalone build), kept as a no-op for safety.
+    }
+#endif
 
     // ---------------------------------------------------------------
     // GenerateDefaultBladeMesh — a tapered strip with vertex colour

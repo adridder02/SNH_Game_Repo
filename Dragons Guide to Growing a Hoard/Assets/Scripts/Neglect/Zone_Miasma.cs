@@ -67,6 +67,8 @@ public class Zone_Miasma : MonoBehaviour
                 reseT75R = !reseT75R;
             }
         }
-        else miasma.rateOfMiasma = 1f;
+        else 
+            if(miasma != null)
+                miasma.rateOfMiasma = 1f;
     }
 }
