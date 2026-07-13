@@ -529,6 +529,12 @@ public class PlacementSystem : MonoBehaviour
         if(Tutorial.inTut == true){
             Tutorial.movePot();
         }
+        if(selectedIndex == 0)
+            Tutorial_2.plantedSp();
+        else if(selectedIndex == 1)
+            Tutorial_2.plantedMp();
+        else if(selectedIndex == 2)
+            Tutorial_2.plantedLp();
         Tutorial.setGridOnTable();
     }
 

@@ -186,7 +186,7 @@ public class InventoryUIController : MonoBehaviour
         playerControls?.Enable();
         if (playerInventory != null)
             playerInventory.OnInventoryChanged += RefreshUI;
-    }
+    }  
 
     void OnDisable()
     {
@@ -221,6 +221,8 @@ public class InventoryUIController : MonoBehaviour
     {
         isInventoryOpen = !isInventoryOpen;
         SetInventoryVisible(isInventoryOpen);
+        if(isInventoryOpen)
+            Tutorial_2.openedInventory();
 
         var playerController = FindAnyObjectByType<PlayerController>();
         var camController = FindAnyObjectByType<ThirdPersonCameraController>();

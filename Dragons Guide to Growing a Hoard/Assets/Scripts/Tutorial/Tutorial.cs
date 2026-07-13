@@ -129,7 +129,8 @@ public class Tutorial : MonoBehaviour
             TaskLabel.text = listOfInstructions[currentTaskIndex];
         }
         else{
-            TaskLabel.style.display = DisplayStyle.None;
+            if(TaskLabel != null)
+                TaskLabel.style.display = DisplayStyle.None;
         }
     }
     public static void onMove(){

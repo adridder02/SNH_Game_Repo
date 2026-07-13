@@ -425,6 +425,7 @@ public class PotInteraction : MonoBehaviour
                             if (success)
                             {
                                 dragonInventory.RemoveFirstPlant(captured);
+                                Tutorial_2.addPlantcounter();
                                 CloseMenu();
 
                                 // We're standing right at this pot, so reflect
@@ -463,7 +464,7 @@ public class PotInteraction : MonoBehaviour
             {
                 ClearCurrentOutline();
                 pot.RemovePlant(dragonInventory);
-                
+                Tutorial_2.removePlantcounter();
                 CloseMenu();
             };
             actions.Add(("Remove Plant", removePlant, false));
