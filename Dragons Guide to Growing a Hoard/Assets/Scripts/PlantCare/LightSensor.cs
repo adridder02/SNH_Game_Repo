@@ -48,7 +48,7 @@ public class LightSensor : MonoBehaviour
 
     [Tooltip("Layers that can block sunlight (e.g. terrain, walls). " +
              "Default (~0) means everything blocks and 0 means nothing blocks.")]
-    public LayerMask obstacleLayerMask;
+    public LayerMask obstacleLayerMask = default;
 
     [Tooltip("Ray origin height offset above the plant pivot, to avoid self-collision.")]
     public float rayOriginOffset = 0.5f;
