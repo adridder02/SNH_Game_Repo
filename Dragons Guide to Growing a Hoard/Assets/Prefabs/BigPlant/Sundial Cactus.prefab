@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 5406378468432258178}
   - component: {fileID: -2700072728668390068}
   - component: {fileID: 6790803248347742446}
+  - component: {fileID: -4223702107849560079}
   m_Layer: 3
   m_Name: Sundial Cactus
   m_TagString: Selectable
@@ -153,6 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   plantSize: 2
   plantType: 0
+  journalSpecies: {fileID: 11400000, guid: 006bc5c7905cc09439e368abab1bcff4, type: 2}
   potPlacementOffset: 0
   potPlacementRotation: {x: 0, y: 0, z: 0}
   preferredSoil: 1
@@ -179,8 +181,8 @@ MonoBehaviour:
   miasmaSoilPenalty: 0
   miasmaWaterDrainMultiplier: 1
   isMiasmaDebuffActive: 0
-  currentState: 2
-  currentSoil: 2
+  currentState: 1
+  currentSoil: 1
   isOnSoil: 0
   lastTotalScore: 0
   soilScore: 0
@@ -223,3 +225,23 @@ MonoBehaviour:
   rawIntensity: 0
   isInShadow: 0
   normalisedIntensity: 0
+--- !u!114 &-4223702107849560079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108434111351597028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a955a02e5f62b6144833ae3db4ca04e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantProgress
+  secondsToGrowFull: 10
+  secondsToDrainFromDead: 30
+  intermediateDrainFraction: 0.35
+  smoothingSeconds: 5
+  plantState: {fileID: 0}
+  progress: 0.5
+  isComplete: 0
+  smoothedRatePerSecond: 0

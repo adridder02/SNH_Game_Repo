@@ -48,6 +48,11 @@ public class PlantState : MonoBehaviour
              "in the inventory's Filter bar).")]
     public PlantType plantType = PlantType.Sunny;
 
+    [Header("Journal")]
+    [Tooltip("Links this prefab to its journal entry. Optional — if left empty, harvesting this " +
+             "plant simply won't unlock anything in the Plants journal.")]
+    public PlantSpeciesData journalSpecies;
+
     [Header("Pot Placement")]
     [Tooltip("Per-plant vertical fine-tune when placed in a pot. Stacks on top of the pot's plantSurfaceOffset. " +
              "Positive = higher, negative = lower.")]

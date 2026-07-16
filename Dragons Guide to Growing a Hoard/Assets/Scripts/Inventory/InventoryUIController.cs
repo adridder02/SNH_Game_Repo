@@ -204,12 +204,20 @@ public class InventoryUIController : MonoBehaviour
 
     void Update()
     {
-        // Escape closes the inventory, same as clicking Back. Only acts while
-        // open so Escape doesn't do anything unexpected when it's closed.
-        if (isInventoryOpen && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            ToggleInventory();
-        }
+        // Escape handling for closing the inventory now lives in ExitMenuController,
+        // not here. Two scripts independently polling Escape each frame is a race —
+        // Unity doesn't guarantee which Update() runs first, so a single Escape press
+        // could close the inventory AND open the Exit menu on the same frame. Having
+        // one script own all Escape handling for the whole menu layer avoids that.
+    }
+
+    /// <summary>Whether the inventory is currently open — checked by ExitMenuController before opening the Exit menu.</summary>
+    public bool IsInventoryOpen => isInventoryOpen;
+
+    /// <summary>Closes the inventory if it's open. Does nothing if already closed. Called by ExitMenuController on Escape.</summary>
+    public void CloseInventory()
+    {
+        if (isInventoryOpen) ToggleInventory();
     }
 
     private void OnInventoryPerformed(InputAction.CallbackContext context)
@@ -217,55 +225,25 @@ public class InventoryUIController : MonoBehaviour
         ToggleInventory();
     }
 
-        public void ToggleInventory()
+    public void ToggleInventory()
     {
         isInventoryOpen = !isInventoryOpen;
         SetInventoryVisible(isInventoryOpen);
         if(isInventoryOpen)
             Tutorial_2.openedInventory();
 
-        var playerController = FindAnyObjectByType<PlayerController>();
-        var camController = FindAnyObjectByType<ThirdPersonCameraController>();
-
         if (isInventoryOpen)
         {
-            UnityEngine.Cursor.lockState = CursorLockMode.None;
-            UnityEngine.Cursor.visible = true;
-            
-            GameInputModeManager.Instance?.SetUIMode();
+            GameInputModeManager.Instance?.SetMenuUIMode();
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             ThirdPersonCameraController.CameraLocked = true;
-
-            if (playerController != null)
-                playerController.SetMovementEnabled(false);
-
-            // Disable camera input to prevent drift
-            if (camController != null)
-            {
-                var inputAxis = camController.GetComponent<Unity.Cinemachine.CinemachineInputAxisController>();
-                if (inputAxis != null)
-                    inputAxis.enabled = false;
-            }
-
             RefreshUI();
         }
         else
         {
-            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-            UnityEngine.Cursor.visible = false;
-            
             GameInputModeManager.Instance?.SetGameplayMode();
-            ThirdPersonCameraController.CameraLocked = false;
-
-            if (playerController != null)
-                playerController.SetMovementEnabled(true);
-
-            // Re-enable camera
-            if (camController != null)
-            {
-                var inputAxis = camController.GetComponent<Unity.Cinemachine.CinemachineInputAxisController>();
-                if (inputAxis != null)
-                    inputAxis.enabled = true;
-            }
         }
     }
     void SetInventoryVisible(bool visible)

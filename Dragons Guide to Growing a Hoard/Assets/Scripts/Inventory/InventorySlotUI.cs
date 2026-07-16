@@ -47,7 +47,9 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             icon.preserveAspect = true;
         }
         if (label != null)
-            label.text = GetDisplayName(instance.plantPrefab);
+            label.text = !string.IsNullOrEmpty(instance.displayName)
+                ? instance.displayName
+                : GetDisplayName(instance.plantPrefab); // fallback for items with no display name set
     }
 
     private static Sprite GetIcon(GameObject prefab)
@@ -57,6 +59,9 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         return sr != null ? sr.sprite : null;
     }
 
+    /// <summary>Fallback only — used if instance.displayName wasn't set (e.g. a plant with no
+    /// PlantSpeciesData linked and no CollectablePlant fallback name). Derives something readable
+    /// from the raw prefab's GameObject name.</summary>
     private static string GetDisplayName(GameObject prefab)
     {
         return prefab != null ? prefab.name.Replace("(Clone)", "").Trim() : "Unknown";

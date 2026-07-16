@@ -8,8 +8,8 @@ public class GameInputModeManager : MonoBehaviour
     public enum InputMode
     {
         Gameplay,
-        Placement,
-        UI
+        MenuUI,      // Menus: movement ON, camera OFF, cursor visible
+        Placement
     }
 
     [Header("References")]
@@ -18,7 +18,7 @@ public class GameInputModeManager : MonoBehaviour
 
     private InputActionMap gameplayMap;
     private InputActionMap cameraMap;
-   
+
     public InputMode CurrentMode { get; private set; }
 
     private void Awake()
@@ -40,21 +40,14 @@ public class GameInputModeManager : MonoBehaviour
         gameplayMap = inputActions.FindActionMap("GamePlay", false);
         cameraMap = inputActions.FindActionMap("Camera", false);
 
-        if (gameplayMap == null)
-            Debug.LogError("Missing Action Map: GamePlay");
-
-        if (cameraMap == null)
-            Debug.LogError("Missing Action Map: Camera");
+        if (gameplayMap == null) Debug.LogError("Missing Action Map: GamePlay");
+        if (cameraMap == null) Debug.LogError("Missing Action Map: Camera");
     }
 
     private void Start()
     {
         SetGameplayMode();
     }
-    
-   
-    void Update()
-    {}
 
     public void SetGameplayMode()
     {
@@ -68,16 +61,27 @@ public class GameInputModeManager : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        ThirdPersonCameraController.CameraLocked = false;
+
+        var camController = FindAnyObjectByType<ThirdPersonCameraController>();
+        if (camController != null)
+        {
+            var inputAxis = camController.GetComponent<Unity.Cinemachine.CinemachineInputAxisController>();
+            if (inputAxis != null)
+                inputAxis.enabled = true;
+        }
     }
 
-    public void SetPlacementMode()
+    /// <summary>
+    /// For menus (Inventory, Journal, Pot Menu, Exit Menu, etc.).
+    /// Keeps movement enabled, disables only camera, shows cursor.
+    /// </summary>
+    public void SetMenuUIMode()
     {
-        CurrentMode = InputMode.Placement;
+        CurrentMode = InputMode.MenuUI;
 
-        // KEEP gameplay enabled so player can still move
         gameplayMap?.Enable();
-
-        // Disable camera look / zoom only
         cameraMap?.Disable();
 
         if (playerController != null)
@@ -85,29 +89,41 @@ public class GameInputModeManager : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        // Explicitly lock camera
+        ThirdPersonCameraController.CameraLocked = true;
+
+        // Disable camera input component as backup
+        var camController = FindAnyObjectByType<ThirdPersonCameraController>();
+        if (camController != null)
+        {
+            var inputAxis = camController.GetComponent<Unity.Cinemachine.CinemachineInputAxisController>();
+            if (inputAxis != null)
+                inputAxis.enabled = false;
+        }
     }
 
-    /// <summary>
-    /// Used while a full-screen UI panel (inventory, menus, etc.) is open.
-    /// Movement and camera look/zoom are disabled, but the GamePlay map
-    /// stays enabled so actions like "Inventory" (used to close the panel
-    /// again) keep firing.
-    /// </summary>
-    public void SetUIMode()
+    public void SetPlacementMode()
     {
-        CurrentMode = InputMode.UI;
+        CurrentMode = InputMode.Placement;
 
-        // Keep GamePlay map enabled — the Inventory toggle action needs to
-        // keep firing so the player can close the inventory again.
         gameplayMap?.Enable();
-
-        // Stop camera look / zoom
         cameraMap?.Disable();
 
         if (playerController != null)
-            playerController.SetMovementEnabled(false);
+            playerController.SetMovementEnabled(true);
 
-        // Cursor is handled by InventoryUIController itself, so it's left
-        // alone here.
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        ThirdPersonCameraController.CameraLocked = true;
+
+        var camController = FindAnyObjectByType<ThirdPersonCameraController>();
+        if (camController != null)
+        {
+            var inputAxis = camController.GetComponent<Unity.Cinemachine.CinemachineInputAxisController>();
+            if (inputAxis != null)
+                inputAxis.enabled = false;
+        }
     }
 }

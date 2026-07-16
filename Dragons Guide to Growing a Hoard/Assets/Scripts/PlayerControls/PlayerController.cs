@@ -238,39 +238,39 @@ public class PlayerController : MonoBehaviour
 
     void MenuVisiablity()
     {
-        if (Keyboard.current == null) return;
+        // if (Keyboard.current == null) return;
 
-        bool altHeld = Keyboard.current.leftAltKey.isPressed || Keyboard.current.rightAltKey.isPressed;
+        // bool altHeld = Keyboard.current.leftAltKey.isPressed || Keyboard.current.rightAltKey.isPressed;
 
-        if (altHeld)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            ThirdPersonCameraController.CameraLocked = true;
-        }
-        else if (Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            escPressed = !escPressed;
+        // if (altHeld)
+        // {
+        //     Cursor.lockState = CursorLockMode.None;
+        //     Cursor.visible = true;
+        //     ThirdPersonCameraController.CameraLocked = true;
+        // }
+        // else if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        // {
+        //     escPressed = !escPressed;
 
-            if (escPressed)
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                ThirdPersonCameraController.CameraLocked = true;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                ThirdPersonCameraController.CameraLocked = false;
-            }
-        }
-        else if (!escPressed)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            ThirdPersonCameraController.CameraLocked = false;
-        }
+        //     if (escPressed)
+        //     {
+        //         Cursor.lockState = CursorLockMode.None;
+        //         Cursor.visible = true;
+        //         ThirdPersonCameraController.CameraLocked = true;
+        //     }
+        //     else
+        //     {
+        //         Cursor.lockState = CursorLockMode.Locked;
+        //         Cursor.visible = false;
+        //         ThirdPersonCameraController.CameraLocked = false;
+        //     }
+        // }
+        // else if (!escPressed)
+        // {
+        //     Cursor.lockState = CursorLockMode.Locked;
+        //     Cursor.visible = false;
+        //     ThirdPersonCameraController.CameraLocked = false;
+        // }
     }
 
     //Collision Detection test
