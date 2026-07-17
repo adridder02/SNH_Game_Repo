@@ -15,10 +15,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed = 5f;
     [SerializeField] private float jumpHeight = 5f;//changed jump hieght
     [SerializeField] private float gravity = -9.8f;
-    
+
     //Finding layers to jump from 
     [SerializeField] private LayerMask groundLayers;
-    [SerializeField] private bool shouldFaceMoveDirection = true; 
+    [SerializeField] private bool shouldFaceMoveDirection = true;
 
     [Header("Sprint")]
     [Tooltip("Speed multiplier applied while holding Left or Right Shift.")]
@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
     private bool IsSprinting =>
         Keyboard.current != null &&
         Keyboard.current.leftShiftKey.isPressed //||
-         //Keyboard.current.rightShiftKey.isPressed)
+                                                //Keyboard.current.rightShiftKey.isPressed)
          ;
 
     /// <summary>Current speed, boosted by sprintMultiplier while sprinting.</summary>
@@ -102,18 +102,18 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         controller = GetComponent<CharacterController>();
-        playerAnim = GetComponent<playerAnimation>(); 
+        playerAnim = GetComponent<playerAnimation>();
         if (playerAnim == null)
         {
             Debug.LogError("playerAnimation component is missing from " + gameObject.name);
         }
-     
+
     }
 
     private void OnEnable()
     {
         gameplayMap?.Enable();
-        
+
         if (flyAction != null)
         {
             flyAction.Enable();
@@ -248,24 +248,24 @@ public class PlayerController : MonoBehaviour
         //     Cursor.visible = true;
         //     ThirdPersonCameraController.CameraLocked = true;
         // }
-        // else if (Keyboard.current.escapeKey.wasPressedThisFrame)
-        // {
-        //     escPressed = !escPressed;
+        // // else if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        // // {
+        // //     escPressed = !escPressed;
 
-        //     if (escPressed)
-        //     {
-        //         Cursor.lockState = CursorLockMode.None;
-        //         Cursor.visible = true;
-        //         ThirdPersonCameraController.CameraLocked = true;
-        //     }
-        //     else
-        //     {
-        //         Cursor.lockState = CursorLockMode.Locked;
-        //         Cursor.visible = false;
-        //         ThirdPersonCameraController.CameraLocked = false;
-        //     }
-        // }
-        // else if (!escPressed)
+        // //     if (escPressed)
+        // //     {
+        // //         Cursor.lockState = CursorLockMode.None;
+        // //         Cursor.visible = true;
+        // //         ThirdPersonCameraController.CameraLocked = true;
+        // //     }
+        // //     else
+        // //     {
+        // //         Cursor.lockState = CursorLockMode.Locked;
+        // //         Cursor.visible = false;
+        // //         ThirdPersonCameraController.CameraLocked = false;
+        // //     }
+        // // }
+        // else
         // {
         //     Cursor.lockState = CursorLockMode.Locked;
         //     Cursor.visible = false;
@@ -274,10 +274,10 @@ public class PlayerController : MonoBehaviour
     }
 
     //Collision Detection test
-    void OnCollisionEnter(Collision collision) 
+    void OnCollisionEnter(Collision collision)
     {
-		GameObject otherObj = collision.gameObject;
-		if (locomotionState == LocomotionState.Grounded && ((groundLayers.value & (1 << otherObj.layer)) != 0))
+        GameObject otherObj = collision.gameObject;
+        if (locomotionState == LocomotionState.Grounded && ((groundLayers.value & (1 << otherObj.layer)) != 0))
         {
             Jump();
             locomotionState = LocomotionState.Jumping;
@@ -302,7 +302,7 @@ public class PlayerController : MonoBehaviour
             else if (inputMagnitude > 0.1f)
             {
                 playerAnim.setWalking();
-                if(!Tutorial.tutorialStageComplete())
+                if (!Tutorial.tutorialStageComplete())
                     Tutorial.onMove();
             }
             else
@@ -375,7 +375,7 @@ public class PlayerController : MonoBehaviour
     {
         locomotionState = LocomotionState.Flying;
         velocity = Vector3.zero;
-        if(!Tutorial.tutorialStageComplete())
+        if (!Tutorial.tutorialStageComplete())
             Tutorial.FlyOnTable();
         ThirdPersonCameraController.setCameraZoomLimitOnFly(true);
         flyGroundGraceTimer = flyGroundGracePeriod;

@@ -140,7 +140,17 @@ public class PlantProgress : MonoBehaviour
         }
 
         if (PlantJournalManager.Instance != null)
-            PlantJournalManager.Instance.MarkCompleted(species);
+        {
+            bool wasNew = PlantJournalManager.Instance.MarkCompleted(species);
+            Debug.Log($"[PlantProgress] Reported '{species.displayName}' as completed to the journal " +
+                      $"(newly completed: {wasNew}).", this);
+        }
+        else
+        {
+            Debug.LogWarning($"[PlantProgress] '{gameObject.name}' reached full growth but " +
+                              "PlantJournalManager.Instance is null — is a PlantJournalManager present " +
+                              "and active somewhere in the scene? The gold milestone was NOT recorded.", this);
+        }
     }
 
     // ---------------------------------------------------------------

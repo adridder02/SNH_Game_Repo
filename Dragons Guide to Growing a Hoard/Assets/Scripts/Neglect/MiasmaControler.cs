@@ -50,7 +50,13 @@ public class MiasmaController : MonoBehaviour
     private Renderer sphereRenderer;
     private Vector3 originalScale;
     private float currentSize = 1f;
-    
+
+    /// <summary>Current miasma sphere size (matches transform.localScale.x). Read by MainUIController for the miasma bar.</summary>
+    public float CurrentSize => currentSize;
+
+    /// <summary>Upper bound currentSize will grow to. Read by MainUIController to normalize the miasma bar.</summary>
+    public float MaxSize => maxSize;
+
     void Start()
     {
         // Double the size of the object
