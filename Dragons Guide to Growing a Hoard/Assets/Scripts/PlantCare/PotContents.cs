@@ -405,11 +405,38 @@ public class PotContents : MonoBehaviour
         // Store reference before destroying
         GameObject plantToDestroy = Plant.gameObject;
         GameObject prefabToReturn = currentPlantPrefab;
-        
+
+        // Read back the icon/image/name PotMenuUIController.ChoosePlant() stashed here at
+        // planting time — without this, AddPlantToInventory() below has no icon/name to
+        // work with and the returned item falls back to a raw prefab name and a blank slot.
+        PlantDisplayInfo info = plantToDestroy != null ? plantToDestroy.GetComponent<PlantDisplayInfo>() : null;
+
+        // DATABASE FALLBACK: info is null for any plant that was planted directly in the scene
+        // (PotContents.Awake()'s currentPlantPrefab path) rather than through ChoosePlant() —
+        // those never got a PlantDisplayInfo stashed on them. Same resolution CollectablePlant
+        // uses: fall back to the prefab's linked PlantSpeciesData (PlantState.journalSpecies),
+        // so the plant still comes back with a correct icon/image/name instead of showing up
+        // blank in the inventory grid and the pot's Choose Plant panel.
+        PlantSpeciesData species = prefabToReturn != null
+            ? prefabToReturn.GetComponentInChildren<PlantState>()?.journalSpecies
+            : null;
+
+        Sprite icon = info != null && info.icon != null ? info.icon
+            : species != null ? species.journalIcon
+            : null;
+
+        Sprite displayImage = info != null && info.displayImage != null ? info.displayImage
+            : species != null ? (species.journalImage != null ? species.journalImage : species.journalIcon)
+            : null;
+
+        string displayName = info != null && !string.IsNullOrEmpty(info.displayName) ? info.displayName
+            : species != null ? species.displayName
+            : null;
+
         // Add to inventory first
         if (prefabToReturn != null && dragonInventory != null)
         {
-            dragonInventory.AddPlantToInventory(prefabToReturn);
+            dragonInventory.AddPlantToInventory(prefabToReturn, icon, displayImage, displayName);
         }
         
         // Clear references BEFORE destroying
@@ -424,6 +451,28 @@ public class PotContents : MonoBehaviour
                 Tutorial.removedPlant();
             Destroy(plantToDestroy);
         }
+    }
+
+    // ---------------------------------------------------------------
+    // HarvestPlant — called instead of RemovePlant once the plant's
+    // PlantProgress has reached Complete (see PotMenuUIController's
+    // "Harvest" button). Deliberately a separate entry point from
+    // RemovePlant, even though it does the same thing today, so a real
+    // "turn into a different item depending on the plant" system can
+    // slot in here later without having to touch PotMenuUIController
+    // or the manual-removal path at all.
+    // ---------------------------------------------------------------
+    public void HarvestPlant(PlayerInventory dragonInventory)
+    {
+        if (!hasPlant || Plant == null) return;
+
+        string harvestedName = Plant.gameObject.name.Replace("(Clone)", "").Trim();
+        Debug.Log($"[PotContents] Harvested '{harvestedName}'. (Dummy: returned to inventory as-is for now — " +
+                  "swap this for a real harvested-item lookup once that system exists.)");
+
+        // TODO: once harvested items are their own thing, resolve and grant that item here
+        // instead of just returning the plant prefab via RemovePlant's normal inventory path.
+        RemovePlant(dragonInventory);
     }
 
     // ---------------------------------------------------------------

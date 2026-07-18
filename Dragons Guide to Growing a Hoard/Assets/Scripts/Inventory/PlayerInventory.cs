@@ -131,6 +131,10 @@ public class PlayerInventory : MonoBehaviour
     /// Also pass the larger detail image (CollectablePlant.GetPlantImage()) and
     /// display name (CollectablePlant.GetPlantName()) when available — these
     /// feed the Plant detail panel and are deliberately separate from the icon.
+    /// Also marks the species discovered in PlantJournalManager if the prefab's
+    /// PlantState.journalSpecies is set — this is why a harvested-but-undiscovered
+    /// species shows up correctly positioned in the journal grid but with no icon
+    /// and no click response otherwise: IsDiscovered would be false.
     /// </summary>
     public bool AddPlantToInventory(GameObject plantPrefab, Sprite icon = null, Sprite displayImage = null, string displayName = null)
     {
@@ -143,6 +147,19 @@ public class PlayerInventory : MonoBehaviour
         var instance = new InventoryItemInstance(plantPrefab, icon, displayImage, displayName);
         bool placedInGrid = grid.TryAutoPlace(instance);
         items.Add(instance);
+
+        // Unlock the journal entry for this species, if it has one — this is the
+        // single entry point for both harvesting a node and returning a plant from
+        // a pot, so this is the one place that needs to know about journal discovery.
+        // PlantState.journalSpecies lives on the prefab itself (no instance needed).
+        PlantState state = plantPrefab.GetComponent<PlantState>();
+        if (state != null && state.journalSpecies != null)
+        {
+            if (PlantJournalManager.Instance != null)
+                PlantJournalManager.Instance.MarkDiscovered(state.journalSpecies);
+            else
+                Debug.LogWarning("[PlayerInventory] No PlantJournalManager in scene — journal discovery was skipped.");
+        }
 
         Debug.Log(placedInGrid
             ? $"Added {plantPrefab.name} to grid at ({instance.gridX},{instance.gridY})"
@@ -252,6 +269,7 @@ public class PlayerInventory : MonoBehaviour
     public GameObject GetFirstPlant() => items.Count > 0 ? items[0].plantPrefab : null;
 
     public float getWaterPool() => waterPool;
+    public float getMaxWaterPool() => maxWaterRefill;
     public void reduceWaterPool(float decreaseW) => waterPool = Mathf.Max(0f, waterPool - decreaseW);
     public void refillWaterPool() => waterPool = maxWaterRefill;
 }

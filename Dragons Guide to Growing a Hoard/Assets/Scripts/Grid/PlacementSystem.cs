@@ -37,7 +37,7 @@ public class PlacementSystem : MonoBehaviour
 
     [Header("Tutorial Ref")]
     [SerializeField] private Tutorial tut;
-    private enum Mode
+    public enum Mode
     {
         None,
         Placing,
@@ -46,6 +46,19 @@ public class PlacementSystem : MonoBehaviour
     }
 
     private Mode mode = Mode.None;
+
+    /// <summary>
+    /// Fired whenever the active tool actually changes (Place/Remove/Move/None), regardless of
+    /// whether the change came from a keybind or from UI. Anything driving tool-button highlight
+    /// state should subscribe to this instead of polling, so button and key stay in sync.
+    /// </summary>
+    public event System.Action<Mode> OnModeChanged;
+
+    /// <summary>The currently active tool, or Mode.None if no tool is in use.</summary>
+    public Mode CurrentMode => mode;
+
+    /// <summary>Which pot index Placing mode would use right now (last cycled-to / selected pot).</summary>
+    public int SelectedPotIndex => selectedIndex;
 
     // One GridData per surface
     private Dictionary<GreenhouseSurface, GridData> surfaceGridData = new Dictionary<GreenhouseSurface, GridData>();
@@ -241,28 +254,48 @@ public class PlacementSystem : MonoBehaviour
             return;
 
         if (Keyboard.current.fKey.wasPressedThisFrame)
-        {
-            if (mode == Mode.Placing)
-                CancelMode();
-            else
-                EnterPlaceMode(selectedIndex);
-        }
+            TogglePlaceMode();
 
         if (Keyboard.current.xKey.wasPressedThisFrame)
-        {
-            if (mode == Mode.Removing)
-                CancelMode();
-            else
-                EnterRemoveMode();
-        }
+            ToggleRemoveMode();
 
         if (Keyboard.current.gKey.wasPressedThisFrame)
-        {
-            if (mode == Mode.Moving)
-                CancelMode();
-            else
-                EnterMoveMode();
-        }
+            ToggleMoveMode();
+    }
+
+    // ---------------------------------------------------------------
+    // Public toggle API — the single entry point for turning a tool on/off.
+    // Both keybinds (above) and UI tool buttons call these, so "is the tool
+    // currently in use" can never disagree between the two: whichever one
+    // fires second just flips the same underlying `mode` back off again.
+    // ---------------------------------------------------------------
+
+    /// <summary>Toggles Placing mode using whatever pot is currently selected.</summary>
+    public void TogglePlaceMode() => TogglePlaceMode(selectedIndex);
+
+    /// <summary>Toggles Placing mode for a specific pot index (e.g. from a pot-specific button).</summary>
+    public void TogglePlaceMode(int potIndex)
+    {
+        if (mode == Mode.Placing)
+            CancelMode();
+        else
+            EnterPlaceMode(potIndex);
+    }
+
+    public void ToggleRemoveMode()
+    {
+        if (mode == Mode.Removing)
+            CancelMode();
+        else
+            EnterRemoveMode();
+    }
+
+    public void ToggleMoveMode()
+    {
+        if (mode == Mode.Moving)
+            CancelMode();
+        else
+            EnterMoveMode();
     }
 
     public void EnterPlaceMode(int potIndex)
@@ -270,7 +303,7 @@ public class PlacementSystem : MonoBehaviour
         if (potIndex < 0 || potIndex >= availablePots.Count)
             return;
 
-        CancelMode();
+        CancelMode(suppressEvent: true);
 
         selectedIndex = potIndex;
         mode = Mode.Placing;
@@ -296,11 +329,13 @@ public class PlacementSystem : MonoBehaviour
             Debug.Log($"EnterPlaceMode: Entered placing mode with pot index {potIndex}");
 
         GameInputModeManager.Instance.SetPlacementMode();
+
+        OnModeChanged?.Invoke(mode);
     }
 
     private void EnterRemoveMode()
     {
-        CancelMode();
+        CancelMode(suppressEvent: true);
 
         mode = Mode.Removing;
 
@@ -312,11 +347,13 @@ public class PlacementSystem : MonoBehaviour
         }
 
         GameInputModeManager.Instance.SetPlacementMode();
+
+        OnModeChanged?.Invoke(mode);
     }
 
     private void EnterMoveMode()
     {
-        CancelMode();
+        CancelMode(suppressEvent: true);
 
         mode = Mode.Moving;
 
@@ -328,9 +365,11 @@ public class PlacementSystem : MonoBehaviour
         }
 
         GameInputModeManager.Instance.SetPlacementMode();
+
+        OnModeChanged?.Invoke(mode);
     }
 
-    private void CancelMode()
+    private void CancelMode(bool suppressEvent = false)
     {// unlock camera here...
         if (mode == Mode.Moving && movingData != null)
             PutMovingPotBack();
@@ -354,6 +393,9 @@ public class PlacementSystem : MonoBehaviour
         DestroyPreview();
 
         GameInputModeManager.Instance.SetGameplayMode();
+
+        if (!suppressEvent)
+            OnModeChanged?.Invoke(mode);
     }
 
     private void UpdateHoverVisual(Vector2Int cell)
