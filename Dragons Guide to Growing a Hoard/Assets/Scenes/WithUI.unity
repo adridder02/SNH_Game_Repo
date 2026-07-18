@@ -15245,22 +15245,16 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1310774548}
+  - component: {fileID: 1282261419}
   - component: {fileID: 1310774547}
   - component: {fileID: 1310774546}
   m_Layer: 0
   m_Name: AnotherTest
-  - component: {fileID: 1282261419}
-  - component: {fileID: 1282261421}
-  - component: {fileID: 1282261420}
-  m_Layer: 5
-  m_Name: text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1310774546
 --- !u!224 &1282261419
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15277,194 +15271,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -36, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1282261420
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1310774545}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
-  m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
-  m_CustomShadowLayers: 0
-  m_LightCookieSize: {x: 1, y: 1}
-  m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 0
-  m_RenderingLayersMask:
-    serializedVersion: 0
-    m_Bits: 1
-  m_ShadowRenderingLayersMask:
-    serializedVersion: 0
-    m_Bits: 1
-  m_Version: 4
-  m_LightLayerMask: 1
-  m_ShadowLayerMask: 1
-  m_RenderingLayers: 1
-  m_ShadowRenderingLayers: 1
---- !u!108 &1310774547
-Light:
-  m_GameObject: {fileID: 1282261418}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_text: Exit
-  m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d389b45c10957c74c95520f6923a5c88, type: 2}
-  m_sharedMaterial: {fileID: 1729835369570111966, guid: d389b45c10957c74c95520f6923a5c88, type: 2}
-  m_fontSharedMaterials: []
-  m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
-  m_fontColor32:
-    serializedVersion: 2
-    rgba: 4283992999
-  m_fontColor: {r: 0.654088, g: 0.54316336, b: 0.34349903, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
-  m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
-  m_tintAllSprites: 0
-  m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: -1183493901
-  m_overrideHtmlColors: 0
-  m_faceColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontSize: 80
-  m_fontSizeBase: 80
-  m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
-  m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_characterHorizontalScale: 1
-  m_wordSpacing: 0
-  m_lineSpacing: 0
-  m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
-  m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
-  m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
-  m_linkedTextComponent: {fileID: 0}
-  parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 0
-  m_ActiveFontFeatures: 6e72656b
-  m_enableExtraPadding: 0
-  checkPaddingRequired: 0
-  m_isRichText: 1
-  m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
-  m_isOrthographic: 1
-  m_isCullingEnabled: 0
-  m_horizontalMapping: 0
-  m_verticalMapping: 0
-  m_uvLineOffset: 0
-  m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
-  m_VertexBufferAutoSizeReduction: 0
-  m_useMaxVisibleDescender: 1
-  m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_isUsingLegacyAnimationComponent: 0
-  m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
-  m_baseMaterial: {fileID: 0}
-  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!222 &1282261421
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1310774545}
-  m_Enabled: 1
-  serializedVersion: 13
-  m_Type: 3
-  m_Color: {r: 0.44348305, g: 0.042452812, b: 1, a: 1}
-  m_Intensity: 5
-  m_Range: 10
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
-  m_CookieSize2D: {x: 0.5, y: 0.5}
-  m_Shadows:
-    m_Type: 2
-    m_Resolution: -1
-    m_CustomResolution: -1
-    m_Strength: 1
-    m_Bias: 0.05
-    m_NormalBias: 0.4
-    m_NearPlane: 0.2
-    m_CullingMatrixOverride:
-      e00: 1
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 1
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 1
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 1
-    m_UseCullingMatrixOverride: 0
-  m_Cookie: {fileID: 0}
-  m_DrawHalo: 0
-  m_Flare: {fileID: 0}
-  m_RenderMode: 0
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RenderingLayerMask: 1
-  m_Lightmapping: 4
-  m_LightShadowCasterMode: 0
-  m_AreaSize: {x: 50, y: 50}
-  m_BounceIntensity: 1
-  m_ColorTemperature: 6570
-  m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
-  m_UseBoundingSphereOverride: 0
-  m_UseViewFrustumForShadowCasterCull: 1
-  m_ForceVisible: 0
-  m_ShapeRadius: 0.025
-  m_ShadowAngle: 0
-  m_LightUnit: 1
-  m_LuxAtDistance: 1
-  m_EnableSpotReflector: 1
---- !u!4 &1310774548
-  m_GameObject: {fileID: 1282261418}
-  m_CullTransparentMesh: 1
 --- !u!1 &1293666662
 GameObject:
   m_ObjectHideFlags: 0
@@ -15796,6 +15605,83 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1306759380}
   m_CullTransparentMesh: 1
+--- !u!114 &1310774546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1282261418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!108 &1310774547
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1282261418}
+  m_Enabled: 1
+  serializedVersion: 13
+  m_Type: 2
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1.370351
+  m_Range: 10
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize2D: {x: 60, y: 60}
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 1
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
+  m_ShapeRadius: 0.025
+  m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!1 &1315435209
 GameObject:
   m_ObjectHideFlags: 0
@@ -15893,26 +15779,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1310774545}
+  m_GameObject: {fileID: 1315606285}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 48.2, y: -11.9, z: 24.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 552305403}
+  - {fileID: 1845067431}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
-  m_GameObject: {fileID: 1315606285}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9825440, y: 0.00004, z: 613909200}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1845067431}
-  - {fileID: 552305403}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1317428507
 GameObject:
   m_ObjectHideFlags: 0
@@ -17301,8 +17178,6 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: 5
-        LegacyInput: 
-        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -17314,8 +17189,6 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: -1
-        LegacyInput: 
-        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -17327,8 +17200,6 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -423771258819551211, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: -1
-        LegacyInput: 
-        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -20592,7 +20463,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9967423b5d812b843951a3f37d86af07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonTextHover
-  buttonText: {fileID: 1282261420}
+  buttonText: {fileID: 0}
   normalColor: {r: 0.654902, g: 0.54509807, b: 0.34509805, a: 1}
   hoverColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1662124874
@@ -27477,6 +27348,7 @@ GameObject:
   - component: {fileID: 5993726224721456983}
   - component: {fileID: 1022461643556113260}
   - component: {fileID: 813381695958754359}
+  - component: {fileID: 5993726224721456984}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -27495,6 +27367,7 @@ GameObject:
   - component: {fileID: 5993726224756795723}
   - component: {fileID: 1022461643587226992}
   - component: {fileID: 813381695926985259}
+  - component: {fileID: 5993726224756795724}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -27513,6 +27386,7 @@ GameObject:
   - component: {fileID: 5993726224819624411}
   - component: {fileID: 1022461643524275680}
   - component: {fileID: 813381695855858363}
+  - component: {fileID: 5993726224819624412}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -27531,6 +27405,7 @@ GameObject:
   - component: {fileID: 5993726225094243682}
   - component: {fileID: 1022461643248341337}
   - component: {fileID: 813381696131268098}
+  - component: {fileID: 5993726225094243683}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -27549,6 +27424,7 @@ GameObject:
   - component: {fileID: 5993726224837094056}
   - component: {fileID: 1022461643439951507}
   - component: {fileID: 813381696106897864}
+  - component: {fileID: 5993726224837094057}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -27567,6 +27443,7 @@ GameObject:
   - component: {fileID: 5993726224035614675}
   - component: {fileID: 1022461645315566568}
   - component: {fileID: 813381695306466483}
+  - component: {fileID: 5993726224035614676}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -27585,6 +27462,7 @@ GameObject:
   - component: {fileID: 5993726224150290104}
   - component: {fileID: 1022461645265517187}
   - component: {fileID: 813381695187310040}
+  - component: {fileID: 5993726224150290105}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -27603,6 +27481,7 @@ GameObject:
   - component: {fileID: 5993726223858773544}
   - component: {fileID: 1022461644483283475}
   - component: {fileID: 813381694929347912}
+  - component: {fileID: 5993726223858773545}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -28243,6 +28122,8 @@ GameObject:
   - component: {fileID: 2768458489355221373}
   - component: {fileID: 6476096880023233388}
   - component: {fileID: 6476096880023233389}
+  - component: {fileID: 6476096880023233391}
+  - component: {fileID: 6476096880023233390}
   m_Layer: 0
   m_Name: Sundial Cactus
   m_TagString: Untagged
@@ -28263,6 +28144,8 @@ GameObject:
   - component: {fileID: 2768458491057322242}
   - component: {fileID: 6476096878520886035}
   - component: {fileID: 6476096878520886036}
+  - component: {fileID: 6476096878520886038}
+  - component: {fileID: 6476096878520886037}
   m_Layer: 0
   m_Name: Sundial Cactus
   m_TagString: Untagged
@@ -28283,6 +28166,8 @@ GameObject:
   - component: {fileID: 2768458491036633141}
   - component: {fileID: 6476096878466650660}
   - component: {fileID: 6476096878466650661}
+  - component: {fileID: 6476096878466650663}
+  - component: {fileID: 6476096878466650662}
   m_Layer: 0
   m_Name: Sundial Cactus
   m_TagString: Untagged
@@ -28903,6 +28788,8 @@ GameObject:
   - component: {fileID: 2411905266496702331}
   - component: {fileID: 987722809444989182}
   - component: {fileID: 713111820593035490}
+  - component: {fileID: 4291933659341317195}
+  - component: {fileID: 4291933659341317194}
   m_Layer: 0
   m_Name: Whumpril
   m_TagString: Untagged
@@ -28922,6 +28809,8 @@ GameObject:
   - component: {fileID: 2411905266270899392}
   - component: {fileID: 987722808665731909}
   - component: {fileID: 713111820281508697}
+  - component: {fileID: 4291933659096838132}
+  - component: {fileID: 4291933659096838131}
   m_Layer: 0
   m_Name: Whumpril
   m_TagString: Untagged
@@ -28941,6 +28830,8 @@ GameObject:
   - component: {fileID: 2411905267076299865}
   - component: {fileID: 987722807860462556}
   - component: {fileID: 713111821086852032}
+  - component: {fileID: 4291933657754705773}
+  - component: {fileID: 4291933657754705772}
   m_Layer: 0
   m_Name: Whumpril
   m_TagString: Untagged
@@ -29754,6 +29645,8 @@ GameObject:
   - component: {fileID: 7683409984758525294}
   - component: {fileID: 2474612592449223938}
   - component: {fileID: 8096330631364292474}
+  - component: {fileID: 8096330631364292476}
+  - component: {fileID: 8096330631364292475}
   m_Layer: 0
   m_Name: Drifter
   m_TagString: Untagged
@@ -29773,6 +29666,8 @@ GameObject:
   - component: {fileID: 7683409985106743718}
   - component: {fileID: 2474612592914874826}
   - component: {fileID: 8096330632366887858}
+  - component: {fileID: 8096330632366887860}
+  - component: {fileID: 8096330632366887859}
   m_Layer: 0
   m_Name: Drifter
   m_TagString: Untagged
@@ -29792,6 +29687,8 @@ GameObject:
   - component: {fileID: 7683409985362500891}
   - component: {fileID: 2474612593187409271}
   - component: {fileID: 8096330632102485775}
+  - component: {fileID: 8096330632102485777}
+  - component: {fileID: 8096330632102485776}
   m_Layer: 0
   m_Name: Drifter
   m_TagString: Untagged
@@ -29985,6 +29882,7 @@ GameObject:
   - component: {fileID: 1095284559635036994}
   - component: {fileID: 7110677182469252363}
   - component: {fileID: 7407644072696828651}
+  - component: {fileID: 7407644072696828652}
   m_Layer: 0
   m_Name: Pollen Puff
   m_TagString: Untagged
@@ -30005,6 +29903,7 @@ GameObject:
   - component: {fileID: 1095284559621628850}
   - component: {fileID: 7110677182455594491}
   - component: {fileID: 7407644072680933915}
+  - component: {fileID: 7407644072680933916}
   m_Layer: 0
   m_Name: Pollen Puff
   m_TagString: Untagged
@@ -30025,6 +29924,7 @@ GameObject:
   - component: {fileID: 1095284559654504721}
   - component: {fileID: 7110677182487680856}
   - component: {fileID: 7407644072647991482}
+  - component: {fileID: 7407644072647991483}
   m_Layer: 0
   m_Name: Pollen Puff
   m_TagString: Untagged
@@ -30045,6 +29945,7 @@ GameObject:
   - component: {fileID: 1095284561063921724}
   - component: {fileID: 7110677183225747061}
   - component: {fileID: 7407644071775445397}
+  - component: {fileID: 7407644071775445398}
   m_Layer: 0
   m_Name: Pollen Puff
   m_TagString: Untagged
@@ -30065,6 +29966,7 @@ GameObject:
   - component: {fileID: 1095284560808512595}
   - component: {fileID: 7110677183491478042}
   - component: {fileID: 7407644071502374396}
+  - component: {fileID: 7407644071502374397}
   m_Layer: 0
   m_Name: Pollen Puff
   m_TagString: Untagged
@@ -30086,6 +29988,7 @@ GameObject:
   - component: {fileID: 7110677182683737302}
   - component: {fileID: 7407644071231462200}
   - component: {fileID: 7407644071231462201}
+  - component: {fileID: 7407644071231462202}
   m_Layer: 0
   m_Name: Pollen Puff
   m_TagString: Untagged
@@ -30105,6 +30008,8 @@ GameObject:
   - component: {fileID: 6583943207013925869}
   - component: {fileID: 1518928322537656986}
   - component: {fileID: 33486973666724253}
+  - component: {fileID: 8388192504769381663}
+  - component: {fileID: 8388192504769381662}
   m_Layer: 0
   m_Name: The Maw-Jaw
   m_TagString: Untagged
@@ -30473,6 +30378,8 @@ GameObject:
   - component: {fileID: 1906229968604184127}
   - component: {fileID: 3111061591006484034}
   - component: {fileID: 1635069028714931588}
+  - component: {fileID: 4493067399300467294}
+  - component: {fileID: 4493067399300467293}
   m_Layer: 0
   m_Name: Glowcap
   m_TagString: Untagged
@@ -30492,6 +30399,8 @@ GameObject:
   - component: {fileID: 1906229968986563629}
   - component: {fileID: 3111061590316895312}
   - component: {fileID: 1635069029065768854}
+  - component: {fileID: 4493067399654772816}
+  - component: {fileID: 4493067399654772815}
   m_Layer: 0
   m_Name: Glowcap
   m_TagString: Untagged
@@ -30511,6 +30420,8 @@ GameObject:
   - component: {fileID: 1906229969862911114}
   - component: {fileID: 3111061592133291255}
   - component: {fileID: 1635069027123543857}
+  - component: {fileID: 4493067400388514027}
+  - component: {fileID: 4493067400388514026}
   m_Layer: 0
   m_Name: Glowcap
   m_TagString: Untagged
@@ -30530,6 +30441,8 @@ GameObject:
   - component: {fileID: 1906229969669356577}
   - component: {fileID: 3111061592088695900}
   - component: {fileID: 1635069027632588698}
+  - component: {fileID: 4493067400382646340}
+  - component: {fileID: 4493067400382646339}
   m_Layer: 0
   m_Name: Glowcap
   m_TagString: Untagged
@@ -30549,6 +30462,8 @@ GameObject:
   - component: {fileID: 1906229969576472779}
   - component: {fileID: 3111061591846131894}
   - component: {fileID: 1635069027407620976}
+  - component: {fileID: 4493067400138540202}
+  - component: {fileID: 4493067400138540201}
   m_Layer: 0
   m_Name: Glowcap
   m_TagString: Untagged
@@ -30568,6 +30483,8 @@ GameObject:
   - component: {fileID: 1906229970342858367}
   - component: {fileID: 3111061591687947778}
   - component: {fileID: 1635069027769226692}
+  - component: {fileID: 4493067401051978270}
+  - component: {fileID: 4493067401051978269}
   m_Layer: 0
   m_Name: Glowcap
   m_TagString: Untagged
@@ -30715,6 +30632,8 @@ GameObject:
   - component: {fileID: 5881041624305345547}
   - component: {fileID: 6446668121091367353}
   - component: {fileID: 1395151290218687686}
+  - component: {fileID: 6446668121091367355}
+  - component: {fileID: 6446668121091367354}
   m_Layer: 0
   m_Name: Clovenwick
   m_TagString: Untagged
@@ -30734,6 +30653,8 @@ GameObject:
   - component: {fileID: 5881041624338027857}
   - component: {fileID: 6446668121109008611}
   - component: {fileID: 1395151290205232540}
+  - component: {fileID: 6446668121109008613}
+  - component: {fileID: 6446668121109008612}
   m_Layer: 0
   m_Name: Clovenwick
   m_TagString: Untagged
@@ -30753,6 +30674,8 @@ GameObject:
   - component: {fileID: 5881041625398184281}
   - component: {fileID: 6446668122179554539}
   - component: {fileID: 1395151289126289812}
+  - component: {fileID: 6446668122179554541}
+  - component: {fileID: 6446668122179554540}
   m_Layer: 0
   m_Name: Clovenwick
   m_TagString: Untagged
@@ -30772,6 +30695,8 @@ GameObject:
   - component: {fileID: 5881041625399960830}
   - component: {fileID: 6446668122177790284}
   - component: {fileID: 1395151289123875891}
+  - component: {fileID: 6446668122177790286}
+  - component: {fileID: 6446668122177790285}
   m_Layer: 0
   m_Name: Clovenwick
   m_TagString: Untagged
@@ -31558,6 +31483,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4291933657754705772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844357350109135151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &4291933657754705773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844357350109135151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!4 &4291933659096838130
 Transform:
   m_ObjectHideFlags: 0
@@ -31573,6 +31529,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4291933659096838131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844357348767019446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &4291933659096838132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844357348767019446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!4 &4291933659341317193
 Transform:
   m_ObjectHideFlags: 0
@@ -31588,6 +31575,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4291933659341317194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844357348541676045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &4291933659341317195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844357348541676045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!224 &4371143484544097998
 RectTransform:
   m_ObjectHideFlags: 0
@@ -31668,6 +31686,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4493067399300467293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640830540389141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &4493067399300467294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640830540389141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!4 &4493067399654772814
 Transform:
   m_ObjectHideFlags: 0
@@ -31683,6 +31732,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: 3.266, y: -91.526, z: 1.69}
+--- !u!114 &4493067399654772815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640831257526535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &4493067399654772816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640831257526535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!4 &4493067400138540200
 Transform:
   m_ObjectHideFlags: 0
@@ -31698,6 +31778,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: 2.219, y: -171.825, z: -2.933}
+--- !u!114 &4493067400138540201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640831850321377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &4493067400138540202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640831850321377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!4 &4493067400382646338
 Transform:
   m_ObjectHideFlags: 0
@@ -31713,6 +31824,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: 3.018, y: -84.026, z: 2.102}
+--- !u!114 &4493067400382646339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640831605954827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &4493067400382646340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640831605954827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!4 &4493067400388514025
 Transform:
   m_ObjectHideFlags: 0
@@ -31728,6 +31870,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4493067400388514026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640831597003168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &4493067400388514027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640831597003168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!4 &4493067401051978268
 Transform:
   m_ObjectHideFlags: 0
@@ -31743,6 +31916,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4493067401051978269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640832006712149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &4493067401051978270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640832006712149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!1 &4569560999986381467
 GameObject:
   m_ObjectHideFlags: 0
@@ -32142,6 +32346,8 @@ GameObject:
   - component: {fileID: 4847872283890511296}
   - component: {fileID: 8228039974081671602}
   - component: {fileID: 4927584041276495913}
+  - component: {fileID: 8228039974081671604}
+  - component: {fileID: 8228039974081671603}
   m_Layer: 0
   m_Name: Dewdropper
   m_TagString: Untagged
@@ -32161,6 +32367,8 @@ GameObject:
   - component: {fileID: 4847872283158436657}
   - component: {fileID: 8228039973648303939}
   - component: {fileID: 4927584040299851480}
+  - component: {fileID: 8228039973648303941}
+  - component: {fileID: 8228039973648303940}
   m_Layer: 0
   m_Name: Dewdropper
   m_TagString: Untagged
@@ -32180,6 +32388,8 @@ GameObject:
   - component: {fileID: 4847872283508336343}
   - component: {fileID: 8228039973461473957}
   - component: {fileID: 4927584040620643134}
+  - component: {fileID: 8228039973461473959}
+  - component: {fileID: 8228039973461473958}
   m_Layer: 0
   m_Name: Dewdropper
   m_TagString: Untagged
@@ -32807,6 +33017,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5993726223858773545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107350031419495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!4 &5993726224035614675
 Transform:
   m_ObjectHideFlags: 0
@@ -32822,6 +33048,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: -96.785}
+--- !u!114 &5993726224035614676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107349134076316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!4 &5993726224150290104
 Transform:
   m_ObjectHideFlags: 0
@@ -32837,6 +33079,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: -52.133}
+--- !u!114 &5993726224150290105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107349236594935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!4 &5993726224721456983
 Transform:
   m_ObjectHideFlags: 0
@@ -32852,6 +33110,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5993726224721456984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107348465142040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!4 &5993726224756795723
 Transform:
   m_ObjectHideFlags: 0
@@ -32867,6 +33141,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: -24.692}
+--- !u!114 &5993726224756795724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107348513558276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!4 &5993726224819624411
 Transform:
   m_ObjectHideFlags: 0
@@ -32882,6 +33172,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: -20.77}
+--- !u!114 &5993726224819624412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107348568309652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!4 &5993726224837094056
 Transform:
   m_ObjectHideFlags: 0
@@ -32897,6 +33203,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: -25.392}
+--- !u!114 &5993726224837094057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107348853869799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!4 &5993726225094243682
 Transform:
   m_ObjectHideFlags: 0
@@ -32912,6 +33234,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 16.506}
+--- !u!114 &5993726225094243683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107348846285613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &6044300509190143521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32962,6 +33300,8 @@ GameObject:
   - component: {fileID: 269747443601711067}
   - component: {fileID: 7799830689462763670}
   - component: {fileID: 464616855847756236}
+  - component: {fileID: 7799830689462763672}
+  - component: {fileID: 7799830689462763671}
   m_Layer: 0
   m_Name: Windmill Aster
   m_TagString: Untagged
@@ -32981,6 +33321,8 @@ GameObject:
   - component: {fileID: 269747443652310923}
   - component: {fileID: 7799830689546397894}
   - component: {fileID: 464616855931373980}
+  - component: {fileID: 7799830689546397896}
+  - component: {fileID: 7799830689546397895}
   m_Layer: 0
   m_Name: Windmill Aster
   m_TagString: Untagged
@@ -33000,6 +33342,8 @@ GameObject:
   - component: {fileID: 269747442176943467}
   - component: {fileID: 7799830688855472678}
   - component: {fileID: 464616857123625852}
+  - component: {fileID: 7799830688855472680}
+  - component: {fileID: 7799830688855472679}
   m_Layer: 0
   m_Name: Windmill Aster
   m_TagString: Untagged
@@ -33174,6 +33518,8 @@ GameObject:
   - component: {fileID: 2000591631857612196}
   - component: {fileID: 1251578248427954863}
   - component: {fileID: 3159654004819036688}
+  - component: {fileID: 7137621011250287860}
+  - component: {fileID: 7137621011250287859}
   m_Layer: 0
   m_Name: The Deluge Catcher
   m_TagString: Untagged
@@ -33279,6 +33625,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6446668121091367354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493835662588530134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &6446668121091367355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493835662588530134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!23 &6446668121109008611
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -33328,6 +33705,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6446668121109008612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493835662616673420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &6446668121109008613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493835662616673420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!23 &6446668122177790284
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -33377,6 +33785,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6446668122177790285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493835663683341603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &6446668122177790286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493835663683341603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!23 &6446668122179554539
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -33426,6 +33865,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6446668122179554540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493835663676727428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &6446668122179554541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493835663676727428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!64 &6476096878466650660
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -33464,6 +33934,37 @@ MonoBehaviour:
   plantName: Sundial Cactus
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &6476096878466650662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108434113079771827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &6476096878466650663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108434113079771827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!64 &6476096878520886035
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -33502,6 +34003,37 @@ MonoBehaviour:
   plantName: Sundial Cactus
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &6476096878520886037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108434113033810820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &6476096878520886038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108434113033810820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!64 &6476096880023233388
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -33540,6 +34072,37 @@ MonoBehaviour:
   plantName: Sundial Cactus
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &6476096880023233390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108434111414023163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &6476096880023233391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108434111414023163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!222 &6495883962487071100
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -33737,6 +34300,8 @@ GameObject:
   - component: {fileID: 8624361957940655177}
   - component: {fileID: 101562181561552765}
   - component: {fileID: 5161463336742968768}
+  - component: {fileID: 8624361957940655179}
+  - component: {fileID: 8624361957940655178}
   m_Layer: 0
   m_Name: Bubble Blossom
   m_TagString: Untagged
@@ -33756,6 +34321,8 @@ GameObject:
   - component: {fileID: 8624361958374831631}
   - component: {fileID: 101562181127245115}
   - component: {fileID: 5161463337114361734}
+  - component: {fileID: 8624361958374831633}
+  - component: {fileID: 8624361958374831632}
   m_Layer: 0
   m_Name: Bubble Blossom
   m_TagString: Untagged
@@ -33775,6 +34342,8 @@ GameObject:
   - component: {fileID: 8624361956960177346}
   - component: {fileID: 101562182539933686}
   - component: {fileID: 5161463335835968843}
+  - component: {fileID: 8624361956960177348}
+  - component: {fileID: 8624361956960177347}
   m_Layer: 0
   m_Name: Bubble Blossom
   m_TagString: Untagged
@@ -34042,6 +34611,8 @@ GameObject:
   - component: {fileID: 3380967967030532218}
   - component: {fileID: 5784097588590331446}
   - component: {fileID: 6553551281968635862}
+  - component: {fileID: 7106053868695405843}
+  - component: {fileID: 7106053868695405842}
   m_Layer: 0
   m_Name: Melodybloom
   m_TagString: Untagged
@@ -34049,6 +34620,37 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7106053868695405842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7106053868695405841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7106053868695405843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7106053868695405841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!1 &7106053868793773818
 GameObject:
   m_ObjectHideFlags: 0
@@ -34061,6 +34663,8 @@ GameObject:
   - component: {fileID: 3380967966857962385}
   - component: {fileID: 5784097588693286365}
   - component: {fileID: 6553551282074068029}
+  - component: {fileID: 7106053868793773820}
+  - component: {fileID: 7106053868793773819}
   m_Layer: 0
   m_Name: Melodybloom
   m_TagString: Untagged
@@ -34068,6 +34672,37 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7106053868793773819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7106053868793773818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7106053868793773820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7106053868793773818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!1 &7106053869111921819
 GameObject:
   m_ObjectHideFlags: 0
@@ -34080,6 +34715,8 @@ GameObject:
   - component: {fileID: 3380967966605693424}
   - component: {fileID: 5784097589549551548}
   - component: {fileID: 6553551281286174300}
+  - component: {fileID: 7106053869111921821}
+  - component: {fileID: 7106053869111921820}
   m_Layer: 0
   m_Name: Melodybloom
   m_TagString: Untagged
@@ -34087,6 +34724,37 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7106053869111921820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7106053869111921819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7106053869111921821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7106053869111921819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!1 &7106053869885642873
 GameObject:
   m_ObjectHideFlags: 0
@@ -34099,6 +34767,8 @@ GameObject:
   - component: {fileID: 3380967965773514002}
   - component: {fileID: 5784097589782469470}
   - component: {fileID: 6553551283129172670}
+  - component: {fileID: 7106053869885642875}
+  - component: {fileID: 7106053869885642874}
   m_Layer: 0
   m_Name: Melodybloom
   m_TagString: Untagged
@@ -34106,6 +34776,37 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7106053869885642874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7106053869885642873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7106053869885642875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7106053869885642873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!64 &7110677182455594491
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -34253,6 +34954,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: -84.292, y: -19.472, z: 129.899}
+--- !u!114 &7137621011250287859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6397339371261352018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7137621011250287860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6397339371261352018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!1 &7202611676753942117
 GameObject:
   m_ObjectHideFlags: 0
@@ -34370,6 +35102,21 @@ MonoBehaviour:
   rawIntensity: 0
   isInShadow: 0
   normalisedIntensity: 0
+--- !u!114 &7407644071231462202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2775176060433760314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!33 &7407644071502374395
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -34394,6 +35141,21 @@ MonoBehaviour:
   plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7407644071502374397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2775176060167814902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!33 &7407644071775445396
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -34418,6 +35180,21 @@ MonoBehaviour:
   plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7407644071775445398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2775176059902048921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!33 &7407644072647991481
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -34442,6 +35219,21 @@ MonoBehaviour:
   plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7407644072647991483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2775176059029765044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!33 &7407644072680933914
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -34466,6 +35258,21 @@ MonoBehaviour:
   plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7407644072680933916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2775176058997690647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!33 &7407644072696828650
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -34490,6 +35297,21 @@ MonoBehaviour:
   plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7407644072696828652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2775176058977798631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!224 &7429400369996801498
 RectTransform:
   m_ObjectHideFlags: 0
@@ -34521,6 +35343,8 @@ GameObject:
   - component: {fileID: 1864759726477226351}
   - component: {fileID: 4259422889941907755}
   - component: {fileID: 7613040285280289441}
+  - component: {fileID: 7613040285280289443}
+  - component: {fileID: 7613040285280289442}
   m_Layer: 0
   m_Name: Waterbell
   m_TagString: Untagged
@@ -34540,6 +35364,8 @@ GameObject:
   - component: {fileID: 1864759726704704162}
   - component: {fileID: 4259422889733173990}
   - component: {fileID: 7613040285220587884}
+  - component: {fileID: 7613040285220587886}
+  - component: {fileID: 7613040285220587885}
   m_Layer: 0
   m_Name: Waterbell
   m_TagString: Untagged
@@ -34559,6 +35385,8 @@ GameObject:
   - component: {fileID: 1864759725971001305}
   - component: {fileID: 4259422890475276189}
   - component: {fileID: 7613040285820075031}
+  - component: {fileID: 7613040285820075033}
+  - component: {fileID: 7613040285820075032}
   m_Layer: 0
   m_Name: Waterbell
   m_TagString: Untagged
@@ -34578,6 +35406,8 @@ GameObject:
   - component: {fileID: 1864759725703432417}
   - component: {fileID: 4259422891248222373}
   - component: {fileID: 7613040284510583599}
+  - component: {fileID: 7613040284510583601}
+  - component: {fileID: 7613040284510583600}
   m_Layer: 0
   m_Name: Waterbell
   m_TagString: Untagged
@@ -34597,6 +35427,8 @@ GameObject:
   - component: {fileID: 1864759724974376398}
   - component: {fileID: 4259422891458366858}
   - component: {fileID: 7613040284836984320}
+  - component: {fileID: 7613040284836984322}
+  - component: {fileID: 7613040284836984321}
   m_Layer: 0
   m_Name: Waterbell
   m_TagString: Untagged
@@ -34616,6 +35448,8 @@ GameObject:
   - component: {fileID: 1864759725130012155}
   - component: {fileID: 4259422891312078271}
   - component: {fileID: 7613040284714903093}
+  - component: {fileID: 7613040284714903095}
+  - component: {fileID: 7613040284714903094}
   m_Layer: 0
   m_Name: Waterbell
   m_TagString: Untagged
@@ -34635,6 +35469,8 @@ GameObject:
   - component: {fileID: 8812342830093620886}
   - component: {fileID: 3808810558225965000}
   - component: {fileID: 4762233998678574767}
+  - component: {fileID: 8812342830093620888}
+  - component: {fileID: 8812342830093620887}
   m_Layer: 0
   m_Name: The Luminary
   m_TagString: Untagged
@@ -34664,6 +35500,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 8330056501644901671, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &7613040284510583600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154058852758344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7613040284510583601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154058852758344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!64 &7613040284714903093
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -34686,6 +35553,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 8330056501644901671, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &7613040284714903094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154059210174034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7613040284714903095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154059210174034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!64 &7613040284836984320
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -34708,6 +35606,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 8330056501644901671, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &7613040284836984321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154059061853799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7613040284836984322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154059061853799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!64 &7613040285220587884
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -34730,6 +35659,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 8330056501644901671, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &7613040285220587885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154057568370955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7613040285220587886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154057568370955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!64 &7613040285280289441
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -34752,6 +35712,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 8330056501644901671, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &7613040285280289442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154057475115718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7613040285280289443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154057475115718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!64 &7613040285820075031
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -34774,6 +35765,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 8330056501644901671, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &7613040285820075032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154058033640560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7613040285820075033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154058033640560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!222 &7624527989820678961
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -35098,6 +36120,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7799830688855472679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160393186784581944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7799830688855472680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160393186784581944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!23 &7799830689462763670
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -35147,6 +36200,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7799830689462763671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160393186062492552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7799830689462763672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160393186062492552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!23 &7799830689546397894
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -35196,6 +36280,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7799830689546397895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160393186079001560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &7799830689546397896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6160393186079001560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!222 &7825397452465141632
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -35310,6 +36425,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 8115766481536950135, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &8096330631364292475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2650251697472196372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &8096330631364292476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2650251697472196372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!64 &8096330632102485775
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -35332,6 +36478,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 8115766481536950135, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &8096330632102485776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2650251699284148065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &8096330632102485777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2650251699284148065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!64 &8096330632366887858
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -35354,6 +36531,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 8115766481536950135, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &8096330632366887859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2650251699028390876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &8096330632366887860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2650251699028390876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!1 &8122533505015043988
 GameObject:
   m_ObjectHideFlags: 0
@@ -35443,6 +36651,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8228039973461473958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5086658690626715336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &8228039973461473959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5086658690626715336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!23 &8228039973648303939
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -35492,6 +36731,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8228039973648303940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5086658690293056302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &8228039973648303941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5086658690293056302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!23 &8228039974081671602
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -35541,6 +36811,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8228039974081671603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5086658690003367391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &8228039974081671604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5086658690003367391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!114 &8266596761719244277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35633,6 +36934,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 458119344}
   m_LocalEulerAnglesHint: {x: -87.437, y: 90, z: -64.662}
+--- !u!114 &8388192504769381662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2779138664124609591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &8388192504769381663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2779138664124609591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!222 &8441959387432972987
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -35843,6 +37175,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6703200343085626272}
   m_Mesh: {fileID: 2715279791906511137, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &8624361956960177347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6703200343085626272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &8624361956960177348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6703200343085626272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!33 &8624361957940655177
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -35851,6 +37214,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6703200341906017067}
   m_Mesh: {fileID: 2715279791906511137, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &8624361957940655178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6703200341906017067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &8624361957940655179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6703200341906017067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!33 &8624361958374831631
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -35859,6 +37253,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6703200342344386925}
   m_Mesh: {fileID: 2715279791906511137, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &8624361958374831632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6703200342344386925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &8624361958374831633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6703200342344386925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!224 &8632567838553268302
 RectTransform:
   m_ObjectHideFlags: 0
@@ -36051,6 +37476,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7512854204067461623}
   m_Mesh: {fileID: 5104706508597254951, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &8812342830093620887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7512854204067461623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &8812342830093620888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7512854204067461623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!1 &8857077381460762828
 GameObject:
   m_ObjectHideFlags: 0
@@ -36063,6 +37519,7 @@ GameObject:
   - component: {fileID: 8622086564644124236}
   - component: {fileID: 7798567678547092836}
   - component: {fileID: 8857077381460762829}
+  - component: {fileID: 8857077381460762830}
   m_Layer: 0
   m_Name: Sparkmint
   m_TagString: Untagged
@@ -36092,6 +37549,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3028363815020005268, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &8857077381460762830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8857077381460762828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!1 &8857077381757582225
 GameObject:
   m_ObjectHideFlags: 0
@@ -36104,6 +37577,7 @@ GameObject:
   - component: {fileID: 8622086563860638993}
   - component: {fileID: 7798567678292491833}
   - component: {fileID: 8857077381757582226}
+  - component: {fileID: 8857077381757582227}
   m_Layer: 0
   m_Name: Sparkmint
   m_TagString: Untagged
@@ -36133,6 +37607,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3028363815020005268, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &8857077381757582227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8857077381757582225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!1 &8857077382301159422
 GameObject:
   m_ObjectHideFlags: 0
@@ -36145,6 +37635,7 @@ GameObject:
   - component: {fileID: 8622086563405191550}
   - component: {fileID: 7798567679451515478}
   - component: {fileID: 8857077382301159423}
+  - component: {fileID: 8857077382301159424}
   m_Layer: 0
   m_Name: Sparkmint
   m_TagString: Untagged
@@ -36174,6 +37665,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3028363815020005268, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &8857077382301159424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8857077382301159422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!1 &8857077382925983888
 GameObject:
   m_ObjectHideFlags: 0
@@ -36186,6 +37693,7 @@ GameObject:
   - component: {fileID: 8622086562947626512}
   - component: {fileID: 7798567679002600760}
   - component: {fileID: 8857077382925983889}
+  - component: {fileID: 8857077382925983890}
   m_Layer: 0
   m_Name: Sparkmint
   m_TagString: Untagged
@@ -36215,6 +37723,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3028363815020005268, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!114 &8857077382925983890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8857077382925983888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
+  plantPrefab: {fileID: 0}
+  plantName: 
+  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
+  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &8910482494518653561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36394,7 +37918,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 330585546}
-  - {fileID: 1310774548}
   - {fileID: 410087041}
   - {fileID: 218666402}
   - {fileID: 832575519}
@@ -36426,3 +37949,4 @@ SceneRoots:
   - {fileID: 592631384}
   - {fileID: 1315606286}
   - {fileID: 1094209399}
+  - {fileID: 1046433397}
