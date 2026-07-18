@@ -132,13 +132,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDummyValues: 0
   dummyState: 1
+  dummyMiasma: 0
   useManualHeight: 0
   manualHeightOffset: 1
   hoverGap: 1.5
-  targetScreenHeight: 0.15
-  pipSize: 22
-  pipGap: 7
-  pipPadding: 1
+  fixedWorldHeight: 0.7
+  maxVisibleDistance: 30
+  logVisibilityDebug: 0
+  overheadBarsTemplate: {fileID: 2106392375125345503, guid: 5588ba098b73e084390914cf92d297fb, type: 3}
+  defaultTemplateResourcePath: PlantOverheadBarsTemplate
   plantState: {fileID: 0}
 --- !u!114 &5406378468432258178
 MonoBehaviour:
@@ -200,7 +202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineColor: {r: 0.1505873, g: 0.19253412, b: 0.59119487, a: 1}
   outlineWidth: 0.05
   outlineShader: {fileID: 0}
 --- !u!114 &6790803248347742446

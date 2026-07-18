@@ -22,6 +22,12 @@
 //                          (mirrors the F/X/G keybinds) and light up
 //                          to show whichever tool is currently active.
 //                          Slot 3 is still reserved/unused.
+//   - Interact prompt (HUD) — a fixed screen-space element that's just
+//                          shown/hidden via SetInteractPromptVisible().
+//                          This is the alternative PotInteraction can
+//                          switch to (its useWorldSpacePrompt toggle)
+//                          instead of its own floating, player-following,
+//                          billboarded world-space prompt.
 //
 // SETUP:
 //   1. Attach to the HUD Canvas GameObject.
@@ -114,6 +120,13 @@ public class MainUIController : MonoBehaviour
     [SerializeField] private Color toolActiveColor = new Color(1f, 0.85f, 0.4f);
     [Tooltip("Tint applied to a tool slot's button graphic while that tool is NOT active.")]
     [SerializeField] private Color toolInactiveColor = Color.white;
+
+    [Header("Interact Prompt (HUD)")]
+    [Tooltip("Fixed screen-space element (e.g. a 'Press E' panel docked on the HUD) — just enabled/" +
+             "disabled, no positioning or billboarding. PotInteraction calls SetInteractPromptVisible() " +
+             "on this when its own useWorldSpacePrompt toggle is OFF, instead of using its floating " +
+             "world-space prompt.")]
+    [SerializeField] private GameObject interactPromptHUD;
 
     [Header("Miasma Growth")]
     [Tooltip("The deleted UI_Script.cs used to call miasma.flipSize() once on Start(), which is the " +
@@ -235,6 +248,18 @@ public class MainUIController : MonoBehaviour
                   $"| miasma={(miasma != null ? $"{miasma.CurrentSize:F1}/{miasma.MaxSize:F1}" : "no miasma ref")} " +
                   $"| zone={(CurrentZone != null ? $"{CurrentZone.zoneName}={CurrentZone.ZoneHappiness:F1}" : "player in no zone")} " +
                   $"| waterBar={(waterBar != null)} miasmaBar={(miasmaBar != null)} zoneHappinessBar={(zoneHappinessBar != null)} playerZoneTracker={(playerZoneTracker != null)}");
+    }
+
+    // ---------------------------------------------------------------
+    // Interact prompt (HUD) — called by PotInteraction when its useWorldSpacePrompt toggle is OFF
+    // ---------------------------------------------------------------
+    /// <summary>Shows/hides the fixed HUD interact-prompt element. This is the "just a set field that
+    /// turns on and off" alternative to PotInteraction's floating world-space prompt — no positioning
+    /// or billboarding, interactPromptHUD is simply SetActive()'d.</summary>
+    public void SetInteractPromptVisible(bool visible)
+    {
+        if (interactPromptHUD != null)
+            interactPromptHUD.SetActive(visible);
     }
 
     // ---------------------------------------------------------------

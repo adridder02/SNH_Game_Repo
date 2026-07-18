@@ -21,7 +21,7 @@ public class CursorManager : MonoBehaviour
     [SerializeField] private Vector2 hotSpot = Vector2.zero;
     [SerializeField] private CursorMode cursorMode = CursorMode.Auto;
 
-    private CursorState currentState = CursorState.Normal;
+    private CursorState currentState = (CursorState)(-1); 
 
     void Awake()
     {

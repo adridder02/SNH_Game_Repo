@@ -15,10 +15,13 @@ public class DraggableObject : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
+        if (mainCamera == null)
+            Debug.LogError($"{name}: No camera tagged 'MainCamera' found in scene!", this);
     }
 
     void OnMouseEnter()
     {
+        Debug.Log($"[DraggableObject] OnMouseEnter fired on {gameObject.name}");
         if (!isDragging)
             CursorManager.Instance.SetCursor(CursorManager.CursorState.Hand);
     }

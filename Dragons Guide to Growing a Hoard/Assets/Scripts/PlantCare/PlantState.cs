@@ -159,6 +159,29 @@ public class PlantState : MonoBehaviour
     public LightSensor LightSensor => lightSensor;
     public float GetWaterDrainMultiplier() => isMiasmaDebuffActive ? miasmaWaterDrainMultiplier : 1f;
 
+    /// <summary>0–1 read of overall plant health for UI (PlantUI's health bar) — just the existing
+    /// soil+light+water score out of its max of 6, so the bar tracks the same thing CalculateState()
+    /// already uses to decide Dead/Intermediate/Revived.</summary>
+    public float HealthNormalized01 => Mathf.Clamp01(lastTotalScore / 6f);
+
+    /// <summary>0–1 read of how strongly miasma is currently affecting this plant, for UI (PlantUI's
+    /// miasma bar). Blends the three penalty channels into one "how bad is it right now" number rather
+    /// than exposing them separately — light/soil are already 0–1-ish, water's drain multiplier is
+    /// remapped from its x1–x3 range. Tune the divisors below if miasma's numeric ranges ever change.</summary>
+    public float MiasmaInfluence01
+    {
+        get
+        {
+            if (!isMiasmaDebuffActive) return 0f;
+
+            float lightPart = Mathf.Clamp01(miasmaLightPenalty);                        // already 0–1
+            float soilPart  = Mathf.Clamp01(miasmaSoilPenalty / 5f);                    // soil penalty caps at 5
+            float waterPart = Mathf.Clamp01((miasmaWaterDrainMultiplier - 1f) / 2f);    // x1–x3 -> 0–1
+
+            return Mathf.Clamp01((lightPart + soilPart + waterPart) / 3f);
+        }
+    }
+
     private PotContents ownerPot;
 
     // Debuff runtime state

@@ -27,13 +27,13 @@
 //   2. Assign potMenuUI — the PotMenuUIController on your pot-menu Canvas.
 //   3. Fill dragonInventory (auto-found if left empty).
 //   4. Adjust interactRange so it feels natural.
-//   5. Optionally set a UI Canvas for the interaction prompt.
+//   5. Assign promptTemplate — an InteractPromptView prefab (background +
+//      keybind icon + label, built once — see InteractPromptView.cs).
+//      This script only instantiates it and fills in the sprite/text.
 // =============================================================
 
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
-using TMPro;
 
 public class PotInteraction : MonoBehaviour
 {
@@ -64,14 +64,34 @@ public class PotInteraction : MonoBehaviour
     public float poolRefillRate = 1.5f;
 
     [Header("UI — Interaction Prompt")]
-    [Tooltip("Display '[E] Interact' prompt above pots when in range.")]
+    [Tooltip("Display an interact prompt above pots when in range.")]
     public bool showInteractPrompt = true;
 
-    [Tooltip("Height offset above the pot for the interact prompt.")]
-    public float promptHeightOffset = 1.5f;
+    [Tooltip("ON = the floating world-space prompt below (promptTemplate) that follows the player and " +
+             "billboards toward the camera. OFF = a fixed screen-space prompt on the main HUD instead — " +
+             "just enabled/disabled, no positioning or billboarding. See MainUIController.SetInteractPromptVisible().")]
+    public bool useWorldSpacePrompt = true;
 
-    [Tooltip("World-space size of the interact prompt.")]
-    public Vector2 promptWorldSize = new Vector2(0.6f, 0.2f);
+    [Tooltip("Height above the player's head for the interact prompt. Only used when useWorldSpacePrompt is ON.")]
+    public float promptHeightOffset = 2.0f;
+
+    [Tooltip("Prefab defining the whole three-part look (background/keybind icon/label — see " +
+             "InteractPromptView.cs), built and positioned once in the Editor. PotInteraction just " +
+             "instantiates a single copy of this and repositions/billboards it — it never builds or " +
+             "aligns any of the three parts itself. Only used when useWorldSpacePrompt is ON.")]
+    [SerializeField] private InteractPromptView promptTemplate;
+
+    [Tooltip("Sprite for the keybind icon (e.g. an '[E]' keycap). Leave null to keep whatever's already " +
+             "set on the template's KeybindIcon. Only used when useWorldSpacePrompt is ON.")]
+    public Sprite interactKeybindSprite;
+
+    [Tooltip("Label text, e.g. 'Interact'. Leave empty to keep whatever's already set on the template's " +
+             "Label. Only used when useWorldSpacePrompt is ON.")]
+    public string interactPromptLabel = "Interact";
+
+    [Tooltip("The main HUD controller whose fixed interactPromptHUD element gets shown/hidden instead, " +
+             "when useWorldSpacePrompt is OFF. Auto-found in the scene if left empty.")]
+    [SerializeField] private MainUIController mainUI;
 
     // ---------------------------------------------------------------
     // Private state
@@ -88,8 +108,7 @@ public class PotInteraction : MonoBehaviour
 
     // Interact prompt UI
     private GameObject promptRoot;
-    private Canvas promptCanvas;
-    private TextMeshProUGUI promptText;
+    private InteractPromptView promptView;
 
     // ---------------------------------------------------------------
     // Start
@@ -116,7 +135,22 @@ public class PotInteraction : MonoBehaviour
             Debug.LogWarning("[PotInteraction] potMenuUI is not assigned — pressing E won't be able to open anything.", this);
 
         playerWaterPool = dragonInventory.getWaterPool();
-        if (showInteractPrompt) BuildInteractPrompt();
+
+        if (showInteractPrompt)
+        {
+            if (useWorldSpacePrompt)
+            {
+                BuildInteractPrompt();
+            }
+            else if (mainUI == null)
+            {
+                mainUI = FindObjectOfType<MainUIController>();
+                if (mainUI == null)
+                    Debug.LogWarning("[PotInteraction] useWorldSpacePrompt is OFF but no MainUIController " +
+                                      "was found/assigned — the interact prompt won't be shown.", this);
+            }
+        }
+
         menuOpen = false;
     }
 
@@ -143,8 +177,10 @@ public class PotInteraction : MonoBehaviour
             ApplyOutlineFor(nearbyPot);
         }
 
-        // Update interact prompt position and visibility
-        UpdateInteractPrompt();
+        // Show/hide the interact prompt now; its position/rotation are updated in LateUpdate (see below),
+        // after the player has finished moving for this frame — doing it here in Update() was reading a
+        // stale position on frames where movement hadn't been applied yet, which read as flicker/jitter.
+        UpdateInteractPromptVisibility();
 
         // E — toggle menu
         if (Keyboard.current.eKey.wasPressedThisFrame)
@@ -158,6 +194,13 @@ public class PotInteraction : MonoBehaviour
         // Q — quick water (works whether menu is open or not)
         if (Keyboard.current.qKey.wasPressedThisFrame && nearbyPot != null)
             QuickWater(nearbyPot);
+    }
+
+    private void LateUpdate()
+    {
+        // Runs after every script's Update() this frame (including whatever moves the player), so this
+        // always reads the player's final position/rotation for the frame instead of a half-step-stale one.
+        UpdateInteractPromptTransform();
     }
 
     // ---------------------------------------------------------------
@@ -255,73 +298,71 @@ public class PotInteraction : MonoBehaviour
 
     private void BuildInteractPrompt()
     {
-        // Create a world-space canvas that we'll reposition each frame
-        promptRoot = new GameObject("InteractPrompt");
+        if (promptTemplate == null)
+        {
+            Debug.LogWarning("[PotInteraction] promptTemplate is not assigned — no interact prompt will be " +
+                              "shown. Assign your prompt prefab (background + keybind icon + label) in the Inspector.", this);
+            return;
+        }
+
+        promptView = Instantiate(promptTemplate);
+        promptRoot = promptView.gameObject;
+        promptRoot.name = "InteractPrompt";
+        promptRoot.transform.SetParent(null);
         DontDestroyOnLoad(promptRoot);
 
-        promptCanvas = promptRoot.AddComponent<Canvas>();
-        promptCanvas.renderMode = RenderMode.WorldSpace;
-        promptCanvas.sortingOrder = 50;
+        if (promptView.canvas != null)
+            promptView.canvas.renderMode = RenderMode.WorldSpace;
 
-        RectTransform canvasRect = promptRoot.GetComponent<RectTransform>();
-        canvasRect.sizeDelta = promptWorldSize * 100f; // High res
-        canvasRect.localScale = Vector3.one * 0.01f;   // Scale to world size
+        if (promptView.keybindIcon != null && interactKeybindSprite != null)
+        {
+            promptView.keybindIcon.sprite = interactKeybindSprite;
+            promptView.keybindIcon.enabled = true;
+        }
 
-        CanvasScaler scaler = promptRoot.AddComponent<CanvasScaler>();
-        scaler.dynamicPixelsPerUnit = 10f;
-
-        promptRoot.AddComponent<GraphicRaycaster>();
-
-        // Background panel
-        GameObject panel = CreateUIElement("Panel", promptRoot.transform);
-        RectTransform panelRT = panel.GetComponent<RectTransform>();
-        panelRT.anchorMin = Vector2.zero;
-        panelRT.anchorMax = Vector2.one;
-        panelRT.offsetMin = Vector2.zero;
-        panelRT.offsetMax = Vector2.zero;
-        Image panelImg = panel.AddComponent<Image>();
-        panelImg.color = new Color(0.1f, 0.12f, 0.1f, 0.85f);
-
-        // Text label
-        GameObject textGO = CreateUIElement("Text", panel.transform);
-        RectTransform textRT = textGO.GetComponent<RectTransform>();
-        textRT.anchorMin = Vector2.zero;
-        textRT.anchorMax = Vector2.one;
-        textRT.offsetMin = Vector2.zero;
-        textRT.offsetMax = Vector2.zero;
-
-        promptText = textGO.AddComponent<TextMeshProUGUI>();
-        promptText.text = "[E] Interact";
-        promptText.fontSize = 14;
-        promptText.color = new Color(0.9f, 0.95f, 0.9f);
-        promptText.fontStyle = FontStyles.Bold;
-        promptText.alignment = TextAlignmentOptions.Center;
+        if (promptView.label != null && !string.IsNullOrEmpty(interactPromptLabel))
+            promptView.label.text = interactPromptLabel;
 
         promptRoot.SetActive(false); // Hidden by default
     }
 
-    private void UpdateInteractPrompt()
+    private void UpdateInteractPromptVisibility()
     {
-        if (!showInteractPrompt || promptRoot == null) return;
+        if (!showInteractPrompt) return;
 
         bool shouldShow = nearbyPot != null && !menuOpen;
-        promptRoot.SetActive(shouldShow);
 
-        if (shouldShow)
+        if (useWorldSpacePrompt)
         {
-            // Position above the pot
-            Vector3 potPos = nearbyPot.transform.position;
-            promptRoot.transform.position = potPos + Vector3.up * promptHeightOffset;
+            if (promptRoot != null)
+                promptRoot.SetActive(shouldShow);
+        }
+        else
+        {
+            mainUI?.SetInteractPromptVisible(shouldShow);
+        }
+    }
 
-            // Billboard toward camera
-            if (Camera.main != null)
+    private void UpdateInteractPromptTransform()
+    {
+        // Only the world-space prompt needs positioning/billboarding — the HUD version is a fixed
+        // screen-space element that MainUIController just enables/disables.
+        if (!useWorldSpacePrompt) return;
+        if (!showInteractPrompt || promptRoot == null || !promptRoot.activeSelf) return;
+
+        // Position above the PLAYER (this script's own transform) rather than the stationary pot —
+        // that way it moves naturally with the player (walking, jumping, stairs, slopes) instead of
+        // sitting at one fixed height the whole time.
+        promptRoot.transform.position = transform.position + Vector3.up * promptHeightOffset;
+
+        // Billboard toward camera
+        if (Camera.main != null)
+        {
+            Vector3 toCamera = Camera.main.transform.position - promptRoot.transform.position;
+            toCamera.y = 0f;
+            if (toCamera.sqrMagnitude > 0.0001f)
             {
-                Vector3 toCamera = Camera.main.transform.position - promptRoot.transform.position;
-                toCamera.y = 0f;
-                if (toCamera.sqrMagnitude > 0.0001f)
-                {
-                    promptRoot.transform.rotation = Quaternion.LookRotation(-toCamera);
-                }
+                promptRoot.transform.rotation = Quaternion.LookRotation(-toCamera);
             }
         }
     }
@@ -366,17 +407,6 @@ public class PotInteraction : MonoBehaviour
 
         if (potMenuUI != null)
             potMenuUI.Close();
-    }
-
-    // ---------------------------------------------------------------
-    // Helper — create a bare GameObject with RectTransform (still
-    // used by the world-space interact prompt above).
-    // ---------------------------------------------------------------
-    private GameObject CreateUIElement(string name, Transform parent)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform));
-        go.transform.SetParent(parent, false);
-        return go;
     }
 
     // ---------------------------------------------------------------

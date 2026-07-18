@@ -20,7 +20,12 @@ using TMPro;
 // SETUP:
 //   1. Attach this script to the parent empty.
 //   2. Assign the Player transform in the Inspector.
-//   3. That's it — all children are detected automatically.
+//   3. Assign promptTemplate — an InteractPromptView prefab (background +
+//      keybind icon + label, built once — see InteractPromptView.cs). This
+//      is the exact same component PotInteraction.cs uses for its own
+//      prompt, so you can reuse that same prefab here for matching art,
+//      or make a dedicated one for harvest nodes.
+//   4. That's it — all children are detected automatically.
 //      No per-node components needed.
 // =============================================================
 
@@ -38,9 +43,33 @@ public class HarvestNodeContainer : MonoBehaviour
     public float interactRange = 2.5f;
 
     [Header("Prompt UI")]
+    [Tooltip("ON = the floating world-space prompt below (promptTemplate) that follows the node and " +
+             "billboards toward the camera. OFF = the fixed screen-space prompt on the main HUD instead " +
+             "(the same interactPromptHUD PotInteraction uses) — just enabled/disabled, no positioning " +
+             "or billboarding. See MainUIController.SetInteractPromptVisible().")]
+    public bool useWorldSpacePrompt = true;
+
+    [Tooltip("Prefab defining the prompt's look (background/keybind icon/label — see InteractPromptView.cs), " +
+             "built once in the Editor. Same component PotInteraction.cs uses for its own prompt — you can " +
+             "reuse that exact prefab here, or make a separate one for harvest nodes. Only used when " +
+             "useWorldSpacePrompt is ON.")]
+    public InteractPromptView promptTemplate;
+
+    [Tooltip("Label text shown on the prompt, e.g. '[E] Harvest'. Leave empty to keep whatever's already " +
+             "set on the template's Label. Only used when useWorldSpacePrompt is ON.")]
     public string promptText = "[E] Harvest";
-    public Vector2 promptWorldSize = new Vector2(0.7f, 0.22f);
+
+    [Tooltip("Sprite for the keybind icon, if the template has one. Leave null to keep whatever's already " +
+             "set on the template's KeybindIcon. Only used when useWorldSpacePrompt is ON.")]
+    public Sprite promptKeybindSprite;
+
+    [Tooltip("Height above the node for the interact prompt. Only used when useWorldSpacePrompt is ON.")]
     public float promptHeightOffset = 1.2f;
+
+    [Tooltip("The main HUD controller whose fixed interactPromptHUD element gets shown/hidden instead, " +
+             "when useWorldSpacePrompt is OFF. Auto-found in the scene if left empty — the same instance " +
+             "PotInteraction uses, since it's the same shared HUD element.")]
+    public MainUIController mainUI;
 
     [Header("Harvest Feedback")]
     [Tooltip("Text shown briefly on screen after harvesting.")]
@@ -53,7 +82,7 @@ public class HarvestNodeContainer : MonoBehaviour
 
     // Prompt UI
     private GameObject promptRoot;
-    private TextMeshProUGUI promptLabel;
+    private InteractPromptView promptView;
 
     // Feedback UI
     private GameObject feedbackRoot;
@@ -71,7 +100,19 @@ public class HarvestNodeContainer : MonoBehaviour
             playerInventory = FindObjectOfType<PlayerInventory>();
 
         CacheChildren();
-        BuildPromptUI();
+
+        if (useWorldSpacePrompt)
+        {
+            BuildPromptUI();
+        }
+        else if (mainUI == null)
+        {
+            mainUI = FindObjectOfType<MainUIController>();
+            if (mainUI == null)
+                Debug.LogWarning("[HarvestNodeContainer] useWorldSpacePrompt is OFF but no MainUIController " +
+                                  "was found/assigned — the interact prompt won't be shown.", this);
+        }
+
         BuildFeedbackUI();
     }
 
@@ -103,7 +144,10 @@ public class HarvestNodeContainer : MonoBehaviour
         }
 
 
-        UpdatePrompt();
+        // Show/hide now; position/billboard happen in LateUpdate (see below), after the player has
+        // finished moving for this frame — doing it here in Update() reads a stale position on frames
+        // where movement hasn't been applied yet, which shows up as flicker/jitter.
+        UpdatePromptVisibility();
         UpdateFeedback();
 
         if (UnityEngine.InputSystem.Keyboard.current.eKey.wasPressedThisFrame)
@@ -115,6 +159,13 @@ public class HarvestNodeContainer : MonoBehaviour
                           $"Checked {(nodes != null ? nodes.Length : 0)} nodes, " +
                           $"range={interactRange}, player pos={player.position}");
         }
+    }
+
+    private void LateUpdate()
+    {
+        // Runs after every script's Update() this frame (including whatever moves the player), so this
+        // always reads the final position for the frame instead of a half-step-stale one.
+        UpdatePromptTransform();
     }
     
         // ---------------------------------------------------------------
@@ -227,54 +278,59 @@ public class HarvestNodeContainer : MonoBehaviour
     // =========================================================
     private void BuildPromptUI()
     {
-        promptRoot = new GameObject("HarvestPrompt");
+        if (promptTemplate == null)
+        {
+            Debug.LogWarning("[HarvestNodeContainer] promptTemplate is not assigned — no interact prompt " +
+                              "will be shown. Assign an InteractPromptView prefab (background + keybind " +
+                              "icon + label) in the Inspector — PotInteraction's prompt prefab works fine here too.", this);
+            return;
+        }
+
+        promptView = Instantiate(promptTemplate);
+        promptRoot = promptView.gameObject;
+        promptRoot.name = "HarvestPrompt";
+        promptRoot.transform.SetParent(null);
         DontDestroyOnLoad(promptRoot);
 
-        Canvas c = promptRoot.AddComponent<Canvas>();
-        c.renderMode = RenderMode.WorldSpace;
-        c.sortingOrder = 50;
+        if (promptView.canvas != null)
+            promptView.canvas.renderMode = RenderMode.WorldSpace;
 
-        RectTransform rt = promptRoot.GetComponent<RectTransform>();
-        rt.sizeDelta = promptWorldSize * 100f;
-        rt.localScale = Vector3.one * 0.01f;
+        if (promptView.keybindIcon != null && promptKeybindSprite != null)
+        {
+            promptView.keybindIcon.sprite = promptKeybindSprite;
+            promptView.keybindIcon.enabled = true;
+        }
 
-        CanvasScaler cs = promptRoot.AddComponent<CanvasScaler>();
-        cs.dynamicPixelsPerUnit = 10f;
-        promptRoot.AddComponent<GraphicRaycaster>();
-
-        // Background
-        GameObject panel = MakeRect("Panel", promptRoot.transform);
-        RectTransform pr = panel.GetComponent<RectTransform>();
-        pr.anchorMin = Vector2.zero; pr.anchorMax = Vector2.one;
-        pr.offsetMin = pr.offsetMax = Vector2.zero;
-        panel.AddComponent<Image>().color = new Color(0.08f, 0.10f, 0.08f, 0.85f);
-
-        // Label
-        GameObject textGO = MakeRect("Label", panel.transform);
-        RectTransform tr = textGO.GetComponent<RectTransform>();
-        tr.anchorMin = Vector2.zero; tr.anchorMax = Vector2.one;
-        tr.offsetMin = tr.offsetMax = Vector2.zero;
-
-        promptLabel = textGO.AddComponent<TextMeshProUGUI>();
-        promptLabel.text = promptText;
-        promptLabel.fontSize = 14;
-        promptLabel.fontStyle = FontStyles.Bold;
-        promptLabel.color = new Color(0.9f, 0.95f, 0.9f);
-        promptLabel.alignment = TextAlignmentOptions.Center;
+        if (promptView.label != null && !string.IsNullOrEmpty(promptText))
+            promptView.label.text = promptText;
 
         promptRoot.SetActive(false);
     }
 
-    private void UpdatePrompt()
+    private void UpdatePromptVisibility()
     {
-        if (promptRoot == null) return;
+        bool shouldShow = currentNode != null;
 
-        bool show = currentNode != null;
-        promptRoot.SetActive(show);
+        if (useWorldSpacePrompt)
+        {
+            if (promptRoot != null)
+                promptRoot.SetActive(shouldShow);
+        }
+        else
+        {
+            mainUI?.SetInteractPromptVisible(shouldShow);
+        }
+    }
 
-        if (!show) return;
+    private void UpdatePromptTransform()
+    {
+        // Only the world-space prompt needs positioning/billboarding — the HUD version is a fixed
+        // screen-space element that MainUIController just enables/disables.
+        if (!useWorldSpacePrompt) return;
+        if (promptRoot == null || !promptRoot.activeSelf || currentNode == null) return;
 
-        // Position above the node
+        // Position above the NODE (not the player) — with multiple nodes potentially in range, this is
+        // what tells you which specific one is about to be harvested.
         promptRoot.transform.position =
             currentNode.position + Vector3.up * promptHeightOffset;
 
