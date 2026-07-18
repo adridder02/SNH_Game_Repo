@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -6757567160752018129}
   - component: {fileID: -1960662949177041206}
   - component: {fileID: -3711956283511735493}
+  - component: {fileID: 8146361688263643045}
   m_Layer: 3
   m_Name: The Luminary
   m_TagString: Selectable
@@ -153,13 +154,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDummyValues: 0
   dummyState: 1
+  dummyMiasma: 0
   useManualHeight: 0
   manualHeightOffset: 1
   hoverGap: 1
-  targetScreenHeight: 0.15
-  pipSize: 22
-  pipGap: 7
-  pipPadding: 1
+  fixedWorldHeight: 0.3
+  maxVisibleDistance: 6
+  logVisibilityDebug: 0
+  overheadBarsTemplate: {fileID: 0}
+  defaultTemplateResourcePath: PlantOverheadBarsTemplate
   plantState: {fileID: 0}
 --- !u!114 &-1960662949177041206
 MonoBehaviour:
@@ -174,7 +177,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plantSize: 0
-  plantType: 0
+  plantType: 1
+  journalSpecies: {fileID: 11400000, guid: 5425a0b9d0faa7d489c45e25044cb586, type: 2}
   potPlacementOffset: 0
   potPlacementRotation: {x: -90, y: -5.063995, z: 29.276}
   preferredSoil: 1
@@ -223,3 +227,23 @@ MonoBehaviour:
   outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   outlineWidth: 0.05
   outlineShader: {fileID: 0}
+--- !u!114 &8146361688263643045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7512854205896871279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a955a02e5f62b6144833ae3db4ca04e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantProgress
+  secondsToGrowFull: 120
+  secondsToDrainFromDead: 60
+  intermediateDrainFraction: 0.35
+  smoothingSeconds: 5
+  plantState: {fileID: 0}
+  progress: 0
+  isComplete: 0
+  smoothedRatePerSecond: 0

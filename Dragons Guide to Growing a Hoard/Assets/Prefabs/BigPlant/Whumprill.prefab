@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7321155063053929954}
   - component: {fileID: -7082575937553902930}
   - component: {fileID: -1600758623779020536}
+  - component: {fileID: -7496506593189826510}
   m_Layer: 3
   m_Name: Whumprill
   m_TagString: Selectable
@@ -131,13 +132,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDummyValues: 0
   dummyState: 1
+  dummyMiasma: 0
   useManualHeight: 0
   manualHeightOffset: 1
   hoverGap: 1.5
-  targetScreenHeight: 0.15
-  pipSize: 22
-  pipGap: 7
-  pipPadding: 1
+  fixedWorldHeight: 0.3
+  maxVisibleDistance: 6
+  logVisibilityDebug: 0
+  overheadBarsTemplate: {fileID: 0}
+  defaultTemplateResourcePath: PlantOverheadBarsTemplate
   plantState: {fileID: 0}
 --- !u!114 &7321155063053929954
 MonoBehaviour:
@@ -152,7 +155,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plantSize: 2
-  plantType: 0
+  plantType: 1
+  journalSpecies: {fileID: 11400000, guid: e0797c9225484bd4a8760603b6e345f8, type: 2}
   potPlacementOffset: 0.5
   potPlacementRotation: {x: 0, y: 0, z: 0}
   preferredSoil: 1
@@ -223,3 +227,23 @@ MonoBehaviour:
   rawIntensity: 0
   isInShadow: 0
   normalisedIntensity: 0
+--- !u!114 &-7496506593189826510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844357348191295120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a955a02e5f62b6144833ae3db4ca04e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantProgress
+  secondsToGrowFull: 120
+  secondsToDrainFromDead: 60
+  intermediateDrainFraction: 0.35
+  smoothingSeconds: 5
+  plantState: {fileID: 0}
+  progress: 0
+  isComplete: 0
+  smoothedRatePerSecond: 0

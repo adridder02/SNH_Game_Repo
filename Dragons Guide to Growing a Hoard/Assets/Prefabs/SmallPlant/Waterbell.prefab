@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -1693417367247938532}
   - component: {fileID: 4688223070293238866}
   - component: {fileID: -7003582614352320832}
+  - component: {fileID: 4254688850775693314}
   m_Layer: 3
   m_Name: Waterbell
   m_TagString: Selectable
@@ -153,13 +154,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDummyValues: 0
   dummyState: 1
+  dummyMiasma: 0
   useManualHeight: 0
   manualHeightOffset: 1
   hoverGap: 1
-  targetScreenHeight: 0.15
-  pipSize: 22
-  pipGap: 7
-  pipPadding: 1
+  fixedWorldHeight: 0.3
+  maxVisibleDistance: 6
+  logVisibilityDebug: 0
+  overheadBarsTemplate: {fileID: 0}
+  defaultTemplateResourcePath: PlantOverheadBarsTemplate
   plantState: {fileID: 0}
 --- !u!114 &4688223070293238866
 MonoBehaviour:
@@ -174,7 +177,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plantSize: 0
-  plantType: 0
+  plantType: 2
+  journalSpecies: {fileID: 11400000, guid: cedaa3ddba8cb394cb471a513d2deb99, type: 2}
   potPlacementOffset: 1
   potPlacementRotation: {x: 90, y: 0, z: 0}
   preferredSoil: 1
@@ -223,3 +227,23 @@ MonoBehaviour:
   outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   outlineWidth: 0.05
   outlineShader: {fileID: 0}
+--- !u!114 &4254688850775693314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154059041681990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a955a02e5f62b6144833ae3db4ca04e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantProgress
+  secondsToGrowFull: 120
+  secondsToDrainFromDead: 60
+  intermediateDrainFraction: 0.35
+  smoothingSeconds: 5
+  plantState: {fileID: 0}
+  progress: 0
+  isComplete: 0
+  smoothedRatePerSecond: 0
