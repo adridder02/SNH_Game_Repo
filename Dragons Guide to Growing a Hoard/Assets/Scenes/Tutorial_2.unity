@@ -429,12 +429,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactRange: 3
   dragonInventory: {fileID: 819452746}
+  potMenuUI: {fileID: 0}
   waterPerPress: 2
   maxWaterPool: 20
   poolRefillRate: 1.5
   showInteractPrompt: 1
+  useWorldSpacePrompt: 1
   promptHeightOffset: 2
-  promptWorldSize: {x: 1.5, y: 1}
+  promptTemplate: {fileID: 0}
+  interactKeybindSprite: {fileID: 0}
+  interactPromptLabel: Interact
+  mainUI: {fileID: 0}
 --- !u!143 &74016812
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1834,7 +1839,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15782475, y: 0.000000030583585, z: -0.0000000048881077, w: 0.98746717}
+  m_LocalRotation: {x: 0.15782475, y: 0, z: 0, w: 0.98746717}
   m_LocalPosition: {x: 70.18, y: -3.3212323, z: -4.165368}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2380,9 +2385,12 @@ MonoBehaviour:
   player: {fileID: 1503386468}
   playerInventory: {fileID: 819452746}
   interactRange: 9.73
+  useWorldSpacePrompt: 1
+  promptTemplate: {fileID: 0}
   promptText: '[E] Harvest'
-  promptWorldSize: {x: 1.5, y: 1}
+  promptKeybindSprite: {fileID: 0}
   promptHeightOffset: 5
+  mainUI: {fileID: 0}
   harvestMessage: Harvested!
   messageDuration: 1.8
 --- !u!1 &465881494
@@ -4591,6 +4599,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 0e0fb90c25815ce4bab51d2548ea0a29, type: 2}
+    - target: {fileID: -4474909516082176546, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: -2873380853902670577, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -4644,12 +4656,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1458569507123566687, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1458569507123566687, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1998131547146259539, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2334830646326187502, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550463727306718371, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2879961663705869190, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_CastShadows
@@ -4663,9 +4687,17 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4880099508911529307, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 5670784105149147771, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6572683484597976625, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7195912258332508970, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_CastShadows
@@ -4674,6 +4706,10 @@ PrefabInstance:
     - target: {fileID: 7293059144023096718, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7917349904687423284, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8443713291819645580, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_CastShadows
@@ -6467,6 +6503,7 @@ GameObject:
   - component: {fileID: 1393679880}
   - component: {fileID: 1393679879}
   - component: {fileID: 1393679878}
+  - component: {fileID: 1393679881}
   - component: {fileID: 1393679877}
   - component: {fileID: 1393679876}
   m_Layer: 0
@@ -6484,7 +6521,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1393679874}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.13995846, y: 0.45636743, z: -0.072940215, w: 0.8756827}
+  m_LocalRotation: {x: 0.13995844, y: 0.45636743, z: -0.07294021, w: 0.8756827}
   m_LocalPosition: {x: -58.283447, y: 23.078768, z: 17.036156}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -6514,6 +6551,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: 5
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -6525,6 +6564,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: -1
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -6536,6 +6577,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -423771258819551211, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: -1
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -6706,6 +6749,36 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!114 &1393679881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393679874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca7de3aefa901374ba29464584a3109a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineDecollider
+  CameraRadius: 0.4
+  Decollision:
+    Enabled: 1
+    ObstacleLayers:
+      serializedVersion: 2
+      m_Bits: 128
+    UseFollowTarget:
+      Enabled: 0
+      YOffset: 0
+    Damping: 0.5
+    SmoothingTime: 0
+  TerrainResolution:
+    Enabled: 1
+    TerrainLayers:
+      serializedVersion: 2
+      m_Bits: 128
+    MaximumRaycast: 10
+    Damping: 0.5
 --- !u!1 &1411227205 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1558721567721526513, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -15362,13 +15435,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlantUI
   useDummyValues: 0
   dummyState: 1
+  dummyMiasma: 0
   useManualHeight: 0
   manualHeightOffset: 1
   hoverGap: 0.14
-  targetScreenHeight: 0.1
-  pipSize: 22
-  pipGap: 7
-  pipPadding: 1
+  fixedWorldHeight: 0.3
+  maxVisibleDistance: 6
+  logVisibilityDebug: 0
+  overheadBarsTemplate: {fileID: 0}
+  defaultTemplateResourcePath: PlantOverheadBarsTemplate
   plantState: {fileID: 0}
 --- !u!114 &7106053868793773820
 MonoBehaviour:
@@ -15384,6 +15459,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlantState
   plantSize: 1
   plantType: 0
+  journalSpecies: {fileID: 0}
   potPlacementOffset: 0
   potPlacementRotation: {x: 0, y: 0, z: 0}
   preferredSoil: 1
@@ -15504,6 +15580,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlantState
   plantSize: 1
   plantType: 0
+  journalSpecies: {fileID: 0}
   potPlacementOffset: 0
   potPlacementRotation: {x: 0, y: 0, z: 0}
   preferredSoil: 1
@@ -16821,13 +16898,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlantUI
   useDummyValues: 0
   dummyState: 1
+  dummyMiasma: 0
   useManualHeight: 0
   manualHeightOffset: 1
   hoverGap: 0.14
-  targetScreenHeight: 0.1
-  pipSize: 22
-  pipGap: 7
-  pipPadding: 1
+  fixedWorldHeight: 0.3
+  maxVisibleDistance: 6
+  logVisibilityDebug: 0
+  overheadBarsTemplate: {fileID: 0}
+  defaultTemplateResourcePath: PlantOverheadBarsTemplate
   plantState: {fileID: 0}
 --- !u!114 &8388192504769381664
 MonoBehaviour:
@@ -16843,6 +16922,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlantState
   plantSize: 2
   plantType: 1
+  journalSpecies: {fileID: 0}
   potPlacementOffset: 0
   potPlacementRotation: {x: 0, y: 0, z: 0}
   preferredSoil: 1

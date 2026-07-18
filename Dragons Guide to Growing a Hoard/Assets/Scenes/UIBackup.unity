@@ -967,8 +967,12 @@ MonoBehaviour:
   maxWaterPool: 20
   poolRefillRate: 1.5
   showInteractPrompt: 1
+  useWorldSpacePrompt: 1
   promptHeightOffset: 2
-  promptWorldSize: {x: 1.5, y: 1}
+  promptTemplate: {fileID: 0}
+  interactKeybindSprite: {fileID: 0}
+  interactPromptLabel: Interact
+  mainUI: {fileID: 0}
 --- !u!143 &74016812
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3547,7 +3551,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15782475, y: 0.000000030583585, z: -0.0000000048881077, w: 0.98746717}
+  m_LocalRotation: {x: 0.15782475, y: 0, z: 0, w: 0.98746717}
   m_LocalPosition: {x: 70.18, y: -3.3212323, z: -4.165368}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4714,9 +4718,12 @@ MonoBehaviour:
   player: {fileID: 1503386468}
   playerInventory: {fileID: 4418241985442718913}
   interactRange: 9.73
+  useWorldSpacePrompt: 1
+  promptTemplate: {fileID: 0}
   promptText: '[E] Harvest'
-  promptWorldSize: {x: 1.5, y: 1}
+  promptKeybindSprite: {fileID: 0}
   promptHeightOffset: 5
+  mainUI: {fileID: 0}
   harvestMessage: Harvested!
   messageDuration: 1.8
 --- !u!1 &464134382
@@ -8025,10 +8032,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a245b77e6cfbb6e48be15a4396796a2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Script
-  miasma: {fileID: 186100305}
-  lerpDuration: 30
-  intensityIncreaseInterval: 60
-  maxProgressValue: 100
 --- !u!114 &740670619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11351,6 +11354,10 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 388017943894283486, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_Name
       value: Greenhouse (1)
@@ -11359,13 +11366,25 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1292043252959764498, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 1458569507123566687, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1998131547146259539, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 2334830646326187502, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550463727306718371, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2879961663705869190, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_CastShadows
@@ -11379,6 +11398,10 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4880099508911529307, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 5670784105149147771, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -11390,6 +11413,10 @@ PrefabInstance:
     - target: {fileID: 7293059144023096718, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7917349904687423284, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8443713291819645580, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
       propertyPath: m_CastShadows
@@ -15648,6 +15675,7 @@ GameObject:
   - component: {fileID: 1393679880}
   - component: {fileID: 1393679879}
   - component: {fileID: 1393679878}
+  - component: {fileID: 1393679881}
   - component: {fileID: 1393679877}
   - component: {fileID: 1393679876}
   m_Layer: 0
@@ -15665,7 +15693,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1393679874}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.13995846, y: 0.45636743, z: -0.072940215, w: 0.8756827}
+  m_LocalRotation: {x: 0.13995844, y: 0.45636743, z: -0.07294021, w: 0.8756827}
   m_LocalPosition: {x: -58.283447, y: 23.078768, z: 17.036156}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -15695,6 +15723,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: 5
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -15706,6 +15736,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: -1
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -15717,6 +15749,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -423771258819551211, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: -1
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -15887,6 +15921,36 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!114 &1393679881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393679874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca7de3aefa901374ba29464584a3109a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineDecollider
+  CameraRadius: 1.66
+  Decollision:
+    Enabled: 1
+    ObstacleLayers:
+      serializedVersion: 2
+      m_Bits: 128
+    UseFollowTarget:
+      Enabled: 0
+      YOffset: 0
+    Damping: 0.5
+    SmoothingTime: 0
+  TerrainResolution:
+    Enabled: 1
+    TerrainLayers:
+      serializedVersion: 2
+      m_Bits: 128
+    MaximumRaycast: 10
+    Damping: 0.5
 --- !u!1 &1409070290
 GameObject:
   m_ObjectHideFlags: 0

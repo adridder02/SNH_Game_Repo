@@ -349,12 +349,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactRange: 3
   dragonInventory: {fileID: 0}
+  potMenuUI: {fileID: 0}
   waterPerPress: 2
   maxWaterPool: 20
   poolRefillRate: 1.5
   showInteractPrompt: 1
+  useWorldSpacePrompt: 1
   promptHeightOffset: 2
-  promptWorldSize: {x: 1.5, y: 1}
+  promptTemplate: {fileID: 0}
+  interactKeybindSprite: {fileID: 0}
+  interactPromptLabel: Interact
+  mainUI: {fileID: 0}
 --- !u!143 &74016812
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1316,6 +1321,33 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &183967296 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -8391222552659086748, guid: c3318e76a9f470247bc0738063287c36, type: 3}
+  m_PrefabInstance: {fileID: 2014404992}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &183967300
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 183967296}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5495902117074765545, guid: c3318e76a9f470247bc0738063287c36, type: 3}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -1615,9 +1647,12 @@ MonoBehaviour:
   player: {fileID: 1503386468}
   playerInventory: {fileID: 74016822}
   interactRange: 9.73
+  useWorldSpacePrompt: 1
+  promptTemplate: {fileID: 0}
   promptText: '[E] Harvest'
-  promptWorldSize: {x: 1.5, y: 1}
+  promptKeybindSprite: {fileID: 0}
   promptHeightOffset: 5
+  mainUI: {fileID: 0}
   harvestMessage: Harvested!
   messageDuration: 1.8
 --- !u!4 &381619343
@@ -3018,10 +3053,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a245b77e6cfbb6e48be15a4396796a2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Script
-  miasma: {fileID: 0}
-  lerpDuration: 30
-  intensityIncreaseInterval: 60
-  maxProgressValue: 100
 --- !u!114 &740670619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4437,6 +4468,7 @@ GameObject:
   - component: {fileID: 1393679880}
   - component: {fileID: 1393679879}
   - component: {fileID: 1393679878}
+  - component: {fileID: 1393679881}
   - component: {fileID: 1393679877}
   - component: {fileID: 1393679876}
   m_Layer: 0
@@ -4485,6 +4517,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: 5
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -4496,6 +4530,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: -1
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -4507,6 +4543,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -423771258819551211, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: -1
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -4677,6 +4715,36 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!114 &1393679881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393679874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca7de3aefa901374ba29464584a3109a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineDecollider
+  CameraRadius: 1.47
+  Decollision:
+    Enabled: 1
+    ObstacleLayers:
+      serializedVersion: 2
+      m_Bits: 128
+    UseFollowTarget:
+      Enabled: 0
+      YOffset: 0
+    Damping: 0.5
+    SmoothingTime: 0
+  TerrainResolution:
+    Enabled: 1
+    TerrainLayers:
+      serializedVersion: 2
+      m_Bits: 128
+    MaximumRaycast: 10
+    Damping: 0.5
 --- !u!1001 &1431700187
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6668,7 +6736,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8391222552659086748, guid: c3318e76a9f470247bc0738063287c36, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: -7918335002988649766, guid: c3318e76a9f470247bc0738063287c36, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -6680,11 +6748,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 85dfc5789124cfa4e85e9e2ae5f2c70c, type: 2}
     - target: {fileID: -7146521406498821007, guid: c3318e76a9f470247bc0738063287c36, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: -7029948723529949830, guid: c3318e76a9f470247bc0738063287c36, type: 3}
       propertyPath: m_Layer
-      value: 12
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: -4292154010595695564, guid: c3318e76a9f470247bc0738063287c36, type: 3}
       propertyPath: m_LocalPosition.y
@@ -6742,6 +6810,9 @@ PrefabInstance:
     - {fileID: -25474791422933935, guid: c3318e76a9f470247bc0738063287c36, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -8391222552659086748, guid: c3318e76a9f470247bc0738063287c36, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 183967300}
     - targetCorrespondingSourceObject: {fileID: -7146521406498821007, guid: c3318e76a9f470247bc0738063287c36, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1447169320}
