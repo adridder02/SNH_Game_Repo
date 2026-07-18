@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: The Deluge Catcher
   m_EditorClassIdentifier: Assembly-CSharp::PlantSpeciesData
   speciesId: 
-  displayName: Plant
-  category: 0
+  displayName: The Deluge Catcher
+  category: 2
   room: 0
-  tier: 1
+  tier: 3
   difficulty: 1
   description: 
   descriptionSecondary: 

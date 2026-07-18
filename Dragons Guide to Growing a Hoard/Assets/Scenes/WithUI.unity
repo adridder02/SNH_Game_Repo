@@ -17178,6 +17178,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: 5
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -17189,6 +17191,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: -1
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -17200,6 +17204,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -423771258819551211, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: -1
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -27349,6 +27355,7 @@ GameObject:
   - component: {fileID: 1022461643556113260}
   - component: {fileID: 813381695958754359}
   - component: {fileID: 5993726224721456984}
+  - component: {fileID: 5993726224721456985}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -27368,6 +27375,7 @@ GameObject:
   - component: {fileID: 1022461643587226992}
   - component: {fileID: 813381695926985259}
   - component: {fileID: 5993726224756795724}
+  - component: {fileID: 5993726224756795725}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -27387,6 +27395,7 @@ GameObject:
   - component: {fileID: 1022461643524275680}
   - component: {fileID: 813381695855858363}
   - component: {fileID: 5993726224819624412}
+  - component: {fileID: 5993726224819624413}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -27406,6 +27415,7 @@ GameObject:
   - component: {fileID: 1022461643248341337}
   - component: {fileID: 813381696131268098}
   - component: {fileID: 5993726225094243683}
+  - component: {fileID: 5993726225094243684}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -27425,6 +27435,7 @@ GameObject:
   - component: {fileID: 1022461643439951507}
   - component: {fileID: 813381696106897864}
   - component: {fileID: 5993726224837094057}
+  - component: {fileID: 5993726224837094058}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -27444,6 +27455,7 @@ GameObject:
   - component: {fileID: 1022461645315566568}
   - component: {fileID: 813381695306466483}
   - component: {fileID: 5993726224035614676}
+  - component: {fileID: 5993726224035614677}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -27463,6 +27475,7 @@ GameObject:
   - component: {fileID: 1022461645265517187}
   - component: {fileID: 813381695187310040}
   - component: {fileID: 5993726224150290105}
+  - component: {fileID: 5993726224150290106}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -27482,6 +27495,7 @@ GameObject:
   - component: {fileID: 1022461644483283475}
   - component: {fileID: 813381694929347912}
   - component: {fileID: 5993726223858773545}
+  - component: {fileID: 5993726223858773546}
   m_Layer: 0
   m_Name: Verdant Algae
   m_TagString: Untagged
@@ -28123,7 +28137,6 @@ GameObject:
   - component: {fileID: 6476096880023233388}
   - component: {fileID: 6476096880023233389}
   - component: {fileID: 6476096880023233391}
-  - component: {fileID: 6476096880023233390}
   m_Layer: 0
   m_Name: Sundial Cactus
   m_TagString: Untagged
@@ -28145,7 +28158,6 @@ GameObject:
   - component: {fileID: 6476096878520886035}
   - component: {fileID: 6476096878520886036}
   - component: {fileID: 6476096878520886038}
-  - component: {fileID: 6476096878520886037}
   m_Layer: 0
   m_Name: Sundial Cactus
   m_TagString: Untagged
@@ -28167,7 +28179,6 @@ GameObject:
   - component: {fileID: 6476096878466650660}
   - component: {fileID: 6476096878466650661}
   - component: {fileID: 6476096878466650663}
-  - component: {fileID: 6476096878466650662}
   m_Layer: 0
   m_Name: Sundial Cactus
   m_TagString: Untagged
@@ -31495,8 +31506,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 1844357348191295120, guid: c8c0a6d54fb83724eb5fac9fd6640368, type: 3}
+  plantName: Whumpril
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &4291933657754705773
@@ -31541,8 +31552,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 1844357348191295120, guid: c8c0a6d54fb83724eb5fac9fd6640368, type: 3}
+  plantName: Whumpril
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &4291933659096838132
@@ -31587,8 +31598,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 1844357348191295120, guid: c8c0a6d54fb83724eb5fac9fd6640368, type: 3}
+  plantName: Whumpril
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &4291933659341317195
@@ -31698,8 +31709,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 3147640831792386703, guid: 41465438df12e0d4abc075ae4336a258, type: 3}
+  plantName: Glowcap
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &4493067399300467294
@@ -31744,8 +31755,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 3147640831792386703, guid: 41465438df12e0d4abc075ae4336a258, type: 3}
+  plantName: Glowcap
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &4493067399654772816
@@ -31790,8 +31801,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 3147640831792386703, guid: 41465438df12e0d4abc075ae4336a258, type: 3}
+  plantName: Glowcap
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &4493067400138540202
@@ -31836,8 +31847,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 3147640831792386703, guid: 41465438df12e0d4abc075ae4336a258, type: 3}
+  plantName: Glowcap
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &4493067400382646340
@@ -31882,8 +31893,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 3147640831792386703, guid: 41465438df12e0d4abc075ae4336a258, type: 3}
+  plantName: Glowcap
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &4493067400388514027
@@ -31928,8 +31939,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 3147640831792386703, guid: 41465438df12e0d4abc075ae4336a258, type: 3}
+  plantName: Glowcap
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &4493067401051978270
@@ -33029,10 +33040,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 864107347954856182, guid: 8cea0d4523543af4f9a60dcee71d2bab, type: 3}
+  plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &5993726223858773546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107350031419495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!4 &5993726224035614675
 Transform:
   m_ObjectHideFlags: 0
@@ -33060,10 +33086,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 864107347954856182, guid: 8cea0d4523543af4f9a60dcee71d2bab, type: 3}
+  plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &5993726224035614677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107349134076316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!4 &5993726224150290104
 Transform:
   m_ObjectHideFlags: 0
@@ -33091,10 +33132,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 864107347954856182, guid: 8cea0d4523543af4f9a60dcee71d2bab, type: 3}
+  plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &5993726224150290106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107349236594935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!4 &5993726224721456983
 Transform:
   m_ObjectHideFlags: 0
@@ -33122,10 +33178,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 864107347954856182, guid: 8cea0d4523543af4f9a60dcee71d2bab, type: 3}
+  plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &5993726224721456985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107348465142040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!4 &5993726224756795723
 Transform:
   m_ObjectHideFlags: 0
@@ -33153,10 +33224,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 864107347954856182, guid: 8cea0d4523543af4f9a60dcee71d2bab, type: 3}
+  plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &5993726224756795725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107348513558276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!4 &5993726224819624411
 Transform:
   m_ObjectHideFlags: 0
@@ -33184,10 +33270,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 864107347954856182, guid: 8cea0d4523543af4f9a60dcee71d2bab, type: 3}
+  plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &5993726224819624413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107348568309652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!4 &5993726224837094056
 Transform:
   m_ObjectHideFlags: 0
@@ -33215,10 +33316,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 864107347954856182, guid: 8cea0d4523543af4f9a60dcee71d2bab, type: 3}
+  plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &5993726224837094058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107348853869799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!4 &5993726225094243682
 Transform:
   m_ObjectHideFlags: 0
@@ -33246,10 +33362,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 864107347954856182, guid: 8cea0d4523543af4f9a60dcee71d2bab, type: 3}
+  plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+--- !u!114 &5993726225094243684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864107348846285613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.02
+  outlineShader: {fileID: 0}
 --- !u!114 &6044300509190143521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33637,8 +33768,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 3493835662444555350, guid: cbd2a11c8414f4549a6d7beb967f5c2e, type: 3}
+  plantName: Clovenwick
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &6446668121091367355
@@ -33717,8 +33848,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 3493835662444555350, guid: cbd2a11c8414f4549a6d7beb967f5c2e, type: 3}
+  plantName: Clovenwick
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &6446668121109008613
@@ -33797,8 +33928,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 3493835662444555350, guid: cbd2a11c8414f4549a6d7beb967f5c2e, type: 3}
+  plantName: Clovenwick
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &6446668122177790286
@@ -33877,8 +34008,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 3493835662444555350, guid: cbd2a11c8414f4549a6d7beb967f5c2e, type: 3}
+  plantName: Clovenwick
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &6446668122179554541
@@ -33934,22 +34065,6 @@ MonoBehaviour:
   plantName: Sundial Cactus
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
---- !u!114 &6476096878466650662
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1108434113079771827}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
-  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
-  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &6476096878466650663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34003,22 +34118,6 @@ MonoBehaviour:
   plantName: Sundial Cactus
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
---- !u!114 &6476096878520886037
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1108434113033810820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
-  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
-  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &6476096878520886038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34070,22 +34169,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 1108434111351597028, guid: a6b2440c9fcf97c4a8e8f0060dbe96fe, type: 3}
   plantName: Sundial Cactus
-  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
-  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
---- !u!114 &6476096880023233390
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1108434111414023163}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &6476096880023233391
@@ -34632,8 +34715,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 7106053868976010694, guid: 6cf00a1e2fb7a3e439e9aa4a4d49e137, type: 3}
+  plantName: Melodybloom
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &7106053868695405843
@@ -34684,8 +34767,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 7106053868976010694, guid: 6cf00a1e2fb7a3e439e9aa4a4d49e137, type: 3}
+  plantName: Melodybloom
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &7106053868793773820
@@ -34736,8 +34819,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 7106053868976010694, guid: 6cf00a1e2fb7a3e439e9aa4a4d49e137, type: 3}
+  plantName: Melodybloom
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &7106053869111921821
@@ -34788,8 +34871,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 7106053868976010694, guid: 6cf00a1e2fb7a3e439e9aa4a4d49e137, type: 3}
+  plantName: Melodybloom
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &7106053869885642875
@@ -34966,8 +35049,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 6397339370049151978, guid: f6ae0fd546c583d4295b4d12e60ee02d, type: 3}
+  plantName: The Deluge Catcher
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &7137621011250287860
@@ -35512,8 +35595,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 7443154059041681990, guid: 1585d53afbc80614582b370de8cda904, type: 3}
+  plantName: Waterbell
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &7613040284510583601
@@ -35565,8 +35648,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 7443154059041681990, guid: 1585d53afbc80614582b370de8cda904, type: 3}
+  plantName: Waterbell
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &7613040284714903095
@@ -35618,8 +35701,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 7443154059041681990, guid: 1585d53afbc80614582b370de8cda904, type: 3}
+  plantName: Waterbell
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &7613040284836984322
@@ -35671,8 +35754,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 7443154059041681990, guid: 1585d53afbc80614582b370de8cda904, type: 3}
+  plantName: Waterbell
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &7613040285220587886
@@ -35724,8 +35807,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 7443154059041681990, guid: 1585d53afbc80614582b370de8cda904, type: 3}
+  plantName: Waterbell
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &7613040285280289443
@@ -35777,8 +35860,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 7443154059041681990, guid: 1585d53afbc80614582b370de8cda904, type: 3}
+  plantName: Waterbell
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &7613040285820075033
@@ -36132,8 +36215,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 6160393185916373558, guid: 0984c5850461a0b41baf5366056fe4e0, type: 3}
+  plantName: Windmill Aster
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &7799830688855472680
@@ -36212,8 +36295,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 6160393185916373558, guid: 0984c5850461a0b41baf5366056fe4e0, type: 3}
+  plantName: Windmill Aster
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &7799830689462763672
@@ -36292,8 +36375,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 6160393185916373558, guid: 0984c5850461a0b41baf5366056fe4e0, type: 3}
+  plantName: Windmill Aster
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &7799830689546397896
@@ -36437,8 +36520,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 2650251699068457546, guid: 6db11bb194fc76f4a88e65a10a7a414f, type: 3}
+  plantName: Drifter
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &8096330631364292476
@@ -36490,8 +36573,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 2650251699068457546, guid: 6db11bb194fc76f4a88e65a10a7a414f, type: 3}
+  plantName: Drifter
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &8096330632102485777
@@ -36543,8 +36626,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 2650251699068457546, guid: 6db11bb194fc76f4a88e65a10a7a414f, type: 3}
+  plantName: Drifter
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &8096330632366887860
@@ -36663,8 +36746,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 5086658688875511756, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+  plantName: Dewdropper
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &8228039973461473959
@@ -36743,8 +36826,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 5086658688875511756, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+  plantName: Dewdropper
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &8228039973648303941
@@ -36823,8 +36906,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 5086658688875511756, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+  plantName: Dewdropper
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &8228039974081671604
@@ -36946,8 +37029,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 2779138664059445019, guid: 6128aaa10d29d0a45956dea94e6a7e1f, type: 3}
+  plantName: The Maw Jaw
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &8388192504769381663
@@ -37187,8 +37270,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 6703200343087572510, guid: e1bd2a8906563cb4f808c03663bb7eae, type: 3}
+  plantName: Bubble Blossom
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &8624361956960177348
@@ -37226,8 +37309,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 6703200343087572510, guid: e1bd2a8906563cb4f808c03663bb7eae, type: 3}
+  plantName: Bubble Blossom
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &8624361957940655179
@@ -37265,8 +37348,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 6703200343087572510, guid: e1bd2a8906563cb4f808c03663bb7eae, type: 3}
+  plantName: Bubble Blossom
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &8624361958374831633
@@ -37488,8 +37571,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
+  plantPrefab: {fileID: 7512854205896871279, guid: 187dc7aa1a89bf34eb05ad860f2ba227, type: 3}
+  plantName: The Luminary
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &8812342830093620888
@@ -37519,7 +37602,6 @@ GameObject:
   - component: {fileID: 8622086564644124236}
   - component: {fileID: 7798567678547092836}
   - component: {fileID: 8857077381460762829}
-  - component: {fileID: 8857077381460762830}
   m_Layer: 0
   m_Name: Sparkmint
   m_TagString: Untagged
@@ -37549,22 +37631,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3028363815020005268, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
---- !u!114 &8857077381460762830
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8857077381460762828}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
-  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
-  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!1 &8857077381757582225
 GameObject:
   m_ObjectHideFlags: 0
@@ -37577,7 +37643,6 @@ GameObject:
   - component: {fileID: 8622086563860638993}
   - component: {fileID: 7798567678292491833}
   - component: {fileID: 8857077381757582226}
-  - component: {fileID: 8857077381757582227}
   m_Layer: 0
   m_Name: Sparkmint
   m_TagString: Untagged
@@ -37607,22 +37672,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3028363815020005268, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
---- !u!114 &8857077381757582227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8857077381757582225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
-  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
-  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!1 &8857077382301159422
 GameObject:
   m_ObjectHideFlags: 0
@@ -37635,7 +37684,6 @@ GameObject:
   - component: {fileID: 8622086563405191550}
   - component: {fileID: 7798567679451515478}
   - component: {fileID: 8857077382301159423}
-  - component: {fileID: 8857077382301159424}
   m_Layer: 0
   m_Name: Sparkmint
   m_TagString: Untagged
@@ -37665,22 +37713,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3028363815020005268, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
---- !u!114 &8857077382301159424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8857077382301159422}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
-  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
-  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!1 &8857077382925983888
 GameObject:
   m_ObjectHideFlags: 0
@@ -37693,7 +37725,6 @@ GameObject:
   - component: {fileID: 8622086562947626512}
   - component: {fileID: 7798567679002600760}
   - component: {fileID: 8857077382925983889}
-  - component: {fileID: 8857077382925983890}
   m_Layer: 0
   m_Name: Sparkmint
   m_TagString: Untagged
@@ -37723,22 +37754,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3028363815020005268, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
---- !u!114 &8857077382925983890
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8857077382925983888}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64a3744de2e88194f9e3b1e1b129bc04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
-  plantPrefab: {fileID: 0}
-  plantName: 
-  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
-  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
 --- !u!114 &8910482494518653561
 MonoBehaviour:
   m_ObjectHideFlags: 0

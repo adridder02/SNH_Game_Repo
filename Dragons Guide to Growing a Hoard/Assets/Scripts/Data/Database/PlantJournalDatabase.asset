@@ -15,3 +15,15 @@ MonoBehaviour:
   allSpecies:
   - {fileID: 11400000, guid: 006bc5c7905cc09439e368abab1bcff4, type: 2}
   - {fileID: 11400000, guid: 510a24ecb26f30246a9f27ef69d4cc03, type: 2}
+  - {fileID: 11400000, guid: 6f2538c3bc1119e49a8e9eb7482fda92, type: 2}
+  - {fileID: 11400000, guid: fdd364b0d2358b64b9e6a41eb519f73b, type: 2}
+  - {fileID: 11400000, guid: 6ec5f9545c2ab0a4abbee8337bf18c24, type: 2}
+  - {fileID: 11400000, guid: e174be48238809a44b9b6394a33f67f9, type: 2}
+  - {fileID: 11400000, guid: e0797c9225484bd4a8760603b6e345f8, type: 2}
+  - {fileID: 11400000, guid: 6d84b47cdcd2f404693f35aa49ea02fc, type: 2}
+  - {fileID: 11400000, guid: 3f441615e5414324abbaafa89640a437, type: 2}
+  - {fileID: 11400000, guid: e603394f5bd98ae4c8143964100fdd4d, type: 2}
+  - {fileID: 11400000, guid: 5425a0b9d0faa7d489c45e25044cb586, type: 2}
+  - {fileID: 11400000, guid: cedaa3ddba8cb394cb471a513d2deb99, type: 2}
+  - {fileID: 11400000, guid: d463c86c7cf658e4ca6285118f5236e8, type: 2}
+  - {fileID: 11400000, guid: 6b81dee6748f16042a5ec916d3dfb264, type: 2}
