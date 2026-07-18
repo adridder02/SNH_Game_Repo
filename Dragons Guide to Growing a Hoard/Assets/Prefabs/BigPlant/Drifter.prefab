@@ -152,15 +152,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plantSize: 2
-  plantType: 0
+  plantType: 2
   potPlacementOffset: 0.8
   potPlacementRotation: {x: 90, y: 0, z: 0}
-  preferredSoil: 1
-  neutralSoil: 0
+  preferredSoil: 3
+  neutralSoil: 3
   lightThresholdHigh: 0.6
   lightThresholdLow: 0.25
-  waterThresholdHigh: 6
-  waterThresholdLow: 3
+  waterThresholdHigh: 8
+  waterThresholdLow: 6
   revivedMinScore: 5
   intermediateMinScore: 2
   lightSensor: {fileID: 0}

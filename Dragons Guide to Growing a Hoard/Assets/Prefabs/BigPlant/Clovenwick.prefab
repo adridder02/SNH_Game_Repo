@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -7952131424117648928}
   - component: {fileID: 8236061752540885117}
   - component: {fileID: 873892640486821792}
+  - component: {fileID: -6359792874785436364}
   m_Layer: 3
   m_Name: Clovenwick
   m_TagString: Selectable
@@ -223,3 +224,20 @@ MonoBehaviour:
   rawIntensity: 0
   isInShadow: 0
   normalisedIntensity: 0
+--- !u!114 &-6359792874785436364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493835662444555350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad6bc96b5de44ad93f820fd338ee684, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.UI.DebugUIHandlerProgressBar
+  colorDefault: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+  colorSelected: {r: 0.25, g: 0.65, b: 0.8, a: 1}
+  nameLabel: {fileID: 0}
+  valueLabel: {fileID: 0}
+  progressBarRect: {fileID: 0}
