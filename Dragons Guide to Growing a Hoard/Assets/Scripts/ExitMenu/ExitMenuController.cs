@@ -8,6 +8,8 @@ public class ExitMenuController : MonoBehaviour
     [SerializeField] private InventoryUIController inventoryController;
     [SerializeField] private PotMenuUIController potMenuController;
     [SerializeField] private JournalUIController journalController;
+    [Header("Tutorial Setup UI")]
+    [SerializeField] private Tutorial tutUI;
 
     public bool IsExitMenuOpen => exitMenuRoot != null && exitMenuRoot.activeSelf;
 
@@ -65,6 +67,8 @@ public class ExitMenuController : MonoBehaviour
 
         // Stronger forcing for the problematic Exit Menu
         ForceMenuState();
+        if(tutUI != null)
+            tutUI.HideUI();
     }
 
     public void CloseExitMenu()
@@ -73,6 +77,8 @@ public class ExitMenuController : MonoBehaviour
             exitMenuRoot.SetActive(false);
 
         GameInputModeManager.Instance?.SetGameplayMode();
+        if(tutUI != null)
+            tutUI.ShowUI();
     }
 
     /// <summary>

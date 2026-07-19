@@ -569,7 +569,7 @@ public class PlacementSystem : MonoBehaviour
 
         PlaySFX(placeSoundClip);
         if(Tutorial.inTut == true){
-            Tutorial.movePot();
+            Tutorial_1.Instance.MovePot();
         }
         if(selectedIndex == 0)
             Tutorial_2.plantedSp();
@@ -577,7 +577,7 @@ public class PlacementSystem : MonoBehaviour
             Tutorial_2.plantedMp();
         else if(selectedIndex == 2)
             Tutorial_2.plantedLp();
-        Tutorial.setGridOnTable();
+        Tutorial_1.Instance.SetGridOnTable();
     }
 
     private void TryRemove(Vector2Int cell)

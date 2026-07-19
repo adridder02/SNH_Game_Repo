@@ -38,6 +38,9 @@ public class Tutorial : MonoBehaviour
     private static Label TaskLabel;
     private static int currentTaskIndex = 0;
     private static float delay = 0f;
+
+    public UIDocument uiDocument;
+
     void Start()
     {
 
@@ -47,6 +50,7 @@ public class Tutorial : MonoBehaviour
         hasAddedSoil = false;
         hasPlanted = false;
         hasAddedWater = false;
+        uiDocument = GetComponent<UIDocument>();
         VisualElement root = GetComponent<UIDocument>().rootVisualElement;
         TaskLabel = root.Q<Label>("Dir");
         GroupBox tutBox = root.Q<GroupBox>("TaskList");
@@ -187,6 +191,24 @@ public class Tutorial : MonoBehaviour
         else
         {
             Debug.LogError("Scene name is not set!");
+        }
+    }
+
+    public void ShowUI()
+    {
+        Debug.Log("Show: "+ uiDocument );
+        if (uiDocument != null && uiDocument.rootVisualElement != null)
+        {
+            uiDocument.rootVisualElement.style.display = DisplayStyle.Flex;
+        }
+    }
+
+    public void HideUI()
+    {
+        Debug.Log("Hide: "+ uiDocument );
+        if (uiDocument != null && uiDocument.rootVisualElement != null)
+        {
+            uiDocument.rootVisualElement.style.display = DisplayStyle.None;
         }
     }
 }

@@ -261,15 +261,15 @@ public class HarvestNodeContainer : MonoBehaviour
 
         Debug.Log($"[HarvestNodeContainer] Harvested: {node.name}");
         ShowFeedback($"{harvestMessage}  ({node.name})");
-        if(!Tutorial.tutorialStageComplete()){
-            Tutorial.removedPlant();
-            Tutorial.addedPotToInventory();
+        if(!Tutorial_1.Instance.tutorialStageComplete()){
+            Tutorial_1.Instance.RemovedPlant();
+            Tutorial_1.Instance.AddedPotToInventory();
         }
         // Node is done for now. Swap for a respawn-timer coroutine if these
         // nodes should regrow rather than disappear permanently.
         ClearCurrentOutline();
         node.gameObject.SetActive(false);
-
+        Tutorial.onPickUpPot();
       
     }
 

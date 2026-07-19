@@ -360,6 +360,7 @@ MonoBehaviour:
   interactKeybindSprite: {fileID: 0}
   interactPromptLabel: Interact
   mainUI: {fileID: 0}
+  tutUI: {fileID: 0}
 --- !u!143 &74016812
 CharacterController:
   m_ObjectHideFlags: 0
@@ -7097,6 +7098,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Tutorial
   sceneToLoad: {fileID: 102900000, guid: 56d9597723028eb46afe4ebadf566f11, type: 3}
   sceneName: 
+  uiDocument: {fileID: 0}
 --- !u!1001 &7339082965384795155
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7152,6 +7154,10 @@ PrefabInstance:
     - target: {fileID: 7137056764535421486, guid: af3caf2751ed23a4781a1cb63ae1b3f7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7902039664239997503, guid: af3caf2751ed23a4781a1cb63ae1b3f7, type: 3}
+      propertyPath: transitionTime
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

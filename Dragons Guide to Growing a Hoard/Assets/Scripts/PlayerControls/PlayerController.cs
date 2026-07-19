@@ -302,8 +302,8 @@ public class PlayerController : MonoBehaviour
             else if (inputMagnitude > 0.1f)
             {
                 playerAnim.setWalking();
-                if (!Tutorial.tutorialStageComplete())
-                    Tutorial.onMove();
+                if (!Tutorial_1.Instance.tutorialStageComplete())
+                    Tutorial_1.Instance.OnMove();
             }
             else
             {
@@ -375,8 +375,8 @@ public class PlayerController : MonoBehaviour
     {
         locomotionState = LocomotionState.Flying;
         velocity = Vector3.zero;
-        if (!Tutorial.tutorialStageComplete())
-            Tutorial.FlyOnTable();
+        if (!Tutorial_1.Instance.tutorialStageComplete())
+            Tutorial_1.Instance.FlyOnTable();
         ThirdPersonCameraController.setCameraZoomLimitOnFly(true);
         flyGroundGraceTimer = flyGroundGracePeriod;
         Debug.Log("[PlayerController] Fly mode ON");
