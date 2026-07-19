@@ -38,6 +38,11 @@ public class HarvestNodeContainer : MonoBehaviour
     [Tooltip("The player's inventory. Auto-found in Start() if left empty.")]
     public PlayerInventory playerInventory;
 
+    [Header("Mission")]
+    [Tooltip("The mission's RemovedPlant task (index 0) is completed on harvest. Assign the same " +
+             "MissionData asset used on PotContents/CollectablePlant.")]
+    [SerializeField] private MissionData tutorialMission;
+
     [Header("Interaction")]
     [Tooltip("How close the player must be to a node to see the prompt.")]
     public float interactRange = 2.5f;
@@ -261,17 +266,18 @@ public class HarvestNodeContainer : MonoBehaviour
 
         Debug.Log($"[HarvestNodeContainer] Harvested: {node.name}");
         ShowFeedback($"{harvestMessage}  ({node.name})");
-        if(Tutorial_1.Instance != null)
-            if(!Tutorial_1.Instance.tutorialStageComplete()){
-                Tutorial_1.Instance.RemovedPlant();
-                Tutorial_1.Instance.AddedPotToInventory();
-            }
+        if (tutorialMission != null && tutorialMission.tasks.Count > 0)
+            MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[0]); // RemovedPlant
+        // NOTE: this used to also complete an "AddedPotToInventory" checklist task —
+        // that task was dropped from the mission, so there's nothing to call anymore.
+
         // Node is done for now. Swap for a respawn-timer coroutine if these
         // nodes should regrow rather than disappear permanently.
         ClearCurrentOutline();
         node.gameObject.SetActive(false);
-        if(Tutorial_1.Instance != null)
-            Tutorial_1.Instance.OnPickUpPot();
+        // NOTE: this used to advance the old on-screen Tutorial instruction text here
+        // (Tutorial_1.Instance.OnPickUpPot()) — not a checklist task, nothing to repoint
+        // it to yet since that on-screen system hasn't been rebuilt.
       
     }
 

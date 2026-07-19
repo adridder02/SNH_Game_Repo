@@ -81,8 +81,11 @@ public class PotContents : MonoBehaviour
     [Tooltip("Current water level used by PlantState debuffs and scoring")]
     public float waterLevel = 0f;
     
-    [Header("Tutorial Object")]
-    [SerializeField] private Tutorial tut;
+    [Header("Mission")]
+    [Tooltip("The mission whose tasks this pot reports into. Assumed task order (index): " +
+             "0=RemovedPlant, 1=MovePot, 2=AddedSoil, 3=PlantedSeed, 4=AddedWater. " +
+             "Only indices 0/2/3/4 are touched from this script — 1 is reported from PlacementSystem.")]
+    [SerializeField] private MissionData tutorialMission;
     // ---------------------------------------------------------------
     [Header("Runtime")]
     [SerializeField] private SoilKind currentSoil = SoilKind.Loam;
@@ -317,10 +320,8 @@ public class PotContents : MonoBehaviour
         {
             foreach (Renderer rend in currentSoilObject.GetComponentsInChildren<Renderer>())
                 rend.material = materialToApply;
-            if(Tutorial_1.Instance != null)
-                if(Tutorial_1.Instance.inTut == true){
-                    Tutorial_1.Instance.AddedSoil();
-                }
+            if (tutorialMission != null && tutorialMission.tasks.Count > 2)
+                MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[2]); // AddedSoil
         }
     }
 
@@ -393,10 +394,8 @@ public class PotContents : MonoBehaviour
 
         hasPlant = true;
         Plant.SetPotContents(this);
-        if(Tutorial_1.Instance != null)
-            if(Tutorial_1.Instance.inTut == true){
-                Tutorial_1.Instance.PlantedSeed();
-            }
+        if (tutorialMission != null && tutorialMission.tasks.Count > 3)
+            MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[3]); // PlantedSeed
         return true;
     }
 
@@ -449,9 +448,8 @@ public class PotContents : MonoBehaviour
         // Now destroy the plant
         if (plantToDestroy != null)
         {
-            if(Tutorial_1.Instance != null)
-                if(Tutorial_1.Instance.inTut == true)
-                    Tutorial_1.Instance.RemovedPlant();
+            if (tutorialMission != null && tutorialMission.tasks.Count > 0)
+                MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[0]); // RemovedPlant
             Destroy(plantToDestroy);
         }
     }
@@ -485,10 +483,8 @@ public class PotContents : MonoBehaviour
     {
         if (waterLevel >= plantWaterMax) return false;
         waterLevel = Mathf.Min(waterLevel + amount, plantWaterMax);
-        if(Tutorial_1.Instance != null)
-            if(Tutorial_1.Instance.inTut == true){
-                Tutorial_1.Instance.AddedWater();
-            }
+        if (tutorialMission != null && tutorialMission.tasks.Count > 4)
+            MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[4]); // AddedWater
         return true;
     }
 

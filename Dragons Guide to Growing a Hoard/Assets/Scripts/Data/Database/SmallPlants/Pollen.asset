@@ -15,7 +15,7 @@ MonoBehaviour:
   speciesId: 2
   displayName: Pollen Puff
   category: 0
-  room: 0
+  room: 1
   tier: 1
   difficulty: 1
   description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod

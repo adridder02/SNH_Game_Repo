@@ -93,9 +93,6 @@ public class PotInteraction : MonoBehaviour
              "when useWorldSpacePrompt is OFF. Auto-found in the scene if left empty.")]
     [SerializeField] private MainUIController mainUI;
 
-    [Header("Tutorial View")]
-    [SerializeField] private Tutorial tutUI;
-
 
     // ---------------------------------------------------------------
     // Private state
@@ -396,8 +393,8 @@ public class PotInteraction : MonoBehaviour
 
         if (potMenuUI != null)
             potMenuUI.Open(pot, dragonInventory, this);
-        if(tutUI != null)
-                    tutUI.HideUI();
+        // NOTE: this used to hide the old on-screen Tutorial panel here. Hook whatever
+        // replaces it in when that system exists.
     }
 
     /// <summary>Closes the pot menu. Public so PotMenuUIController's close button can call it directly.</summary>
@@ -413,8 +410,8 @@ public class PotInteraction : MonoBehaviour
 
         if (potMenuUI != null)
             potMenuUI.Close();
-        if(tutUI != null)
-            tutUI.ShowUI();
+        // NOTE: this used to re-show the old on-screen Tutorial panel here. Hook whatever
+        // replaces it in when that system exists.
     }
 
     // ---------------------------------------------------------------

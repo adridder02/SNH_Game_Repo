@@ -61,14 +61,16 @@ public class JournalUIController : MonoBehaviour
              "journal is opened.")]
     [SerializeField] private GameObject plantsPage;
     [SerializeField] private GameObject progressPage;
+    [SerializeField] private GameObject guidePage;
     [SerializeField] private GameObject settingsPage;
 
-    [Tooltip("Nav buttons for the three pages above — clicking one shows its matching page and highlights " +
+    [Tooltip("Nav buttons for the four pages above — clicking one shows its matching page and highlights " +
              "itself as active via the button's own Selected sprite/color transition (same trick used for " +
              "the Choose Soil options and the inventory's filter bar — set a distinct Selected state on " +
-             "each of these three buttons in the Editor).")]
+             "each of these four buttons in the Editor).")]
     [SerializeField] private Button plantsNavButton;
     [SerializeField] private Button progressNavButton;
+    [SerializeField] private Button guideNavButton;
     [SerializeField] private Button settingsNavButton;
 
     [Header("Category Rows")]
@@ -142,6 +144,7 @@ public class JournalUIController : MonoBehaviour
 
         plantsNavButton?.onClick.AddListener(() => ShowPage(plantsPage, plantsNavButton));
         progressNavButton?.onClick.AddListener(() => ShowPage(progressPage, progressNavButton));
+        guideNavButton?.onClick.AddListener(() => ShowPage(guidePage, guideNavButton));
         settingsNavButton?.onClick.AddListener(() => ShowPage(settingsPage, settingsNavButton));
 
         previousSpeciesButton?.onClick.AddListener(() => StepSpecies(-1));
@@ -224,6 +227,7 @@ public class JournalUIController : MonoBehaviour
     {
         if (plantsPage != null) plantsPage.SetActive(page == plantsPage);
         if (progressPage != null) progressPage.SetActive(page == progressPage);
+        if (guidePage != null) guidePage.SetActive(page == guidePage);
         if (settingsPage != null) settingsPage.SetActive(page == settingsPage);
 
         // Highlight the active nav button directly instead of relying on Unity's
@@ -235,6 +239,7 @@ public class JournalUIController : MonoBehaviour
         // page changes again.
         SetNavButtonActive(plantsNavButton, navButton == plantsNavButton);
         SetNavButtonActive(progressNavButton, navButton == progressNavButton);
+        SetNavButtonActive(guideNavButton, navButton == guideNavButton);
         SetNavButtonActive(settingsNavButton, navButton == settingsNavButton);
     }
 

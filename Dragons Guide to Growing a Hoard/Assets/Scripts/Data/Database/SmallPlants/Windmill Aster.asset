@@ -15,7 +15,7 @@ MonoBehaviour:
   speciesId: 
   displayName: Windmill Aster
   category: 0
-  room: 0
+  room: 1
   tier: 1
   difficulty: 1
   description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod

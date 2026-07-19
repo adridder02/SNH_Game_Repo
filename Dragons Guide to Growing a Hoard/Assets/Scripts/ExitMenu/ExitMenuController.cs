@@ -8,8 +8,6 @@ public class ExitMenuController : MonoBehaviour
     [SerializeField] private InventoryUIController inventoryController;
     [SerializeField] private PotMenuUIController potMenuController;
     [SerializeField] private JournalUIController journalController;
-    [Header("Tutorial Setup UI")]
-    [SerializeField] private Tutorial tutUI;
 
     public bool IsExitMenuOpen => exitMenuRoot != null && exitMenuRoot.activeSelf;
 
@@ -67,8 +65,8 @@ public class ExitMenuController : MonoBehaviour
 
         // Stronger forcing for the problematic Exit Menu
         ForceMenuState();
-        if(tutUI != null)
-            tutUI.HideUI();
+        // NOTE: this used to hide the old on-screen Tutorial panel here. Hook whatever
+        // replaces it in when that system exists.
     }
 
     public void CloseExitMenu()
@@ -77,8 +75,8 @@ public class ExitMenuController : MonoBehaviour
             exitMenuRoot.SetActive(false);
 
         GameInputModeManager.Instance?.SetGameplayMode();
-        if(tutUI != null)
-            tutUI.ShowUI();
+        // NOTE: this used to re-show the old on-screen Tutorial panel here. Hook whatever
+        // replaces it in when that system exists.
     }
 
     /// <summary>

@@ -15,7 +15,7 @@ MonoBehaviour:
   speciesId: 
   displayName: The Maw Jaw
   category: 0
-  room: 0
+  room: 1
   tier: 3
   difficulty: 1
   description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod

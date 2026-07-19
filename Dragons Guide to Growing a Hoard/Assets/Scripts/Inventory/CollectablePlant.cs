@@ -39,6 +39,11 @@ public class CollectablePlant : MonoBehaviour
              "this is the bigger 'info card' image.")]
     [SerializeField] private Sprite plantImage;
 
+    [Header("Mission")]
+    [Tooltip("The mission's RemovedPlant task (index 0) is completed when this plant is harvested. " +
+             "Assign the same MissionData asset used on PotContents/HarvestNodeContainer.")]
+    [SerializeField] private MissionData tutorialMission;
+
     public GameObject GetPlantPrefab()
     {
         if (plantPrefab == null)
@@ -47,7 +52,8 @@ public class CollectablePlant : MonoBehaviour
                             "Drag the plant's prefab asset into the Plant Prefab field in the Inspector.", this);
             return null;
         }
-        Tutorial.removedPlant();
+        if (tutorialMission != null && tutorialMission.tasks.Count > 0)
+            MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[0]); // RemovedPlant
         return plantPrefab;
     }
 

@@ -45,6 +45,12 @@ public class InventoryUIController : MonoBehaviour
     [Header("Inventory of Player")]
     [SerializeField] private PlayerInventory playerInventory;
 
+    [Header("Mission")]
+    [Tooltip("Task 0 is completed the first time the inventory is opened. Assign the same MissionData " +
+             "asset used on PlacementSystem's collectionMission field (index 0 = OpenedInventory, " +
+             "1/2/3 = Small/Medium/Large pot planted).")]
+    [SerializeField] private MissionData collectionMission;
+
     [Header("Canvas References")]
     [Tooltip("The panel GameObject that gets shown/hidden when toggling the inventory.")]
     [SerializeField] private GameObject inventoryRoot;
@@ -229,8 +235,8 @@ public class InventoryUIController : MonoBehaviour
     {
         isInventoryOpen = !isInventoryOpen;
         SetInventoryVisible(isInventoryOpen);
-        if(isInventoryOpen)
-            Tutorial_2.openedInventory();
+        if (isInventoryOpen && collectionMission != null && collectionMission.tasks.Count > 0)
+            MissionProgressManager.Instance?.CompleteTask(collectionMission, collectionMission.tasks[0]); // OpenedInventory
 
         if (isInventoryOpen)
         {

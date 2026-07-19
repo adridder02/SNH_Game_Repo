@@ -45,8 +45,9 @@ public class GridVisual : MonoBehaviour
 
         BuildMaterials();
         BuildCellQuads();
-        if(!Tutorial.tutorialStageComplete())
-            Tutorial.setGridOnTable();
+        // NOTE: this used to advance the old on-screen Tutorial instruction text here
+        // (Tutorial.setGridOnTable()) — not a checklist task, nothing to repoint it to
+        // yet since that on-screen system hasn't been rebuilt.
     }
 
     private void BuildMaterials()

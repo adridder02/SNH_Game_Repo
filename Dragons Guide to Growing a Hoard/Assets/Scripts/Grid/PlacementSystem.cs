@@ -35,8 +35,14 @@ public class PlacementSystem : MonoBehaviour
     private AudioSource sfxSource;
     private AudioSource ambientSource;
 
-    [Header("Tutorial Ref")]
-    [SerializeField] private Tutorial tut;
+    [Header("Missions")]
+    [Tooltip("The five-task tutorial mission (RemovedPlant/MovePot/AddedSoil/PlantedSeed/AddedWater). " +
+             "Only index 1 (MovePot) is reported from this script.")]
+    [SerializeField] private MissionData tutorialMission;
+    [Tooltip("Task 0 (OpenedInventory) is completed from InventoryUIController — assign the SAME asset " +
+             "there. Tasks 1/2/3 (Small/Medium/Large pot planted) are completed from here, offset by +1 " +
+             "from availablePots' index since task 0 is taken by OpenedInventory.")]
+    [SerializeField] private MissionData collectionMission;
     public enum Mode
     {
         None,
@@ -568,19 +574,17 @@ public class PlacementSystem : MonoBehaviour
             Debug.Log($"TryPlace: Successfully placed pot '{placed.name}' at {worldPos}");
 
         PlaySFX(placeSoundClip);
-        if(Tutorial_1.Instance != null)
-            if(Tutorial_1.Instance.inTut == true){
-                Tutorial_1.Instance.MovePot();
-            }
-        if(selectedIndex == 0)
-            Tutorial_2.plantedSp();
-        else if(selectedIndex == 1)
-            Tutorial_2.plantedMp();
-        else if(selectedIndex == 2)
-            Tutorial_2.plantedLp();
 
-        if(Tutorial_1.Instance != null && Tutorial_1.Instance.inTut)            
-            Tutorial_1.Instance.SetGridOnTable();
+        if (tutorialMission != null && tutorialMission.tasks.Count > 1)
+            MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[1]); // MovePot
+
+        int potSizeTaskIndex = selectedIndex + 1; // index 0 is OpenedInventory (completed elsewhere)
+        if (collectionMission != null && potSizeTaskIndex >= 1 && potSizeTaskIndex < collectionMission.tasks.Count)
+            MissionProgressManager.Instance?.CompleteTask(collectionMission, collectionMission.tasks[potSizeTaskIndex]);
+
+        // The old Tutorial_1.Instance.SetGridOnTable() call here only advanced the on-screen
+        // instruction text (not a checklist task) — nothing to repoint it to yet since that
+        // on-screen system hasn't been rebuilt.
     }
 
     private void TryRemove(Vector2Int cell)

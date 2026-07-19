@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546ea7ecb2303074683eae13d20a01ad, type: 3}
+  m_Name: Mission_JournalBasics
+  m_EditorClassIdentifier: Assembly-CSharp::MissionData
+  missionId: 3
+  missionTitle: Journal Basics
+  tasks:
+  - taskId: 14
+    description: Press [J] to open your journal
+  - taskId: 15
+    description: Open the Progress bookmark
+  - taskId: 16
+    description: Open the Plants bookmark
+  - taskId: 17
+    description: Open the Guide bookmark
+  - taskId: 18
+    description: Press the back button and return to the game

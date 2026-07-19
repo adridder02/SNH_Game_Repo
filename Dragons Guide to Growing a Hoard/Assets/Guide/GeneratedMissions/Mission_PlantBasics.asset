@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546ea7ecb2303074683eae13d20a01ad, type: 3}
+  m_Name: Mission_PlantBasics
+  m_EditorClassIdentifier: Assembly-CSharp::MissionData
+  missionId: 1
+  missionTitle: Plant Basics
+  tasks:
+  - taskId: 1
+    description: Find a dead plant
+  - taskId: 2
+    description: Press [E] to pick up the plant
+  - taskId: 3
+    description: Press [I] to open your inventory
+  - taskId: 4
+    description: Drag the Pollen Puff to the Available section
