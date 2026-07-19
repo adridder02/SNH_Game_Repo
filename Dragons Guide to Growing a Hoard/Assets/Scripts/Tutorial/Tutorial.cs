@@ -23,7 +23,7 @@ public class Tutorial : MonoBehaviour
     private static bool hasAddedWater;
     private static  string[] listOfInstructions = {
         "use WASD to move around",
-        "approach the pot and press E to pick it up",
+        "approach the Plant and press 'E' to harvest it",
         "use your wings by doule tapping 'Space Bar' to move the plant on top of the table to plant in an ideal location",
         "Once on the table press F to place a pot on the table"
     };
