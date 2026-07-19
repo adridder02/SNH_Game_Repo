@@ -49,7 +49,7 @@ public class PlantJournalManager : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
         Load();
     }
 
