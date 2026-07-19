@@ -36,7 +36,7 @@ public class PlayerInventory : MonoBehaviour
     [Header("Water Inventory")]
     [SerializeField] private float maxWaterRefill = 20f;
     private float waterPool = 20f;
-
+    [SerializeField] private ImageFillBar waterBar;//drag and drop
     private InventoryGrid _grid;
 
     /// <summary>
@@ -112,6 +112,8 @@ public class PlayerInventory : MonoBehaviour
         if (collision.gameObject.layer == waterLayer)
         {
             refillWaterPool();
+            if(waterBar != null)
+                waterBar.SetValue(waterPool,waterPool);
             Debug.Log($"Water is refilled to: {waterPool}");
         }
     }
@@ -272,5 +274,9 @@ public class PlayerInventory : MonoBehaviour
     public float getWaterPool() => waterPool;
     public float getMaxWaterPool() => maxWaterRefill;
     public void reduceWaterPool(float decreaseW) => waterPool = Mathf.Max(0f, waterPool - decreaseW);
-    public void refillWaterPool() => waterPool = maxWaterRefill;
+    public void refillWaterPool(){
+         waterPool = maxWaterRefill;
+        if(waterBar != null)
+            waterBar.SetValue(waterPool,waterPool);
+    }
 }
