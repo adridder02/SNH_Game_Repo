@@ -27,11 +27,11 @@ MonoBehaviour:
   descriptionSecondary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem
     accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
     inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. '
-  journalIcon: {fileID: 0}
-  journalImage: {fileID: 0}
-  disabledIcon: {fileID: 0}
-  activeIcon: {fileID: 0}
-  goldIcon: {fileID: 0}
+  journalIcon: {fileID: 21300000, guid: cb2e73cc4b3d2374facefb3a6163116e, type: 3}
+  journalImage: {fileID: 21300000, guid: cb2e73cc4b3d2374facefb3a6163116e, type: 3}
+  disabledIcon: {fileID: 21300000, guid: 143e214e8c0c50d4fb89deb34cf8e52b, type: 3}
+  activeIcon: {fileID: 21300000, guid: cb2e73cc4b3d2374facefb3a6163116e, type: 3}
+  goldIcon: {fileID: 21300000, guid: 94322fc10d453454b906cf70340cf0ff, type: 3}
   waterRequirement: 1
   lightRequirement: 1
   preferredSoilDisplay: 1
