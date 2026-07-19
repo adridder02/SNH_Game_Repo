@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlantSpeciesData
   speciesId: 
   displayName: Drifter
-  category: 0
+  category: 2
   room: 0
   tier: 1
   difficulty: 1
@@ -27,11 +27,11 @@ MonoBehaviour:
   descriptionSecondary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem
     accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
     inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. '
-  journalIcon: {fileID: 0}
-  journalImage: {fileID: 0}
-  disabledIcon: {fileID: 0}
-  activeIcon: {fileID: 0}
-  goldIcon: {fileID: 0}
+  journalIcon: {fileID: 21300000, guid: 83e490e4e4abf31459a2b4ca94f5c623, type: 3}
+  journalImage: {fileID: 21300000, guid: 83e490e4e4abf31459a2b4ca94f5c623, type: 3}
+  disabledIcon: {fileID: 21300000, guid: e6c26e567b9dd0f4f836a052d1cddb40, type: 3}
+  activeIcon: {fileID: 21300000, guid: 83e490e4e4abf31459a2b4ca94f5c623, type: 3}
+  goldIcon: {fileID: 21300000, guid: 542b93cac594b5d429ffa4b0a5636004, type: 3}
   waterRequirement: 1
   lightRequirement: 1
   preferredSoilDisplay: 1
