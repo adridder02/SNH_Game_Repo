@@ -47,6 +47,7 @@ public class CollectablePlant : MonoBehaviour
                             "Drag the plant's prefab asset into the Plant Prefab field in the Inspector.", this);
             return null;
         }
+        Tutorial.removedPlant();
         return plantPrefab;
     }
 
