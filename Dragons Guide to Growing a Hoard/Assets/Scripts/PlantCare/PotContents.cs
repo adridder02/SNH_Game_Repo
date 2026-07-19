@@ -397,6 +397,8 @@ public class PotContents : MonoBehaviour
             if(Tutorial_1.Instance.inTut == true){
                 Tutorial_1.Instance.PlantedSeed();
             }
+        if(Tutorial_2.Instance != null)
+            Tutorial_2.Instance.AddPlantCounter();
         return true;
     }
 

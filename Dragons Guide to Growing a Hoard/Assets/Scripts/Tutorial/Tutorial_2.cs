@@ -17,7 +17,7 @@ public class Tutorial_2 : MonoBehaviour
     [SerializeField] private Toggle Tasks4;
     [SerializeField] private TextMeshProUGUI Counter;
     [SerializeField] private TextMeshProUGUI TipBits;
-    [SerializeField] private Slider miasmaMeter; // Added missing reference
+    //[SerializeField] private Slider miasmaMeter; // Added missing reference
 
     // Singleton
     public static Tutorial_2 Instance { get; private set; }
@@ -77,13 +77,13 @@ public class Tutorial_2 : MonoBehaviour
             NextBinder();
         }
 
-        // Miasma timer
+        /*// Miasma timer
         timerMiasma += Time.deltaTime;
         if (timerMiasma >= 1f)
         {
             MiasmaControl();
             timerMiasma = 0f;
-        }
+        }*/
     }
 
     private void ValidateReferences()
@@ -97,8 +97,8 @@ public class Tutorial_2 : MonoBehaviour
         if (Counter == null)
             Debug.LogError("Counter is not assigned in Inspector!");
 
-        if (miasmaMeter == null)
-            Debug.LogError("Miasma Meter is not assigned in Inspector!");
+        //if (miasmaMeter == null)
+        //    Debug.LogError("Miasma Meter is not assigned in Inspector!");
 
         if (Tasks1 == null) Debug.LogError("Tasks1 not assigned!");
         if (Tasks2 == null) Debug.LogError("Tasks2 not assigned!");
@@ -131,8 +131,8 @@ public class Tutorial_2 : MonoBehaviour
             Counter.text = "0";
 
         // Reset miasma meter
-        if (miasmaMeter != null)
-            miasmaMeter.value = 100f;
+        //if (miasmaMeter != null)
+        //    miasmaMeter.value = 100f;
 
         // Set initial tip
         if (TipBits != null)
@@ -225,7 +225,7 @@ public class Tutorial_2 : MonoBehaviour
             Tasks4.isOn = true;
     }
 
-    private void MiasmaControl()
+    /*private void MiasmaControl()
     {
         if (!decreaseMiasma) return;
 
@@ -251,7 +251,7 @@ public class Tutorial_2 : MonoBehaviour
                 miasmaMeter.value = 0f;
             return;
         }
-    }
+    }*/
 
     // UI Visibility Methods
     public void ShowUI()
