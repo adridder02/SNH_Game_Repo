@@ -230,7 +230,8 @@ public class InventoryUIController : MonoBehaviour
         isInventoryOpen = !isInventoryOpen;
         SetInventoryVisible(isInventoryOpen);
         if(isInventoryOpen)
-            Tutorial_2.openedInventory();
+            if(Tutorial_2.Instance != null)
+                Tutorial_2.Instance.OpenedInventory();
 
         if (isInventoryOpen)
         {

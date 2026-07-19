@@ -1,158 +1,294 @@
+using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEngine.SceneManagement; // for scene loading
-//using UnityEngine.UI;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-  
+
 public class Tutorial_2 : MonoBehaviour
 {
-    private static int numberOFPlants = 0;
-    private static RadioButtonGroup radioButt;
-    private static Label tipBit;
-    private static Label counter;
-    private static Toggle inventory;
-    private static Toggle sp;
-    private static Toggle mp;
-    private static Toggle lp;
-    private static bool inv = false;
-    private static bool spBool = false;
-    private static bool mpBool = false;
-    private static bool lpBool = false;
+    [Header("UI References - Drag from Canvas")]
+    [SerializeField] private GameObject tutorialPanel;
+    [SerializeField] private Toggle Tasks1;
+    [SerializeField] private Toggle Tasks2;
+    [SerializeField] private Toggle Tasks3;
+    [SerializeField] private Toggle Tasks4;
+    [SerializeField] private TextMeshProUGUI Counter;
+    [SerializeField] private TextMeshProUGUI TipBits;
+    [SerializeField] private Slider miasmaMeter; // Added missing reference
 
-    private static bool decreaseMiasma = false;
-    private static float miasmaStart = 100f;
-    private static float stage = 33f;
-    private static ProgressBar miasmaMeter;
+    // Singleton
+    public static Tutorial_2 Instance { get; private set; }
 
-    private static string[] strtipBit = {
+    // Tutorial state
+    public bool inTut = true;
+    private bool inv;
+    private bool spBool;
+    private bool mpBool;
+    private bool lpBool;
+    private bool decreaseMiasma;
+    private float miasmaStart = 100f;
+    private int countPlants = 0;
+    private int couresellCounter = 0;
+    private float timerSwitch = 0f;
+    private float timerMiasma = 0f;
+    private float TimerDelay = 10f;
+
+    private string[] strtipBit = {
         "Follow the arrow and collect all interactive plants glowing yellow",
-        "Harvesed plants can be viewed in Inventory, press 'I' to open Inventory.",
-        "Open the binder, to see all collected plants. and explored plants",
-        "Ensure that the miasma bar doesn't affect the plants plant stratigicly to avoid affects"
+        "Harvested plants can be viewed in Inventory, press 'I' to open Inventory.",
+        "Open the binder, to see all collected plants and explored plants.",
+        "Ensure that the miasma bar doesn't affect the plants. Plant strategically to avoid effects."
     };
-    private static float timerSwitch = 0f; 
-    private static float timerMiasma = 0f; 
-    private static float TimerDelay = 10f; 
-    private static int couresellCounter =0;
 
-    private static int countPlants =0;
+    void Awake()
+    {
+        // Singleton setup
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
 
-    void Start(){
-        VisualElement root = GetComponent<UIDocument>().rootVisualElement;
-        //radioButt = root.Q<RadioButtonGroup>("R_group");
-        Debug.Log(root.childCount);
-        tipBit = root.Q<Label>("tipbit");
-        counter = root.Q<Label>("count");
-
-
-        inventory = root.Q<Toggle>("Inv");
-        sp = root.Q<Toggle>("sp");
-        mp = root.Q<Toggle>("mp");
-        lp = root.Q<Toggle>("lp");
-        
-        miasmaMeter = root.Q<ProgressBar>("miasma");
-        
-        if(tipBit != null)
-            tipBit.text = strtipBit[couresellCounter];
+        ValidateReferences();
     }
 
-    void Update(){
-        timerSwitch +=  Time.deltaTime; 
-        if(timerSwitch>=TimerDelay){
+    void Start()
+    {
+        ResetTutorial();
+    }
+
+    void Update()
+    {
+        // Only run update logic if tutorial is active
+        if (!inTut) return;
+
+        // Tip rotation timer
+        timerSwitch += Time.deltaTime;
+        if (timerSwitch >= TimerDelay)
+        {
             timerSwitch = 0f;
-            Debug.Log("Made It Here");
-            nextBinder();
+            NextBinder();
         }
+
+        // Miasma timer
         timerMiasma += Time.deltaTime;
-        if(timerMiasma >= 1){
-            miasmaControl();
+        if (timerMiasma >= 1f)
+        {
+            MiasmaControl();
             timerMiasma = 0f;
         }
-
-
-
     }
 
-    private static void nextBinder(){
-        couresellCounter++;
-        if(couresellCounter >= 4)
-            couresellCounter = 0;
-        
-        tipBit.text = strtipBit[couresellCounter];
+    private void ValidateReferences()
+    {
+        if (tutorialPanel == null)
+            Debug.LogError("Tutorial Panel is not assigned in Inspector!");
+
+        if (TipBits == null)
+            Debug.LogError("TipBits is not assigned in Inspector!");
+
+        if (Counter == null)
+            Debug.LogError("Counter is not assigned in Inspector!");
+
+        if (miasmaMeter == null)
+            Debug.LogError("Miasma Meter is not assigned in Inspector!");
+
+        if (Tasks1 == null) Debug.LogError("Tasks1 not assigned!");
+        if (Tasks2 == null) Debug.LogError("Tasks2 not assigned!");
+        if (Tasks3 == null) Debug.LogError("Tasks3 not assigned!");
+        if (Tasks4 == null) Debug.LogError("Tasks4 not assigned!");
     }
 
-    /*
-        private static void plantSmallPot(){}
-        private static void plantMediumPot(){}
-        private static void plantLargePot(){}
-    */
-    public  static void addPlantcounter(){
-        countPlants++;
-        if(counter != null)
-            counter.text = ""+countPlants;
-        if(countPlants >2 && miasmaStart> 66f){
-            decreaseMiasma = true;
-        }
-        if(countPlants >5 && miasmaStart> 33f){
-            decreaseMiasma = true;
-        }
-        if(countPlants >8 && miasmaStart> 0f && miasmaStart< 33f){
-            decreaseMiasma = true;
-        }
-    }
-    public  static void removePlantcounter(){
-        countPlants--;
-        if(counter != null)
-            counter.text = ""+countPlants;
-    }
-    public static void openedInventory(){
-        if(inv)
-            return;
-        if(inventory != null)
-            inventory.value = true;
-            inv = true;
-    }
-    public static void plantedSp(){
-        if(spBool)
-            return;
-        if(sp != null)
-            sp.value = true;
+    private void ResetTutorial()
+    {
+        inv = false;
         spBool = false;
+        mpBool = false;
+        lpBool = false;
+        decreaseMiasma = false;
+        miasmaStart = 100f;
+        countPlants = 0;
+        couresellCounter = 0;
+        timerSwitch = 0f;
+        timerMiasma = 0f;
+        inTut = true;
+
+        // Reset toggles
+        if (Tasks1 != null) Tasks1.isOn = false;
+        if (Tasks2 != null) Tasks2.isOn = false;
+        if (Tasks3 != null) Tasks3.isOn = false;
+        if (Tasks4 != null) Tasks4.isOn = false;
+
+        // Reset counter
+        if (Counter != null)
+            Counter.text = "0";
+
+        // Reset miasma meter
+        if (miasmaMeter != null)
+            miasmaMeter.value = 100f;
+
+        // Set initial tip
+        if (TipBits != null)
+            TipBits.text = strtipBit[0];
+
+        // Show the tutorial
+        ShowUI();
     }
-    public static void plantedMp(){
-        if(mpBool)
-            return;
-        if(mp != null)
-            mp.value = true;
+
+    private void NextBinder()
+    {
+        couresellCounter++;
+        if (couresellCounter >= strtipBit.Length)
+            couresellCounter = 0;
+
+        if (TipBits != null)
+            TipBits.text = strtipBit[couresellCounter];
+    }
+
+    // Public methods for other scripts
+    public void AddPlantCounter()
+    {
+        if (Instance == null || !Instance.inTut) return;
+
+        countPlants++;
+        if (Counter != null)
+            Counter.text = countPlants.ToString();
+
+        // Check if miasma should decrease
+        if (countPlants > 2 && miasmaStart > 66f)
+        {
+            decreaseMiasma = true;
+        }
+        else if (countPlants > 5 && miasmaStart > 33f)
+        {
+            decreaseMiasma = true;
+        }
+        else if (countPlants > 8 && miasmaStart > 0f && miasmaStart < 33f)
+        {
+            decreaseMiasma = true;
+        }
+    }
+
+    public void RemovePlantCounter()
+    {
+        if (Instance == null || !Instance.inTut) return;
+
+        countPlants--;
+        if (Counter != null)
+            Counter.text = countPlants.ToString();
+    }
+
+    public void OpenedInventory()
+    {
+        if (Instance == null || !Instance.inTut) return;
+        if (inv) return;
+
+        inv = true;
+        if (Tasks1 != null)
+            Tasks1.isOn = true;
+    }
+
+    public void PlantedSp()
+    {
+        if (Instance == null || !Instance.inTut) return;
+        if (spBool) return;
+
+        spBool = true;
+        if (Tasks2 != null)
+            Tasks2.isOn = true;
+    }
+
+    public void PlantedMp()
+    {
+        if (Instance == null || !Instance.inTut) return;
+        if (mpBool) return;
+
         mpBool = true;
+        if (Tasks3 != null)
+            Tasks3.isOn = true;
     }
-    public static void plantedLp(){
-        if(lpBool)
-            return;
-        if(lp != null)
-            lp.value = true;
+
+    public void PlantedLp()
+    {
+        if (Instance == null || !Instance.inTut) return;
+        if (lpBool) return;
+
         lpBool = true;
-    }
-    public static void miasmaControl(){
-        if(!decreaseMiasma)
-            return;
-        miasmaStart -=1f;
-        if(miasmaStart>= 33f&&miasmaStart<=66f){
-            decreaseMiasma = false;
-        }
-        else if(miasmaStart<= 33f){
-            decreaseMiasma = false;
-
-        }
-        else if(miasmaStart<=0){
-            decreaseMiasma = false;
-            miasmaMeter.value = 0;
-            return;
-        }
-        miasmaMeter.value = miasmaStart;
-
+        if (Tasks4 != null)
+            Tasks4.isOn = true;
     }
 
+    private void MiasmaControl()
+    {
+        if (!decreaseMiasma) return;
+
+        miasmaStart -= 1f;
+
+        // Update miasma meter
+        if (miasmaMeter != null)
+            miasmaMeter.value = miasmaStart;
+
+        // Stop decreasing at certain thresholds
+        if (miasmaStart >= 33f && miasmaStart <= 66f)
+        {
+            decreaseMiasma = false;
+        }
+        else if (miasmaStart <= 33f && miasmaStart > 0f)
+        {
+            decreaseMiasma = false;
+        }
+        else if (miasmaStart <= 0f)
+        {
+            decreaseMiasma = false;
+            if (miasmaMeter != null)
+                miasmaMeter.value = 0f;
+            return;
+        }
+    }
+
+    // UI Visibility Methods
+    public void ShowUI()
+    {
+        if (Instance == null) return;
+
+        if (tutorialPanel != null)
+        {
+            tutorialPanel.SetActive(true);
+            Debug.Log("Tutorial UI Shown");
+        }
+        else
+        {
+            Debug.LogError("Tutorial Panel reference is null!");
+        }
+    }
+
+    public void HideUI()
+    {
+        if (Instance == null) return;
+
+        if (tutorialPanel != null)
+        {
+            tutorialPanel.SetActive(false);
+            Debug.Log("Tutorial UI Hidden");
+        }
+        else
+        {
+            Debug.LogError("Tutorial Panel reference is null!");
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 }

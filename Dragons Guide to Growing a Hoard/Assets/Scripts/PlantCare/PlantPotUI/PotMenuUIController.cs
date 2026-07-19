@@ -147,17 +147,21 @@ public class PotMenuUIController : MonoBehaviour
 
         if (mainPanel != null) mainPanel.SetActive(true);
         RefreshMainPanel();
+        
+        if(Tutorial_1.Instance != null) Tutorial_1.Instance.HideUI();
 
         if (!pot.HasPlant)
             ShowChooseSoil();
         else
             ShowMain();
+        
     }
 
     public void Close()
     {
         if (menuRoot != null) menuRoot.SetActive(false);
 
+        if(Tutorial_1.Instance != null) Tutorial_1.Instance.ShowUI();
         GameInputModeManager.Instance?.SetGameplayMode();  // Return to normal
 
         currentPot = null;
