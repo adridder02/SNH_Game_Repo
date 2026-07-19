@@ -147,6 +147,7 @@ public class PlayerInventory : MonoBehaviour
         var instance = new InventoryItemInstance(plantPrefab, icon, displayImage, displayName);
         bool placedInGrid = grid.TryAutoPlace(instance);
         items.Add(instance);
+        Tutorial.addedPotToInventory();
 
         // Unlock the journal entry for this species, if it has one — this is the
         // single entry point for both harvesting a node and returning a plant from

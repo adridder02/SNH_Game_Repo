@@ -183,8 +183,8 @@ MonoBehaviour:
   potPlacementRotation: {x: -90, y: -5.063995, z: 29.276}
   preferredSoil: 1
   neutralSoil: 0
-  lightThresholdHigh: 0.6
-  lightThresholdLow: 0.25
+  lightThresholdHigh: 0.1
+  lightThresholdLow: 0.05
   waterThresholdHigh: 6
   waterThresholdLow: 3
   revivedMinScore: 5

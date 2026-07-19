@@ -183,10 +183,10 @@ MonoBehaviour:
   potPlacementRotation: {x: 90, y: 180, z: 0}
   preferredSoil: 1
   neutralSoil: 0
-  lightThresholdHigh: 0.6
-  lightThresholdLow: 0.25
-  waterThresholdHigh: 6
-  waterThresholdLow: 3
+  lightThresholdHigh: 0.9
+  lightThresholdLow: 0.55
+  waterThresholdHigh: 4
+  waterThresholdLow: 2
   revivedMinScore: 5
   intermediateMinScore: 2
   lightSensor: {fileID: 0}

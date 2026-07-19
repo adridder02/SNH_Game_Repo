@@ -164,8 +164,8 @@ MonoBehaviour:
   neutralSoil: 0
   lightThresholdHigh: 0.6
   lightThresholdLow: 0.25
-  waterThresholdHigh: 6
-  waterThresholdLow: 3
+  waterThresholdHigh: 1.5
+  waterThresholdLow: 0.5
   revivedMinScore: 5
   intermediateMinScore: 2
   lightSensor: {fileID: 0}
