@@ -4175,9 +4175,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ImageFillBar
   background: {fileID: 1939617539}
   track: {fileID: 0}
+  trailFill: {fileID: 0}
   fill: {fileID: 1441374863}
   indicator: {fileID: 997654443}
   outline: {fileID: 0}
+  trailSpeed: 1
   fillAxis: 0
   hideIndicatorAtExtremes: 1
   useFillGradient: 0
@@ -4269,9 +4271,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ImageFillBar
   background: {fileID: 1717735210}
   track: {fileID: 865179480}
+  trailFill: {fileID: 0}
   fill: {fileID: 1911618051}
   indicator: {fileID: 1835468837}
   outline: {fileID: 1397938323}
+  trailSpeed: 1
   fillAxis: 0
   hideIndicatorAtExtremes: 1
   useFillGradient: 0
@@ -4816,9 +4820,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ImageFillBar
   background: {fileID: 901029105}
   track: {fileID: 0}
+  trailFill: {fileID: 0}
   fill: {fileID: 1386740053}
   indicator: {fileID: 0}
   outline: {fileID: 1249335115}
+  trailSpeed: 1
   fillAxis: 0
   hideIndicatorAtExtremes: 1
   useFillGradient: 0
@@ -7603,7 +7609,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &521072270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8693,7 +8699,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &592631384
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12076,9 +12082,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ImageFillBar
   background: {fileID: 661830194}
   track: {fileID: 1690638665}
+  trailFill: {fileID: 0}
   fill: {fileID: 553599419}
   indicator: {fileID: 210637592}
   outline: {fileID: 1582432006}
+  trailSpeed: 1
   fillAxis: 0
   hideIndicatorAtExtremes: 1
   useFillGradient: 0
@@ -16356,9 +16364,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ImageFillBar
   background: {fileID: 57252377}
   track: {fileID: 0}
+  trailFill: {fileID: 0}
   fill: {fileID: 1662124876}
   indicator: {fileID: 1197547015}
   outline: {fileID: 561891935}
+  trailSpeed: 1
   fillAxis: 0
   hideIndicatorAtExtremes: 1
   useFillGradient: 1
@@ -16450,9 +16460,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ImageFillBar
   background: {fileID: 933904567}
   track: {fileID: 0}
+  trailFill: {fileID: 0}
   fill: {fileID: 952982142}
   indicator: {fileID: 771361813}
   outline: {fileID: 1740675888}
+  trailSpeed: 1
   fillAxis: 0
   hideIndicatorAtExtremes: 0
   useFillGradient: 1
@@ -16736,7 +16748,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1118541572
 Transform:
   m_ObjectHideFlags: 0
@@ -16807,9 +16819,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ImageFillBar
   background: {fileID: 1977705321}
   track: {fileID: 0}
+  trailFill: {fileID: 0}
   fill: {fileID: 732598316}
   indicator: {fileID: 0}
   outline: {fileID: 1269803354}
+  trailSpeed: 1
   fillAxis: 0
   hideIndicatorAtExtremes: 1
   useFillGradient: 0
@@ -18512,7 +18526,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1315606286
 Transform:
   m_ObjectHideFlags: 0
@@ -24093,9 +24107,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ImageFillBar
   background: {fileID: 1938402148}
   track: {fileID: 0}
+  trailFill: {fileID: 0}
   fill: {fileID: 227351537}
   indicator: {fileID: 0}
   outline: {fileID: 1926884960}
+  trailSpeed: 1
   fillAxis: 0
   hideIndicatorAtExtremes: 1
   useFillGradient: 0
@@ -25926,7 +25942,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1863008917
 Transform:
   m_ObjectHideFlags: 0
@@ -33878,7 +33894,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!23 &3111061590316895312
 MeshRenderer:
   m_ObjectHideFlags: 0
