@@ -568,16 +568,19 @@ public class PlacementSystem : MonoBehaviour
             Debug.Log($"TryPlace: Successfully placed pot '{placed.name}' at {worldPos}");
 
         PlaySFX(placeSoundClip);
-        if(Tutorial.inTut == true){
-            Tutorial_1.Instance.MovePot();
-        }
+        if(Tutorial_1.Instance != null)
+            if(Tutorial_1.Instance.inTut == true){
+                Tutorial_1.Instance.MovePot();
+            }
         if(selectedIndex == 0)
             Tutorial_2.plantedSp();
         else if(selectedIndex == 1)
             Tutorial_2.plantedMp();
         else if(selectedIndex == 2)
             Tutorial_2.plantedLp();
-        Tutorial_1.Instance.SetGridOnTable();
+
+        if(Tutorial_1.Instance != null && Tutorial_1.Instance.inTut)            
+            Tutorial_1.Instance.SetGridOnTable();
     }
 
     private void TryRemove(Vector2Int cell)

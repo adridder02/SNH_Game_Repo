@@ -12,11 +12,12 @@ public class LevelLoader : MonoBehaviour
 
     void Update()
     {
-       if (Tutorial.tutorialStageComplete())
-        {
-            Debug.Log("Done with Tut");
-            LoadNextLevel();
-        }
+        if(Tutorial_1.Instance != null)
+            if (Tutorial_1.Instance.tutorialStageComplete())
+                {
+                    Debug.Log("Done with Tut");
+                    LoadNextLevel();
+                }
     }
     public void LoadNextLevel()
     {   
