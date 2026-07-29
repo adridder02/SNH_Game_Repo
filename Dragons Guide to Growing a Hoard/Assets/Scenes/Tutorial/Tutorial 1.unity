@@ -1229,7 +1229,6 @@ MonoBehaviour:
   interactKeybindSprite: {fileID: 0}
   interactPromptLabel: Interact
   mainUI: {fileID: 0}
-  tutUI: {fileID: 173202641}
 --- !u!143 &74016812
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2424,6 +2423,184 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -462981019419857548, guid: c3318e76a9f470247bc0738063287c36, type: 3}
+--- !u!43 &121823734
+Mesh:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GeneratedGrassBlade
+  serializedVersion: 12
+  m_SubMeshes:
+  - serializedVersion: 2
+    firstByte: 0
+    indexCount: 18
+    topology: 0
+    baseVertex: 0
+    firstVertex: 0
+    vertexCount: 8
+    localAABB:
+      m_Center: {x: 0, y: 0.5, z: 0}
+      m_Extent: {x: 0.05, y: 0.5, z: 0}
+  m_Shapes:
+    vertices: []
+    shapes: []
+    channels: []
+    fullWeights: []
+  m_BindPose: []
+  m_BoneNameHashes: 
+  m_RootBoneNameHash: 0
+  m_BonesAABB: []
+  m_VariableBoneCountWeights:
+    m_Data: 
+  m_MeshCompression: 0
+  m_IsReadable: 1
+  m_KeepVertices: 1
+  m_KeepIndices: 1
+  m_IndexFormat: 0
+  m_IndexBuffer: 000002000100010002000300020004000300030004000500040006000500050006000700
+  m_VertexData:
+    serializedVersion: 3
+    m_VertexCount: 8
+    m_Channels:
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 3
+    - stream: 0
+      offset: 12
+      format: 0
+      dimension: 3
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 24
+      format: 0
+      dimension: 4
+    - stream: 0
+      offset: 40
+      format: 0
+      dimension: 2
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    m_DataSize: 384
+    _typelessdata: cdcc4cbd00000000000000000000000000000000000080bf0000000000000000000000000000803f0000000000000000cdcc4c3d00000000000000000000000000000000ffff7fbf0000000000000000000000000000803f0000803f00000000898808bdabaaaa3e000000000000000000000000000080bfabaaaa3eabaaaa3eabaaaa3e0000803f00000000abaaaa3e8988083dabaaaa3e000000000000000000000000ffff7fbfabaaaa3eabaaaa3eabaaaa3e0000803f0000803fabaaaa3e888888bcabaa2a3f000000000000000000000000000080bfabaa2a3fabaa2a3fabaa2a3f0000803f00000000abaa2a3f8888883cabaa2a3f000000000000000000000000000080bfabaa2a3fabaa2a3fabaa2a3f0000803f0000803fabaa2a3f000000800000803f000000000000000000000000000080bf0000803f0000803f0000803f0000803f000000000000803f000000000000803f000000000000000000000000000000000000803f0000803f0000803f0000803f0000803f0000803f
+  m_CompressedMesh:
+    m_Vertices:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_UV:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Normals:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Tangents:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Weights:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_NormalSigns:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_TangentSigns:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_FloatColors:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_BoneIndices:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Triangles:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_UVInfo: 0
+  m_LocalAABB:
+    m_Center: {x: 0, y: 0.5, z: 0}
+    m_Extent: {x: 0.05, y: 0.5, z: 0}
+  m_MeshUsageFlags: 0
+  m_CookingOptions: 30
+  m_BakedConvexCollisionMesh: 
+  m_BakedTriangleCollisionMesh: 
+  'm_MeshMetrics[0]': 1
+  'm_MeshMetrics[1]': 1
+  m_MeshOptimizationFlags: 1
+  m_StreamData:
+    serializedVersion: 2
+    offset: 0
+    size: 0
+    path: 
+  m_MeshLodInfo:
+    serializedVersion: 2
+    m_LodSelectionCurve:
+      serializedVersion: 1
+      m_LodSlope: 0
+      m_LodBias: 0
+    m_NumLevels: 1
+    m_SubMeshes:
+    - serializedVersion: 2
+      m_Levels:
+      - serializedVersion: 1
+        m_IndexStart: 0
+        m_IndexCount: 0
 --- !u!1 &132158311
 GameObject:
   m_ObjectHideFlags: 0
@@ -2948,7 +3125,8 @@ MonoBehaviour:
   ambientMusicClip: {fileID: 8300000, guid: 23e7cfffa201fdf45b6dd89b9b477780, type: 3}
   ambientVolume: 0.216
   loopAmbientMusic: 1
-  tut: {fileID: 0}
+  tutorialMission: {fileID: 0}
+  collectionMission: {fileID: 0}
 --- !u!4 &161992241
 Transform:
   m_ObjectHideFlags: 0
@@ -3069,9 +3247,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e14bc296ed9ded3499ba907a886622d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tutorial
-  sceneToLoad: {fileID: 102900000, guid: 56d9597723028eb46afe4ebadf566f11, type: 3}
-  sceneName: 
-  uiDocument: {fileID: 173202642}
 --- !u!114 &173202642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3382,184 +3557,6 @@ RectTransform:
   m_AnchoredPosition: {x: 1325.9999, y: 748.25}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!43 &198663242
-Mesh:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: GeneratedGrassBlade
-  serializedVersion: 12
-  m_SubMeshes:
-  - serializedVersion: 2
-    firstByte: 0
-    indexCount: 18
-    topology: 0
-    baseVertex: 0
-    firstVertex: 0
-    vertexCount: 8
-    localAABB:
-      m_Center: {x: 0, y: 0.5, z: 0}
-      m_Extent: {x: 0.05, y: 0.5, z: 0}
-  m_Shapes:
-    vertices: []
-    shapes: []
-    channels: []
-    fullWeights: []
-  m_BindPose: []
-  m_BoneNameHashes: 
-  m_RootBoneNameHash: 0
-  m_BonesAABB: []
-  m_VariableBoneCountWeights:
-    m_Data: 
-  m_MeshCompression: 0
-  m_IsReadable: 1
-  m_KeepVertices: 1
-  m_KeepIndices: 1
-  m_IndexFormat: 0
-  m_IndexBuffer: 000002000100010002000300020004000300030004000500040006000500050006000700
-  m_VertexData:
-    serializedVersion: 3
-    m_VertexCount: 8
-    m_Channels:
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 12
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 24
-      format: 0
-      dimension: 4
-    - stream: 0
-      offset: 40
-      format: 0
-      dimension: 2
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    m_DataSize: 384
-    _typelessdata: cdcc4cbd00000000000000000000000000000000000080bf0000000000000000000000000000803f0000000000000000cdcc4c3d00000000000000000000000000000000ffff7fbf0000000000000000000000000000803f0000803f00000000898808bdabaaaa3e000000000000000000000000000080bfabaaaa3eabaaaa3eabaaaa3e0000803f00000000abaaaa3e8988083dabaaaa3e000000000000000000000000ffff7fbfabaaaa3eabaaaa3eabaaaa3e0000803f0000803fabaaaa3e888888bcabaa2a3f000000000000000000000000000080bfabaa2a3fabaa2a3fabaa2a3f0000803f00000000abaa2a3f8888883cabaa2a3f000000000000000000000000000080bfabaa2a3fabaa2a3fabaa2a3f0000803f0000803fabaa2a3f000000800000803f000000000000000000000000000080bf0000803f0000803f0000803f0000803f000000000000803f000000000000803f000000000000000000000000000000000000803f0000803f0000803f0000803f0000803f0000803f
-  m_CompressedMesh:
-    m_Vertices:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UV:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Normals:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Tangents:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Weights:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_NormalSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_TangentSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_FloatColors:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_BoneIndices:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Triangles:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UVInfo: 0
-  m_LocalAABB:
-    m_Center: {x: 0, y: 0.5, z: 0}
-    m_Extent: {x: 0.05, y: 0.5, z: 0}
-  m_MeshUsageFlags: 0
-  m_CookingOptions: 30
-  m_BakedConvexCollisionMesh: 
-  m_BakedTriangleCollisionMesh: 
-  'm_MeshMetrics[0]': 1
-  'm_MeshMetrics[1]': 1
-  m_MeshOptimizationFlags: 1
-  m_StreamData:
-    serializedVersion: 2
-    offset: 0
-    size: 0
-    path: 
-  m_MeshLodInfo:
-    serializedVersion: 2
-    m_LodSelectionCurve:
-      serializedVersion: 1
-      m_LodSlope: 0
-      m_LodBias: 0
-    m_NumLevels: 1
-    m_SubMeshes:
-    - serializedVersion: 2
-      m_Levels:
-      - serializedVersion: 1
-        m_IndexStart: 0
-        m_IndexCount: 0
 --- !u!1 &198742470
 GameObject:
   m_ObjectHideFlags: 0
@@ -3610,7 +3607,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProgressPageUIController
   database: {fileID: 11400000, guid: 2dcc47511b44df64f9f7508d51045970, type: 2}
-  journalManager: {fileID: 0}
+  journalManager: {fileID: 161992242}
   mainRoom:
     page: {fileID: 2106252861}
     iconRow: {fileID: 2039652265}
@@ -3650,9 +3647,11 @@ MonoBehaviour:
   journalBackButton: {fileID: 877204527}
   plantsPage: {fileID: 260324678}
   progressPage: {fileID: 1813987180}
+  guidePage: {fileID: 829803060}
   settingsPage: {fileID: 819621026}
   plantsNavButton: {fileID: 1841396358}
   progressNavButton: {fileID: 1527676692}
+  guideNavButton: {fileID: 2145976210}
   settingsNavButton: {fileID: 43862509}
   sunnyRow: {fileID: 807261908}
   darkRow: {fileID: 1610871048}
@@ -5709,6 +5708,7 @@ MonoBehaviour:
   plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+  tutorialMission: {fileID: 0}
 --- !u!1 &376616370
 GameObject:
   m_ObjectHideFlags: 0
@@ -7318,6 +7318,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HarvestNodeContainer
   player: {fileID: 1503386468}
   playerInventory: {fileID: 4418241985442718913}
+  tutorialMission: {fileID: 0}
   interactRange: 9.73
   useWorldSpacePrompt: 1
   promptTemplate: {fileID: 0}
@@ -8923,7 +8924,6 @@ MonoBehaviour:
   inventoryController: {fileID: 0}
   potMenuController: {fileID: 0}
   journalController: {fileID: 0}
-  tutUI: {fileID: 0}
 --- !u!1 &540371262
 GameObject:
   m_ObjectHideFlags: 0
@@ -13659,6 +13659,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HarvestNodeContainer
   player: {fileID: 74016818}
   playerInventory: {fileID: 4418241985442718913}
+  tutorialMission: {fileID: 0}
   interactRange: 9.73
   useWorldSpacePrompt: 1
   promptTemplate: {fileID: 0}
@@ -19875,20 +19876,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1282351919}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91c3ccd16b7f5714bb246bd008199145, type: 3}
+  m_Script: {fileID: 11500000, guid: 95fedd0697ac90e4ebc5a07eb91882eb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Tutorial_1
-  sceneToLoad: {fileID: 0}
-  sceneName: 
-  tutorialPanel: {fileID: 976806252}
-  Tasks1: {fileID: 413688050}
-  Tasks2: {fileID: 1513472141}
-  Tasks3: {fileID: 511862440}
-  Tasks4: {fileID: 1708900608}
-  Tasks5: {fileID: 603893691}
-  Tasks6: {fileID: 211602275}
-  TaskLabel: {fileID: 1212826499}
-  inTut: 1
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialSequenceController
+  promptUI: {fileID: 0}
+  bottomPopupUI: {fileID: 0}
+  progressManager: {fileID: 0}
+  steps: []
+  autoStart: 1
 --- !u!1 &1293666662
 GameObject:
   m_ObjectHideFlags: 0
@@ -23971,6 +23966,7 @@ MonoBehaviour:
   plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+  tutorialMission: {fileID: 0}
 --- !u!1 &1604194265
 GameObject:
   m_ObjectHideFlags: 0
@@ -24152,6 +24148,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   transition: {fileID: 321058305}
   transitionTime: 3
+  mission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!4 &1607677225
 Transform:
   m_ObjectHideFlags: 0
@@ -25436,7 +25433,7 @@ MonoBehaviour:
   baseDrainRate: 0.3
   sunDrainMultiplier: 0.4
   waterLevel: 0
-  tut: {fileID: 173202641}
+  tutorialMission: {fileID: 0}
   currentSoil: 1
   hasSoil: 0
   hasPlant: 0
@@ -28346,6 +28343,7 @@ MonoBehaviour:
   plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+  tutorialMission: {fileID: 0}
 --- !u!1 &1900557523 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2013708376385591173, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -38074,6 +38072,7 @@ MonoBehaviour:
   plantName: Sundial Cactus
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+  tutorialMission: {fileID: 0}
 --- !u!64 &6476096878520886035
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -38112,6 +38111,7 @@ MonoBehaviour:
   plantName: Sundial Cactus
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+  tutorialMission: {fileID: 0}
 --- !u!64 &6476096880023233388
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -38150,6 +38150,7 @@ MonoBehaviour:
   plantName: Sundial Cactus
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+  tutorialMission: {fileID: 0}
 --- !u!222 &6495883962487071100
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -38889,6 +38890,7 @@ MonoBehaviour:
   plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+  tutorialMission: {fileID: 0}
 --- !u!33 &7407644071502374395
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -38913,6 +38915,7 @@ MonoBehaviour:
   plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+  tutorialMission: {fileID: 0}
 --- !u!33 &7407644071775445396
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -38937,6 +38940,7 @@ MonoBehaviour:
   plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+  tutorialMission: {fileID: 0}
 --- !u!33 &7407644072647991481
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -38961,6 +38965,7 @@ MonoBehaviour:
   plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+  tutorialMission: {fileID: 0}
 --- !u!33 &7407644072680933914
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -38985,6 +38990,7 @@ MonoBehaviour:
   plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+  tutorialMission: {fileID: 0}
 --- !u!33 &7407644072696828650
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -39009,6 +39015,7 @@ MonoBehaviour:
   plantName: Pollen Puff
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+  tutorialMission: {fileID: 0}
 --- !u!224 &7429400369996801498
 RectTransform:
   m_ObjectHideFlags: 0
@@ -40571,6 +40578,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryUIController
   playerInventory: {fileID: 4418241985442718913}
+  collectionMission: {fileID: 0}
   inventoryRoot: {fileID: 6943035946733892002}
   gridPanel: {fileID: 1040631135814159558}
   availablePanel: {fileID: 209175530669269957}

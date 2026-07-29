@@ -41,6 +41,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private InputActionAsset inputActions;
     private bool escPressed = false;
 
+    [Header("Tutorial Hookup")]
+    [Tooltip("The MissionData asset that owns the six 'movement basics' bottom-bar tutorial tasks " +
+             "(WASD move, jump, double-space fly, tilt up, tilt down, land). Leave blank to disable " +
+             "auto-completion — nothing else here changes. Each MissionTaskEntry's Task Id on that " +
+             "asset must exactly match one of the TaskXxx constants below.")]
+    [SerializeField] private MissionData movementMission;
+
+    // Task Ids — copy these exactly into the matching MissionTaskEntry's "Task Id" field on the
+    // movementMission asset, and into each bottom-bar TutorialStep's Linked Task Id in the Inspector.
+    private const string TaskMoveWasd = "move_wasd";
+    private const string TaskJumpSpace = "jump_space";
+    private const string TaskFlyDoubleSpace = "fly_double_space";
+    private const string TaskFlyUpTilt = "fly_up_tilt";
+    private const string TaskFlyDownTilt = "fly_down_tilt";
+    private const string TaskLandGround = "land_ground";
+
     /*[SerializeField] private Animator animator;
 
     // Animator hashes — faster than string lookups
@@ -158,11 +174,30 @@ public class PlayerController : MonoBehaviour
     }
 
     // ──────────────────────────────────────────────
+    //  Tutorial task reporting
+    // ──────────────────────────────────────────────
+    /// <summary>No-ops safely if movementMission isn't assigned or MissionProgressManager doesn't
+    /// exist yet — safe to call every frame from Update, MissionProgressManager.CompleteTask only
+    /// fires its changed event the first time a given task is actually completed. Also gated to only
+    /// complete taskId if it's the mission's next incomplete task, so an early/stray action (e.g.
+    /// landing after the very first jump, well before the tutorial's "land" step) doesn't get banked
+    /// out of order and cause the sequence to skip steps later on.</summary>
+    private void CompleteMovementTask(string taskId)
+    {
+        if (movementMission == null || MissionProgressManager.Instance == null) return;
+        if (!MissionProgressManager.Instance.IsNextTask(movementMission, taskId)) return;
+        MissionProgressManager.Instance.CompleteTask(movementMission.ResolvedId, taskId);
+    }
+
+    // ──────────────────────────────────────────────
     //  Input callbacks
     // ──────────────────────────────────────────────
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
+
+        if (moveInput.sqrMagnitude > 0.01f)
+            CompleteMovementTask(TaskMoveWasd);
     }
 
     public void OnInventory(InputAction.CallbackContext context)
@@ -336,6 +371,7 @@ public class PlayerController : MonoBehaviour
             {
                 playerAnim.setJumpFalse();
                 playerAnim.notInAir();
+                CompleteMovementTask(TaskLandGround);
             }
         }
 
@@ -367,6 +403,7 @@ public class PlayerController : MonoBehaviour
     {
         velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         playerAnim.jump();
+        CompleteMovementTask(TaskJumpSpace);
     }
 
     // ──────────────────────────────────────────────
@@ -383,6 +420,7 @@ public class PlayerController : MonoBehaviour
         flyGroundGraceTimer = flyGroundGracePeriod;
         Debug.Log("[PlayerController] Fly mode ON");
         playerAnim.fly();
+        CompleteMovementTask(TaskFlyDoubleSpace);
     }
 
     private void UpdateFlyingLocomotion()
@@ -408,19 +446,28 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            bool ctrlHeld = Keyboard.current != null &&
+                (Keyboard.current.leftCtrlKey.isPressed || Keyboard.current.rightCtrlKey.isPressed);
+
             if (flyAscendHeld)
                 verticalMove += flyVerticalSpeed * (IsSprinting ? sprintMultiplier : 1f);
 
-            if (Keyboard.current != null &&
-                (Keyboard.current.leftCtrlKey.isPressed ||
-                 Keyboard.current.rightCtrlKey.isPressed))
-            {
+            if (ctrlHeld)
                 verticalMove -= flyVerticalSpeed * (IsSprinting ? sprintMultiplier : 1f);
-            }
 
             if (flyPitchInfluence > 0f && moveInput.sqrMagnitude > 0.01f)
             {
-                verticalMove += cameraTransform.forward.y * flyPitchInfluence * CurrentSpeed;
+                float pitchVertical = cameraTransform.forward.y * flyPitchInfluence * CurrentSpeed;
+                verticalMove += pitchVertical;
+
+                // Tilt tasks: only count this as "tilt to fly up/down" when Space/Ctrl aren't already
+                // driving the vertical move — i.e. the mouse pitch alone is what's moving the player,
+                // not the explicit ascend/descend keys.
+                if (!flyAscendHeld && !ctrlHeld)
+                {
+                    if (pitchVertical > 0.1f) CompleteMovementTask(TaskFlyUpTilt);
+                    else if (pitchVertical < -0.1f) CompleteMovementTask(TaskFlyDownTilt);
+                }
             }
 
             if (controller.isGrounded && verticalMove <= 0f)

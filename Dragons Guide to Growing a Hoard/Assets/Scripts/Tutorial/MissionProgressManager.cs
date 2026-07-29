@@ -90,4 +90,31 @@ public class MissionProgressManager : MonoBehaviour
 
         return true;
     }
+
+    /// <summary>True only if taskId is the FIRST not-yet-complete task in mission.tasks (in list order).
+    /// Use this to gate completion calls for strictly-ordered checklists — e.g. the movement tutorial,
+    /// where PlayerController reports actions as they happen in real time and an early/stray action
+    /// (like an accidental landing before the tutorial reaches its "land" step) shouldn't get silently
+    /// banked out of order. Returns false once every task is already complete.</summary>
+    public bool IsNextTask(MissionData mission, string taskId)
+    {
+        if (mission == null || string.IsNullOrEmpty(taskId)) return false;
+
+        foreach (MissionTaskEntry task in mission.tasks)
+        {
+            if (IsTaskComplete(mission.ResolvedId, task.ResolvedId)) continue;
+            return task.ResolvedId == taskId;
+        }
+
+        return false;
+    }
+
+    /// <summary>Convenience wrapper: completes taskId only if IsNextTask says it's next in line, in one
+    /// call. Use this from gameplay code for any strictly-ordered checklist mission instead of calling
+    /// IsNextTask + CompleteTask separately at every call site.</summary>
+    public void CompleteOrderedTask(MissionData mission, string taskId)
+    {
+        if (!IsNextTask(mission, taskId)) return;
+        CompleteTask(mission.ResolvedId, taskId);
+    }
 }

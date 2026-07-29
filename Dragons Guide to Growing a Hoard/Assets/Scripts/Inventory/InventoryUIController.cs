@@ -246,6 +246,11 @@ public class InventoryUIController : MonoBehaviour
             Cursor.visible = true;
             ThirdPersonCameraController.CameraLocked = true;
             RefreshUI();
+
+            // Lets a tutorial step (e.g. "Press [I] to open your inventory") auto-advance the instant
+            // this actually happens, instead of requiring a click on the prompt itself. No-ops if no
+            // TutorialSequenceController exists, or if the current step isn't listening for this id.
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("inventory_opened");
         }
         else
         {

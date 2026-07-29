@@ -34,6 +34,12 @@ public class TutorialObjectiveUI : MonoBehaviour
     [Tooltip("Mission whose next incomplete task this banner tracks. Swap at runtime with SetMission(...).")]
     [SerializeField] private MissionData mission;
 
+    [Tooltip("Optional. If assigned, this banner stays hidden entirely until this mission is fully " +
+             "complete — e.g. assign the movement mission here so the harvest checklist doesn't pop up " +
+             "in the corner while the player's still in the middle of the WASD/jump/fly tutorial. Leave " +
+             "blank to show this banner immediately, same as before.")]
+    [SerializeField] private MissionData gateOnMissionComplete;
+
     [Tooltip("The whole banner — hidden entirely when there's no incomplete task to show. Falls back to " +
              "this GameObject if left blank.")]
     [SerializeField] private GameObject bannerRoot;
@@ -70,6 +76,14 @@ public class TutorialObjectiveUI : MonoBehaviour
 
     private void Refresh()
     {
+        if (gateOnMissionComplete != null &&
+            (progressManager == null || !progressManager.IsMissionComplete(gateOnMissionComplete)))
+        {
+            if (bannerRoot != null) bannerRoot.SetActive(false);
+            else gameObject.SetActive(false);
+            return;
+        }
+
         MissionTaskEntry nextTask = GetNextIncompleteTask();
         bool show = nextTask != null;
 

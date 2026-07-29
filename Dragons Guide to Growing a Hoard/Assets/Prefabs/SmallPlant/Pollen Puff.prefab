@@ -177,7 +177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plantSize: 0
-  plantType: 2
+  plantType: 0
   journalSpecies: {fileID: 11400000, guid: 510a24ecb26f30246a9f27ef69d4cc03, type: 2}
   potPlacementOffset: 0.8
   potPlacementRotation: {x: 90, y: 0, z: 0}

@@ -10,10 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 546ea7ecb2303074683eae13d20a01ad, type: 3}
-  m_Name: Mission_1
+  m_Name: Plants
   m_EditorClassIdentifier: Assembly-CSharp::MissionData
   missionId: 1
   missionTitle: Introduction
   tasks:
-  - taskId: 1
-    description: Pick up  a plant test
+  - taskId: find_node
+    description: Find a harvest node
+  - taskId: plant_pickup
+    description: Press [E] to pick up the plant
+  - taskId: place_pot
+    description: Place a Pot
+  - taskId: water_plant
+    description: Place a plant in a pot and water it
+  - taskId: find_water
+    description: Go to the water source nearby
+  - taskId: water_refill
+    description: Sit in the water until your water bar is refilled

@@ -36,8 +36,9 @@ public class PlacementSystem : MonoBehaviour
     private AudioSource ambientSource;
 
     [Header("Missions")]
-    [Tooltip("The five-task tutorial mission (RemovedPlant/MovePot/AddedSoil/PlantedSeed/AddedWater). " +
-             "Only index 1 (MovePot) is reported from this script.")]
+    [Tooltip("The movement/harvest tutorial mission (find_node/plant_pickup/place_pot/water_plant/" +
+             "find_water/water_refill). Only 'place_pot' is reported from this script — assign the SAME " +
+             "asset used on CollectablePlant/HarvestNodeContainer/PotInteraction.")]
     [SerializeField] private MissionData tutorialMission;
     [Tooltip("Task 0 (OpenedInventory) is completed from InventoryUIController — assign the SAME asset " +
              "there. Tasks 1/2/3 (Small/Medium/Large pot planted) are completed from here, offset by +1 " +
@@ -575,8 +576,8 @@ public class PlacementSystem : MonoBehaviour
 
         PlaySFX(placeSoundClip);
 
-        if (tutorialMission != null && tutorialMission.tasks.Count > 1)
-            MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[1]); // MovePot
+        if (tutorialMission != null)
+            MissionProgressManager.Instance?.CompleteOrderedTask(tutorialMission, "place_pot");
 
         int potSizeTaskIndex = selectedIndex + 1; // index 0 is OpenedInventory (completed elsewhere)
         if (collectionMission != null && potSizeTaskIndex >= 1 && potSizeTaskIndex < collectionMission.tasks.Count)

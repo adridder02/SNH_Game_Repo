@@ -21,6 +21,8 @@ public class GameInputModeManager : MonoBehaviour
 
     public InputMode CurrentMode { get; private set; }
 
+    private bool altOverrideActive = false;
+
     private void Awake()
     {
         if (Instance == null)
@@ -49,9 +51,69 @@ public class GameInputModeManager : MonoBehaviour
         SetGameplayMode();
     }
 
+    private void Update()
+    {
+        // Alt-to-free-cursor only makes sense during normal gameplay;
+        // menu/placement modes already show the cursor and lock the camera.
+        if (CurrentMode != InputMode.Gameplay)
+            return;
+
+        bool altHeld = Keyboard.current != null &&
+                       (Keyboard.current.leftAltKey.isPressed || Keyboard.current.rightAltKey.isPressed);
+
+        if (altHeld && !altOverrideActive)
+        {
+            altOverrideActive = true;
+            ApplyAltOverride();
+        }
+        else if (!altHeld && altOverrideActive)
+        {
+            altOverrideActive = false;
+            RemoveAltOverride();
+        }
+    }
+
+    private void ApplyAltOverride()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        ThirdPersonCameraController.CameraLocked = true;
+
+        var camController = FindAnyObjectByType<ThirdPersonCameraController>();
+        if (camController != null)
+        {
+            var inputAxis = camController.GetComponent<Unity.Cinemachine.CinemachineInputAxisController>();
+            if (inputAxis != null)
+                inputAxis.enabled = false;
+        }
+    }
+
+    private void RemoveAltOverride()
+    {
+        // Safety check: only restore gameplay cursor/camera state if we're
+        // still in Gameplay mode (in case a mode switch happened in between).
+        if (CurrentMode != InputMode.Gameplay)
+            return;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        ThirdPersonCameraController.CameraLocked = false;
+
+        var camController = FindAnyObjectByType<ThirdPersonCameraController>();
+        if (camController != null)
+        {
+            var inputAxis = camController.GetComponent<Unity.Cinemachine.CinemachineInputAxisController>();
+            if (inputAxis != null)
+                inputAxis.enabled = true;
+        }
+    }
+
     public void SetGameplayMode()
     {
         CurrentMode = InputMode.Gameplay;
+        altOverrideActive = false;
 
         gameplayMap?.Enable();
         cameraMap?.Enable();
@@ -71,6 +133,9 @@ public class GameInputModeManager : MonoBehaviour
             if (inputAxis != null)
                 inputAxis.enabled = true;
         }
+
+        // Back to gameplay — bring the bottom-bar tutorial tip back if that's what's currently showing.
+        TutorialSequenceController.Instance?.SetMenuOpen(false);
     }
 
     /// <summary>
@@ -80,6 +145,7 @@ public class GameInputModeManager : MonoBehaviour
     public void SetMenuUIMode()
     {
         CurrentMode = InputMode.MenuUI;
+        altOverrideActive = false;
 
         gameplayMap?.Enable();
         cameraMap?.Disable();
@@ -101,11 +167,15 @@ public class GameInputModeManager : MonoBehaviour
             if (inputAxis != null)
                 inputAxis.enabled = false;
         }
+
+        // A menu just covered the screen — hide the bottom-bar tutorial tip so it doesn't sit behind it.
+        TutorialSequenceController.Instance?.SetMenuOpen(true);
     }
 
     public void SetPlacementMode()
     {
         CurrentMode = InputMode.Placement;
+        altOverrideActive = false;
 
         gameplayMap?.Enable();
         cameraMap?.Disable();
@@ -125,5 +195,8 @@ public class GameInputModeManager : MonoBehaviour
             if (inputAxis != null)
                 inputAxis.enabled = false;
         }
+
+        // Same as menu UI mode — hide the bottom-bar tip while placement mode's own UI is up.
+        TutorialSequenceController.Instance?.SetMenuOpen(true);
     }
 }

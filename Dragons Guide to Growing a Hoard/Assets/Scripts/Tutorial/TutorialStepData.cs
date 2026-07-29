@@ -5,15 +5,20 @@ using UnityEngine;
 // -------------------------------------------------------------
 // One entry in TutorialSequenceController's ordered `steps` list.
 // This is the whole authoring surface for the tutorial flow — set
-// the type, message, and (for Portable) target/offsets here, in the
+// the type, message, and (for Portable) portablePrompt here, in the
 // order you want them to play. Nothing else needs touching per-step.
 // =============================================================
 public enum TutorialPromptType
 {
-    /// <summary>Bubble + outline pointing at a target (world object or UI element). Shown via TutorialPromptUI.</summary>
+    /// <summary>An individually hand-built prompt (outline + bubble + text — see TutorialPromptBox.cs), shown via TutorialPromptUI.</summary>
     Portable,
     /// <summary>Static strip along the bottom of the screen, no target — for movement/system tips. Shown via TutorialBottomPopupUI.</summary>
-    BottomBar
+    BottomBar,
+    /// <summary>Shows nothing at all. Exists purely to hold the sequence here — via linkedMission/linkedTaskId — until some
+    /// task completes, before the NEXT step (a real Portable/BottomBar one) is allowed to appear. Use this when you want a
+    /// step's bubble to stay hidden until an earlier task is done, rather than popping up the instant the previous step
+    /// finishes. message/portablePrompt are ignored for this type.</summary>
+    Gate
 }
 
 [System.Serializable]
@@ -23,22 +28,19 @@ public class TutorialStep
     public TutorialPromptType type = TutorialPromptType.Portable;
 
     [TextArea(1, 4)]
+    [Tooltip("Required for BottomBar. Optional for Portable — only needed if you want to override the " +
+             "text already typed into that prompt's own TutorialPromptBox; leave blank to just use " +
+             "whatever's authored there.")]
     public string message;
 
     [Header("Portable only")]
-    [Tooltip("What the outline box should surround / the bubble should point at. Leave blank for BottomBar steps.")]
-    public Transform target;
-    [Tooltip("Tick this if target is a 3D-world object (a plant, a pot, a water tile) — its screen position " +
-             "is recalculated every frame via the main camera so the outline tracks it as the player moves. " +
-             "Leave off for a UI element's RectTransform, whose screen position is already stable.")]
-    public bool targetIsWorldSpace = true;
-    [Tooltip("Bubble's offset from the target's projected screen position, in canvas pixels.")]
-    public Vector2 bubbleOffset = new Vector2(0f, 160f);
-    [Tooltip("Size of the outline box drawn around the target, in canvas pixels.")]
-    public Vector2 outlineSize = new Vector2(300f, 220f);
+    [Tooltip("The pre-built prompt for this step — its own outline box, bubble, and text, already " +
+             "positioned and sized exactly where you want it in the Canvas (see TutorialPromptBox.cs). " +
+             "Build one of these per Portable step and drag it in here. Leave blank for BottomBar steps.")]
+    public TutorialPromptBox portablePrompt;
 
     [Header("Advance")]
-    [Tooltip("Clicking the outlined target (Portable) or the bar itself (BottomBar) closes this step and moves " +
+    [Tooltip("Clicking the prompt (Portable) or the bar itself (BottomBar) closes this step and moves " +
              "to the next, in addition to any of the options below.")]
     public bool advanceOnClick = true;
     [Tooltip("0 = no auto-advance. Otherwise the step advances on its own after this many seconds, in addition to any click.")]
@@ -57,4 +59,11 @@ public class TutorialStep
              "step tied to. Typo-proofing this against the actual asset is on the TODO list; for now just copy " +
              "the text exactly as it appears on the MissionData asset.")]
     public string linkedTaskId;
+
+    [Header("Auto-complete from a non-mission trigger (optional)")]
+    [Tooltip("For real actions that aren't tracked as a mission task at all (e.g. just pressing [I] to open " +
+             "the inventory) — set this to any id string of your choosing, then have that gameplay script call " +
+             "TutorialSequenceController.Instance.NotifyExternalTrigger(sameId) when it happens. If this step " +
+             "is the one currently showing, it advances immediately, same as a click. Leave blank if unused.")]
+    public string externalTriggerId;
 }

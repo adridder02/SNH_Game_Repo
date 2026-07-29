@@ -57,8 +57,29 @@ public class TutorialSequenceController : MonoBehaviour
 
     [SerializeField] private bool autoStart = true;
 
+    [Tooltip("Optional. Only used by the 'Load Hardcoded Tutorial Script' context menu action below — if " +
+             "assigned, the six movement-tip BottomBar steps it generates are auto-linked to this mission's " +
+             "tasks (WASD move / jump / double-space fly / tilt up / tilt down / land), so they advance the " +
+             "instant PlayerController reports the action instead of waiting for a click. Leave blank to get " +
+             "the old click-only behavior. This must be the SAME MissionData asset assigned to " +
+             "PlayerController's 'Movement Mission' field, or nothing will auto-advance.")]
+    [SerializeField] private MissionData movementMissionForHardcodedScript;
+
+    [Tooltip("Optional. Only used by the 'Load Hardcoded Tutorial Script' context menu action below — if " +
+             "assigned, the six find-node/pick-up/place-pot/water-plant/find-water/refill steps it generates " +
+             "are auto-linked to this mission's tasks. This mission's task list must be ordered find_node, " +
+             "plant_pickup, place_pot, water_plant, find_water, water_refill — CompleteOrderedTask only lets " +
+             "a task complete when it's next in that order, so a mismatched order means a step here waits " +
+             "forever. Must be the SAME MissionData asset assigned to CollectablePlant / " +
+             "HarvestNodeContainer / PlacementSystem / PotInteraction / PlayerWaterSource.")]
+    [SerializeField] private MissionData harvestMissionForHardcodedScript;
+
     /// <summary>Fired once, after the last step in the list advances.</summary>
     public event Action OnSequenceComplete;
+
+    /// <summary>Auto-found via FindObjectOfType if a gameplay script needs to call NotifyExternalTrigger
+    /// and doesn't already have a reference — set in Awake, same pattern as MissionProgressManager.Instance.</summary>
+    public static TutorialSequenceController Instance { get; private set; }
 
     private int currentIndex = -1;
     private Coroutine autoAdvanceRoutine;
@@ -68,6 +89,9 @@ public class TutorialSequenceController : MonoBehaviour
 
     void Awake()
     {
+        if (Instance == null)
+            Instance = this;
+
         if (progressManager == null)
             progressManager = MissionProgressManager.Instance != null
                 ? MissionProgressManager.Instance
@@ -117,6 +141,38 @@ public class TutorialSequenceController : MonoBehaviour
         AdvanceToNextStep();
     }
 
+    /// <summary>Call this from GameInputModeManager whenever a menu (or placement mode) opens/closes —
+    /// hides the bottom bar the instant a menu covers the screen, and brings it back afterward if the
+    /// current step is still a BottomBar one. Doesn't touch Portable prompts or auto-advance timers,
+    /// just the bottom strip's visibility.</summary>
+    public void SetMenuOpen(bool open)
+    {
+        if (bottomPopupUI == null) return;
+
+        if (open)
+        {
+            bottomPopupUI.Hide();
+            return;
+        }
+
+        TutorialStep step = CurrentStep;
+        if (step != null && step.type == TutorialPromptType.BottomBar)
+            bottomPopupUI.Show(step);
+    }
+
+    /// <summary>Call this from any gameplay script when a real action happens that isn't tracked as a
+    /// mission task (e.g. InventoryUIController calling NotifyExternalTrigger("inventory_opened") when
+    /// the player actually presses [I]). Only advances if the CURRENT step's externalTriggerId matches —
+    /// safe to call any time an action happens, even if no step (or a different one) is showing.</summary>
+    public void NotifyExternalTrigger(string triggerId)
+    {
+        if (string.IsNullOrEmpty(triggerId)) return;
+
+        TutorialStep step = CurrentStep;
+        if (step != null && step.externalTriggerId == triggerId)
+            AdvanceToNextStep();
+    }
+
     /// <summary>Jumps straight to a specific step, e.g. to resume a tutorial mid-way after a save load.</summary>
     public void SkipToStep(int index)
     {
@@ -143,9 +199,15 @@ public class TutorialSequenceController : MonoBehaviour
     [ContextMenu("Load Hardcoded Tutorial Script (Plant Basics + Water Plant)")]
     private void LoadHardcodedTutorialScript()
     {
-        steps = TutorialContent.BuildDefaultSteps();
+        steps = TutorialContent.BuildDefaultSteps(movementMissionForHardcodedScript, harvestMissionForHardcodedScript);
         Debug.Log($"[TutorialSequenceController] Loaded {steps.Count} hardcoded steps. " +
-                  "Now assign each Portable step's target Transform in the Inspector.");
+                  "Now assign each Portable step's target Transform in the Inspector." +
+                  (movementMissionForHardcodedScript != null
+                      ? " Movement steps are linked to " + movementMissionForHardcodedScript.name + "."
+                      : " Movement Mission wasn't assigned, so those steps are click-only.") +
+                  (harvestMissionForHardcodedScript != null
+                      ? " Harvest/pot/water steps are linked to " + harvestMissionForHardcodedScript.name + "."
+                      : " Harvest Mission wasn't assigned, so those steps are click-only."));
     }
 
     // ------------------------------------------------------------
@@ -211,6 +273,12 @@ public class TutorialSequenceController : MonoBehaviour
                     return;
                 }
                 bottomPopupUI.Show(step);
+                break;
+
+            case TutorialPromptType.Gate:
+                // Deliberately shows nothing — promptUI/bottomPopupUI were already both Hide()'d above.
+                // This step just sits here until CheckLinkedTaskComplete() below (or a future
+                // OnProgressChanged tick) finds its linked task done and advances past it.
                 break;
         }
 

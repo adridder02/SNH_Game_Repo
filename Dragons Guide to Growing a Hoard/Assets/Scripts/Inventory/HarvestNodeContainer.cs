@@ -39,8 +39,9 @@ public class HarvestNodeContainer : MonoBehaviour
     public PlayerInventory playerInventory;
 
     [Header("Mission")]
-    [Tooltip("The mission's RemovedPlant task (index 0) is completed on harvest. Assign the same " +
-             "MissionData asset used on PotContents/CollectablePlant.")]
+    [Tooltip("This mission's 'find_node' task completes the first time a node comes into range. " +
+             "Assign the same MissionData asset used on CollectablePlant/PotInteraction, and make sure " +
+             "a task with Task Id 'find_node' exists on it.")]
     [SerializeField] private MissionData tutorialMission;
 
     [Header("Interaction")]
@@ -146,6 +147,9 @@ public class HarvestNodeContainer : MonoBehaviour
             ClearCurrentOutline();
             ApplyOutlineFor(currentNode);
             previousNode = currentNode;
+
+            if (currentNode != null && tutorialMission != null)
+                MissionProgressManager.Instance?.CompleteOrderedTask(tutorialMission, "find_node");
         }
 
 
@@ -266,8 +270,9 @@ public class HarvestNodeContainer : MonoBehaviour
 
         Debug.Log($"[HarvestNodeContainer] Harvested: {node.name}");
         ShowFeedback($"{harvestMessage}  ({node.name})");
-        if (tutorialMission != null && tutorialMission.tasks.Count > 0)
-            MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[0]); // RemovedPlant
+        // plant_pickup is completed inside CollectablePlant.GetPlantPrefab() (called above via
+        // plant.GetPlantPrefab()) — that's the single funnel point for every pickup path (harvest
+        // node here, and the physical-collision path in PlayerInventory), so it's not repeated here.
         // NOTE: this used to also complete an "AddedPotToInventory" checklist task —
         // that task was dropped from the mission, so there's nothing to call anymore.
 

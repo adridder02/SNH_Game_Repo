@@ -57,6 +57,14 @@ public class PotInteraction : MonoBehaviour
     [Tooltip("How much water is added per Q press when watering.")]
     public float waterPerPress = 2f;
 
+    [Header("Mission")]
+    [Tooltip("This mission's 'water_plant' task completes the first time watering actually succeeds — " +
+             "which by then already implies a plant is in the pot, since QuickWater refuses to water an " +
+             "empty pot (pot.HasPlant check below). Assign the same MissionData asset used on " +
+             "CollectablePlant/HarvestNodeContainer, and make sure a task with Task Id 'water_plant' " +
+             "exists on it.")]
+    [SerializeField] private MissionData tutorialMission;
+
     [Tooltip("Maximum water the player can hold. Refills automatically.")]
     public float maxWaterPool = 20f;
 
@@ -285,6 +293,8 @@ public class PotInteraction : MonoBehaviour
         if (pot.AddWater(transfer))
         {
             dragonInventory.reduceWaterPool(transfer);
+            if (tutorialMission != null)
+                MissionProgressManager.Instance?.CompleteOrderedTask(tutorialMission, "water_plant");
         }
         else
             Debug.Log("[PotInteraction] Pot is already full.");

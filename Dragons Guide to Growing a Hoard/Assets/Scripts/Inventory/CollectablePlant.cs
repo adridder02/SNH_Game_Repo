@@ -40,8 +40,11 @@ public class CollectablePlant : MonoBehaviour
     [SerializeField] private Sprite plantImage;
 
     [Header("Mission")]
-    [Tooltip("The mission's RemovedPlant task (index 0) is completed when this plant is harvested. " +
-             "Assign the same MissionData asset used on PotContents/HarvestNodeContainer.")]
+    [Tooltip("This mission's 'plant_pickup' task completes the moment this plant is actually picked up " +
+             "— fires from here since GetPlantPrefab() is the one place both the harvest-node path " +
+             "(HarvestNodeContainer) and the physical-collision path (PlayerInventory) funnel through. " +
+             "Assign the same MissionData asset used on HarvestNodeContainer/PotInteraction, and make " +
+             "sure a task with Task Id 'plant_pickup' exists on it.")]
     [SerializeField] private MissionData tutorialMission;
 
     public GameObject GetPlantPrefab()
@@ -52,8 +55,8 @@ public class CollectablePlant : MonoBehaviour
                             "Drag the plant's prefab asset into the Plant Prefab field in the Inspector.", this);
             return null;
         }
-        if (tutorialMission != null && tutorialMission.tasks.Count > 0)
-            MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[0]); // RemovedPlant
+        if (tutorialMission != null)
+            MissionProgressManager.Instance?.CompleteOrderedTask(tutorialMission, "plant_pickup");
         return plantPrefab;
     }
 

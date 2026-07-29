@@ -108,12 +108,12 @@ public class PlayerInventory : MonoBehaviour
             }
         }
 
-        int waterLayer = LayerMask.NameToLayer("WaterRefill");
-        if (collision.gameObject.layer == waterLayer)
-        {
-            refillWaterPool();
-            Debug.Log($"Water is refilled to: {waterPool}");
-        }
+        // NOTE: water refill used to be handled here via a "WaterRefill" layer check, but
+        // OnCollisionEnter never fires against a trigger collider — and water volumes are almost
+        // always triggers (so the player can pass through instead of colliding solidly with the
+        // water's surface). That's why refill wasn't working. Water is now handled by
+        // PlayerWaterSource.cs (attach it to the Player alongside this component), which uses
+        // OnTriggerEnter/Stay and calls AddWater() below.
     }
 
     // ------------------------------------------------------------
