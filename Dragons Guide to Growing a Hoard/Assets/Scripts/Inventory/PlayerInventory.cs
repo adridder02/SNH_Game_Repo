@@ -217,13 +217,37 @@ public class PlayerInventory : MonoBehaviour
         OnInventoryChanged?.Invoke();
     }
 
-    /// <summary>Grows the grid — call this from your expansion-consumable logic.</summary>
+    /// <summary>Grows the grid — call this from your expansion-consumable logic (e.g. a Bubble Blossom
+    /// bubble). After resizing, automatically tries to pull items sitting in Available into the newly
+    /// opened grid space — a bubble that unlocks a slot should actually put a waiting plant into it
+    /// rather than leaving it stranded in Available until the player manually drags it in.</summary>
     public void ExpandGrid(int newWidth, int newHeight)
     {
         grid.Resize(newWidth, newHeight);
         gridWidth = newWidth;
         gridHeight = newHeight;
+
+        PromoteAvailableToGrid();
+
         OnInventoryChanged?.Invoke();
+    }
+
+    /// <summary>Tries to auto-place every Available item into the grid, in the order they were added
+    /// (oldest first). Stops placing a given item as soon as the grid reports full — cheap to call
+    /// after any operation that might have freed up grid space. Fires OnInventoryChanged itself only
+    /// if something actually moved, so callers that already fire it afterward (like ExpandGrid above)
+    /// don't double-notify.</summary>
+    public void PromoteAvailableToGrid()
+    {
+        bool anyMoved = false;
+
+        foreach (InventoryItemInstance instance in items.Where(i => !i.IsInGrid).ToList())
+        {
+            if (grid.TryAutoPlace(instance))
+                anyMoved = true;
+        }
+
+        if (anyMoved) OnInventoryChanged?.Invoke();
     }
 
     public List<InventoryItemInstance> GetGridItems() => items.Where(i => i.IsInGrid).ToList();

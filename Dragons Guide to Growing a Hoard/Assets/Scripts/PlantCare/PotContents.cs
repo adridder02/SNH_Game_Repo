@@ -457,23 +457,68 @@ public class PotContents : MonoBehaviour
     // ---------------------------------------------------------------
     // HarvestPlant — called instead of RemovePlant once the plant's
     // PlantProgress has reached Complete (see PotMenuUIController's
-    // "Harvest" button). Deliberately a separate entry point from
-    // RemovePlant, even though it does the same thing today, so a real
-    // "turn into a different item depending on the plant" system can
-    // slot in here later without having to touch PotMenuUIController
-    // or the manual-removal path at all.
+    // "Harvest" button).
+    //
+    // Looks for a PlantHarvestYield component alongside PlantState on the
+    // planted GameObject:
+    //   • Found  -> grants the ability item (Consumable/Placeable go into
+    //     PlayerAbilityInventory, OneOff applies immediately via
+    //     AbilityHarvestEffects) and the plant is DESTROYED — it does NOT
+    //     go back into the plant inventory, since the player gets the new
+    //     item instead.
+    //   • Not found -> falls back to the old dummy behaviour (RemovePlant's
+    //     normal "return plant to inventory" path), so plants that don't
+    //     have an ability yet keep working exactly as before.
     // ---------------------------------------------------------------
     public void HarvestPlant(PlayerInventory dragonInventory)
     {
         if (!hasPlant || Plant == null) return;
 
         string harvestedName = Plant.gameObject.name.Replace("(Clone)", "").Trim();
-        Debug.Log($"[PotContents] Harvested '{harvestedName}'. (Dummy: returned to inventory as-is for now — " +
-                  "swap this for a real harvested-item lookup once that system exists.)");
+        PlantHarvestYield yield = Plant.GetComponent<PlantHarvestYield>();
 
-        // TODO: once harvested items are their own thing, resolve and grant that item here
-        // instead of just returning the plant prefab via RemovePlant's normal inventory path.
-        RemovePlant(dragonInventory);
+        if (yield == null || yield.yieldItem == null)
+        {
+            Debug.Log($"[PotContents] Harvested '{harvestedName}' — no PlantHarvestYield assigned, " +
+                      "returning plant to inventory as-is (old dummy behaviour).");
+            RemovePlant(dragonInventory);
+            return;
+        }
+
+        AbilityItemData item = yield.yieldItem;
+        int amount = yield.ResolveAmount();
+
+        PlayerAbilityInventory abilityInventory = dragonInventory != null
+            ? dragonInventory.GetComponent<PlayerAbilityInventory>()
+            : null;
+
+        switch (item.kind)
+        {
+            case AbilityKind.OneOff:
+                AbilityHarvestEffects.ApplyOneOff(item, dragonInventory != null ? dragonInventory.gameObject : null);
+                break;
+
+            case AbilityKind.Consumable:
+            case AbilityKind.Placeable:
+                if (abilityInventory != null)
+                    abilityInventory.Add(item, amount);
+                else
+                    Debug.LogWarning($"[PotContents] Harvested '{item.displayName}' but no PlayerAbilityInventory " +
+                                      "was found on the player — add one alongside PlayerInventory. Item was lost.");
+                break;
+        }
+
+        Debug.Log($"[PotContents] Harvested '{harvestedName}' -> {amount}x {item.displayName}.");
+
+        // Clear pot state and destroy the plant WITHOUT returning it to the plant inventory —
+        // deliberately bypasses RemovePlant's AddPlantToInventory call, unlike the fallback above.
+        GameObject plantToDestroy = Plant.gameObject;
+        Plant = null;
+        currentPlantPrefab = null;
+        hasPlant = false;
+
+        if (plantToDestroy != null)
+            Destroy(plantToDestroy);
     }
 
     // ---------------------------------------------------------------

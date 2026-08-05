@@ -136,6 +136,11 @@ public class PlantState : MonoBehaviour
     [SerializeField] private float miasmaWaterDrainMultiplier = 1f;
     [SerializeField] private bool isMiasmaDebuffActive = false;
 
+    // Reference-counted immunity: several independent sources can grant immunity at once
+    // (Windmill Aster's ongoing sunlight-gated radius, Verdant Algae's timed soil ward,
+    // a closed Sparkmint circuit) without one source's expiry clobbering another's.
+    private readonly HashSet<object> miasmaImmunitySources = new HashSet<object>();
+
     // ---------------------------------------------------------------
     // RUNTIME DEBUG
     // ---------------------------------------------------------------
@@ -158,6 +163,28 @@ public class PlantState : MonoBehaviour
     public int WaterScore => waterScore;
     public LightSensor LightSensor => lightSensor;
     public float GetWaterDrainMultiplier() => isMiasmaDebuffActive ? miasmaWaterDrainMultiplier : 1f;
+
+    /// <summary>True while any ability source (Windmill Aster, Verdant Algae, a closed Sparkmint
+    /// circuit, ...) is actively warding this plant against miasma. See AddMiasmaImmunitySource.</summary>
+    public bool IsMiasmaImmune => miasmaImmunitySources.Count > 0;
+
+    /// <summary>Registers 'source' as granting this plant miasma immunity. Pass a stable object
+    /// (the ability component itself is fine) so RemoveMiasmaImmunitySource can find it again.
+    /// Multiple sources can be active at once; immunity holds until all of them are removed.</summary>
+    public void AddMiasmaImmunitySource(object source)
+    {
+        if (source == null) return;
+        bool wasImmune = IsMiasmaImmune;
+        miasmaImmunitySources.Add(source);
+        if (!wasImmune) ResetMiasmaEffects();
+    }
+
+    /// <summary>Un-registers a previously-added immunity source. Safe to call even if it was never added.</summary>
+    public void RemoveMiasmaImmunitySource(object source)
+    {
+        if (source == null) return;
+        miasmaImmunitySources.Remove(source);
+    }
 
     /// <summary>0–1 read of overall plant health for UI (PlantUI's health bar) — just the existing
     /// soil+light+water score out of its max of 6, so the bar tracks the same thing CalculateState()
@@ -262,6 +289,10 @@ public class PlantState : MonoBehaviour
     // ---------------------------------------------------------------
     public void ApplyMiasmaDebuff(float lightPenalty, int soilPenalty, float waterDrainMultiplier)
     {
+        // Warded by an active ability source (Windmill Aster / Verdant Algae / closed Sparkmint
+        // circuit) — miasma simply has no effect on this plant right now.
+        if (IsMiasmaImmune) return;
+
         // Accumulate penalties over time (permanent until soil replacement)
         miasmaLightPenalty = Mathf.Clamp01(miasmaLightPenalty + lightPenalty);
         miasmaSoilPenalty += soilPenalty;

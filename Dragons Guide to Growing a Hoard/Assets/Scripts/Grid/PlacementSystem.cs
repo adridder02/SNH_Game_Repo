@@ -67,6 +67,27 @@ public class PlacementSystem : MonoBehaviour
     /// <summary>Which pot index Placing mode would use right now (last cycled-to / selected pot).</summary>
     public int SelectedPotIndex => selectedIndex;
 
+    /// <summary>All greenhouse surfaces this system manages. Read by AbilityPlacementSystem so
+    /// ability placeables (Sparkmint leaves, Waterbells, ...) hover/place across the same surfaces
+    /// pots do, using the SAME InputManager raycast and GreenhouseSurface detection.</summary>
+    public IReadOnlyList<GreenhouseSurface> Surfaces => surfaces;
+
+    /// <summary>The InputManager this system uses for mouse->world raycasting. Ability placement
+    /// reuses this rather than raycasting a second time with different settings.</summary>
+    public InputManager InputManager => inputManager;
+
+    /// <summary>Shared GridData for a surface, or null if that surface isn't registered. Ability
+    /// placeables occupy cells in this SAME dictionary as pots do, so a leaf/waterbell can never
+    /// overlap a pot (or another placeable) and vice versa — one occupancy source of truth per surface.</summary>
+    public GridData GetGridData(GreenhouseSurface surface) =>
+        surface != null && surfaceGridData.TryGetValue(surface, out GridData gd) ? gd : null;
+
+    /// <summary>Which surface (if any) is currently under the mouse, per this frame's own hover scan.
+    /// Ability placement reuses this instead of re-deriving it, so both systems always agree on
+    /// which surface is "active" — avoids a frame where pots think they're over Surface A while
+    /// ability placement thinks Surface B.</summary>
+    public GreenhouseSurface GetSurfaceAtWorldPosition(Vector3 worldPos) => GetSurfaceAtPosition(worldPos);
+
     // One GridData per surface
     private Dictionary<GreenhouseSurface, GridData> surfaceGridData = new Dictionary<GreenhouseSurface, GridData>();
 
@@ -304,6 +325,11 @@ public class PlacementSystem : MonoBehaviour
         else
             EnterMoveMode();
     }
+
+    /// <summary>Force-cancels whatever pot tool (Place/Remove/Move) is active, with no side effect if
+    /// none is. AbilityPlacementSystem calls this before starting ability placement so the two systems
+    /// can never both be "hot" over the same grid at once.</summary>
+    public void CancelActiveMode() => CancelMode();
 
     public void EnterPlaceMode(int potIndex)
     { // lock camera here....

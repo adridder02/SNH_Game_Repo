@@ -67,6 +67,38 @@ public class PotMenuUIController : MonoBehaviour
     [SerializeField] private float choosePlantGapY = 8f;
 
     // ------------------------------------------------------------
+    // ABILITIES PANEL
+    // ------------------------------------------------------------
+    [Header("Main Panel — Abilities Button")]
+    [Tooltip("Opens the Abilities panel. Wire this up next to soilActionButton/choosePlantButton/waterButton.")]
+    [SerializeField] private Button useAbilityButton;
+
+    [Header("Main Panel — Pollen Puff Collection")]
+    [Tooltip("Only shown/interactable when the current pot's plant has a PollenPuffProducer with " +
+             "ReadyCount > 0 — collects into PlayerAbilityInventory. Independent of the Harvest button; " +
+             "collecting puffballs does not remove the plant.")]
+    [SerializeField] private Button collectPuffballsButton;
+    [SerializeField] private TextMeshProUGUI collectPuffballsButtonLabel;
+
+    [Header("Abilities Panel")]
+    [SerializeField] private GameObject abilitiesPanel;
+    [SerializeField] private Transform abilityOptionContainer;
+    [SerializeField] private Button abilityOptionTemplate;
+    [SerializeField] private TextMeshProUGUI abilityEmptyText;
+    [SerializeField] private Button abilityBackButton;
+
+    [Header("Abilities Panel — Grid Wrapping")]
+    [SerializeField] private int abilityColumns = 5;
+    [SerializeField] private float abilityGapX = 8f;
+    [SerializeField] private float abilityGapY = 8f;
+
+    [Header("Abilities Panel — References")]
+    [Tooltip("Auto-found on the player (alongside PlayerInventory) if left empty.")]
+    [SerializeField] private PlayerAbilityInventory abilityInventory;
+    [Tooltip("Auto-found in the scene if left empty. Needed so Placeable items can hand off to grid placement.")]
+    [SerializeField] private AbilityPlacementSystem abilityPlacementSystem;
+
+    // ------------------------------------------------------------
     // SOIL ICONS
     // ------------------------------------------------------------
     [Header("Soil Icons")]
@@ -88,7 +120,8 @@ public class PotMenuUIController : MonoBehaviour
 
     public bool IsSubmenuOpen =>
         (chooseSoilPanel != null && chooseSoilPanel.activeSelf) ||
-        (choosePlantPanel != null && choosePlantPanel.activeSelf);
+        (choosePlantPanel != null && choosePlantPanel.activeSelf) ||
+        (abilitiesPanel != null && abilitiesPanel.activeSelf);
 
     public void CloseSubmenuOrMenu()
     {
@@ -117,6 +150,10 @@ public class PotMenuUIController : MonoBehaviour
         choosePlantButton?.onClick.AddListener(OnPlantActionButtonClicked);
         waterButton?.onClick.AddListener(OnWaterButtonClicked);
 
+        useAbilityButton?.onClick.AddListener(ShowAbilities);
+        abilityBackButton?.onClick.AddListener(ShowMain);
+        collectPuffballsButton?.onClick.AddListener(OnCollectPuffballsClicked);
+
         menuCloseButton?.onClick.AddListener(() => ownerInteraction?.CloseMenu());
 
         if (menuRoot != null) menuRoot.SetActive(false);
@@ -125,7 +162,10 @@ public class PotMenuUIController : MonoBehaviour
     void Update()
     {
         if (currentPot != null && mainPanel != null && mainPanel.activeSelf)
+        {
             RefreshMainStatusBars();
+            RefreshPuffballButton();
+        }
 
         if (choosePlantPanel != null && choosePlantPanel.activeSelf)
             RefreshChoosePlantSoilIcon();
@@ -136,6 +176,11 @@ public class PotMenuUIController : MonoBehaviour
         currentPot = pot;
         playerInventory = inventory;
         ownerInteraction = interaction;
+
+        if (abilityInventory == null && inventory != null)
+            abilityInventory = inventory.GetComponent<PlayerAbilityInventory>();
+        if (abilityPlacementSystem == null)
+            abilityPlacementSystem = FindObjectOfType<AbilityPlacementSystem>();
 
         if (menuRoot != null) menuRoot.SetActive(true);
 
@@ -173,6 +218,7 @@ public class PotMenuUIController : MonoBehaviour
         if (mainPanel != null) mainPanel.SetActive(true);
         if (chooseSoilPanel != null) chooseSoilPanel.SetActive(overlayPanel == chooseSoilPanel);
         if (choosePlantPanel != null) choosePlantPanel.SetActive(overlayPanel == choosePlantPanel);
+        if (abilitiesPanel != null) abilitiesPanel.SetActive(overlayPanel == abilitiesPanel);
     }
 
     private void ShowMain()
@@ -193,6 +239,13 @@ public class PotMenuUIController : MonoBehaviour
     {
         SetActivePanel(choosePlantPanel);
         RefreshChoosePlantPanel();
+        RefreshMainPanel();
+    }
+
+    private void ShowAbilities()
+    {
+        SetActivePanel(abilitiesPanel);
+        RefreshAbilitiesPanel();
         RefreshMainPanel();
     }
 
@@ -252,7 +305,44 @@ public class PotMenuUIController : MonoBehaviour
         if (waterButton != null)
             waterButton.interactable = hasSoil && hasPlant;
 
+        if (useAbilityButton != null)
+            useAbilityButton.interactable = abilityInventory != null && abilityInventory.Stacks.Count > 0;
+
+        RefreshPuffballButton();
+
         RefreshMainStatusBars();
+    }
+
+    /// <summary>The current pot's planted PollenPuffProducer, or null. Same cheap-lookup treatment as
+    /// CurrentPlantProgress below.</summary>
+    private PollenPuffProducer CurrentPuffProducer =>
+        (currentPot != null && currentPot.HasPlant && currentPot.Plant != null)
+            ? currentPot.Plant.GetComponent<PollenPuffProducer>()
+            : null;
+
+    private void RefreshPuffballButton()
+    {
+        PollenPuffProducer producer = CurrentPuffProducer;
+        bool show = producer != null;
+
+        if (collectPuffballsButton != null)
+        {
+            collectPuffballsButton.gameObject.SetActive(show);
+            collectPuffballsButton.interactable = show && producer.ReadyCount > 0;
+        }
+
+        if (show && collectPuffballsButtonLabel != null)
+            collectPuffballsButtonLabel.text = $"Collect Puffballs ({producer.ReadyCount}/{producer.maxPuffballs})";
+    }
+
+    private void OnCollectPuffballsClicked()
+    {
+        PollenPuffProducer producer = CurrentPuffProducer;
+        if (producer == null) return;
+
+        int collected = producer.Collect(abilityInventory);
+        if (collected > 0)
+            RefreshMainPanel();
     }
 
     private void RefreshMainStatusBars()
@@ -459,5 +549,105 @@ public class PotMenuUIController : MonoBehaviour
         playerInventory.RemoveFirstPlant(item.plantPrefab);
         ownerInteraction?.RefreshOutlineFor(currentPot);
         ShowMain();
+    }
+
+    // ------------------------------------------------------------
+    // ABILITIES PANEL
+    // ------------------------------------------------------------
+    private void RefreshAbilitiesPanel()
+    {
+        if (abilityOptionContainer != null)
+        {
+            for (int i = abilityOptionContainer.childCount - 1; i >= 0; i--)
+            {
+                Transform child = abilityOptionContainer.GetChild(i);
+                if (abilityOptionTemplate != null && child == abilityOptionTemplate.transform) continue;
+                Destroy(child.gameObject);
+            }
+        }
+
+        var stacks = abilityInventory != null ? abilityInventory.Stacks : null;
+        bool anyShown = false;
+
+        if (abilityOptionTemplate != null && abilityOptionContainer != null && stacks != null)
+        {
+            RectTransform templateRect = abilityOptionTemplate.GetComponent<RectTransform>();
+            int index = 0;
+
+            foreach (AbilityItemInstance stack in stacks)
+            {
+                if (stack?.data == null || stack.count <= 0) continue;
+
+                bool usable = IsAbilityUsableNow(stack.data);
+
+                Button optionButton = Instantiate(abilityOptionTemplate, abilityOptionContainer);
+                optionButton.gameObject.SetActive(true);
+
+                RectTransform optionRect = optionButton.GetComponent<RectTransform>();
+                optionRect.anchoredPosition = ManualSlotLayout.GetPosition(templateRect, index, abilityColumns, abilityGapX, abilityGapY);
+                index++;
+
+                AbilityOptionUI optionUI = optionButton.GetComponent<AbilityOptionUI>();
+                AbilityItemInstance capturedStack = stack;
+
+                if (optionUI != null)
+                    optionUI.Initialize(capturedStack, usable, () => SelectAbilityOption(capturedStack));
+                else
+                    optionButton.interactable = usable;
+
+                anyShown = true;
+            }
+        }
+
+        if (abilityEmptyText != null)
+            abilityEmptyText.gameObject.SetActive(!anyShown);
+    }
+
+    /// <summary>Whether this item can actually be used right now — pot-targeted consumables
+    /// (Pollen Puff, Verdant Algae, Dewdrop) need the current pot to have a plant; everything
+    /// else (untargeted consumables, all Placeables) is always usable from here.</summary>
+    private bool IsAbilityUsableNow(AbilityItemData data)
+    {
+        if (data.kind == AbilityKind.Consumable && AbilityConsumableEffects.RequiresPotTarget(data.effectId))
+            return currentPot != null && currentPot.HasPlant;
+
+        return true;
+    }
+
+    private void SelectAbilityOption(AbilityItemInstance stack)
+    {
+        if (stack?.data == null || abilityInventory == null) return;
+        AbilityItemData data = stack.data;
+
+        if (data.kind == AbilityKind.Placeable)
+        {
+            // Placement consumes from the inventory itself once the player actually clicks a
+            // valid cell (see AbilityPlacementSystem.TryPlace) — close the pot menu and hand off.
+            if (abilityPlacementSystem == null)
+            {
+                Debug.LogWarning("[PotMenuUIController] No AbilityPlacementSystem found — can't place " +
+                                  $"'{data.displayName}'.");
+                return;
+            }
+
+            abilityPlacementSystem.BeginPlacing(data);
+            ownerInteraction?.CloseMenu();
+            return;
+        }
+
+        // Consumable: apply immediately, only spend the item if it actually worked.
+        GameObject player = playerInventory != null ? playerInventory.gameObject : null;
+        bool applied = AbilityConsumableEffects.TryApply(data, player, currentPot);
+
+        if (applied)
+        {
+            abilityInventory.TryConsume(data, 1);
+            RefreshAbilitiesPanel();
+            RefreshMainPanel();
+        }
+        else
+        {
+            Debug.Log($"[PotMenuUIController] '{data.displayName}' couldn't be used right now.");
+        }
     }
 }
