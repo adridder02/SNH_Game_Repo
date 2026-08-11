@@ -31,7 +31,11 @@ public class ThirdPersonCameraController : MonoBehaviour
     
     [Header("Collision Box Settings")]
     [SerializeField] private bool showDebugBox = true;
-    
+
+    [Header("Dragon Hide-on-Collision")]
+    [Tooltip("Renderers to hide while the camera is blocked by a solid object (floor, wall, etc.), e.g. body, wings, horns.")]
+    [SerializeField] private Renderer[] dragonRenderers;
+
     [Header("Performance")]
     [SerializeField] private bool enableDebugLogs = false;
 
@@ -50,6 +54,9 @@ public class ThirdPersonCameraController : MonoBehaviour
     private bool isCollidingWithPullObject = false;
     private float collisionDistance = 0f;
     private GameObject currentCollidingObject = null;
+
+    // Dragon hide-on-close state
+    private bool dragonHidden = false;
 
     // Original variables
     private PlayerControls controls;
@@ -126,7 +133,7 @@ public class ThirdPersonCameraController : MonoBehaviour
         // So we don't need to check layers here - if we got this event, it's already filtered!
         
         // Calculate distance from camera to the object
-        Vector3 closestPoint = other.ClosestPoint(transform.position);
+        Vector3 closestPoint = GetSafeClosestPoint(other);
         float distance = Vector3.Distance(transform.position, closestPoint);
         
         // Check if this is closer than previous collisions
@@ -141,6 +148,25 @@ public class ThirdPersonCameraController : MonoBehaviour
                 Debug.Log($"Camera colliding with MainInteraction: {other.gameObject.name} at distance {distance}");
             }
         }
+    }
+
+    /// <summary>
+    /// Collider.ClosestPoint() only supports Box/Sphere/Capsule colliders and *convex*
+    /// Mesh Colliders - it throws at runtime on a non-convex MeshCollider, which is
+    /// exactly what most floor/wall level geometry uses. Fall back to the collider's
+    /// AABB bounds in that case; ClosestPoint on Bounds works for any collider type
+    /// and is accurate enough for camera-pull purposes on flat surfaces.
+    /// </summary>
+    private Vector3 GetSafeClosestPoint(Collider other)
+    {
+        bool supportsClosestPoint = other is BoxCollider
+            || other is SphereCollider
+            || other is CapsuleCollider
+            || (other is MeshCollider meshCollider && meshCollider.convex);
+
+        return supportsClosestPoint
+            ? other.ClosestPoint(transform.position)
+            : other.bounds.ClosestPoint(transform.position);
     }
 
     void OnTriggerExit(Collider other)
@@ -165,6 +191,12 @@ public class ThirdPersonCameraController : MonoBehaviour
     private void OnDestroy()
     {
         RestoreAllTransparentRenderers();
+
+        if (dragonHidden)
+        {
+            SetDragonRenderersEnabled(true);
+            dragonHidden = false;
+        }
         
         if (controls != null)
         {
@@ -243,6 +275,10 @@ public class ThirdPersonCameraController : MonoBehaviour
         
         collisionZoom = Mathf.Lerp(collisionZoom, desiredRadius, dt * lerpSpeed);
 
+        // Hide the dragon while the camera is pinned against something solid
+        // (floor, wall, etc.) so it doesn't clip through the dragon's model.
+        UpdateDragonVisibility();
+
         // Handle transparency for all other layers using Raycast
         HandleTransparencyForOtherLayers(dt);
     }
@@ -280,9 +316,15 @@ public class ThirdPersonCameraController : MonoBehaviour
         Vector3 direction = (playerPosition - cameraPosition).normalized;
         float distanceToPlayer = Vector3.Distance(cameraPosition, playerPosition);
         
-        // Raycast from camera to player for transparency
-        // This will hit ALL layers, but we'll filter in the loop
-        RaycastHit[] hits = Physics.RaycastAll(cameraPosition, direction, distanceToPlayer);
+        // Raycast from camera to player for transparency.
+        // FIX: this now respects transparentMask, which was previously declared but
+        // never applied - the raycast hit every layer regardless of the mask setting.
+        // Put the floor/wall layer(s) OUTSIDE this mask (and inside the collision box's
+        // Include Layers instead - see ShouldObjectCauseCameraPull below) so they never
+        // fade and are handled purely by the camera-pull collision system instead.
+        // Ignoring triggers keeps the camera's own trigger box out of its own raycast.
+        RaycastHit[] hits = Physics.RaycastAll(cameraPosition, direction, distanceToPlayer,
+            transparentMask, QueryTriggerInteraction.Ignore);
         
         HashSet<Renderer> objectsToFade = new HashSet<Renderer>();
         
@@ -326,6 +368,44 @@ public class ThirdPersonCameraController : MonoBehaviour
         
         // Update alpha values
         UpdateAlphas(dt);
+    }
+
+    /// <summary>
+    /// Hides the dragon while the camera is actively being blocked by something solid
+    /// (floor, wall, or any other object on the collision-pull layer) - i.e. the exact
+    /// moment the camera would otherwise clip into the dragon because it's pinned
+    /// against a surface. Shows it again as soon as that collision ends. Driven off
+    /// isCollidingWithPullObject rather than raw distance, so it only fires for real
+    /// solid-object blocking, not just "camera happens to be near the dragon".
+    /// </summary>
+    private void UpdateDragonVisibility()
+    {
+        if (dragonRenderers == null || dragonRenderers.Length == 0) return;
+
+        if (!dragonHidden && isCollidingWithPullObject)
+        {
+            SetDragonRenderersEnabled(false);
+            dragonHidden = true;
+
+            if (enableDebugLogs)
+                Debug.Log($"Camera pinned against {currentCollidingObject?.name} - hiding dragon");
+        }
+        else if (dragonHidden && !isCollidingWithPullObject)
+        {
+            SetDragonRenderersEnabled(true);
+            dragonHidden = false;
+
+            if (enableDebugLogs)
+                Debug.Log("Camera cleared the obstruction - showing dragon");
+        }
+    }
+
+    private void SetDragonRenderersEnabled(bool enabled)
+    {
+        foreach (Renderer r in dragonRenderers)
+        {
+            if (r != null) r.enabled = enabled;
+        }
     }
 
     /// <summary>
