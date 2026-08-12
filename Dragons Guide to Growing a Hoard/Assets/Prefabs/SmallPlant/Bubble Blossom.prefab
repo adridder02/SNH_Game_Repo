@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 5714424194937587928}
   - component: {fileID: -5143957146791985451}
   - component: {fileID: 8135272143644950910}
+  - component: {fileID: 4531579060665874477}
   m_Layer: 3
   m_Name: Bubble Blossom
   m_TagString: Selectable
@@ -247,3 +248,17 @@ MonoBehaviour:
   progress: 0
   isComplete: 0
   smoothedRatePerSecond: 0
+--- !u!114 &4531579060665874477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6703200343087572510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e406e6b2c1e7784479c80c53a2fb8f67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHarvestYield
+  yieldItem: {fileID: 11400000, guid: bf34dc142d8bcfe44927675fc1ebbf3b, type: 2}
+  amountOverride: 0

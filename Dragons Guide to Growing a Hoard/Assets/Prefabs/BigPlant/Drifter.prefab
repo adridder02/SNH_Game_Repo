@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 483069002037345463}
   - component: {fileID: -7067466375878971726}
   - component: {fileID: -8791179076423676491}
+  - component: {fileID: -908083796916967827}
   m_Layer: 3
   m_Name: Drifter
   m_TagString: Selectable
@@ -247,3 +248,20 @@ MonoBehaviour:
   progress: 0
   isComplete: 0
   smoothedRatePerSecond: 0
+--- !u!114 &-908083796916967827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2650251699068457546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5968549b473ae048b4f94d79116f1e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DrifterLilyPad
+  hasFlower: 0
+  flowerVisual: {fileID: 0}
+  sinkSpeed: 0.6
+  sinkDepth: 1.5
+  randomFlowerChance: 0

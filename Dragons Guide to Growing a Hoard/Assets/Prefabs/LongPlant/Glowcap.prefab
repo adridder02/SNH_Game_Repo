@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: -3345069727297567439}
   - component: {fileID: 6869571386960432020}
   - component: {fileID: -8878280970589891650}
+  - component: {fileID: -4750460871665086151}
   m_Layer: 3
   m_Name: Glowcap
   m_TagString: Selectable
@@ -247,3 +248,17 @@ MonoBehaviour:
   progress: 0
   isComplete: 0
   smoothedRatePerSecond: 0
+--- !u!114 &-4750460871665086151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640831792386703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e406e6b2c1e7784479c80c53a2fb8f67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHarvestYield
+  yieldItem: {fileID: 11400000, guid: 916ff57f2a74f7244a8048d45b9e8b56, type: 2}
+  amountOverride: 0

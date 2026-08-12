@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 4688223070293238866}
   - component: {fileID: -7003582614352320832}
   - component: {fileID: 4254688850775693314}
+  - component: {fileID: 4425992596056547907}
   m_Layer: 3
   m_Name: Waterbell
   m_TagString: Selectable
@@ -247,3 +248,17 @@ MonoBehaviour:
   progress: 0
   isComplete: 0
   smoothedRatePerSecond: 0
+--- !u!114 &4425992596056547907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443154059041681990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e406e6b2c1e7784479c80c53a2fb8f67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHarvestYield
+  yieldItem: {fileID: 11400000, guid: 2a844a56d1d7e9144aa938e2022db57b, type: 2}
+  amountOverride: 0

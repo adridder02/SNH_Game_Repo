@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 6790803248347742446}
   - component: {fileID: -4223702107849560079}
   - component: {fileID: 8882448461420115572}
+  - component: {fileID: -7388433927529106392}
   m_Layer: 3
   m_Name: Sundial Cactus
   m_TagString: Selectable
@@ -268,3 +269,20 @@ MonoBehaviour:
   progress: 0
   isComplete: 0
   smoothedRatePerSecond: 0
+--- !u!114 &-7388433927529106392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108434111351597028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70a3e8c3d63282c4fae6891c8d0a609b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SundialCactusIndicator
+  stemObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
