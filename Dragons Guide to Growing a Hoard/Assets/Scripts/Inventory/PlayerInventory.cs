@@ -80,6 +80,7 @@ public class PlayerInventory : MonoBehaviour
     {
         grid = new InventoryGrid(gridWidth, gridHeight);
         waterPool = maxWaterRefill;
+        
     }
 
     void OnCollisionEnter(Collision collision)

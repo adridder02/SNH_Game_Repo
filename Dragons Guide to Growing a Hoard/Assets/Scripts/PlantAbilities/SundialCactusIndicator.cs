@@ -30,6 +30,9 @@ public class SundialCactusIndicator : MonoBehaviour
         lightSensor = GetComponent<LightSensor>() ?? GetComponentInChildren<LightSensor>();
         if (lightSensor == null)
             Debug.LogWarning("[SundialCactusIndicator] No LightSensor found — stem count will always read 0.", this);
+        
+        for (int i = 0; i < stemObjects.Length; i++)
+            stemObjects[i].SetActive(false);    
     }
 
     private void Update()

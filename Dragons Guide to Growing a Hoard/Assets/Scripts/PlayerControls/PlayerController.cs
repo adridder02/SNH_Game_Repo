@@ -37,6 +37,12 @@ public class PlayerController : MonoBehaviour
     [Tooltip("How strongly camera pitch steers vertical movement while flying (0 = off).")]
     [SerializeField] private float flyPitchInfluence = 1f;
 
+    [Tooltip("Slow passive sink applied while flying when the player holds neither Space nor Ctrl. " +
+             "Without this, releasing all vertical input just hovers indefinitely with nothing to " +
+             "bring the player back down - this guarantees fly mode is always exitable eventually, " +
+             "even over open water/pits where the player never actively chooses to descend.")]
+    [SerializeField] private float flyIdleDriftSpeed = 1.5f;
+
     [Header("Input")]
     [SerializeField] private InputActionAsset inputActions;
     private bool escPressed = false;
@@ -171,6 +177,27 @@ public class PlayerController : MonoBehaviour
             velocity = Vector3.zero;
             flyAscendHeld = false;
         }
+    }
+
+    // ──────────────────────────────────────────────
+    //  Public API (used by external launchers, e.g. SproionshroomLauncher)
+    // ──────────────────────────────────────────────
+    /// <summary>
+    /// Called by external objects (launch pads, bounce plants, etc.) that want to override the
+    /// player's current gravity/jump velocity directly. Puts the controller into the Jumping state
+    /// so normal gravity integration in UpdateNormalLocomotion() takes over from the given velocity
+    /// on the very next frame, and so the landing/animator logic treats this like an ordinary
+    /// airborne arc. Does nothing while flying or while movement is disabled, since both of those
+    /// states manage `velocity` themselves and would otherwise immediately overwrite this.
+    /// </summary>
+    public void ApplyExternalLaunch(Vector3 launchVelocity)
+    {
+        if (!movementEnabled || locomotionState == LocomotionState.Flying) return;
+
+        velocity = launchVelocity;
+        locomotionState = LocomotionState.Jumping;
+        lastSpacePressTime = Time.time;
+        playerAnim?.jump();
     }
 
     // ──────────────────────────────────────────────
@@ -312,6 +339,14 @@ public class PlayerController : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         GameObject otherObj = collision.gameObject;
+
+        // Objects that apply their own external launch (e.g. SproionshroomLauncher) manage the
+        // player's velocity/state themselves via ApplyExternalLaunch(). Skip the normal auto-jump
+        // here so this handler doesn't race it and stomp the launch velocity back down to a regular
+        // jump height on the same frame (script execution order between two GameObjects reacting to
+        // the same collision isn't guaranteed).
+        if (otherObj.GetComponent<SproionshroomLauncher>() != null) return;
+
         if (locomotionState == LocomotionState.Grounded && ((groundLayers.value & (1 << otherObj.layer)) != 0))
         {
             Jump();
@@ -449,11 +484,25 @@ public class PlayerController : MonoBehaviour
             bool ctrlHeld = Keyboard.current != null &&
                 (Keyboard.current.leftCtrlKey.isPressed || Keyboard.current.rightCtrlKey.isPressed);
 
+            // Tracks only what the player explicitly asked for (Space/Ctrl + idle drift), kept
+            // separate from camera-pitch steering below. The exit check uses this instead of the
+            // combined verticalMove so that looking slightly upward while approaching a landing spot
+            // can't cancel out a held Ctrl and silently prevent the player from ever landing.
+            float intentionalVertical = 0f;
+
             if (flyAscendHeld)
-                verticalMove += flyVerticalSpeed * (IsSprinting ? sprintMultiplier : 1f);
+                intentionalVertical += flyVerticalSpeed * (IsSprinting ? sprintMultiplier : 1f);
 
             if (ctrlHeld)
-                verticalMove -= flyVerticalSpeed * (IsSprinting ? sprintMultiplier : 1f);
+                intentionalVertical -= flyVerticalSpeed * (IsSprinting ? sprintMultiplier : 1f);
+
+            // Neither key held: apply a slow passive sink so the player always drifts back toward
+            // the ground eventually instead of hovering in place forever (e.g. over water or a pit
+            // where they never actively choose to descend).
+            if (!flyAscendHeld && !ctrlHeld)
+                intentionalVertical -= flyIdleDriftSpeed;
+
+            verticalMove += intentionalVertical;
 
             if (flyPitchInfluence > 0f && moveInput.sqrMagnitude > 0.01f)
             {
@@ -470,7 +519,7 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            if (controller.isGrounded && verticalMove <= 0f)
+            if (controller.isGrounded && intentionalVertical <= 0f)
             {
                 ExitFlyMode();
                 return;

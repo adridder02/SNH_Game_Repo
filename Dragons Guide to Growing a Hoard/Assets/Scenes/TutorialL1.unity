@@ -1063,12 +1063,17 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: a590e308ddcd34742976b55a94481e3d, type: 2}
+    - target: {fileID: 5866666021909216657, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7322170881802557050, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: -7029948723529949830, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
@@ -1629,7 +1634,7 @@ GameObject:
   - component: {fileID: 74016823}
   m_Layer: 0
   m_Name: PlayerParent
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1735,7 +1740,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 1
-  m_Radius: 0.25
+  m_Radius: 0.3
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -1853,6 +1858,7 @@ MonoBehaviour:
   flyGroundGracePeriod: 0.4
   flyVerticalSpeed: 5
   flyPitchInfluence: 1
+  flyIdleDriftSpeed: 1.5
   inputActions: {fileID: -944628639613478452, guid: 96f9bf046802d4545868fdcc2b9f308a, type: 3}
   movementMission: {fileID: 11400000, guid: bc08ac5a41257484bb6bf6139a8d2944, type: 2}
 --- !u!65 &74016815
@@ -1874,8 +1880,8 @@ BoxCollider:
   m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.92, y: 7.96, z: 2.18}
-  m_Center: {x: 0.04, y: 4.45, z: -0.13}
+  m_Size: {x: 3.92, y: 7.18, z: 2.18}
+  m_Center: {x: 0.04, y: 0.74, z: -0.13}
 --- !u!23 &74016816
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -7108,13 +7114,13 @@ Transform:
   - {fileID: 6371117712713714891}
   - {fileID: 6371117711663884872}
   - {fileID: 6371117711948650537}
+  - {fileID: 6371117711559463331}
   - {fileID: 4493067400388514025}
   - {fileID: 4493067400138540200}
   - {fileID: 4493067399654772814}
   - {fileID: 4493067401051978268}
   - {fileID: 4493067400382646338}
   - {fileID: 4493067399300467292}
-  - {fileID: 6371117711559463331}
   - {fileID: 287122323564519442}
   - {fileID: 4291933657754705771}
   - {fileID: 4291933659341317193}
@@ -7166,11 +7172,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd671e3ffff6a3c4ba238cc9d487bd59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HarvestNodeContainer
-  player: {fileID: 1503386468}
+  player: {fileID: 32051273}
   playerInventory: {fileID: 59622639}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
   interactRange: 9.73
-  useWorldSpacePrompt: 0
+  useWorldSpacePrompt: 1
   promptTemplate: {fileID: 1013607874941719082, guid: 65d798a5a19156b4eb251d2a10a0548f, type: 3}
   promptText: Harvest
   promptKeybindSprite: {fileID: 21300000, guid: e9caf0e16558e32419fe60ee36494b32, type: 3}
@@ -16912,133 +16918,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1040057104}
   m_CullTransparentMesh: 1
---- !u!1 &1046433394
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1046433397}
-  - component: {fileID: 1046433396}
-  - component: {fileID: 1046433395}
-  m_Layer: 0
-  m_Name: Area Light
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1046433395
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1046433394}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
-  m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
-  m_CustomShadowLayers: 0
-  m_LightCookieSize: {x: 1, y: 1}
-  m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 0
-  m_RenderingLayersMask:
-    serializedVersion: 0
-    m_Bits: 1
-  m_ShadowRenderingLayersMask:
-    serializedVersion: 0
-    m_Bits: 1
-  m_Version: 4
-  m_LightLayerMask: 1
-  m_ShadowLayerMask: 1
-  m_RenderingLayers: 1
-  m_ShadowRenderingLayers: 1
---- !u!108 &1046433396
-Light:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1046433394}
-  m_Enabled: 1
-  serializedVersion: 13
-  m_Type: 3
-  m_Color: {r: 1, g: 0, b: 1, a: 1}
-  m_Intensity: 500
-  m_Range: 10
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
-  m_CookieSize2D: {x: 0.5, y: 0.5}
-  m_Shadows:
-    m_Type: 2
-    m_Resolution: -1
-    m_CustomResolution: -1
-    m_Strength: 1
-    m_Bias: 0.05
-    m_NormalBias: 0.4
-    m_NearPlane: 0.2
-    m_CullingMatrixOverride:
-      e00: 1
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 1
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 1
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 1
-    m_UseCullingMatrixOverride: 0
-  m_Cookie: {fileID: 0}
-  m_DrawHalo: 0
-  m_Flare: {fileID: 0}
-  m_RenderMode: 0
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RenderingLayerMask: 1
-  m_Lightmapping: 2
-  m_LightShadowCasterMode: 0
-  m_AreaSize: {x: 25, y: 25}
-  m_BounceIntensity: 1
-  m_ColorTemperature: 6570
-  m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
-  m_UseBoundingSphereOverride: 0
-  m_UseViewFrustumForShadowCasterCull: 1
-  m_ForceVisible: 0
-  m_ShapeRadius: 0.025
-  m_ShadowAngle: 0
-  m_LightUnit: 1
-  m_LuxAtDistance: 1
-  m_EnableSpotReflector: 1
---- !u!4 &1046433397
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1046433394}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -2.23, y: -14, z: 44.6}
-  m_LocalScale: {x: 2, y: 2, z: 2}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &1048174616
 GameObject:
   m_ObjectHideFlags: 0
@@ -21724,7 +21603,7 @@ MonoBehaviour:
   showDebugBox: 1
   dragonRenderers:
   - {fileID: 572101639}
-  enableDebugLogs: 0
+  enableDebugLogs: 1
 --- !u!114 &1393679878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23327,11 +23206,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aae3da16f6ed85d4bb8faae933b9bfd4, type: 3}
---- !u!4 &1503386468 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8055405489970019916, guid: aae3da16f6ed85d4bb8faae933b9bfd4, type: 3}
-  m_PrefabInstance: {fileID: 1503386467}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1511445927
 GameObject:
   m_ObjectHideFlags: 0
@@ -26546,6 +26420,211 @@ RectTransform:
   m_AnchoredPosition: {x: -1394.5, y: -748.75}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1738163106
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1738163113}
+  - component: {fileID: 1738163112}
+  - component: {fileID: 1738163111}
+  - component: {fileID: 1738163110}
+  - component: {fileID: 1738163109}
+  - component: {fileID: 1738163108}
+  - component: {fileID: 1738163107}
+  m_Layer: 0
+  m_Name: Capsule
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1738163107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738163106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2587ee5c9d93c24cb429211f232afba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LightSensor
+  directionalLight: {fileID: 0}
+  maxLightIntensity: 3
+  checkForObstacles: 1
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  rayOriginOffset: 0.5
+  rawIntensity: 0
+  isInShadow: 0
+  normalisedIntensity: 0
+--- !u!114 &1738163108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738163106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16205de04db76b64dbe5db1646d656d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WindmillAsterWard
+  sunlightThreshold: 0.6
+  wardRadius: 4
+  rescanInterval: 1
+  plantLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &1738163109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738163106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6b95557e7067b4a8c58044c08c19c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantState
+  plantSize: 1
+  plantType: 0
+  journalSpecies: {fileID: 0}
+  potPlacementOffset: 0
+  potPlacementRotation: {x: 0, y: 0, z: 0}
+  preferredSoil: 1
+  neutralSoil: 0
+  lightThresholdHigh: 0.6
+  lightThresholdLow: 0.25
+  waterThresholdHigh: 6
+  waterThresholdLow: 3
+  revivedMinScore: 5
+  intermediateMinScore: 2
+  lightSensor: {fileID: 0}
+  revivedVisual: {fileID: 0}
+  intermediateVisual: {fileID: 0}
+  deadVisual: {fileID: 0}
+  debuff:
+    enabled: 0
+    scanInterval: 2
+    amountPerTick: 0.5
+    duration: 5
+    tickInterval: 1
+    transferStolenWaterToSelf: 0
+    mode: 0
+  miasmaLightPenalty: 0
+  miasmaSoilPenalty: 0
+  miasmaWaterDrainMultiplier: 1
+  isMiasmaDebuffActive: 0
+  currentState: 2
+  currentSoil: 2
+  isOnSoil: 0
+  lastTotalScore: 0
+  soilScore: 0
+  lightScore: 0
+  waterScore: 0
+--- !u!136 &1738163110
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738163106}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &1738163111
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738163106}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1738163112
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738163106}
+  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1738163113
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738163106}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 42.85, y: -13.77, z: 14.86}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1740675886
 GameObject:
   m_ObjectHideFlags: 0
@@ -32055,6 +32134,33 @@ MonoBehaviour:
   loamSoilIcon: {fileID: 21300000, guid: 27869d14e53e7244db2b046e7d4e5938, type: 3}
   sandySoilIcon: {fileID: 21300000, guid: df463f3582338fb4c9b23757e4553ce7, type: 3}
   waterSoilIcon: {fileID: 21300000, guid: 9981e9738e9b9d041a628829d9c1e948, type: 3}
+--- !u!1 &2130397057 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5501625611831835619, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+  m_PrefabInstance: {fileID: 4053156816966912037}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2130397059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2130397057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2587ee5c9d93c24cb429211f232afba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LightSensor
+  directionalLight: {fileID: 0}
+  maxLightIntensity: 4
+  checkForObstacles: 1
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  rayOriginOffset: 0.5
+  rawIntensity: 0
+  isInShadow: 0
+  normalisedIntensity: 0
 --- !u!1 &2138927768
 GameObject:
   m_ObjectHideFlags: 0
@@ -34741,6 +34847,67 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -4552961407312753236, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!1001 &1434040389277032929
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1212842466037406067, guid: 2cc1335437528af46bcaa9453c1f7fc8, type: 3}
+      propertyPath: launchOutwardForce
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952086715371186814, guid: 2cc1335437528af46bcaa9453c1f7fc8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 77.86
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952086715371186814, guid: 2cc1335437528af46bcaa9453c1f7fc8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -19.38
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952086715371186814, guid: 2cc1335437528af46bcaa9453c1f7fc8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 16.68
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952086715371186814, guid: 2cc1335437528af46bcaa9453c1f7fc8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952086715371186814, guid: 2cc1335437528af46bcaa9453c1f7fc8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952086715371186814, guid: 2cc1335437528af46bcaa9453c1f7fc8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952086715371186814, guid: 2cc1335437528af46bcaa9453c1f7fc8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952086715371186814, guid: 2cc1335437528af46bcaa9453c1f7fc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952086715371186814, guid: 2cc1335437528af46bcaa9453c1f7fc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952086715371186814, guid: 2cc1335437528af46bcaa9453c1f7fc8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6932354035260917884, guid: 2cc1335437528af46bcaa9453c1f7fc8, type: 3}
+      propertyPath: m_Name
+      value: WhumprillTemp
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2cc1335437528af46bcaa9453c1f7fc8, type: 3}
 --- !u!23 &1518928322537656986
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -37367,6 +37534,82 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventorySlotUI
   icon: {fileID: 2359847579277653489}
   label: {fileID: 0}
+--- !u!1001 &4053156816966912037
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1582209164110492204, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: 'stemObjects.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8007929206938773105, guid: 174c8adf4210745458275587fae99319, type: 3}
+    - target: {fileID: 1582209164110492204, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: 'stemObjects.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8007929206938773105, guid: 174c8adf4210745458275587fae99319, type: 3}
+    - target: {fileID: 1582209164110492204, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: 'stemObjects.Array.data[2]'
+      value: 
+      objectReference: {fileID: 8007929206938773105, guid: 174c8adf4210745458275587fae99319, type: 3}
+    - target: {fileID: 1582209164110492204, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: 'stemObjects.Array.data[3]'
+      value: 
+      objectReference: {fileID: 8007929206938773105, guid: 174c8adf4210745458275587fae99319, type: 3}
+    - target: {fileID: 2139894598545262719, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 75.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 2139894598545262719, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -16.94
+      objectReference: {fileID: 0}
+    - target: {fileID: 2139894598545262719, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 14.84
+      objectReference: {fileID: 0}
+    - target: {fileID: 2139894598545262719, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2139894598545262719, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2139894598545262719, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2139894598545262719, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2139894598545262719, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2139894598545262719, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2139894598545262719, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5501625611831835619, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      propertyPath: m_Name
+      value: SundialCactusTemp
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5501625611831835619, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+      insertIndex: 5
+      addedObject: {fileID: 2130397059}
+  m_SourcePrefab: {fileID: 100100000, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
 --- !u!114 &4102821068110228340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37773,7 +38016,7 @@ MonoBehaviour:
   plantName: Whumpril
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &4291933657754705773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37820,7 +38063,7 @@ MonoBehaviour:
   plantName: Whumpril
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &4291933659096838132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37867,7 +38110,7 @@ MonoBehaviour:
   plantName: Whumpril
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &4291933659341317195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37964,7 +38207,7 @@ MonoBehaviour:
   plantName: Glowcap
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &4493067399300467294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38011,7 +38254,7 @@ MonoBehaviour:
   plantName: Glowcap
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &4493067399654772816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38058,7 +38301,7 @@ MonoBehaviour:
   plantName: Glowcap
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &4493067400138540202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38105,7 +38348,7 @@ MonoBehaviour:
   plantName: Glowcap
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &4493067400382646340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38152,7 +38395,7 @@ MonoBehaviour:
   plantName: Glowcap
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &4493067400388514027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38199,7 +38442,7 @@ MonoBehaviour:
   plantName: Glowcap
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &4493067401051978270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39301,7 +39544,7 @@ MonoBehaviour:
   plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &5993726223858773546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39348,7 +39591,7 @@ MonoBehaviour:
   plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &5993726224035614677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39395,7 +39638,7 @@ MonoBehaviour:
   plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &5993726224150290106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39442,7 +39685,7 @@ MonoBehaviour:
   plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &5993726224721456985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39489,7 +39732,7 @@ MonoBehaviour:
   plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &5993726224756795725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39536,7 +39779,7 @@ MonoBehaviour:
   plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &5993726224819624413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39583,7 +39826,7 @@ MonoBehaviour:
   plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &5993726224837094058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39630,7 +39873,7 @@ MonoBehaviour:
   plantName: Verdant Algae
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &5993726225094243684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40009,7 +40252,7 @@ MonoBehaviour:
   plantName: Clovenwick
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &6446668121091367355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40090,7 +40333,7 @@ MonoBehaviour:
   plantName: Clovenwick
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &6446668121109008613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40171,7 +40414,7 @@ MonoBehaviour:
   plantName: Clovenwick
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &6446668122177790286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40252,7 +40495,7 @@ MonoBehaviour:
   plantName: Clovenwick
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &6446668122179554541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40306,7 +40549,7 @@ MonoBehaviour:
   plantName: Sundial Cactus
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &6476096878466650663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40360,7 +40603,7 @@ MonoBehaviour:
   plantName: Sundial Cactus
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &6476096878520886038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40414,7 +40657,7 @@ MonoBehaviour:
   plantName: Sundial Cactus
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &6476096880023233391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41003,7 +41246,7 @@ MonoBehaviour:
   plantName: Melodybloom
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &7106053868695405843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41056,7 +41299,7 @@ MonoBehaviour:
   plantName: Melodybloom
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &7106053868793773820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41109,7 +41352,7 @@ MonoBehaviour:
   plantName: Melodybloom
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &7106053869111921821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41162,7 +41405,7 @@ MonoBehaviour:
   plantName: Melodybloom
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &7106053869885642875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41341,7 +41584,7 @@ MonoBehaviour:
   plantName: The Deluge Catcher
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &7137621011250287860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41894,7 +42137,7 @@ MonoBehaviour:
   plantName: Waterbell
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &7613040284510583601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41948,7 +42191,7 @@ MonoBehaviour:
   plantName: Waterbell
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &7613040284714903095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42002,7 +42245,7 @@ MonoBehaviour:
   plantName: Waterbell
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &7613040284836984322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42056,7 +42299,7 @@ MonoBehaviour:
   plantName: Waterbell
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &7613040285220587886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42110,7 +42353,7 @@ MonoBehaviour:
   plantName: Waterbell
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &7613040285280289443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42164,7 +42407,7 @@ MonoBehaviour:
   plantName: Waterbell
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &7613040285820075033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42520,7 +42763,7 @@ MonoBehaviour:
   plantName: Windmill Aster
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &7799830688855472680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42601,7 +42844,7 @@ MonoBehaviour:
   plantName: Windmill Aster
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &7799830689462763672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42682,7 +42925,7 @@ MonoBehaviour:
   plantName: Windmill Aster
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &7799830689546397896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42828,7 +43071,7 @@ MonoBehaviour:
   plantName: Drifter
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &8096330631364292476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42882,7 +43125,7 @@ MonoBehaviour:
   plantName: Drifter
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &8096330632102485777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42936,7 +43179,7 @@ MonoBehaviour:
   plantName: Drifter
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &8096330632366887860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43036,7 +43279,7 @@ MonoBehaviour:
   plantName: Dewdropper
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &8228039973461473959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43117,7 +43360,7 @@ MonoBehaviour:
   plantName: Dewdropper
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &8228039973648303941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43198,7 +43441,7 @@ MonoBehaviour:
   plantName: Dewdropper
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &8228039974081671604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43322,7 +43565,7 @@ MonoBehaviour:
   plantName: The Maw Jaw
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &8388192504769381663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43564,7 +43807,7 @@ MonoBehaviour:
   plantName: Bubble Blossom
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &8624361956960177348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43604,7 +43847,7 @@ MonoBehaviour:
   plantName: Bubble Blossom
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &8624361957940655179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43644,7 +43887,7 @@ MonoBehaviour:
   plantName: Bubble Blossom
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &8624361958374831633
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43845,7 +44088,7 @@ MonoBehaviour:
   plantName: The Luminary
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
-  tutorialMission: {fileID: 0}
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &8812342830093620888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44238,7 +44481,9 @@ SceneRoots:
   - {fileID: 282937650}
   - {fileID: 1094209399}
   - {fileID: 1863008917}
-  - {fileID: 1046433397}
   - {fileID: 1969525298}
+  - {fileID: 4053156816966912037}
+  - {fileID: 1434040389277032929}
   - {fileID: 2480782565243112683}
   - {fileID: 6860818158659572624}
+  - {fileID: 1738163113}

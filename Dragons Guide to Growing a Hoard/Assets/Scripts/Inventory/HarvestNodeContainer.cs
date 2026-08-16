@@ -103,7 +103,7 @@ public class HarvestNodeContainer : MonoBehaviour
     private void Start()
     {
         if (playerInventory == null)
-            playerInventory = FindObjectOfType<PlayerInventory>();
+            playerInventory = FindAnyObjectByType<PlayerInventory>();
 
         CacheChildren();
 
@@ -113,7 +113,7 @@ public class HarvestNodeContainer : MonoBehaviour
         }
         else if (mainUI == null)
         {
-            mainUI = FindObjectOfType<MainUIController>();
+            mainUI = FindAnyObjectByType<MainUIController>();
             if (mainUI == null)
                 Debug.LogWarning("[HarvestNodeContainer] useWorldSpacePrompt is OFF but no MainUIController " +
                                   "was found/assigned — the interact prompt won't be shown.", this);

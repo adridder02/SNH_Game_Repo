@@ -13,6 +13,15 @@ using UnityEngine;
 // physics-based movement instead. Launch direction is straight up
 // plus a small outward kick away from the mushroom's centre, so the
 // player doesn't just re-land on the same spot.
+//
+// For CharacterController players, this calls PlayerController.
+// ApplyExternalLaunch() directly (compile-time checked) rather than
+// via SendMessage, so a missing/renamed method fails loudly instead
+// of silently doing nothing. If the player object doesn't have a
+// PlayerController on it — e.g. a different/prototype controller —
+// it falls back to SendMessage so this script still stays decoupled
+// from any other CharacterController-driven script that happens to
+// expose its own "ApplyExternalLaunch(Vector3)" method.
 // =============================================================
 public class SproionshroomLauncher : MonoBehaviour
 {
@@ -41,7 +50,20 @@ public class SproionshroomLauncher : MonoBehaviour
 
         Vector3 outward = (obj.transform.position - transform.position);
         outward.y = 0f;
-        outward = outward.sqrMagnitude > 0.01f ? outward.normalized : Vector3.forward;
+
+        if (outward.sqrMagnitude > 0.01f)
+        {
+            outward.Normalize();
+        }
+        else
+        {
+            // Player landed close to dead-center — fall back to their own facing direction
+            // instead of a fixed world axis, so the kick still feels consistent with their
+            // approach rather than launching them in an arbitrary compass direction.
+            Vector3 playerForward = obj.transform.forward;
+            playerForward.y = 0f;
+            outward = playerForward.sqrMagnitude > 0.01f ? playerForward.normalized : Vector3.forward;
+        }
 
         Vector3 launchVelocity = Vector3.up * launchUpForce + outward * launchOutwardForce;
 
@@ -50,12 +72,20 @@ public class SproionshroomLauncher : MonoBehaviour
 
         if (cc != null)
         {
-            // Most CharacterController-driven movement scripts read a separate velocity field each
-            // frame rather than letting anything external move them directly — SendMessage lets this
-            // stay decoupled from whatever the actual controller script is called. If your controller
-            // exposes a public method instead (e.g. "ApplyImpulse(Vector3)"), call that directly here
-            // instead of SendMessage for a compile-time-checked hookup.
-            obj.SendMessage("ApplyExternalLaunch", launchVelocity, SendMessageOptions.DontRequireReceiver);
+            PlayerController pc = obj.GetComponent<PlayerController>();
+            if (pc != null)
+            {
+                // Compile-time-checked hookup — if this method is ever renamed or removed,
+                // the project fails to build instead of silently doing nothing at runtime.
+                pc.ApplyExternalLaunch(launchVelocity);
+            }
+            else
+            {
+                // No PlayerController here (different/prototype controller script). Fall back to
+                // SendMessage so this stays decoupled from whatever that script is called — it just
+                // needs its own public "ApplyExternalLaunch(Vector3)" method to receive this.
+                obj.SendMessage("ApplyExternalLaunch", launchVelocity, SendMessageOptions.DontRequireReceiver);
+            }
         }
         else if (rb != null)
         {

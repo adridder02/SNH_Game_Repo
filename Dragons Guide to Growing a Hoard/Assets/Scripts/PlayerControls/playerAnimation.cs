@@ -59,7 +59,12 @@ public class playerAnimation : MonoBehaviour
     {
         if (playerAni != null)
         {
-            playerAni.SetBool("Jump", false);
+            // "Jump" is set via SetTrigger() in jump() above, so it must be a Trigger parameter
+            // in the Animator Controller, not a Bool - SetBool("Jump", false) here was a type
+            // mismatch that Unity silently logs a warning for and ignores. ResetTrigger clears a
+            // pending/consumed trigger the correct way for this parameter type. If "Jump" is
+            // still set to Bool in the Controller's Parameters tab, change it to Trigger to match.
+            playerAni.ResetTrigger("Jump");
             playerAni.SetBool("IsFlying", false);
             isInAir = false;
         }
@@ -68,12 +73,19 @@ public class playerAnimation : MonoBehaviour
     public void setJumpFalse()
     {
         if (playerAni != null)
-            playerAni.SetBool("Jump", false);
+            playerAni.ResetTrigger("Jump"); // see notInAir() above - "Jump" must be a Trigger, not a Bool
     }
 
     private void tiltNeutral(){
         //Debug.Log("Air: "+ isInAir +" -> Still: "+ isStill);
-        if(!isInAir || !isStill)
+        // Only level out while grounded and idle (e.g. correcting drift after landing on a slope).
+        // Previously ran whenever isInAir && isStill, which included the very first frame of
+        // takeoff - isStill often hadn't been updated to false yet (only the Grounded branch in
+        // PlayerController.UpdateAnimator() ever calls setWalking()/setRunning() to clear it), so
+        // this was nudging transform.eulerAngles.x by hand at the same time PlayerController's own
+        // Quaternion.Slerp flight rotation was driving the same transform - two different rotation
+        // systems fighting over the same frame, which reads as a messy/stuttery takeoff.
+        if(isInAir || !isStill)
             return;
         Vector3 rotation = transform.eulerAngles;
         

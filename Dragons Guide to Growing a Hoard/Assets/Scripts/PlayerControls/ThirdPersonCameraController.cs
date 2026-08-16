@@ -26,7 +26,7 @@ public class ThirdPersonCameraController : MonoBehaviour
     
     [Header("Camera Pull Settings")]
     [SerializeField] private float collisionPullInSpeed = 20f;
-    [SerializeField] private float collisionPullOutSpeed = 4f;
+    [SerializeField] private float collisionPullOutSpeed = 15f;
     [SerializeField] private float collisionBuffer = 0.3f;
     
     [Header("Collision Box Settings")]
