@@ -42,6 +42,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Drifter.001
+    second: {fileID: 2100000, guid: f9724e375210183488dd3c2bc3798d55, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Glowcap
     second: {fileID: 2100000, guid: 4b0613338575c9d4da8e943d882450a2, type: 2}
   - first:
@@ -72,6 +77,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Sparkmint.001
+    second: {fileID: 2100000, guid: c728fddcf6eb5554a9c4d2a8f6c8e8a7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Starflower
     second: {fileID: 2100000, guid: 8540f20caed512c41a94fad64bd45536, type: 2}
   - first:
@@ -83,6 +93,11 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Trellis
+    second: {fileID: 2100000, guid: 21c122fd818935b46a6bf5ed47fdaf3d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Trellis.001
     second: {fileID: 2100000, guid: 21c122fd818935b46a6bf5ed47fdaf3d, type: 2}
   - first:
       type: UnityEngine:Material
