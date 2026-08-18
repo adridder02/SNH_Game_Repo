@@ -276,6 +276,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PollenPuffProducer
   puffballItem: {fileID: 11400000, guid: 9df404b2e95e4554084436c27162021d, type: 2}
-  maxPuffballs: 3
-  cycleDurationSeconds: 600
-  requiresRevivedState: 1
+  maxPuffballs: 50
+  cycleDurationSeconds: 2
+  requiresRevivedState: 0

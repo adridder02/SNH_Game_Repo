@@ -67,14 +67,18 @@ public class WaterbellSprinkler : AbilityPlaceable
     private void RefreshConnectedPots()
     {
         connectedPots.Clear();
-        if (GridData == null) return;
+        //Debug.Log($"[Waterbell] instance {GetInstanceID()} on GameObject {gameObject.name}, GridData null? {GridData == null}");
+        if (GridData == null) { Debug.LogWarning("[Waterbell] GridData null"); return; }
+        
 
+        Debug.Log($"[Waterbell] Surface={Surface?.name}, Origin={GridOrigin}, Size={GridSize}");
         foreach (Vector3Int offset in Neighbours4)
         {
             if (connectedPots.Count >= 3) break;
 
             Vector3Int neighbourCell = GridOrigin + offset;
             PlacementData data = GridData.GetPlacement(neighbourCell);
+            Debug.Log($"[Waterbell]   checking {neighbourCell} -> {(data == null ? "empty" : data.PlacedObject.name)}");
             PotContents pot = data?.PlacedObject != null ? data.PlacedObject.GetComponent<PotContents>() : null;
             if (pot != null && !connectedPots.Contains(pot))
                 connectedPots.Add(pot);

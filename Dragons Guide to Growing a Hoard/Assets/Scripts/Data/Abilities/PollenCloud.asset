@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityItemData
   displayName: Puff of Pollen
   description: puff info here
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 0c2171f27595a1142aa3b4aea424545e, type: 3}
   kind: 1
   effectId: 1
   harvestGrantAmount: 3

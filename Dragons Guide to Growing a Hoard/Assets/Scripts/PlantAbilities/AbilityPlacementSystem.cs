@@ -234,6 +234,14 @@ public class AbilityPlacementSystem : MonoBehaviour
         previewObject = Instantiate(item.placedPrefab);
         foreach (Collider c in previewObject.GetComponentsInChildren<Collider>())
             c.enabled = false;
+
+        // The preview ghost is never passed through Initialise(), so its GridData/GridOrigin sit at
+        // their defaults (null/zero) forever. Disabling colliders alone wasn't enough - the
+        // AbilityPlaceable-derived script (WaterbellSprinkler, etc.) still runs its own Update() and
+        // was ticking every frame against a null GridData. Disabling the component itself stops that.
+        foreach (AbilityPlaceable p in previewObject.GetComponentsInChildren<AbilityPlaceable>())
+            p.enabled = false;
+
         previewObject.SetActive(false);
     }
 

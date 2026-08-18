@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7860025422578634592}
   - component: {fileID: 3099908242373440680}
   - component: {fileID: 1763311770159905558}
+  - component: {fileID: 2465130426557671056}
   m_Layer: 0
   m_Name: SparkmintLeaf
   m_TagString: Untagged
@@ -90,3 +91,15 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2465130426557671056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5531615902374587953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5cd999a2b954bf4b8c55fc4fc150b8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SparkmintLeafFence

@@ -13,7 +13,7 @@ using UnityEngine;
 public class DrifterLilyPad : MonoBehaviour
 {
     [Tooltip("If true, standing on this pad sinks it (and the player). If false, it stays buoyant no matter what stands on it.")]
-    public bool hasFlower = false;
+    public bool hasFlower = true;
 
     [Tooltip("Optional: the flower mesh/GameObject, kept in sync with hasFlower so the danger is visible to the player.")]
     public GameObject flowerVisual;
@@ -23,7 +23,7 @@ public class DrifterLilyPad : MonoBehaviour
     public float sinkDepth = 1.5f;
 
     [Tooltip("Randomise hasFlower on spawn instead of hand-authoring it per prefab instance. 0 = never flowered, 1 = always.")]
-    [Range(0f, 1f)] public float randomFlowerChance = -1f; // -1 = don't randomise, use hasFlower as authored
+    [Range(-1f, 1f)] public float randomFlowerChance = -1f; // -1 = don't randomise, use hasFlower as authored
 
     private string playerTag = "Player";
     private bool isSinking;
