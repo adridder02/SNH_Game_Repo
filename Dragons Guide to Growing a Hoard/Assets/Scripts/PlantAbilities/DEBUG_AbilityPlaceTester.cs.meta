@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3bbc87e7d3a62784abba1188dcc64a4b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - abilityPlacementSystem: {instanceID: 0}
+  - abilityInventory: {instanceID: 0}
+  - sparkmintLeafData: {fileID: 11400000, guid: f3e3ff68bcc11044f8b737142c05ef1b, type: 2}
+  - waterbellData: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
