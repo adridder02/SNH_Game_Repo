@@ -8,7 +8,7 @@ o the circuit updates live as you place each one. */
 Waterbell — same setup we already worked through: press 2, hover a valid cell adjacent to a planted pot, 
 left-click to place.
 Lower that pot's water below targetWaterLevel and watch it climb back up every tickInterval seconds.
- */
+*/
 public class DEBUG_AbilityPlaceTester : MonoBehaviour
 {
     [SerializeField] private AbilityPlacementSystem abilityPlacementSystem;
@@ -18,7 +18,7 @@ public class DEBUG_AbilityPlaceTester : MonoBehaviour
 
     private void Start()
     {
-        // Give yourself stock for testing — remove once real harvest-grant flow exists
+        // Give yourself stock for testing
         abilityInventory.Add(sparkmintLeafData, 25);
         abilityInventory.Add(waterbellData, 3);
     }
