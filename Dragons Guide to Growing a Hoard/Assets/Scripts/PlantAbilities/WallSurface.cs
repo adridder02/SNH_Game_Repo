@@ -34,7 +34,7 @@ public class WallSurface : MonoBehaviour
     }
 
     [Header("Grid settings")]
-    [SerializeField] private float cellSize = 1f;
+    [SerializeField] private float cellSize = 2f;
     [SerializeField] private FacingAxis facing = FacingAxis.FacesZ;
 
     [Header("Visual")]
@@ -105,6 +105,9 @@ public class WallSurface : MonoBehaviour
     }
 
     /// <summary>The rotation a mounted prefab should use to sit flush against this wall, facing outward.</summary>
-    public Quaternion MountRotation =>
-        facing == FacingAxis.FacesZ ? Quaternion.LookRotation(Vector3.back) : Quaternion.LookRotation(Vector3.left);
+   public Quaternion MountRotation =>
+    facing == FacingAxis.FacesZ
+        ? Quaternion.LookRotation(Vector3.back) * Quaternion.Euler(-90f, 90f, 0f)
+        : Quaternion.LookRotation(Vector3.left) * Quaternion.Euler(-90f, 90f, 0f); //!MAY NEED TO CHANGE THIS FOR THE X AXIS
+
 }

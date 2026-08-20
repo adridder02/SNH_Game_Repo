@@ -36,12 +36,15 @@ public class PotWaterGizmo : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        if (pot == null)
+        pot = GetComponent<PotContents>();
+
         if (pot == null) return;
 
         float normalized = pot.plantWaterMax > 0f ? Mathf.Clamp01(pot.WaterLevel / pot.plantWaterMax) : 0f;
 
-        Vector3 basePos = transform.position + Vector3.up * 1.5f;
-        float barWidth = 0.5f;
+        Vector3 basePos = transform.position + Vector3.up * 2f;
+        float barWidth = 5f;
 
         // Background
         Gizmos.color = new Color(0f, 0f, 0f, 0.4f);

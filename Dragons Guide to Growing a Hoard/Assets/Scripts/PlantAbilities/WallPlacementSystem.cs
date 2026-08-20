@@ -20,6 +20,10 @@ public class WallPlacementSystem : MonoBehaviour
     [Header("References")]
     [SerializeField] private InputManager inputManager;
     [SerializeField] private List<WallSurface> wallSurfaces = new List<WallSurface>();
+    [Tooltip("Optional. If assigned, entering wall placement/remove mode here cancels any active pot " +
+             "tool (Place/Remove/Move) first, so the wall grid and the pot grid can never both be " +
+             "'hot' at the same time.")]
+    [SerializeField] private PlacementSystem placementSystem;
 
     [Header("Mushroom Types")]
     [SerializeField] private List<WallMushroomData> availableMushrooms;
@@ -50,6 +54,7 @@ public class WallPlacementSystem : MonoBehaviour
         if (mode == Mode.Placing) { CancelMode(); return; }
         if (availableMushrooms == null || index < 0 || index >= availableMushrooms.Count) return;
 
+        placementSystem?.CancelActiveMode(); // wall grid and pot grid can never both be active at once
         CancelMode();
         selectedIndex = index;
         mode = Mode.Placing;
@@ -62,6 +67,7 @@ public class WallPlacementSystem : MonoBehaviour
     {
         if (mode == Mode.Removing) { CancelMode(); return; }
 
+        placementSystem?.CancelActiveMode();
         CancelMode();
         mode = Mode.Removing;
         foreach (WallSurface s in wallSurfaces) s?.GridVisual?.SetVisible(true);
@@ -82,6 +88,8 @@ public class WallPlacementSystem : MonoBehaviour
 
     private void Update()
     {
+        HandleModeToggleKeys();
+
         if (mode == Mode.None || inputManager == null) return;
 
         Vector3 mouseWorld = inputManager.GetSelectedWallPosition();
@@ -123,6 +131,21 @@ public class WallPlacementSystem : MonoBehaviour
 
         if (Mouse.current.rightButton.wasPressedThisFrame)
             CancelMode();
+    }
+
+    private void HandleModeToggleKeys()
+    {
+        if (Keyboard.current == null) return;
+
+        // Deliberately NOT bound to F (PlacementSystem's pot-place key) — two scripts independently
+        // polling the same key in the same frame race on Unity's script execution order (whichever
+        // Update() runs first could toggle its mode on before the other script's cancellation call
+        // even sees it, or the two could cancel each other out on the same press). A distinct key
+        // sidesteps that entirely; the CancelActiveMode()/CancelMode() calls in ToggleMushroomPlaceMode
+        // above (and the matching wallPlacementSystem?.CancelMode() calls in PlacementSystem) still
+        // handle switching from one grid to the other cleanly.
+        if (Keyboard.current.rKey.wasPressedThisFrame)
+            ToggleMushroomPlaceMode(selectedIndex);
     }
 
     private void UpdateHoverVisual(Vector2Int cell, WallGridVisual gridVisual, GridData gridData)

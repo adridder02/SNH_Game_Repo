@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: -861078862449864002}
   - component: {fileID: -1257692516311092426}
   - component: {fileID: 7911230658230625637}
+  - component: {fileID: 4130329681856582782}
   m_Layer: 3
   m_Name: Dewdropper
   m_TagString: Selectable
@@ -262,3 +263,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlantHarvestYield
   yieldItem: {fileID: 11400000, guid: 32f4be995edc3844a8f6ad5c3f0947ea, type: 2}
   amountOverride: 0
+--- !u!114 &4130329681856582782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5086658688875511756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e16a041bee9a0f743b0b1f61c2c5f566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PotContents
+  plantAnchor: {fileID: 0}
+  isStaticPot: 0
+  potData: {fileID: 0}
+  potSize: 1
+  plantSurfaceOffset: 0
+  claySoilPrefab: {fileID: 0}
+  loamSoilPrefab: {fileID: 0}
+  sandySoilPrefab: {fileID: 0}
+  waterSoilPrefab: {fileID: 0}
+  clayMaterial: {fileID: 0}
+  loamMaterial: {fileID: 0}
+  sandyMaterial: {fileID: 0}
+  waterMaterial: {fileID: 0}
+  plantWaterMax: 10
+  baseDrainRate: 0.3
+  sunDrainMultiplier: 0.4
+  waterLevel: 0
+  tutorialMission: {fileID: 0}
+  currentSoil: 1
+  hasSoil: 0
+  hasPlant: 0
+  currentPlantPrefab: {fileID: 0}
+  GridOrigin: {x: 0, y: 0, z: 0}

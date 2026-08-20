@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WallMushroom
   m_EditorClassIdentifier: Assembly-CSharp::WallMushroomData
   displayName: Shelf
-  size: {x: 1, y: 1}
+  size: {x: 9, y: 9}
   prefab: {fileID: 3493835662444555350, guid: cbd2a11c8414f4549a6d7beb967f5c2e, type: 3}
   previewPrefab: {fileID: 3493835662444555350, guid: cbd2a11c8414f4549a6d7beb967f5c2e, type: 3}
   maxSupportedWeightKg: 100

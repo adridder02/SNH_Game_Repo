@@ -8,6 +8,10 @@ public class PlacementSystem : MonoBehaviour
     [SerializeField] private InputManager inputManager;
     [Tooltip("All greenhouse surfaces in the scene. The system will auto-detect which one the mouse is over.")]
     [SerializeField] private List<GreenhouseSurface> surfaces = new List<GreenhouseSurface>();
+    [Tooltip("Optional. If assigned, entering any pot tool here (Place/Remove/Move) cancels wall " +
+             "placement mode first, so the pot grid and the wall grid can never both be 'hot' at the " +
+             "same time — same pattern AbilityPlacementSystem already uses against this script.")]
+    [SerializeField] private WallPlacementSystem wallPlacementSystem;
 
     [Header("Pot Types")]
     [SerializeField] private List<PotData> availablePots;
@@ -337,6 +341,7 @@ public class PlacementSystem : MonoBehaviour
             return;
 
         CancelMode(suppressEvent: true);
+        wallPlacementSystem?.CancelMode(); // pot grid and wall grid can never both be active at once
 
         selectedIndex = potIndex;
         mode = Mode.Placing;
@@ -369,6 +374,7 @@ public class PlacementSystem : MonoBehaviour
     private void EnterRemoveMode()
     {
         CancelMode(suppressEvent: true);
+        wallPlacementSystem?.CancelMode();
 
         mode = Mode.Removing;
 
@@ -387,6 +393,7 @@ public class PlacementSystem : MonoBehaviour
     private void EnterMoveMode()
     {
         CancelMode(suppressEvent: true);
+        wallPlacementSystem?.CancelMode();
 
         mode = Mode.Moving;
 

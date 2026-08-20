@@ -129,6 +129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   plantAnchor: {fileID: 0}
   isStaticPot: 0
+  potData: {fileID: 0}
   potSize: 0
   plantSurfaceOffset: 0
   claySoilPrefab: {fileID: 1981260749521629902, guid: 8d37ce2db3671ef4eb9df9ae561ab0f7, type: 3}
@@ -143,7 +144,7 @@ MonoBehaviour:
   baseDrainRate: 0.3
   sunDrainMultiplier: 0.4
   waterLevel: 0
-  tut: {fileID: 0}
+  tutorialMission: {fileID: 0}
   currentSoil: 1
   hasSoil: 0
   hasPlant: 0
