@@ -11,6 +11,13 @@ GameObject:
   - component: {fileID: 1950963156614744040}
   - component: {fileID: 5763684855769553033}
   - component: {fileID: 5428501172620950859}
+  - component: {fileID: 8186667230720398843}
+  - component: {fileID: 9050097535842522815}
+  - component: {fileID: 2098516834699238352}
+  - component: {fileID: -4791954666240061535}
+  - component: {fileID: 6155035638967588191}
+  - component: {fileID: 9023216589586649666}
+  - component: {fileID: -688605731075669828}
   m_Layer: 0
   m_Name: SparkmintPlantable
   m_TagString: Untagged
@@ -91,3 +98,162 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8186667230720398843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2587ee5c9d93c24cb429211f232afba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LightSensor
+  directionalLight: {fileID: 0}
+  maxLightIntensity: 3
+  checkForObstacles: 1
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  rayOriginOffset: 0.5
+  rawIntensity: 0
+  isInShadow: 0
+  normalisedIntensity: 0
+--- !u!114 &9050097535842522815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6b95557e7067b4a8c58044c08c19c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plantSize: 2
+  plantType: 1
+  journalSpecies: {fileID: 11400000, guid: c1da464e3762ebe4483ebae2c08cada8, type: 2}
+  potPlacementOffset: 0
+  potPlacementRotation: {x: 0, y: 0, z: 0}
+  preferredSoil: 1
+  neutralSoil: 0
+  lightThresholdHigh: 0.6
+  lightThresholdLow: 0.25
+  waterThresholdHigh: 8
+  waterThresholdLow: 4
+  revivedMinScore: 5
+  intermediateMinScore: 2
+  lightSensor: {fileID: 0}
+  revivedVisual: {fileID: 0}
+  intermediateVisual: {fileID: 0}
+  deadVisual: {fileID: 0}
+  debuff:
+    enabled: 1
+    scanInterval: 2
+    amountPerTick: 0.5
+    duration: 5
+    tickInterval: 1
+    transferStolenWaterToSelf: 1
+    mode: 2
+  miasmaLightPenalty: 0
+  miasmaSoilPenalty: 0
+  miasmaWaterDrainMultiplier: 1
+  isMiasmaDebuffActive: 0
+  currentState: 2
+  currentSoil: 2
+  isOnSoil: 0
+  lastTotalScore: 0
+  soilScore: 0
+  lightScore: 0
+  waterScore: 0
+--- !u!114 &2098516834699238352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebc9509558635bd41b4357c73112c826, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useDummyValues: 0
+  dummyState: 1
+  dummyMiasma: 0
+  useManualHeight: 0
+  manualHeightOffset: 1
+  hoverGap: 1
+  fixedWorldHeight: 0.3
+  maxVisibleDistance: 6
+  logVisibilityDebug: 0
+  overheadBarsTemplate: {fileID: 0}
+  defaultTemplateResourcePath: PlantOverheadBarsTemplate
+  plantState: {fileID: 0}
+--- !u!114 &-4791954666240061535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.05
+  outlineShader: {fileID: 0}
+--- !u!114 &6155035638967588191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a955a02e5f62b6144833ae3db4ca04e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantProgress
+  secondsToGrowFull: 120
+  secondsToDrainFromDead: 60
+  intermediateDrainFraction: 0.35
+  smoothingSeconds: 5
+  plantState: {fileID: 0}
+  progress: 0
+  isComplete: 0
+  smoothedRatePerSecond: 0
+--- !u!114 &9023216589586649666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e406e6b2c1e7784479c80c53a2fb8f67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHarvestYield
+  yieldItem: {fileID: 11400000, guid: f3e3ff68bcc11044f8b737142c05ef1b, type: 2}
+  amountOverride: 0
+--- !u!114 &-688605731075669828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2977ecbdf0d3b94fb1b34e1b1b595ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHealthTint
+  plantState: {fileID: 0}
+  unhealthyTint: {r: 0.03773582, g: 0.037398566, b: 0.03364184, a: 1}
+  urpColorProperty: _BaseColor
+  legacyColorProperty: _Color

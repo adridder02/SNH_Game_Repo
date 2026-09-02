@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: -1600758623779020536}
   - component: {fileID: -7496506593189826510}
   - component: {fileID: -6202665067771359288}
+  - component: {fileID: -4515792363922740776}
   m_Layer: 3
   m_Name: Whumprill
   m_TagString: Selectable
@@ -264,3 +265,19 @@ MonoBehaviour:
   launchUpForce: 12
   launchOutwardForce: 2
   cooldown: 0.5
+--- !u!114 &-4515792363922740776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844357348191295120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2977ecbdf0d3b94fb1b34e1b1b595ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHealthTint
+  plantState: {fileID: 0}
+  unhealthyTint: {r: 0.03773582, g: 0.037398566, b: 0.03364184, a: 1}
+  urpColorProperty: _BaseColor
+  legacyColorProperty: _Color

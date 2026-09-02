@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: -3345069727297567439}
   - component: {fileID: 6869571386960432020}
   - component: {fileID: -8878280970589891650}
+  - component: {fileID: -6396811028193440102}
   - component: {fileID: -4750460871665086151}
   m_Layer: 3
   m_Name: Glowcap
@@ -248,6 +249,22 @@ MonoBehaviour:
   progress: 0
   isComplete: 0
   smoothedRatePerSecond: 0
+--- !u!114 &-6396811028193440102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640831792386703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2977ecbdf0d3b94fb1b34e1b1b595ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHealthTint
+  plantState: {fileID: 0}
+  unhealthyTint: {r: 0.03773582, g: 0.037398566, b: 0.03364184, a: 1}
+  urpColorProperty: _BaseColor
+  legacyColorProperty: _Color
 --- !u!114 &-4750460871665086151
 MonoBehaviour:
   m_ObjectHideFlags: 0

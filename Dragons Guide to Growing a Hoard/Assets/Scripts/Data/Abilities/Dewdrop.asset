@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityItemData
   displayName: Dew Drop
   description: Shows water levels
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 7ffaabf8cb7d08c42a15e3d8c386e7b6, type: 3}
   kind: 1
   effectId: 5
   harvestGrantAmount: 1

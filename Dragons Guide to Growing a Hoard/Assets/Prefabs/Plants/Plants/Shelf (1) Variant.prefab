@@ -55,5 +55,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3493835662444555350, guid: cbd2a11c8414f4549a6d7beb967f5c2e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -597262855293072239}
   m_SourcePrefab: {fileID: 100100000, guid: cbd2a11c8414f4549a6d7beb967f5c2e, type: 3}
+--- !u!1 &6206462293399033202 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3493835662444555350, guid: cbd2a11c8414f4549a6d7beb967f5c2e, type: 3}
+  m_PrefabInstance: {fileID: 7376141463190419748}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-597262855293072239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6206462293399033202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2977ecbdf0d3b94fb1b34e1b1b595ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHealthTint
+  plantState: {fileID: 0}
+  unhealthyTint: {r: 0.03773582, g: 0.037398566, b: 0.03364184, a: 1}
+  urpColorProperty: _BaseColor
+  legacyColorProperty: _Color

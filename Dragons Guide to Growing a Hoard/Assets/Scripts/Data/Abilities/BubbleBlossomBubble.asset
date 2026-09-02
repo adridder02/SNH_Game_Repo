@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityItemData
   displayName: Bubble of Holding
   description: adds inventory slot
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: f60f94f9d4ca12545a9ff85d1e2b178c, type: 3}
   kind: 1
   effectId: 2
   harvestGrantAmount: 1

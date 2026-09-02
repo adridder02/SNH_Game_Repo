@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityItemData
   displayName: Spark Leave
   description: for ward
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   kind: 2
-  effectId: 7
-  harvestGrantAmount: 1
+  effectId: 6
+  harvestGrantAmount: 10
   maxStack: 0
   footprint: {x: 1, y: 1}
-  placedPrefab: {fileID: 6135421654957825008, guid: bc986ca5750010c4ca6380036bbb7d8d, type: 3}
-  amountA: 30
+  placedPrefab: {fileID: 5531615902374587953, guid: 0266fa22b4e0a7648a094e31e91ad8b3, type: 3}
+  amountA: 85
   amountB: 0
   amountC: 0
