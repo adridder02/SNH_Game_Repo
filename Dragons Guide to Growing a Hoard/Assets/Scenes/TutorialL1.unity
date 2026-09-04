@@ -1405,8 +1405,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 59622638}
-  - component: {fileID: 59622639}
-  - component: {fileID: 59622640}
   m_Layer: 5
   m_Name: Inventory
   m_TagString: Untagged
@@ -1443,33 +1441,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0.00012207031, y: -0.000061035156}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &59622639
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 59622637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78626c39f75d57746b417666cb334fdb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
-  gridWidth: 5
-  gridHeight: 5
-  maxWaterRefill: 20
---- !u!114 &59622640
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 59622637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4b1a93910a82ec4ea70b5dd9586de00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerAbilityInventory
 --- !u!1 &60396174
 GameObject:
   m_ObjectHideFlags: 0
@@ -1871,8 +1842,9 @@ GameObject:
   - component: {fileID: 74016819}
   - component: {fileID: 74016821}
   - component: {fileID: 74016822}
-  - component: {fileID: 74016824}
   - component: {fileID: 74016823}
+  - component: {fileID: 74016824}
+  - component: {fileID: 74016825}
   m_Layer: 0
   m_Name: PlayerParent
   m_TagString: Player
@@ -1949,7 +1921,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactRange: 3
-  dragonInventory: {fileID: 59622639}
+  dragonInventory: {fileID: 74016824}
   potMenuUI: {fileID: 2128103705}
   waterPerPress: 2
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
@@ -2180,22 +2152,26 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 74016807}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &74016818
-Transform:
+--- !u!224 &74016818
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 74016807}
-  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 70.18, y: -10.45, z: 9.81}
+  m_LocalPosition: {x: 0, y: 0, z: 9.81}
   m_LocalScale: {x: 0.41511905, y: 0.33054, z: 2.3026125}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 32051273}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 70.18, y: -10.45}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &74016819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2364,7 +2340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8a9b97474dc41440a3d8300ac48a2e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWaterSource
-  playerInventory: {fileID: 59622639}
+  playerInventory: {fileID: 74016824}
   waterLayerName: WaterRefill
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &74016824
@@ -2382,6 +2358,18 @@ MonoBehaviour:
   gridWidth: 4
   gridHeight: 3
   maxWaterRefill: 20
+--- !u!114 &74016825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 74016807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4b1a93910a82ec4ea70b5dd9586de00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAbilityInventory
 --- !u!1 &74049292 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9158743094094176133, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -3781,7 +3769,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AbilityPlacementSystem
   placementSystem: {fileID: 161992240}
-  abilityInventory: {fileID: 59622640}
+  abilityInventory: {fileID: 0}
 --- !u!114 &161992246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3813,15 +3801,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eeaa8fd3131d0645954efcd9d9bf0ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AbilityHotbarSystem
-  abilityInventory: {fileID: 0}
+  abilityInventory: {fileID: 74016825}
   abilityPlacementSystem: {fileID: 161992245}
   player: {fileID: 74016807}
   slots:
-  - assigned: {fileID: 0}
-  - assigned: {fileID: 0}
-  - assigned: {fileID: 0}
-  - assigned: {fileID: 0}
-  - assigned: {fileID: 0}
+  - assigned: {fileID: 11400000, guid: f3e3ff68bcc11044f8b737142c05ef1b, type: 2}
+  - assigned: {fileID: 11400000, guid: bf34dc142d8bcfe44927675fc1ebbf3b, type: 2}
+  - assigned: {fileID: 11400000, guid: 2a844a56d1d7e9144aa938e2022db57b, type: 2}
+  - assigned: {fileID: 11400000, guid: f3e3ff68bcc11044f8b737142c05ef1b, type: 2}
+  - assigned: {fileID: 11400000, guid: f3e3ff68bcc11044f8b737142c05ef1b, type: 2}
 --- !u!1 &166239184
 GameObject:
   m_ObjectHideFlags: 0
@@ -8038,7 +8026,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HarvestNodeContainer
   player: {fileID: 32051273}
-  playerInventory: {fileID: 59622639}
+  playerInventory: {fileID: 0}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
   interactRange: 9.73
   useWorldSpacePrompt: 1
@@ -9873,7 +9861,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 652a8c003cf73db46813640bc34b5ab9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainUIController
-  playerInventory: {fileID: 59622639}
+  playerInventory: {fileID: 0}
   waterBar: {fileID: 280252697}
   journalButton: {fileID: 1903572062}
   journalUI: {fileID: 742308971}
@@ -10411,7 +10399,6 @@ RectTransform:
   - {fileID: 818837796}
   - {fileID: 1835481890}
   - {fileID: 1474339861}
-  - {fileID: 1382564963}
   m_Father: {fileID: 1535065661}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -12155,7 +12142,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -7}
   m_SizeDelta: {x: 2688.9998, y: 1396.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &729068253
@@ -22833,17 +22820,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1382564962}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 12.7062025}
+  m_LocalScale: {x: 1.3768417, y: 1.3768417, z: 1.3768417}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 760651095}
-  m_Father: {fileID: 576867034}
+  m_Father: {fileID: 1474339861}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.3799, y: 8.3536}
+  m_AnchoredPosition: {x: -42.682087, y: -228.55566}
   m_SizeDelta: {x: 652.0996, y: 116.7073}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1386740051
@@ -24680,12 +24667,13 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: -9.228516}
   m_LocalScale: {x: 0.7263, y: 0.7263, z: 0.7263}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1382564963}
   m_Father: {fileID: 576867034}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 33, y: 156}
+  m_AnchoredPosition: {x: 33, y: 169}
   m_SizeDelta: {x: 100.8881, y: 25.2221}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1474339862
@@ -24710,8 +24698,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Choose Plant
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 0}
-  m_sharedMaterial: {fileID: 0}
+  m_fontAsset: {fileID: 11400000, guid: 0852abc7ad636ff43b13d0494a088a42, type: 2}
+  m_sharedMaterial: {fileID: -5571737488688138172, guid: 0852abc7ad636ff43b13d0494a088a42, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -24774,7 +24762,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -262.8489, y: 0, z: -157.72519, w: -97.84286}
+  m_margin: {x: -262.8489, y: 17.83083, z: -242.50104, w: -97.84286}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -34077,14 +34065,14 @@ RectTransform:
   m_GameObject: {fileID: 2096127160}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.6432467, y: 0.6489509, z: 1}
+  m_LocalScale: {x: 0.64324677, y: 0.6489508, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7850894048733251261}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -294, y: -5}
+  m_AnchoredPosition: {x: -294.00006, y: -5.000122}
   m_SizeDelta: {x: 194, y: 183}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2096127162
@@ -34837,7 +34825,7 @@ MonoBehaviour:
   abilityColumns: 5
   abilityGapX: 8
   abilityGapY: 8
-  abilityInventory: {fileID: 59622640}
+  abilityInventory: {fileID: 74016825}
   abilityPlacementSystem: {fileID: 161992245}
   claySoilIcon: {fileID: 21300000, guid: f8dedea288579d140b29f73fd96fa3b1, type: 3}
   loamSoilIcon: {fileID: 21300000, guid: 27869d14e53e7244db2b046e7d4e5938, type: 3}
@@ -44283,6 +44271,7 @@ GameObject:
   - component: {fileID: 6044300509190143521}
   - component: {fileID: 2638974975133183687}
   - component: {fileID: 3921339473230757414}
+  - component: {fileID: 8667262570580723702}
   - component: {fileID: 8667262570580723701}
   m_Layer: 5
   m_Name: ContainerSmall
@@ -46719,6 +46708,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb62ca5128e23fd48b9fff2a17e86777, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
+--- !u!114 &8667262570580723702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7202611676753942117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab6b89ba55a4d994d851ca8d3a161b33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityInventorySlotUI
+  icon: {fileID: 492335390}
+  countLabel: {fileID: 0}
 --- !u!1 &8797197956921757203
 GameObject:
   m_ObjectHideFlags: 0
@@ -46967,9 +46970,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d7eaf7d00c3a64b89f9b0f58da602e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryUIController
-  playerInventory: {fileID: 59622639}
-  abilityInventory: {fileID: 0}
-  hotbarSystem: {fileID: 0}
+  playerInventory: {fileID: 74016824}
+  abilityInventory: {fileID: 74016825}
+  hotbarSystem: {fileID: 161992247}
   collectionMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
   inventoryRoot: {fileID: 59622637}
   gridPanel: {fileID: 1040631135814159558}
@@ -46977,7 +46980,7 @@ MonoBehaviour:
   availablePanelRoot: {fileID: 4569560999986381467}
   gridSlotTemplate: {fileID: 1888271675533264640}
   availableSlotTemplate: {fileID: 3921339473230757414}
-  abilitiesPanel: {fileID: 0}
+  abilitiesPanel: {fileID: 209175530669269957}
   abilitySlotTemplate: {fileID: 0}
   abilityColumns: 4
   backButton: {fileID: 1293666663}
@@ -46990,7 +46993,12 @@ MonoBehaviour:
   darkFilterButton: {fileID: 6205113780548004768}
   waterFilterButton: {fileID: 7090997806161370414}
   deadFilterButton: {fileID: 6009619531237382}
-  hotbarSlotUIs: []
+  hotbarSlotUIs:
+  - {fileID: 2096127162}
+  - {fileID: 426509777}
+  - {fileID: 415838140}
+  - {fileID: 2065919547}
+  - {fileID: 1990359915}
   cellSizePx: 90
   cellGapPx: 4
   availableColumns: 4
