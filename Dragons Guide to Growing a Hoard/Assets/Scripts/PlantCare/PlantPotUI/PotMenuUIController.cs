@@ -306,7 +306,7 @@ public class PotMenuUIController : MonoBehaviour
             waterButton.interactable = hasSoil && hasPlant;
 
         if (useAbilityButton != null)
-            useAbilityButton.interactable = abilityInventory != null && abilityInventory.Stacks.Count > 0;
+            useAbilityButton.interactable = HasAnyPotTargetedAbilityStack();
 
         RefreshPuffballButton();
 
@@ -578,6 +578,12 @@ public class PotMenuUIController : MonoBehaviour
             {
                 if (stack?.data == null || stack.count <= 0) continue;
 
+                // Placeables and untargeted Consumables (ExpandInventory, DragonGlow) moved to the
+                // main inventory's Abilities panel (InventoryUIController) + hotbar — they don't need
+                // a pot as a target, so there's no reason to make the player open one to use them.
+                // Only pot-targeted Consumables (Pollen Puff, Verdant Algae, Dewdrop) still belong here.
+                if (!AbilityConsumableEffects.RequiresPotTarget(stack.data.effectId)) continue;
+
                 bool usable = IsAbilityUsableNow(stack.data);
 
                 Button optionButton = Instantiate(abilityOptionTemplate, abilityOptionContainer);
@@ -603,9 +609,26 @@ public class PotMenuUIController : MonoBehaviour
             abilityEmptyText.gameObject.SetActive(!anyShown);
     }
 
-    /// <summary>Whether this item can actually be used right now — pot-targeted consumables
-    /// (Pollen Puff, Verdant Algae, Dewdrop) need the current pot to have a plant; everything
-    /// else (untargeted consumables, all Placeables) is always usable from here.</summary>
+    /// <summary>Whether the player owns at least one stack this panel would actually display —
+    /// i.e. a pot-targeted Consumable, per the same filter RefreshAbilitiesPanel uses. Drives
+    /// useAbilityButton's interactable state, so the button doesn't light up for Placeables/
+    /// untargeted Consumables that live in the main inventory now and never appear here.</summary>
+    private bool HasAnyPotTargetedAbilityStack()
+    {
+        if (abilityInventory == null) return false;
+
+        foreach (AbilityItemInstance stack in abilityInventory.Stacks)
+        {
+            if (stack?.data == null || stack.count <= 0) continue;
+            if (AbilityConsumableEffects.RequiresPotTarget(stack.data.effectId)) return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>Whether this item can actually be used right now. Everything that reaches this panel
+    /// is now, by the filter in RefreshAbilitiesPanel above, a pot-targeted Consumable — so this
+    /// always comes down to whether the current pot has a plant.</summary>
     private bool IsAbilityUsableNow(AbilityItemData data)
     {
         if (data.kind == AbilityKind.Consumable && AbilityConsumableEffects.RequiresPotTarget(data.effectId))

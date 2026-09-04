@@ -45,6 +45,12 @@ public class InventoryUIController : MonoBehaviour
     [Header("Inventory of Player")]
     [SerializeField] private PlayerInventory playerInventory;
 
+    [Header("Ability Inventory")]
+    [Tooltip("Auto-found via FindObjectOfType if left empty.")]
+    [SerializeField] private PlayerAbilityInventory abilityInventory;
+    [Tooltip("Auto-found via FindObjectOfType if left empty. Drives hotbar activation from both number keys and slot clicks.")]
+    [SerializeField] private AbilityHotbarSystem hotbarSystem;
+
     [Header("Mission")]
     [Tooltip("Task 0 is completed the first time the inventory is opened. Assign the same MissionData " +
              "asset used on PlacementSystem's collectionMission field (index 0 = OpenedInventory, " +
@@ -72,6 +78,15 @@ public class InventoryUIController : MonoBehaviour
     [Tooltip("An existing slot GameObject already placed in Available (e.g. 'ContainerSmall'). " +
              "Cloned the same way as gridSlotTemplate. Leave empty to reuse gridSlotTemplate for both panels.")]
     [SerializeField] private InventorySlotUI availableSlotTemplate;
+    [Tooltip("Container for ability items (Consumables + Placeables). Anchor/pivot must be top-left " +
+             "(0,1), same treatment as availablePanel — laid out manually, wraps at abilityColumns.")]
+    [SerializeField] private RectTransform abilitiesPanel;
+    [Tooltip("An existing ability slot GameObject already placed in the Abilities section, with an " +
+             "AbilityInventorySlotUI component. Hidden at startup and cloned for every stack — no " +
+             "prefab asset needed, same pattern as gridSlotTemplate.")]
+    [SerializeField] private AbilityInventorySlotUI abilitySlotTemplate;
+    [Tooltip("How many columns to wrap ability items at — same manual-layout approach as availableColumns.")]
+    [SerializeField] private int abilityColumns = 4;
     [Tooltip("Optional close/back button.")]
     [SerializeField] private Button backButton;
 
@@ -102,6 +117,12 @@ public class InventoryUIController : MonoBehaviour
     [Tooltip("Skull icon — filters both panels down to PlantType.Dead plants.")]
     [SerializeField] private Button deadFilterButton;
 
+    [Header("Hotbar")]
+    [Tooltip("The fixed hand-placed hotbar slots at the bottom of the panel, in the SAME ORDER as " +
+             "AbilityHotbarSystem's own slots array (index 0 = key '1', etc.) — mismatched order " +
+             "means clicking/pressing a slot won't visually match what actually activates.")]
+    [SerializeField] private List<HotbarSlotUI> hotbarSlotUIs = new List<HotbarSlotUI>();
+
     [Header("Layout")]
     [Tooltip("Pixel size of one grid cell. Item visuals are drawn at footprint * cellSizePx.")]
     [SerializeField] private float cellSizePx = 90f;
@@ -126,6 +147,11 @@ public class InventoryUIController : MonoBehaviour
     private PlayerControls playerControls;
     private InputAction inventoryAction;
     private readonly Dictionary<string, InventorySlotUI> slotVisuals = new Dictionary<string, InventorySlotUI>();
+
+    // AbilityItemInstance has no unique id the way InventoryItemInstance does (it's just data+count),
+    // and the Abilities panel is fully destroyed/recreated on every refresh rather than diffed — so a
+    // plain list to track "what to destroy next time" is enough, no dictionary keying needed.
+    private readonly List<AbilityInventorySlotUI> abilityVisuals = new List<AbilityInventorySlotUI>();
 
     // Grid cell highlight overlay — one Image per cell, built lazily and kept
     // in sync with the grid's current dimensions. Lives at the back of
@@ -162,6 +188,10 @@ public class InventoryUIController : MonoBehaviour
 
         if (playerInventory == null)
             playerInventory = FindObjectOfType<PlayerInventory>();
+        if (abilityInventory == null)
+            abilityInventory = FindObjectOfType<PlayerAbilityInventory>();
+        if (hotbarSystem == null)
+            hotbarSystem = FindObjectOfType<AbilityHotbarSystem>();
 
         if (backButton != null)
             backButton.onClick.AddListener(ToggleInventory);
@@ -180,6 +210,10 @@ public class InventoryUIController : MonoBehaviour
         // originals so they don't show up as a phantom extra slot.
         if (gridSlotTemplate != null) gridSlotTemplate.gameObject.SetActive(false);
         if (availableSlotTemplate != null) availableSlotTemplate.gameObject.SetActive(false);
+        if (abilitySlotTemplate != null) abilitySlotTemplate.gameObject.SetActive(false);
+
+        for (int i = 0; i < hotbarSlotUIs.Count; i++)
+            hotbarSlotUIs[i]?.Initialize(this, i);
 
         SetInventoryVisible(false);
 
@@ -192,6 +226,10 @@ public class InventoryUIController : MonoBehaviour
         playerControls?.Enable();
         if (playerInventory != null)
             playerInventory.OnInventoryChanged += RefreshUI;
+        if (abilityInventory != null)
+            abilityInventory.OnChanged += RefreshAbilitiesUI;
+        if (hotbarSystem != null)
+            hotbarSystem.OnSlotsChanged += RefreshHotbarUI;
     }  
 
     void OnDisable()
@@ -199,6 +237,10 @@ public class InventoryUIController : MonoBehaviour
         playerControls?.Disable();
         if (playerInventory != null)
             playerInventory.OnInventoryChanged -= RefreshUI;
+        if (abilityInventory != null)
+            abilityInventory.OnChanged -= RefreshAbilitiesUI;
+        if (hotbarSystem != null)
+            hotbarSystem.OnSlotsChanged -= RefreshHotbarUI;
     }
 
     void OnDestroy()
@@ -246,6 +288,8 @@ public class InventoryUIController : MonoBehaviour
             Cursor.visible = true;
             ThirdPersonCameraController.CameraLocked = true;
             RefreshUI();
+            RefreshAbilitiesUI();
+            RefreshHotbarUI();
 
             // Lets a tutorial step (e.g. "Press [I] to open your inventory") auto-advance the instant
             // this actually happens, instead of requiring a click on the prompt itself. No-ops if no
@@ -492,6 +536,140 @@ public class InventoryUIController : MonoBehaviour
         slot.Initialize(instance, this, rootCanvas);
         slotVisuals[instance.instanceId] = slot;
         return slot;
+    }
+
+    // ------------------------------------------------------------
+    // ABILITIES PANEL — Consumables + Placeables from PlayerAbilityInventory.
+    // Pot-targeted consumables (Pollen Puff, Verdant Algae, Dewdrop) are
+    // deliberately NOT filtered out of this list — the player should still
+    // see they own them here, they just can't be clicked to use (UseAbility
+    // logs and no-ops for those) or dragged onto the hotbar (HandleAbilityDrop
+    // rejects them via AbilityHotbarSystem.CanAssign). Those items only work
+    // from inside a specific pot's own Abilities panel (PotMenuUIController),
+    // since that's what supplies their target.
+    // ------------------------------------------------------------
+    void RefreshAbilitiesUI()
+    {
+        if (abilityInventory == null || abilitiesPanel == null || abilitySlotTemplate == null) return;
+
+        foreach (var visual in abilityVisuals)
+            if (visual != null) Destroy(visual.gameObject);
+        abilityVisuals.Clear();
+
+        int columns = Mathf.Max(1, abilityColumns);
+        float cellW = GetGridCellSize(); // reuse the same square cell size as the rest of this UI
+        float cellH = cellW;
+
+        IReadOnlyList<AbilityItemInstance> stacks = abilityInventory.Stacks;
+        int shown = 0;
+        for (int i = 0; i < stacks.Count; i++)
+        {
+            AbilityItemInstance stack = stacks[i];
+            if (stack?.data == null || stack.count <= 0) continue;
+
+            AbilityInventorySlotUI slot = Instantiate(abilitySlotTemplate, abilitiesPanel);
+            slot.gameObject.SetActive(true); // template itself is hidden — the clone needs to be shown
+            slot.Initialize(stack, this, rootCanvas);
+            abilityVisuals.Add(slot);
+
+            RectTransform rt = slot.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0f, 1f);
+            rt.anchorMax = new Vector2(0f, 1f);
+            rt.pivot = new Vector2(0f, 1f);
+            rt.sizeDelta = new Vector2(cellW - cellGapPx, cellH - cellGapPx);
+
+            int col = shown % columns;
+            int row = shown / columns;
+            rt.anchoredPosition = new Vector2(
+                col * cellW + cellGapPx * 0.5f,
+                -(row * cellH + cellGapPx * 0.5f));
+            shown++;
+        }
+    }
+
+    /// <summary>Called by AbilityInventorySlotUI when its "Use" click fires.</summary>
+    public void UseAbility(AbilityItemData data)
+    {
+        if (data == null || abilityInventory == null) return;
+
+        if (data.kind == AbilityKind.Consumable && AbilityConsumableEffects.RequiresPotTarget(data.effectId))
+        {
+            Debug.Log($"[InventoryUIController] '{data.displayName}' needs a pot target — open a pot's menu to use it.");
+            return;
+        }
+
+        if (data.kind == AbilityKind.Placeable)
+        {
+            AbilityPlacementSystem placementSystem = FindObjectOfType<AbilityPlacementSystem>();
+            if (placementSystem == null)
+            {
+                Debug.LogWarning("[InventoryUIController] No AbilityPlacementSystem in scene.");
+                return;
+            }
+            placementSystem.BeginPlacing(data);
+            ToggleInventory(); // close the panel so the player can see the world grid to place on
+            return;
+        }
+
+        // Untargeted Consumable (ExpandInventory, DragonGlow) — applies straight to the player.
+        if (AbilityConsumableEffects.TryApply(data, abilityInventory.gameObject, null))
+            abilityInventory.TryConsume(data, 1);
+    }
+
+    // ------------------------------------------------------------
+    // HOTBAR — mirrors AbilityHotbarSystem's slot data onto the hand-placed
+    // hotbar row. Assignment is drag-and-drop from the Abilities panel above
+    // (see HandleAbilityDrop); activation is either a number key
+    // (AbilityHotbarSystem.Update) or clicking the slot itself
+    // (ActivateHotbarSlot, called by HotbarSlotUI.OnPointerClick).
+    // ------------------------------------------------------------
+    void RefreshHotbarUI()
+    {
+        if (hotbarSystem == null) return;
+        foreach (var slot in hotbarSlotUIs)
+            slot?.Refresh(hotbarSystem);
+    }
+
+    public void ActivateHotbarSlot(int slotIndex)
+    {
+        if (hotbarSystem == null) return;
+
+        AbilityItemData data = hotbarSystem.GetAssigned(slotIndex);
+        bool wasPlaceable = data != null && data.kind == AbilityKind.Placeable;
+
+        hotbarSystem.ActivateSlot(slotIndex);
+
+        // Placement mode needs the world grid visible — close the panel exactly like UseAbility does.
+        if (wasPlaceable) ToggleInventory();
+    }
+
+    /// <summary>Called by AbilityInventorySlotUI.OnEndDrag. Returns true if the drop landed on a
+    /// hotbar slot and was assigned. Mirrors HandleDrop's rectangle-testing approach below, just
+    /// tested against each hotbar slot's own RectTransform instead of one shared panel rect, since
+    /// hotbar slots are individually hand-placed rather than laid out in one container.</summary>
+    public bool HandleAbilityDrop(AbilityInventorySlotUI slot, PointerEventData eventData)
+    {
+        if (slot?.Stack?.data == null || hotbarSystem == null) return false;
+
+        for (int i = 0; i < hotbarSlotUIs.Count; i++)
+        {
+            HotbarSlotUI hotbarSlot = hotbarSlotUIs[i];
+            if (hotbarSlot == null) continue;
+
+            if (RectTransformUtility.RectangleContainsScreenPoint(
+                    hotbarSlot.RectTransform, eventData.position, eventData.pressEventCamera))
+            {
+                bool assigned = hotbarSystem.TryAssign(i, slot.Stack.data);
+                if (!assigned)
+                    Debug.Log($"[InventoryUIController] '{slot.Stack.data.displayName}' can't go on the hotbar " +
+                              "— pot-targeted consumables must be used from a pot's Abilities panel instead.");
+                else
+                    RefreshHotbarUI();
+                return assigned;
+            }
+        }
+
+        return false;
     }
 
     // ------------------------------------------------------------
