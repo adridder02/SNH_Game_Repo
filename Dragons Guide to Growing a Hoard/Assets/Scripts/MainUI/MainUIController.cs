@@ -245,6 +245,10 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     /// during normal play.</summary>
     public void ActivateHotbarSlot(int slotIndex) => hotbarSystem?.ActivateSlot(slotIndex);
 
+    /// <summary>Called by HotbarSlotUI.OnPointerClick on right-click. Just forgets the slot's
+    /// assignment — doesn't touch the player's actual item count, so nothing is lost.</summary>
+    public void ClearHotbarSlot(int slotIndex) => hotbarSystem?.Clear(slotIndex);
+
     /// <summary>Adds a click listener to toolSlots[index] if both the slot and placementSystem exist.</summary>
     private void WireToolSlot(int index, UnityEngine.Events.UnityAction onClick)
     {
