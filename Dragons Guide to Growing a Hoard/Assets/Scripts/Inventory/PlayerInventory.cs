@@ -6,9 +6,9 @@ using UnityEngine;
 // =============================================================
 // PlayerInventory.cs
 // -------------------------------------------------------------
-// Owns the player's plants: a fixed-size InventoryGrid plus an
-// unlimited "Available" overflow list for anything that doesn't
-// currently fit in the grid.
+// Owns the player's plants AND the shared main-inventory grid: a
+// fixed-size InventoryGrid plus an unlimited "Available" overflow
+// list for anything that doesn't currently fit in the grid.
 //
 // FLOW (matches the design):
 //   • Harvesting a node, or removing a plant from a pot, both
@@ -19,6 +19,17 @@ using UnityEngine;
 //   • Planting (PotInteraction.cs) reads GetInventory() / calls
 //     RemoveFirstPlant() exactly as before — those signatures are
 //     unchanged so PotInteraction.cs and PotContents.cs need NO edits.
+//
+// CONSUMABLES/PLACEABLES SHARE THIS SAME GRID:
+//   PlayerAbilityInventory (its stacks are Consumable/Placeable
+//   AbilityItemInstance objects — see AbilityItemInstance.cs) still
+//   owns the actual item COUNTS. This script just also places each
+//   stack into the SAME grid plants use, the first time it's picked
+//   up — see ReconcileAbilityGridPlacement() below, which listens to
+//   PlayerAbilityInventory.OnChanged. GetGridItems()/GetAvailableItems()
+//   below return a mix of plants and ability stacks for that reason;
+//   GetAllItems() (used by the Choose Plant panel) is deliberately
+//   left plant-only, since you can't plant a consumable into a pot.
 //
 // NOTE: "IsInventoryFull" is now always false and kept only for
 // backward compatibility — since Available has no cap, the player
@@ -69,6 +80,15 @@ public class PlayerInventory : MonoBehaviour
     }
     private readonly List<InventoryItemInstance> items = new List<InventoryItemInstance>();
 
+    [Tooltip("Auto-found on this GameObject if left empty. Owns consumable/placeable stack COUNTS — " +
+             "this script just also gives each stack a spot in the same grid plants use.")]
+    [SerializeField] private PlayerAbilityInventory abilityInventory;
+
+    // Which ability stacks (by instanceId) have already had their one-time auto-place attempt —
+    // see ReconcileAbilityGridPlacement(). Prevents re-placing a stack the player has since
+    // dragged to Available themselves.
+    private readonly HashSet<string> trackedAbilityIds = new HashSet<string>();
+
     /// <summary>Fired whenever the grid or available contents change, so the UI can redraw.</summary>
     public event Action OnInventoryChanged;
 
@@ -80,7 +100,65 @@ public class PlayerInventory : MonoBehaviour
     {
         grid = new InventoryGrid(gridWidth, gridHeight);
         waterPool = maxWaterRefill;
-        
+
+        if (abilityInventory == null)
+            abilityInventory = GetComponent<PlayerAbilityInventory>();
+
+        if (abilityInventory != null)
+            abilityInventory.OnChanged += ReconcileAbilityGridPlacement;
+        else
+            Debug.LogWarning("[PlayerInventory] No PlayerAbilityInventory on this GameObject — " +
+                              "consumables/placeables won't appear in the main inventory grid. Add " +
+                              "one alongside PlayerInventory.", this);
+    }
+
+    void OnDestroy()
+    {
+        if (abilityInventory != null)
+            abilityInventory.OnChanged -= ReconcileAbilityGridPlacement;
+    }
+
+    // ------------------------------------------------------------
+    // ABILITY STACK <-> GRID SYNC
+    // ------------------------------------------------------------
+    /// <summary>
+    /// Keeps the shared grid in sync with PlayerAbilityInventory's stacks: auto-places any stack
+    /// the FIRST time it's ever seen (grid first, Available overflow if the grid's full — the
+    /// same one-time treatment AddPlantToInventory gives a freshly harvested plant), and forgets/
+    /// clears the grid cells of any stack PlayerAbilityInventory has fully removed (its count hit
+    /// 0). A stack the player has since dragged to Available manually is left alone from then on —
+    /// this only ever auto-places a given stack once, exactly like a plant.
+    /// </summary>
+    private void ReconcileAbilityGridPlacement()
+    {
+        if (abilityInventory == null) return;
+        bool changed = false;
+
+        var currentIds = new HashSet<string>();
+        foreach (AbilityItemInstance stack in abilityInventory.Stacks)
+            currentIds.Add(stack.instanceId);
+
+        // Forget anything that's been fully consumed and dropped from PlayerAbilityInventory.
+        foreach (string id in new List<string>(trackedAbilityIds))
+        {
+            if (!currentIds.Contains(id))
+            {
+                grid.RemoveById(id);
+                trackedAbilityIds.Remove(id);
+                changed = true;
+            }
+        }
+
+        // Auto-place any stack we haven't handled yet (a brand new pickup).
+        foreach (AbilityItemInstance stack in abilityInventory.Stacks)
+        {
+            if (trackedAbilityIds.Contains(stack.instanceId)) continue;
+            grid.TryAutoPlace(stack); // ok if this fails — falls to Available, same as a full plant grid
+            trackedAbilityIds.Add(stack.instanceId);
+            changed = true;
+        }
+
+        if (changed) OnInventoryChanged?.Invoke();
     }
 
     void OnCollisionEnter(Collision collision)
@@ -201,20 +279,22 @@ public class PlayerInventory : MonoBehaviour
     // GRID ORGANISATION — used by the drag-and-drop UI
     // ------------------------------------------------------------
 
-    /// <summary>Attempts to place/move an existing instance to a specific grid cell.</summary>
-    public bool TryPlaceInGrid(InventoryItemInstance instance, int x, int y)
+    /// <summary>Attempts to place/move an existing item (a plant OR a consumable/placeable stack)
+    /// to a specific grid cell.</summary>
+    public bool TryPlaceInGrid(IGridPlaceable item, int x, int y)
     {
-        if (instance == null) return false;
-        bool ok = grid.PlaceAt(instance, x, y);
+        if (item == null) return false;
+        bool ok = grid.PlaceAt(item, x, y);
         if (ok) OnInventoryChanged?.Invoke();
         return ok;
     }
 
-    /// <summary>Pulls an item out of the grid into the Available panel (does not remove it from the inventory).</summary>
-    public void MoveToAvailable(InventoryItemInstance instance)
+    /// <summary>Pulls an item (plant or consumable/placeable stack) out of the grid into the
+    /// Available panel (does not remove it from the inventory / consume its count).</summary>
+    public void MoveToAvailable(IGridPlaceable item)
     {
-        if (instance == null || !instance.IsInGrid) return;
-        grid.RemoveItem(instance);
+        if (item == null || !item.IsInGrid) return;
+        grid.RemoveItem(item);
         OnInventoryChanged?.Invoke();
     }
 
@@ -248,11 +328,42 @@ public class PlayerInventory : MonoBehaviour
                 anyMoved = true;
         }
 
+        if (abilityInventory != null)
+        {
+            foreach (AbilityItemInstance stack in abilityInventory.Stacks.Where(s => !s.IsInGrid).ToList())
+            {
+                if (grid.TryAutoPlace(stack))
+                    anyMoved = true;
+            }
+        }
+
         if (anyMoved) OnInventoryChanged?.Invoke();
     }
 
-    public List<InventoryItemInstance> GetGridItems() => items.Where(i => i.IsInGrid).ToList();
-    public List<InventoryItemInstance> GetAvailableItems() => items.Where(i => !i.IsInGrid).ToList();
+    /// <summary>Everything currently occupying a grid cell — plants AND consumable/placeable stacks
+    /// mixed together, since they now share one grid. Used by InventoryUIController to draw the
+    /// main grid panel.</summary>
+    public List<IGridPlaceable> GetGridItems()
+    {
+        var result = new List<IGridPlaceable>(items.Where(i => i.IsInGrid));
+        if (abilityInventory != null)
+            result.AddRange(abilityInventory.Stacks.Where(s => s.IsInGrid));
+        return result;
+    }
+
+    /// <summary>Everything currently overflowed into Available — plants AND consumable/placeable
+    /// stacks mixed together. Used by InventoryUIController to draw the Available panel.</summary>
+    public List<IGridPlaceable> GetAvailableItems()
+    {
+        var result = new List<IGridPlaceable>(items.Where(i => !i.IsInGrid));
+        if (abilityInventory != null)
+            result.AddRange(abilityInventory.Stacks.Where(s => !s.IsInGrid));
+        return result;
+    }
+
+    /// <summary>Every owned PLANT (not consumables/placeables) regardless of grid/Available —
+    /// deliberately plant-only, since this feeds the Choose Plant panel and you can't plant a
+    /// consumable into a pot.</summary>
     public List<InventoryItemInstance> GetAllItems() => new List<InventoryItemInstance>(items);
 
     // ------------------------------------------------------------

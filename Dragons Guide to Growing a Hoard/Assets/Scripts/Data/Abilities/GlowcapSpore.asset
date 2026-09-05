@@ -16,7 +16,7 @@ MonoBehaviour:
   description: Dragon glow
   icon: {fileID: 21300000, guid: caa4a470026dbeb4ab7b33be0df45f05, type: 3}
   kind: 1
-  effectId: 0
+  effectId: 4
   harvestGrantAmount: 1
   maxStack: 0
   footprint: {x: 1, y: 1}

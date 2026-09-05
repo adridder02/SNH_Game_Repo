@@ -4,10 +4,14 @@ using UnityEngine;
 // =============================================================
 // InventoryGrid.cs
 // -------------------------------------------------------------
-// Plain C# grid model (no MonoBehaviour) for the inventory grid.
-// Handles occupancy, placement/removal of variable-footprint
-// items (1x1, 1x2, 2x2, ...), and auto-placement for harvested
-// or returned plants.
+// Plain C# grid model (no MonoBehaviour) for the main inventory grid.
+// Handles occupancy, placement/removal of variable-footprint items
+// (1x1, 1x2, 2x2, ...), and auto-placement for newly picked up items.
+//
+// Works against the IGridPlaceable interface rather than a concrete
+// type, so ONE grid can hold a mix of InventoryItemInstance (plants)
+// and AbilityItemInstance (consumable/placeable stacks) side by side —
+// see IGridPlaceable.cs.
 //
 // Cell (0,0) is the top-left cell. An item's footprint occupies
 // the rectangle from (gridX, gridY) to (gridX + w - 1, gridY + h - 1).
@@ -23,9 +27,9 @@ public class InventoryGrid
 
     // occupancy[x, y] holds the instanceId occupying that cell, or null if empty.
     private string[,] occupancy;
-    private readonly Dictionary<string, InventoryItemInstance> placedItems = new Dictionary<string, InventoryItemInstance>();
+    private readonly Dictionary<string, IGridPlaceable> placedItems = new Dictionary<string, IGridPlaceable>();
 
-    public IReadOnlyDictionary<string, InventoryItemInstance> PlacedItems => placedItems;
+    public IReadOnlyDictionary<string, IGridPlaceable> PlacedItems => placedItems;
 
     public InventoryGrid(int width, int height)
     {
@@ -80,37 +84,40 @@ public class InventoryGrid
     /// Places (or moves) an item so its origin is at (originX, originY).
     /// Returns false and does nothing if the spot is invalid.
     /// </summary>
-    public bool PlaceAt(InventoryItemInstance item, int originX, int originY)
+    public bool PlaceAt(IGridPlaceable item, int originX, int originY)
     {
-        if (!CanPlaceAt(originX, originY, item.footprint, item.instanceId))
+        if (item == null) return false;
+        if (!CanPlaceAt(originX, originY, item.Footprint, item.InstanceId))
             return false;
 
         // If this item was already placed somewhere else in the grid, free those cells first.
-        ClearCells(item);
+        ClearCellsById(item.InstanceId);
 
-        for (int x = originX; x < originX + item.footprint.x; x++)
-            for (int y = originY; y < originY + item.footprint.y; y++)
-                occupancy[x, y] = item.instanceId;
+        for (int x = originX; x < originX + item.Footprint.x; x++)
+            for (int y = originY; y < originY + item.Footprint.y; y++)
+                occupancy[x, y] = item.InstanceId;
 
-        item.gridX = originX;
-        item.gridY = originY;
-        placedItems[item.instanceId] = item;
+        item.GridX = originX;
+        item.GridY = originY;
+        placedItems[item.InstanceId] = item;
         return true;
     }
 
     /// <summary>
     /// Scans left-to-right, top-to-bottom for the first spot this item's
-    /// footprint fits, and places it there. Used by harvesting and by
-    /// returning a plant from a pot. Returns false if no space is left
-    /// (caller should then route the item to "Available").
+    /// footprint fits, and places it there. Used the first time a plant is
+    /// harvested or a consumable/placeable stack is picked up. Returns false
+    /// if no space is left (caller should then route the item to "Available").
     /// </summary>
-    public bool TryAutoPlace(InventoryItemInstance item)
+    public bool TryAutoPlace(IGridPlaceable item)
     {
-        for (int y = 0; y <= Height - item.footprint.y; y++)
+        if (item == null) return false;
+
+        for (int y = 0; y <= Height - item.Footprint.y; y++)
         {
-            for (int x = 0; x <= Width - item.footprint.x; x++)
+            for (int x = 0; x <= Width - item.Footprint.x; x++)
             {
-                if (CanPlaceAt(x, y, item.footprint))
+                if (CanPlaceAt(x, y, item.Footprint))
                 {
                     PlaceAt(item, x, y);
                     return true;
@@ -121,15 +128,30 @@ public class InventoryGrid
     }
 
     /// <summary>Frees this item's cells and removes it from the grid (it still exists as an item — caller decides where it goes next).</summary>
-    public void RemoveItem(InventoryItemInstance item)
+    public void RemoveItem(IGridPlaceable item)
     {
-        ClearCells(item);
-        placedItems.Remove(item.instanceId);
-        item.gridX = -1;
-        item.gridY = -1;
+        if (item == null) return;
+        ClearCellsById(item.InstanceId);
+        placedItems.Remove(item.InstanceId);
+        item.GridX = -1;
+        item.GridY = -1;
     }
 
-    public InventoryItemInstance GetItemAt(int x, int y)
+    /// <summary>
+    /// Clears a placed item's cells purely by id, without needing the live object reference.
+    /// Used when reconciling a consumable/placeable stack that PlayerAbilityInventory has
+    /// already fully removed (its count hit 0) — there's no object left to call RemoveItem()
+    /// with at that point, just the id it used to be tracked under. Safe to call with an id
+    /// that isn't currently placed (no-op).
+    /// </summary>
+    public void RemoveById(string instanceId)
+    {
+        if (string.IsNullOrEmpty(instanceId)) return;
+        ClearCellsById(instanceId);
+        placedItems.Remove(instanceId);
+    }
+
+    public IGridPlaceable GetItemAt(int x, int y)
     {
         if (x < 0 || y < 0 || x >= Width || y >= Height) return null;
         string id = occupancy[x, y];
@@ -138,11 +160,11 @@ public class InventoryGrid
         return item;
     }
 
-    private void ClearCells(InventoryItemInstance item)
+    private void ClearCellsById(string instanceId)
     {
         for (int x = 0; x < Width; x++)
             for (int y = 0; y < Height; y++)
-                if (occupancy[x, y] == item.instanceId)
+                if (occupancy[x, y] == instanceId)
                     occupancy[x, y] = null;
     }
 }

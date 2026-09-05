@@ -5,18 +5,20 @@ using UnityEngine.InputSystem;
 // AbilityHotbarSystem.cs
 // -------------------------------------------------------------
 // Attach next to AbilityPlacementSystem (same Player/Systems object).
-// Holds a fixed set of hotbar slots the player can drag ability items
-// into from the main inventory screen, and listens for the number
-// keys (1-9) to activate whichever item sits in that slot.
+// Holds a fixed set of 5 hotbar slots the player can drag a Consumable
+// item into from the main inventory screen, and listens for the number
+// keys 1-5 to activate whichever item sits in that slot (slot 0 = '1',
+// slot 1 = '2', ... slot 4 = '5').
 //
-// SCOPE: only Placeable items and NON-pot-targeted Consumables
-// (AbilityConsumableEffects.RequiresPotTarget == false) can ever be
-// assigned to a slot — pot-targeted consumables (Pollen Puff, Verdant
-// Algae, Dewdrop) still only make sense from inside a specific pot's
-// menu, since they need that pot as their target. CanAssign()/TryAssign()
-// below enforce that, so the inventory-screen drag code doesn't need
-// to duplicate the rule — it just calls TryAssign() and checks the
-// bool it gets back (e.g. to snap the dragged icon back if rejected).
+// SCOPE: ONLY Consumable items can be assigned to a slot — Placeables
+// are never hotbar-eligible (they're used straight from the Abilities
+// panel's Use button, which drops the player into placement mode), and
+// pot-targeted Consumables (Pollen Puff, Verdant Algae, Dewdrop) still
+// only make sense from inside a specific pot's menu, since they need
+// that pot as their target. CanAssign()/TryAssign() below enforce both
+// rules, so the inventory-screen drag code doesn't need to duplicate
+// them — it just calls TryAssign() and checks the bool it gets back
+// (e.g. to snap the dragged icon back if rejected).
 //
 // This does NOT own the item counts — a hotbar slot is just a saved
 // reference to an AbilityItemData. If the player runs out of that
@@ -41,8 +43,8 @@ public class AbilityHotbarSystem : MonoBehaviour
     [SerializeField] private GameObject player;
 
     [Header("Slots")]
-    [Tooltip("Size determines how many number keys are used (slot 0 = '1', slot 1 = '2', ... slot 8 = '9').")]
-    [SerializeField] private HotbarSlot[] slots = new HotbarSlot[9];
+    [Tooltip("Fixed at 5 — one per number key (slot 0 = '1', slot 1 = '2', slot 2 = '3', slot 3 = '4', slot 4 = '5').")]
+    [SerializeField] private HotbarSlot[] slots = new HotbarSlot[5];
 
     /// <summary>Fired whenever a slot's assignment changes, so the hotbar UI can redraw.</summary>
     public event System.Action OnSlotsChanged;
@@ -51,8 +53,7 @@ public class AbilityHotbarSystem : MonoBehaviour
 
     private static readonly Key[] NumberKeys =
     {
-        Key.Digit1, Key.Digit2, Key.Digit3, Key.Digit4, Key.Digit5,
-        Key.Digit6, Key.Digit7, Key.Digit8, Key.Digit9
+        Key.Digit1, Key.Digit2, Key.Digit3, Key.Digit4, Key.Digit5
     };
 
     private void Awake()
@@ -72,6 +73,14 @@ public class AbilityHotbarSystem : MonoBehaviour
     {
         if (Keyboard.current == null) return;
 
+        // Only fire from the main gameplay HUD — while a menu (Inventory, pot menu, Journal, ...)
+        // is open, GameInputModeManager is in MenuUI/Placement mode and those number keys shouldn't
+        // double as hotbar shortcuts underneath whatever panel is on top. GameInputModeManager.Instance
+        // can be null in scenes that don't use it (e.g. isolated test scenes) — don't block on that.
+        if (GameInputModeManager.Instance != null &&
+            GameInputModeManager.Instance.CurrentMode != GameInputModeManager.InputMode.Gameplay)
+            return;
+
         for (int i = 0; i < slots.Length && i < NumberKeys.Length; i++)
         {
             if (Keyboard.current[NumberKeys[i]].wasPressedThisFrame)
@@ -86,15 +95,15 @@ public class AbilityHotbarSystem : MonoBehaviour
     // ASSIGNMENT — called by the inventory screen's drag-and-drop code.
     // ---------------------------------------------------------------
 
-    /// <summary>Whether this item is even allowed on the hotbar. Placeables always are;
-    /// Consumables only if they don't need a pot target; OneOff items never (they never
-    /// sit in the inventory at all, so they'd have nothing to reference here).</summary>
+    /// <summary>Whether this item is even allowed on the hotbar. ONLY Consumables that don't need
+    /// a pot target qualify — Placeables are never hotbar-eligible (use them from the Abilities
+    /// panel's Use button instead, which starts placement mode directly), and OneOff items never
+    /// sit in the inventory at all, so they'd have nothing to reference here.</summary>
     public static bool CanAssign(AbilityItemData data)
     {
         if (data == null) return false;
-        if (data.kind == AbilityKind.Placeable) return true;
-        if (data.kind == AbilityKind.Consumable) return !AbilityConsumableEffects.RequiresPotTarget(data.effectId);
-        return false;
+        if (data.kind != AbilityKind.Consumable) return false;
+        return !AbilityConsumableEffects.RequiresPotTarget(data.effectId);
     }
 
     /// <summary>Assigns an item to a slot. Returns false (and does nothing) if the slot index is
@@ -144,31 +153,24 @@ public class AbilityHotbarSystem : MonoBehaviour
         if (abilityInventory == null || abilityInventory.GetCount(data) <= 0)
             return; // stack ran out — slot stays assigned but does nothing until restocked
 
-        if (data.kind == AbilityKind.Placeable)
+        // Only Consumables can ever be assigned (CanAssign enforces this), but a defensive
+        // re-check here costs nothing and protects against a future data/design change.
+        if (data.kind != AbilityKind.Consumable)
         {
-            if (abilityPlacementSystem == null)
-            {
-                Debug.LogWarning($"[AbilityHotbarSystem] No AbilityPlacementSystem — can't place '{data.displayName}'.");
-                return;
-            }
-            abilityPlacementSystem.BeginPlacing(data);
+            Debug.LogWarning($"[AbilityHotbarSystem] '{data.displayName}' isn't a Consumable and " +
+                              "shouldn't be on the hotbar.");
             return;
         }
 
-        if (data.kind == AbilityKind.Consumable)
+        if (AbilityConsumableEffects.RequiresPotTarget(data.effectId))
         {
-            // Untargeted only — CanAssign() already enforced this at assignment time. Defensive
-            // re-check here costs nothing and protects against a future data/design change.
-            if (AbilityConsumableEffects.RequiresPotTarget(data.effectId))
-            {
-                Debug.LogWarning($"[AbilityHotbarSystem] '{data.displayName}' needs a pot target and " +
-                                  "shouldn't be assigned to the hotbar — use it from a pot's Abilities panel instead.");
-                return;
-            }
-
-            bool applied = AbilityConsumableEffects.TryApply(data, player, null);
-            if (applied)
-                abilityInventory.TryConsume(data, 1);
+            Debug.LogWarning($"[AbilityHotbarSystem] '{data.displayName}' needs a pot target and " +
+                              "shouldn't be assigned to the hotbar — use it from a pot's Abilities panel instead.");
+            return;
         }
+
+        bool applied = AbilityConsumableEffects.TryApply(data, player, null);
+        if (applied)
+            abilityInventory.TryConsume(data, 1);
     }
 }

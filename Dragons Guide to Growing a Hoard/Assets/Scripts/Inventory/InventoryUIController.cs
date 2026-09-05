@@ -39,8 +39,20 @@ using Unity.Cinemachine;
 //      'ContainerSmall') with an InventorySlotUI component added.
 //      They're hidden at runtime and cloned for every item —
 //      no separate prefab asset required.
+//
+// CONSUMABLES/PLACEABLES NOW SHARE THIS SAME GRID:
+//   There is no separate "Abilities" section in the main inventory
+//   anymore — a Consumable/Placeable stack fills the SAME grid a
+//   plant would (auto-placed the first time it's picked up), and
+//   overflows to the SAME Available panel once the grid's full,
+//   exactly like a plant does. InventorySlotUI displays either kind
+//   (see its Occupant property) and the fields below (gridSlotTemplate/
+//   availableSlotTemplate) are reused for both — you do NOT need a
+//   separate ability slot template or ability panel in your hierarchy
+//   any more. Dragging a Consumable onto a hotbar slot still ASSIGNS
+//   it there (see TryHandleHotbarDrop) rather than moving it.
 // =============================================================
-public class InventoryUIController : MonoBehaviour
+public class InventoryUIController : MonoBehaviour, IHotbarActivator
 {
     [Header("Inventory of Player")]
     [SerializeField] private PlayerInventory playerInventory;
@@ -76,33 +88,35 @@ public class InventoryUIController : MonoBehaviour
     [SerializeField] private InventorySlotUI gridSlotTemplate;
 
     [Tooltip("An existing slot GameObject already placed in Available (e.g. 'ContainerSmall'). " +
-             "Cloned the same way as gridSlotTemplate. Leave empty to reuse gridSlotTemplate for both panels.")]
+             "Cloned the same way as gridSlotTemplate. Leave empty to reuse gridSlotTemplate for both panels. " +
+             "Reused for consumable/placeable stacks too — there's no separate ability slot template any more.")]
     [SerializeField] private InventorySlotUI availableSlotTemplate;
-    [Tooltip("Container for ability items (Consumables + Placeables). Anchor/pivot must be top-left " +
-             "(0,1), same treatment as availablePanel — laid out manually, wraps at abilityColumns.")]
-    [SerializeField] private RectTransform abilitiesPanel;
-    [Tooltip("An existing ability slot GameObject already placed in the Abilities section, with an " +
-             "AbilityInventorySlotUI component. Hidden at startup and cloned for every stack — no " +
-             "prefab asset needed, same pattern as gridSlotTemplate.")]
-    [SerializeField] private AbilityInventorySlotUI abilitySlotTemplate;
-    [Tooltip("How many columns to wrap ability items at — same manual-layout approach as availableColumns.")]
-    [SerializeField] private int abilityColumns = 4;
     [Tooltip("Optional close/back button.")]
     [SerializeField] private Button backButton;
 
     [Header("Plant Detail Panel")]
-    [Tooltip("The detail panel GameObject shown when the player clicks a plant (in the grid or Available). " +
-             "Hidden by default — Available is what shows when the inventory first opens.")]
+    [Tooltip("The detail panel GameObject shown when the player clicks a plant or ability item " +
+             "(in the grid, Available, or Abilities section). Hidden by default — Available is " +
+             "what shows when the inventory first opens.")]
     [SerializeField] private GameObject plantPanel;
     [Tooltip("Image component on the Plant panel that shows the plant's larger detail image " +
-             "(CollectablePlant.plantImage) — this is intentionally NOT the small slot icon.")]
+             "(CollectablePlant.plantImage) — this is intentionally NOT the small slot icon. Also " +
+             "reused to show an ability item's icon when the panel is opened for one of those instead.")]
     [SerializeField] private Image plantPanelImage;
-    [Tooltip("Text component on the Plant panel that shows the plant's name.")]
+    [Tooltip("Text component on the Plant panel that shows the plant's (or ability item's) name.")]
     [SerializeField] private TMPro.TextMeshProUGUI plantPanelName;
     [Tooltip("Optional close/back button on the Plant panel that returns to the Available view. " +
              "If you don't want a dedicated button, add a Button component to the panel's " +
              "background image instead and assign that here.")]
     [SerializeField] private Button plantPanelCloseButton;
+    [Tooltip("Shown ONLY when the panel is open for an ability item that can have an effect right " +
+             "now: an untargeted Consumable (e.g. Bubble of Holding, Glowcap Spore). Hidden for " +
+             "plants (they're managed via the pot menu's own buttons, not this panel), for " +
+             "Placeables (they need the player to actually place + interact with them in the " +
+             "world, not an instant press-to-use), and for pot-targeted Consumables like Verdant " +
+             "Algae/Pollen Puff/Dewdrop (those only make sense from inside a specific pot's own " +
+             "Abilities panel — PotMenuUIController).")]
+    [SerializeField] private Button plantPanelUseButton;
 
     [Header("Filter Bar")]
     [Tooltip("Infinity icon — explicitly shows everything (clears the filter). This is the one that's " +
@@ -148,11 +162,6 @@ public class InventoryUIController : MonoBehaviour
     private InputAction inventoryAction;
     private readonly Dictionary<string, InventorySlotUI> slotVisuals = new Dictionary<string, InventorySlotUI>();
 
-    // AbilityItemInstance has no unique id the way InventoryItemInstance does (it's just data+count),
-    // and the Abilities panel is fully destroyed/recreated on every refresh rather than diffed — so a
-    // plain list to track "what to destroy next time" is enough, no dictionary keying needed.
-    private readonly List<AbilityInventorySlotUI> abilityVisuals = new List<AbilityInventorySlotUI>();
-
     // Grid cell highlight overlay — one Image per cell, built lazily and kept
     // in sync with the grid's current dimensions. Lives at the back of
     // gridPanel's hierarchy so item slots (instantiated after it) always
@@ -160,7 +169,7 @@ public class InventoryUIController : MonoBehaviour
     private Image[,] cellOverlays;
     private int overlayGridWidth = -1;
     private int overlayGridHeight = -1;
-    private InventoryItemInstance draggedInstance;
+    private IGridPlaceable draggedInstance;
 
     // null = no filter active, i.e. show everything (this is the default — there's
     // deliberately no "All" button; not selecting any filter button already means "all").
@@ -210,7 +219,6 @@ public class InventoryUIController : MonoBehaviour
         // originals so they don't show up as a phantom extra slot.
         if (gridSlotTemplate != null) gridSlotTemplate.gameObject.SetActive(false);
         if (availableSlotTemplate != null) availableSlotTemplate.gameObject.SetActive(false);
-        if (abilitySlotTemplate != null) abilitySlotTemplate.gameObject.SetActive(false);
 
         for (int i = 0; i < hotbarSlotUIs.Count; i++)
             hotbarSlotUIs[i]?.Initialize(this, i);
@@ -227,7 +235,10 @@ public class InventoryUIController : MonoBehaviour
         if (playerInventory != null)
             playerInventory.OnInventoryChanged += RefreshUI;
         if (abilityInventory != null)
-            abilityInventory.OnChanged += RefreshAbilitiesUI;
+            // A consumable/placeable stack's count can change (picked up more, used one) without
+            // its grid position changing — PlayerInventory.OnInventoryChanged only fires when a
+            // stack's PLACEMENT changes, so this covers redrawing the "xN" count label too.
+            abilityInventory.OnChanged += RefreshUI;
         if (hotbarSystem != null)
             hotbarSystem.OnSlotsChanged += RefreshHotbarUI;
     }  
@@ -238,7 +249,7 @@ public class InventoryUIController : MonoBehaviour
         if (playerInventory != null)
             playerInventory.OnInventoryChanged -= RefreshUI;
         if (abilityInventory != null)
-            abilityInventory.OnChanged -= RefreshAbilitiesUI;
+            abilityInventory.OnChanged -= RefreshUI;
         if (hotbarSystem != null)
             hotbarSystem.OnSlotsChanged -= RefreshHotbarUI;
     }
@@ -288,7 +299,6 @@ public class InventoryUIController : MonoBehaviour
             Cursor.visible = true;
             ThirdPersonCameraController.CameraLocked = true;
             RefreshUI();
-            RefreshAbilitiesUI();
             RefreshHotbarUI();
 
             // Lets a tutorial step (e.g. "Press [I] to open your inventory") auto-advance the instant
@@ -317,13 +327,19 @@ public class InventoryUIController : MonoBehaviour
     }
 
     // ------------------------------------------------------------
-    // PLANT DETAIL PANEL — shown when the player clicks a plant in
-    // the grid or Available. Called by InventorySlotUI.OnPointerClick.
+    // DETAIL PANEL — shown when the player clicks a plant OR a
+    // consumable/placeable stack, wherever it's sitting in the shared
+    // grid/Available. Both are routed here by the same InventorySlotUI.
+    // OnPointerClick (it checks which kind of item it's holding) —
+    // ShowPlantDetail for a plant, ShowAbilityDetail for a stack. Both
+    // share the same panel/image/name fields; only plantPanelUseButton's
+    // visibility differs between the two.
     // ------------------------------------------------------------
     private string detailInstanceId = null;
+    private AbilityItemData detailAbilityData = null;
 
     /// <summary>
-    /// Populates and shows the Plant detail panel for the clicked item.
+    /// Populates and shows the detail panel for the clicked plant.
     /// Clicking the SAME item again (with no dedicated close button) closes
     /// it back to the default Available/grid view — this is the toggle that
     /// replaces having a separate close button.
@@ -332,7 +348,7 @@ public class InventoryUIController : MonoBehaviour
     {
         if (instance == null || plantPanel == null) return;
 
-        if (plantPanel.activeSelf && detailInstanceId == instance.instanceId)
+        if (plantPanel.activeSelf && detailAbilityData == null && detailInstanceId == instance.instanceId)
         {
             HidePlantDetail();
             return;
@@ -351,7 +367,13 @@ public class InventoryUIController : MonoBehaviour
         if (plantPanelName != null)
             plantPanelName.text = instance.displayName;
 
+        // Plants are never "used" from this panel — they're managed via the pot menu's own
+        // Choose Plant / Remove / Harvest buttons — so the Use button never shows here.
+        if (plantPanelUseButton != null)
+            plantPanelUseButton.gameObject.SetActive(false);
+
         detailInstanceId = instance.instanceId;
+        detailAbilityData = null;
         plantPanel.SetActive(true);
 
         // Hide the whole Available panel — including its "Available" header text,
@@ -361,10 +383,58 @@ public class InventoryUIController : MonoBehaviour
         if (availablePanelRoot != null) availablePanelRoot.SetActive(false);
     }
 
-    /// <summary>Hides the Plant detail panel, returning the player to the default Available view.</summary>
+    /// <summary>
+    /// Populates and shows the SAME detail panel for the clicked ability item stack. The Use
+    /// button only appears when this item can actually have an effect right now: an untargeted
+    /// Consumable. Placeables (need the player to place + interact with them in the world) and
+    /// pot-targeted Consumables (Verdant Algae, Pollen Puff, Dewdrop — only usable from inside a
+    /// pot's own Abilities panel) never show it. Clicking the same stack again closes the panel,
+    /// same toggle behaviour as ShowPlantDetail.
+    /// </summary>
+    public void ShowAbilityDetail(AbilityItemInstance stack)
+    {
+        if (stack?.data == null || plantPanel == null) return;
+
+        if (plantPanel.activeSelf && detailAbilityData == stack.data)
+        {
+            HidePlantDetail();
+            return;
+        }
+
+        if (plantPanelImage != null)
+        {
+            plantPanelImage.sprite = stack.data.icon;
+            plantPanelImage.enabled = stack.data.icon != null;
+        }
+
+        if (plantPanelName != null)
+            plantPanelName.text = stack.data.displayName;
+
+        bool usableNow = stack.data.kind == AbilityKind.Consumable &&
+                          !AbilityConsumableEffects.RequiresPotTarget(stack.data.effectId);
+
+        if (plantPanelUseButton != null)
+        {
+            plantPanelUseButton.gameObject.SetActive(usableNow);
+            plantPanelUseButton.onClick.RemoveAllListeners();
+            if (usableNow)
+                plantPanelUseButton.onClick.AddListener(() => UseAbility(stack.data));
+        }
+
+        detailInstanceId = null;
+        detailAbilityData = stack.data;
+        plantPanel.SetActive(true);
+
+        if (availablePanelRoot != null) availablePanelRoot.SetActive(false);
+    }
+
+    /// <summary>Hides the detail panel, returning the player to the default Available view.</summary>
     public void HidePlantDetail()
     {
         detailInstanceId = null;
+        detailAbilityData = null;
+        if (plantPanelUseButton != null)
+            plantPanelUseButton.gameObject.SetActive(false);
         if (plantPanel != null)
             plantPanel.SetActive(false);
 
@@ -412,11 +482,13 @@ public class InventoryUIController : MonoBehaviour
         return null;
     }
 
-    /// <summary>Applies the active filter (if any) to a list of items for display.</summary>
-    private List<InventoryItemInstance> ApplyFilter(List<InventoryItemInstance> source)
+    /// <summary>Applies the active filter (if any) to a list of items for display. The Sunny/Dark/
+    /// Water/Dead filter only makes sense for plants — a consumable/placeable stack has no
+    /// PlantType, so it's always shown regardless of which filter (if any) is active.</summary>
+    private List<IGridPlaceable> ApplyFilter(List<IGridPlaceable> source)
     {
         if (activeFilter == null) return source;
-        return source.Where(i => i.plantType == activeFilter.Value).ToList();
+        return source.Where(i => !(i is InventoryItemInstance plant) || plant.plantType == activeFilter.Value).ToList();
     }
 
     // ------------------------------------------------------------
@@ -448,19 +520,19 @@ public class InventoryUIController : MonoBehaviour
             if (visual != null) Destroy(visual.gameObject);
         slotVisuals.Clear();
 
-        foreach (var instance in ApplyFilter(playerInventory.GetGridItems()))
+        foreach (var occupant in ApplyFilter(playerInventory.GetGridItems()))
         {
-            InventorySlotUI slot = CreateSlot(instance, gridPanel, gridSlotTemplate);
+            InventorySlotUI slot = CreateSlot(occupant, gridPanel, gridSlotTemplate);
             RectTransform rt = slot.GetComponent<RectTransform>();
             rt.anchorMin = new Vector2(0f, 1f);
             rt.anchorMax = new Vector2(0f, 1f);
             rt.pivot = new Vector2(0f, 1f);
             rt.sizeDelta = new Vector2(
-                instance.footprint.x * cellW - cellGapPx,
-                instance.footprint.y * cellH - cellGapPx);
+                occupant.Footprint.x * cellW - cellGapPx,
+                occupant.Footprint.y * cellH - cellGapPx);
             rt.anchoredPosition = new Vector2(
-                instance.gridX * cellW + cellGapPx * 0.5f,
-                -(instance.gridY * cellH + cellGapPx * 0.5f));
+                occupant.GridX * cellW + cellGapPx * 0.5f,
+                -(occupant.GridY * cellH + cellGapPx * 0.5f));
         }
 
         InventorySlotUI availableTemplate = availableSlotTemplate != null ? availableSlotTemplate : gridSlotTemplate;
@@ -529,65 +601,19 @@ public class InventoryUIController : MonoBehaviour
         return cellSizePx;
     }
 
-    InventorySlotUI CreateSlot(InventoryItemInstance instance, RectTransform parent, InventorySlotUI template)
+    InventorySlotUI CreateSlot(IGridPlaceable occupant, RectTransform parent, InventorySlotUI template)
     {
         InventorySlotUI slot = Instantiate(template, parent);
         slot.gameObject.SetActive(true); // template itself is hidden — the clone needs to be shown
-        slot.Initialize(instance, this, rootCanvas);
-        slotVisuals[instance.instanceId] = slot;
+        slot.Initialize(occupant, this, rootCanvas);
+        slotVisuals[occupant.InstanceId] = slot;
         return slot;
     }
 
-    // ------------------------------------------------------------
-    // ABILITIES PANEL — Consumables + Placeables from PlayerAbilityInventory.
-    // Pot-targeted consumables (Pollen Puff, Verdant Algae, Dewdrop) are
-    // deliberately NOT filtered out of this list — the player should still
-    // see they own them here, they just can't be clicked to use (UseAbility
-    // logs and no-ops for those) or dragged onto the hotbar (HandleAbilityDrop
-    // rejects them via AbilityHotbarSystem.CanAssign). Those items only work
-    // from inside a specific pot's own Abilities panel (PotMenuUIController),
-    // since that's what supplies their target.
-    // ------------------------------------------------------------
-    void RefreshAbilitiesUI()
-    {
-        if (abilityInventory == null || abilitiesPanel == null || abilitySlotTemplate == null) return;
-
-        foreach (var visual in abilityVisuals)
-            if (visual != null) Destroy(visual.gameObject);
-        abilityVisuals.Clear();
-
-        int columns = Mathf.Max(1, abilityColumns);
-        float cellW = GetGridCellSize(); // reuse the same square cell size as the rest of this UI
-        float cellH = cellW;
-
-        IReadOnlyList<AbilityItemInstance> stacks = abilityInventory.Stacks;
-        int shown = 0;
-        for (int i = 0; i < stacks.Count; i++)
-        {
-            AbilityItemInstance stack = stacks[i];
-            if (stack?.data == null || stack.count <= 0) continue;
-
-            AbilityInventorySlotUI slot = Instantiate(abilitySlotTemplate, abilitiesPanel);
-            slot.gameObject.SetActive(true); // template itself is hidden — the clone needs to be shown
-            slot.Initialize(stack, this, rootCanvas);
-            abilityVisuals.Add(slot);
-
-            RectTransform rt = slot.GetComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0f, 1f);
-            rt.anchorMax = new Vector2(0f, 1f);
-            rt.pivot = new Vector2(0f, 1f);
-            rt.sizeDelta = new Vector2(cellW - cellGapPx, cellH - cellGapPx);
-
-            int col = shown % columns;
-            int row = shown / columns;
-            rt.anchoredPosition = new Vector2(
-                col * cellW + cellGapPx * 0.5f,
-                -(row * cellH + cellGapPx * 0.5f));
-            shown++;
-        }
-    }
-
-    /// <summary>Called by AbilityInventorySlotUI when its "Use" click fires.</summary>
+    /// <summary>Called by the detail panel's Use button (ShowAbilityDetail) — reached only for
+    /// untargeted Consumables now (Placeables/pot-targeted Consumables never show that button —
+    /// see ShowAbilityDetail), but the guard clauses below are left in for safety in case this
+    /// is ever called from somewhere else too.</summary>
     public void UseAbility(AbilityItemData data)
     {
         if (data == null || abilityInventory == null) return;
@@ -611,17 +637,22 @@ public class InventoryUIController : MonoBehaviour
             return;
         }
 
-        // Untargeted Consumable (ExpandInventory, DragonGlow) — applies straight to the player.
+        // Untargeted Consumable (ExpandInventory, DragonGlow) — applies straight to the player,
+        // then closes the whole inventory, per the design: pressing Use activates the ability and
+        // dismisses the panel rather than leaving the player looking at the (now stale) detail view.
         if (AbilityConsumableEffects.TryApply(data, abilityInventory.gameObject, null))
+        {
             abilityInventory.TryConsume(data, 1);
+            ToggleInventory();
+        }
     }
 
     // ------------------------------------------------------------
     // HOTBAR — mirrors AbilityHotbarSystem's slot data onto the hand-placed
-    // hotbar row. Assignment is drag-and-drop from the Abilities panel above
-    // (see HandleAbilityDrop); activation is either a number key
-    // (AbilityHotbarSystem.Update) or clicking the slot itself
-    // (ActivateHotbarSlot, called by HotbarSlotUI.OnPointerClick).
+    // hotbar row. Assignment is drag-and-drop straight from the main grid/
+    // Available (see TryHandleHotbarDrop, called by InventorySlotUI); activation
+    // is either a number key (AbilityHotbarSystem.Update) or clicking the slot
+    // itself (ActivateHotbarSlot, called by HotbarSlotUI.OnPointerClick).
     // ------------------------------------------------------------
     void RefreshHotbarUI()
     {
@@ -643,13 +674,17 @@ public class InventoryUIController : MonoBehaviour
         if (wasPlaceable) ToggleInventory();
     }
 
-    /// <summary>Called by AbilityInventorySlotUI.OnEndDrag. Returns true if the drop landed on a
-    /// hotbar slot and was assigned. Mirrors HandleDrop's rectangle-testing approach below, just
-    /// tested against each hotbar slot's own RectTransform instead of one shared panel rect, since
-    /// hotbar slots are individually hand-placed rather than laid out in one container.</summary>
-    public bool HandleAbilityDrop(AbilityInventorySlotUI slot, PointerEventData eventData)
+    /// <summary>Called by InventorySlotUI.OnEndDrag BEFORE the normal grid/Available move check.
+    /// Only relevant for a Consumable/Placeable stack (plants never match) — if the drop point is
+    /// over one of the hand-placed hotbar slots, this ASSIGNS the item there (see
+    /// AbilityHotbarSystem.CanAssign for which items are eligible — only untargeted Consumables)
+    /// and returns true either way, meaning "handled here, don't also try to move it in the grid".
+    /// Returns false if the drop wasn't over any hotbar slot at all, so the caller falls through
+    /// to the normal grid/Available move logic instead.</summary>
+    public bool TryHandleHotbarDrop(InventorySlotUI slot, PointerEventData eventData)
     {
-        if (slot?.Stack?.data == null || hotbarSystem == null) return false;
+        if (!(slot?.Occupant is AbilityItemInstance stack) || stack.data == null || hotbarSystem == null)
+            return false;
 
         for (int i = 0; i < hotbarSlotUIs.Count; i++)
         {
@@ -659,13 +694,13 @@ public class InventoryUIController : MonoBehaviour
             if (RectTransformUtility.RectangleContainsScreenPoint(
                     hotbarSlot.RectTransform, eventData.position, eventData.pressEventCamera))
             {
-                bool assigned = hotbarSystem.TryAssign(i, slot.Stack.data);
+                bool assigned = hotbarSystem.TryAssign(i, stack.data);
                 if (!assigned)
-                    Debug.Log($"[InventoryUIController] '{slot.Stack.data.displayName}' can't go on the hotbar " +
-                              "— pot-targeted consumables must be used from a pot's Abilities panel instead.");
+                    Debug.Log($"[InventoryUIController] '{stack.data.displayName}' can't go on the hotbar " +
+                              "— only Consumables that don't need a pot target are hotbar-eligible.");
                 else
                     RefreshHotbarUI();
-                return assigned;
+                return true; // landed on a hotbar slot either way — never move the item in the grid for this drop
             }
         }
 
@@ -679,7 +714,7 @@ public class InventoryUIController : MonoBehaviour
     // ------------------------------------------------------------
 
     /// <summary>Call from InventorySlotUI.OnBeginDrag.</summary>
-    public void BeginDragHighlight(InventoryItemInstance instance)
+    public void BeginDragHighlight(IGridPlaceable instance)
     {
         draggedInstance = instance;
         EnsureCellOverlays();
@@ -708,12 +743,12 @@ public class InventoryUIController : MonoBehaviour
         int originX = Mathf.FloorToInt(local.x / cellW);
         int originY = Mathf.FloorToInt(-local.y / cellH);
 
-        bool valid = playerInventory.Grid.CanPlaceAt(originX, originY, draggedInstance.footprint, draggedInstance.instanceId);
+        bool valid = playerInventory.Grid.CanPlaceAt(originX, originY, draggedInstance.Footprint, draggedInstance.InstanceId);
         Color highlight = valid ? validDropColor : invalidDropColor;
 
-        for (int x = originX; x < originX + draggedInstance.footprint.x; x++)
+        for (int x = originX; x < originX + draggedInstance.Footprint.x; x++)
         {
-            for (int y = originY; y < originY + draggedInstance.footprint.y; y++)
+            for (int y = originY; y < originY + draggedInstance.Footprint.y; y++)
             {
                 if (x < 0 || y < 0 || x >= overlayGridWidth || y >= overlayGridHeight) continue;
                 cellOverlays[x, y].color = highlight;
@@ -801,8 +836,8 @@ public class InventoryUIController : MonoBehaviour
         {
             for (int y = 0; y < overlayGridHeight; y++)
             {
-                InventoryItemInstance occupant = playerInventory.Grid.GetItemAt(x, y);
-                bool occupied = occupant != null && occupant.instanceId != draggedInstance?.instanceId;
+                IGridPlaceable occupant = playerInventory.Grid.GetItemAt(x, y);
+                bool occupied = occupant != null && occupant.InstanceId != draggedInstance?.InstanceId;
                 cellOverlays[x, y].color = occupied ? occupiedCellColor : emptyCellColor;
             }
         }
@@ -812,10 +847,13 @@ public class InventoryUIController : MonoBehaviour
     // DROP RESOLUTION — called by InventorySlotUI.OnEndDrag
     // ------------------------------------------------------------
 
-    /// <summary>Returns true if the drop was handled (item moved), false if the slot should snap back.</summary>
+    /// <summary>Returns true if the drop was handled (item moved), false if the slot should snap back.
+    /// Works the same whether the slot holds a plant or a consumable/placeable stack — both are
+    /// IGridPlaceable, and the shared grid doesn't care which.</summary>
     public bool HandleDrop(InventorySlotUI slot, PointerEventData eventData)
     {
-        InventoryItemInstance instance = slot.Instance;
+        IGridPlaceable occupant = slot.Occupant;
+        if (occupant == null) return false;
 
         if (RectTransformUtility.RectangleContainsScreenPoint(gridPanel, eventData.position, eventData.pressEventCamera))
         {
@@ -828,14 +866,14 @@ public class InventoryUIController : MonoBehaviour
             int cellX = Mathf.FloorToInt(local.x / cellW);
             int cellY = Mathf.FloorToInt(-local.y / cellH); // gridPanel pivot is top-left, so local.y <= 0 going down
 
-            return playerInventory.TryPlaceInGrid(instance, cellX, cellY);
+            return playerInventory.TryPlaceInGrid(occupant, cellX, cellY);
         }
 
         if (RectTransformUtility.RectangleContainsScreenPoint(availablePanel, eventData.position, eventData.pressEventCamera))
         {
-            if (instance.IsInGrid)
+            if (occupant.IsInGrid)
             {
-                playerInventory.MoveToAvailable(instance);
+                playerInventory.MoveToAvailable(occupant);
                 return true;
             }
             return true; // already in Available, dropped back onto Available — treat as a no-op success

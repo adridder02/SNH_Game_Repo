@@ -70,10 +70,11 @@
 //   3. Hook up the new miasmaBar here instead.
 // =============================================================
 
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainUIController : MonoBehaviour
+public class MainUIController : MonoBehaviour, IHotbarActivator
 {
     [Header("Player")]
     [Tooltip("Auto-found in the scene if left empty (same as PotInteraction's dragonInventory). " +
@@ -120,6 +121,15 @@ public class MainUIController : MonoBehaviour
     [SerializeField] private Color toolActiveColor = new Color(1f, 0.85f, 0.4f);
     [Tooltip("Tint applied to a tool slot's button graphic while that tool is NOT active.")]
     [SerializeField] private Color toolInactiveColor = Color.white;
+
+    [Header("Hotbar")]
+    [Tooltip("The persistent hotbar row shown on the main gameplay HUD (as opposed to the preview " +
+             "row tucked into the Inventory panel, which InventoryUIController owns separately) — " +
+             "same AbilityHotbarSystem data, just a second always-visible place to see/click it. " +
+             "SAME ORDER as AbilityHotbarSystem's own slots array (index 0 = key '1', etc.).")]
+    [SerializeField] private List<HotbarSlotUI> hudHotbarSlotUIs = new List<HotbarSlotUI>();
+    [Tooltip("Auto-found in the scene if left empty.")]
+    [SerializeField] private AbilityHotbarSystem hotbarSystem;
 
     [Header("Interact Prompt (HUD)")]
     [Tooltip("Fixed screen-space element (e.g. a 'Press E' panel docked on the HUD) — just enabled/" +
@@ -188,6 +198,27 @@ public class MainUIController : MonoBehaviour
             placementSystem.OnModeChanged += RefreshToolButtonHighlights;
             RefreshToolButtonHighlights(placementSystem.CurrentMode); // sync initial state
         }
+
+        if (hotbarSystem == null)
+            hotbarSystem = FindObjectOfType<AbilityHotbarSystem>();
+
+        for (int i = 0; i < hudHotbarSlotUIs.Count; i++)
+            hudHotbarSlotUIs[i]?.Initialize(this, i);
+    }
+
+    private void OnEnable()
+    {
+        if (hotbarSystem != null)
+        {
+            hotbarSystem.OnSlotsChanged += RefreshHotbarUI;
+            RefreshHotbarUI(); // sync initial state — assignments made before this enabled shouldn't show empty
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (hotbarSystem != null)
+            hotbarSystem.OnSlotsChanged -= RefreshHotbarUI;
     }
 
     private void OnDestroy()
@@ -195,6 +226,24 @@ public class MainUIController : MonoBehaviour
         if (placementSystem != null)
             placementSystem.OnModeChanged -= RefreshToolButtonHighlights;
     }
+
+    // ---------------------------------------------------------------
+    // Hotbar (HUD row) — mirrors AbilityHotbarSystem's slot data, same treatment
+    // InventoryUIController gives its own preview row. Activation (click or number
+    // key) is handled entirely by AbilityHotbarSystem itself; this just displays state
+    // and forwards clicks.
+    // ---------------------------------------------------------------
+    private void RefreshHotbarUI()
+    {
+        if (hotbarSystem == null) return;
+        foreach (var slot in hudHotbarSlotUIs)
+            slot?.Refresh(hotbarSystem);
+    }
+
+    /// <summary>Called by HotbarSlotUI.OnPointerClick on the HUD row. Unlike InventoryUIController's
+    /// version, there's no inventory panel to close afterwards — the HUD is already what's on-screen
+    /// during normal play.</summary>
+    public void ActivateHotbarSlot(int slotIndex) => hotbarSystem?.ActivateSlot(slotIndex);
 
     /// <summary>Adds a click listener to toolSlots[index] if both the slot and placementSystem exist.</summary>
     private void WireToolSlot(int index, UnityEngine.Events.UnityAction onClick)
