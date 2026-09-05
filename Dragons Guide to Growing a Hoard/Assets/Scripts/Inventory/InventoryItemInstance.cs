@@ -16,7 +16,7 @@ using UnityEngine;
 // in Available.
 // =============================================================
 [Serializable]
-public class InventoryItemInstance
+public class InventoryItemInstance : IGridPlaceable
 {
     public readonly string instanceId;
     public readonly GameObject plantPrefab;
@@ -52,6 +52,15 @@ public class InventoryItemInstance
     public int gridY = -1;
 
     public bool IsInGrid => gridX >= 0 && gridY >= 0;
+
+    // IGridPlaceable — lets InventoryGrid treat a plant exactly like a consumable stack.
+    // Deliberately capitalised versions of the existing fields above (case-sensitive, so both
+    // can coexist) — every other script keeps using instanceId/footprint/gridX/gridY directly,
+    // only InventoryGrid and the drag/drop code talk to items through this interface.
+    public string InstanceId => instanceId;
+    public Vector2Int Footprint => footprint;
+    int IGridPlaceable.GridX { get => gridX; set => gridX = value; }
+    int IGridPlaceable.GridY { get => gridY; set => gridY = value; }
 
     public InventoryItemInstance(GameObject prefab, Sprite icon = null, Sprite displayImage = null, string displayName = null)
     {

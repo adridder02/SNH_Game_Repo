@@ -5,17 +5,26 @@ using UnityEngine.EventSystems;
 // =============================================================
 // HotbarSlotUI.cs
 // -------------------------------------------------------------
-// One hand-placed slot in the bottom hotbar row (the row of boxes in
-// your mockup). Purely a display + click target — the actual slot
-// DATA lives in AbilityHotbarSystem (see AbilityHotbarSystem.cs),
-// this just mirrors slot [SlotIndex] visually.
+// One hand-placed slot in a hotbar row. Purely a display + click
+// target — the actual slot DATA lives in AbilityHotbarSystem (see
+// AbilityHotbarSystem.cs), this just mirrors slot [SlotIndex]
+// visually. The SAME component is used for both the row of slots
+// tucked into the bottom of the Inventory panel (still wired up via
+// InventoryUIController, for previewing assignments while browsing)
+// and the persistent row on the main gameplay HUD (wired up via
+// MainUIController) — hence IHotbarActivator below instead of a
+// hard InventoryUIController reference, so either owner works.
 //
-// Assignment (drag from the Abilities panel) is resolved by
-// InventoryUIController.HandleAbilityDrop, which rectangle-tests the
-// drop point against each hotbar slot's own RectTransform — same
-// approach InventoryUIController already uses for its grid/Available
-// panels — rather than this component implementing IDropHandler
-// itself, to keep drop resolution in one place.
+// Assignment (drag a consumable straight from the main grid/Available)
+// is resolved by InventoryUIController.TryHandleHotbarDrop, which
+// rectangle-tests the drop point against each hotbar slot's own
+// RectTransform — same approach InventoryUIController already uses
+// for its grid/Available panels — rather than this component
+// implementing IDropHandler itself, to keep drop resolution in one
+// place. Only the Inventory panel's slots need to be reachable for
+// dragging (the HUD row's slots typically aren't on-screen while the
+// inventory book is open) — Refresh()/click still work identically on
+// both rows regardless.
 //
 // Clicking a hotbar slot activates it directly (same effect as
 // pressing its number key) — handy for mouse-only play or testing.
@@ -29,15 +38,15 @@ public class HotbarSlotUI : MonoBehaviour, IPointerClickHandler
     [Tooltip("Alpha applied when no item is assigned to this slot at all.")]
     [SerializeField] private float emptyAlpha = 0.15f;
 
-    /// <summary>Which AbilityHotbarSystem slot (0-based) this UI element mirrors. Set by
-    /// InventoryUIController.Awake() from the hotbarSlotUIs list order — slot 0 = key '1', etc.</summary>
+    /// <summary>Which AbilityHotbarSystem slot (0-based) this UI element mirrors. Set by the owning
+    /// controller's Awake() from its hotbarSlotUIs list order — slot 0 = key '1', etc.</summary>
     public int SlotIndex { get; private set; }
 
     public RectTransform RectTransform => (RectTransform)transform;
 
-    private InventoryUIController controller;
+    private IHotbarActivator controller;
 
-    public void Initialize(InventoryUIController owningController, int slotIndex)
+    public void Initialize(IHotbarActivator owningController, int slotIndex)
     {
         controller = owningController;
         SlotIndex = slotIndex;
@@ -62,4 +71,12 @@ public class HotbarSlotUI : MonoBehaviour, IPointerClickHandler
     {
         controller?.ActivateHotbarSlot(SlotIndex);
     }
+}
+
+/// <summary>Implemented by whichever controller owns a row of HotbarSlotUI — InventoryUIController
+/// (the preview row inside the Inventory panel) and MainUIController (the persistent HUD row) both
+/// implement this so HotbarSlotUI doesn't need to hard-reference either one specifically.</summary>
+public interface IHotbarActivator
+{
+    void ActivateHotbarSlot(int slotIndex);
 }
