@@ -39,6 +39,11 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     /// AbilityItemInstance (consumable/placeable stack). Check the type to know which.</summary>
     public IGridPlaceable Occupant { get; private set; }
 
+    /// <summary>True for a slot living in the Available panel rather than the main grid — clicking
+    /// one of these should just do nothing (no detail panel), see OnPointerClick below. Available
+    /// is overflow storage, not a "browse and inspect" area the way the main grid is.</summary>
+    private bool isAvailableSlot;
+
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private Canvas rootCanvas;
@@ -55,11 +60,12 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
     }
 
-    public void Initialize(IGridPlaceable occupant, InventoryUIController owningController, Canvas canvas)
+    public void Initialize(IGridPlaceable occupant, InventoryUIController owningController, Canvas canvas, bool isAvailableSlot = false)
     {
         Occupant = occupant;
         controller = owningController;
         rootCanvas = canvas;
+        this.isAvailableSlot = isAvailableSlot;
 
         if (occupant is InventoryItemInstance plant)
         {
@@ -185,6 +191,7 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public void OnPointerClick(PointerEventData eventData)
     {
         if (Occupant == null || controller == null) return;
+        if (isAvailableSlot) return; // Available is overflow storage, not a browse/inspect area
 
         if (Occupant is InventoryItemInstance plant)
             controller.ShowPlantDetail(plant);

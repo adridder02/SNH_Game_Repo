@@ -80,8 +80,6 @@ public class HarvestNodeContainer : MonoBehaviour
     [Header("Harvest Feedback")]
     [Tooltip("Text shown briefly on screen after harvesting.")]
     public string harvestMessage = "Harvested!";
-    [Tooltip("How long the harvest message stays on screen (seconds).")]
-    public float messageDuration = 1.8f;
 
     // ── private ──────────────────────────────────────────────
     private Transform[] nodes;
@@ -90,10 +88,8 @@ public class HarvestNodeContainer : MonoBehaviour
     private GameObject promptRoot;
     private InteractPromptView promptView;
 
-    // Feedback UI
-    private GameObject feedbackRoot;
-    private TextMeshProUGUI feedbackLabel;
-    private float feedbackTimer = 0f;
+    // Feedback UI is now driven by MainUIController.ShowHarvestFeedback (see mainUI field below) —
+    // this used to build its own floating runtime canvas here, replaced with a proper HUD element.
 
     private Transform currentNode = null;
     private Transform previousNode = null;
@@ -108,18 +104,19 @@ public class HarvestNodeContainer : MonoBehaviour
         CacheChildren();
 
         if (useWorldSpacePrompt)
-        {
             BuildPromptUI();
-        }
-        else if (mainUI == null)
+
+        // Needed unconditionally now, not just when useWorldSpacePrompt is off — ShowHarvestFeedback
+        // (the harvest confirmation popup) always goes through MainUIController regardless of which
+        // interact-prompt style is in use.
+        if (mainUI == null)
         {
             mainUI = FindAnyObjectByType<MainUIController>();
             if (mainUI == null)
-                Debug.LogWarning("[HarvestNodeContainer] useWorldSpacePrompt is OFF but no MainUIController " +
-                                  "was found/assigned — the interact prompt won't be shown.", this);
+                Debug.LogWarning("[HarvestNodeContainer] No MainUIController found/assigned — harvest " +
+                                  "feedback popups (and the HUD interact prompt, if useWorldSpacePrompt " +
+                                  "is off) won't show.", this);
         }
-
-        BuildFeedbackUI();
     }
 
     // =========================================================
@@ -163,7 +160,6 @@ public class HarvestNodeContainer : MonoBehaviour
         // finished moving for this frame — doing it here in Update() reads a stale position on frames
         // where movement hasn't been applied yet, which shows up as flicker/jitter.
         UpdatePromptVisibility();
-        UpdateFeedback();
 
         if (UnityEngine.InputSystem.Keyboard.current.eKey.wasPressedThisFrame)
         {
@@ -364,69 +360,18 @@ public class HarvestNodeContainer : MonoBehaviour
     }
 
     // =========================================================
-    // FEEDBACK UI  (screen-space, centred)
+    // FEEDBACK — now just forwards to MainUIController's HUD popup (see ShowHarvestFeedback there).
+    // messageDuration above is no longer used here; MainUIController has its own duration field.
     // =========================================================
-    private void BuildFeedbackUI()
-    {
-        feedbackRoot = new GameObject("HarvestFeedback");
-        DontDestroyOnLoad(feedbackRoot);
-
-        Canvas c = feedbackRoot.AddComponent<Canvas>();
-        c.renderMode = RenderMode.ScreenSpaceOverlay;
-        c.sortingOrder = 200;
-        CanvasScaler scaler = feedbackRoot.AddComponent<CanvasScaler>();
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1920f, 1080f);
-        scaler.matchWidthOrHeight = 0.5f;
-        feedbackRoot.AddComponent<GraphicRaycaster>();
-
-        GameObject textGO = MakeRect("Label", feedbackRoot.transform);
-        RectTransform tr = textGO.GetComponent<RectTransform>();
-        tr.anchorMin = new Vector2(0.5f, 0.6f);
-        tr.anchorMax = new Vector2(0.5f, 0.6f);
-        tr.sizeDelta = new Vector2(400f, 60f);
-        tr.anchoredPosition = Vector2.zero;
-
-        feedbackLabel = textGO.AddComponent<TextMeshProUGUI>();
-        feedbackLabel.fontSize = 22;
-        feedbackLabel.fontStyle = FontStyles.Bold;
-        feedbackLabel.color = new Color(0.55f, 1f, 0.55f);
-        feedbackLabel.alignment = TextAlignmentOptions.Center;
-
-        feedbackRoot.SetActive(false);
-    }
-
     private void ShowFeedback(string message)
     {
-        if (feedbackRoot == null) return;
-        feedbackLabel.text = message;
-        feedbackRoot.SetActive(true);
-        feedbackTimer = messageDuration;
-    }
-
-    private void UpdateFeedback()
-    {
-        if (feedbackTimer <= 0f) return;
-
-        feedbackTimer -= Time.deltaTime;
-
-        // Fade out in the last 0.5 s
-        float alpha = Mathf.Clamp01(feedbackTimer / 0.5f);
-        feedbackLabel.color = new Color(
-            feedbackLabel.color.r,
-            feedbackLabel.color.g,
-            feedbackLabel.color.b,
-            alpha);
-
-        if (feedbackTimer <= 0f)
-            feedbackRoot.SetActive(false);
+        mainUI?.ShowHarvestFeedback(message);
     }
 
     // =========================================================
     private void OnDestroy()
     {
         if (promptRoot != null) Destroy(promptRoot);
-        if (feedbackRoot != null) Destroy(feedbackRoot);
     }
 
     private static GameObject MakeRect(string name, Transform parent)

@@ -71,6 +71,7 @@
 // =============================================================
 
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -146,6 +147,17 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
              "world-space prompt.")]
     [SerializeField] private GameObject interactPromptHUD;
 
+    [Header("Harvest Feedback (HUD)")]
+    [Tooltip("Root of the fixed HUD feedback popup (e.g. 'Harvested Sparkmint x1') — replaces the old " +
+             "runtime-built floating canvas HarvestNodeContainer used to create itself. Should start " +
+             "inactive in the scene; ShowHarvestFeedback below shows it, fills in the text, and hides " +
+             "it again after a few seconds.")]
+    [SerializeField] private GameObject harvestFeedbackRoot;
+    [SerializeField] private TextMeshProUGUI harvestFeedbackText;
+    [Tooltip("How long the feedback popup stays visible before auto-hiding.")]
+    [SerializeField] private float harvestFeedbackDuration = 2.5f;
+    private Coroutine harvestFeedbackRoutine;
+
     [Header("Miasma Growth")]
     [Tooltip("The deleted UI_Script.cs used to call miasma.flipSize() once on Start(), which is the " +
              "ONLY thing in the project that ever set incSize = true and made the sphere grow. Now " +
@@ -169,6 +181,8 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     // ---------------------------------------------------------------
     private void Awake()
     {
+        if (harvestFeedbackRoot != null) harvestFeedbackRoot.SetActive(false);
+
         if (playerInventory == null)
         {
             // FindObjectOfType just grabs whichever instance it happens to find first — if there's
@@ -335,6 +349,32 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
 
         if (hudRoot != null)
             hudRoot.SetActive(_hudHideRequesters.Count == 0);
+    }
+
+    // ---------------------------------------------------------------
+    // Harvest feedback (HUD) — replaces HarvestNodeContainer's old runtime-built floating canvas.
+    // ---------------------------------------------------------------
+    /// <summary>Shows a short-lived message on the HUD (e.g. "Harvested Sparkmint x1"), auto-hiding
+    /// after harvestFeedbackDuration. Safe to call again while already showing — restarts the timer
+    /// with the new message rather than stacking/queuing multiple popups.</summary>
+    public void ShowHarvestFeedback(string message)
+    {
+        if (harvestFeedbackRoot == null) return;
+
+        if (harvestFeedbackText != null)
+            harvestFeedbackText.text = message;
+
+        harvestFeedbackRoot.SetActive(true);
+
+        if (harvestFeedbackRoutine != null) StopCoroutine(harvestFeedbackRoutine);
+        harvestFeedbackRoutine = StartCoroutine(HideHarvestFeedbackAfterDelay());
+    }
+
+    private System.Collections.IEnumerator HideHarvestFeedbackAfterDelay()
+    {
+        yield return new WaitForSeconds(harvestFeedbackDuration);
+        if (harvestFeedbackRoot != null) harvestFeedbackRoot.SetActive(false);
+        harvestFeedbackRoutine = null;
     }
 
     // ---------------------------------------------------------------

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityItemData
   displayName: Heart of the Sun
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 8fc15f0d3ce310d49873fc568bc479b6, type: 3}
   kind: 1
   effectId: 0
   requiresTreeTarget: 1

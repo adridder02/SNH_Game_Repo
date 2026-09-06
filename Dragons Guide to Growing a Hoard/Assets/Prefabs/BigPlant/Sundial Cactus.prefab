@@ -205,8 +205,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 0.1505873, g: 0.19253412, b: 0.59119487, a: 1}
-  outlineWidth: 0.05
+  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  outlineWidth: 0.04
   outlineShader: {fileID: 0}
 --- !u!114 &6790803248347742446
 MonoBehaviour:

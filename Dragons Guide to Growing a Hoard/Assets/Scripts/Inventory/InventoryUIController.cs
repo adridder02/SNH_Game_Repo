@@ -133,6 +133,10 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
     [SerializeField] private Button waterFilterButton;
     [Tooltip("Skull icon — filters both panels down to PlantType.Dead plants.")]
     [SerializeField] private Button deadFilterButton;
+    [Tooltip("Filters both panels down to Consumable ability item stacks only, hiding every plant. " +
+             "Mutually exclusive with the Sunny/Dark/Water/Dead/All buttons above — picking this " +
+             "clears whichever PlantType filter was active, and vice versa.")]
+    [SerializeField] private Button consumablesFilterButton;
 
     [Header("Hotbar")]
     [Tooltip("The fixed hand-placed hotbar slots at the bottom of the panel, in the SAME ORDER as " +
@@ -188,6 +192,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
     // null = no filter active, i.e. show everything (this is the default — there's
     // deliberately no "All" button; not selecting any filter button already means "all").
     private PlantType? activeFilter = null;
+    private bool showOnlyConsumables = false;
 
     void Awake()
     {
@@ -229,6 +234,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         if (darkFilterButton != null) darkFilterButton.onClick.AddListener(() => ToggleFilter(PlantType.Dark));
         if (waterFilterButton != null) waterFilterButton.onClick.AddListener(() => ToggleFilter(PlantType.Water));
         if (deadFilterButton != null) deadFilterButton.onClick.AddListener(() => ToggleFilter(PlantType.Dead));
+        if (consumablesFilterButton != null) consumablesFilterButton.onClick.AddListener(ToggleConsumablesFilter);
         RefreshFilterButtonVisuals();
 
         // These are live scene objects being used as clone templates — hide the
@@ -475,6 +481,17 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
     private void SetFilter(PlantType? type)
     {
         activeFilter = type;
+        showOnlyConsumables = false; // mutually exclusive with the Consumables filter
+        RefreshFilterButtonVisuals();
+        RefreshUI();
+    }
+
+    private void ToggleConsumablesFilter()
+    {
+        showOnlyConsumables = !showOnlyConsumables;
+        if (showOnlyConsumables)
+            activeFilter = null; // mutually exclusive with the PlantType filters
+
         RefreshFilterButtonVisuals();
         RefreshUI();
     }
@@ -485,9 +502,9 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         // Sprite Swap (Selected Sprite = all_active_hover.png etc.), so all we
         // need to do is make the active filter's button the EventSystem's
         // "selected" object — that's what drives the Selected Sprite. null
-        // (no type filter) maps to allFilterButton, so "All" reads as selected
-        // by default and whenever a filter is cleared — not deselected outright.
-        Button activeButton = GetFilterButton(activeFilter);
+        // (no type filter, and Consumables off) maps to allFilterButton, so
+        // "All" reads as selected by default and whenever a filter is cleared.
+        Button activeButton = showOnlyConsumables ? consumablesFilterButton : GetFilterButton(activeFilter);
         if (EventSystem.current != null)
             EventSystem.current.SetSelectedGameObject(activeButton != null ? activeButton.gameObject : null);
     }
@@ -502,13 +519,19 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         return null;
     }
 
-    /// <summary>Applies the active filter (if any) to a list of items for display. The Sunny/Dark/
-    /// Water/Dead filter only makes sense for plants — a consumable/placeable stack has no
-    /// PlantType, so it's always shown regardless of which filter (if any) is active.</summary>
+    /// <summary>Applies whichever filter (if any) is active to a list of items for display.
+    /// Sunny/Dark/Water/Dead are plant-only filters — they now hide ability item stacks entirely,
+    /// not just leave them unaffected, so picking e.g. Water only shows Water plants and nothing
+    /// else. The Consumables filter is the reverse: hides every plant and shows every ability item
+    /// stack regardless of kind (Consumable AND Placeable — e.g. Waterbell shows here too, not
+    /// just true Consumables).</summary>
     private List<IGridPlaceable> ApplyFilter(List<IGridPlaceable> source)
     {
+        if (showOnlyConsumables)
+            return source.Where(i => i is AbilityItemInstance).ToList();
+
         if (activeFilter == null) return source;
-        return source.Where(i => !(i is InventoryItemInstance plant) || plant.plantType == activeFilter.Value).ToList();
+        return source.Where(i => i is InventoryItemInstance plant && plant.plantType == activeFilter.Value).ToList();
     }
 
     // ------------------------------------------------------------
@@ -571,7 +594,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         // rect droppable at all times, regardless of how many items are in it.
         for (int i = 0; i < availableItems.Count; i++)
         {
-            InventorySlotUI slot = CreateSlot(availableItems[i], availablePanel, availableTemplate);
+            InventorySlotUI slot = CreateSlot(availableItems[i], availablePanel, availableTemplate, isAvailableSlot: true);
             RectTransform rt = slot.GetComponent<RectTransform>();
             rt.anchorMin = new Vector2(0f, 1f);
             rt.anchorMax = new Vector2(0f, 1f);
@@ -621,11 +644,11 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         return cellSizePx;
     }
 
-    InventorySlotUI CreateSlot(IGridPlaceable occupant, RectTransform parent, InventorySlotUI template)
+    InventorySlotUI CreateSlot(IGridPlaceable occupant, RectTransform parent, InventorySlotUI template, bool isAvailableSlot = false)
     {
         InventorySlotUI slot = Instantiate(template, parent);
         slot.gameObject.SetActive(true); // template itself is hidden — the clone needs to be shown
-        slot.Initialize(occupant, this, rootCanvas);
+        slot.Initialize(occupant, this, rootCanvas, isAvailableSlot);
         slotVisuals[occupant.InstanceId] = slot;
         return slot;
     }
@@ -657,13 +680,14 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             return;
         }
 
-        // Untargeted Consumable (ExpandInventory, DragonGlow) — applies straight to the player,
-        // then closes the whole inventory, per the design: pressing Use activates the ability and
-        // dismisses the panel rather than leaving the player looking at the (now stale) detail view.
+        // Untargeted Consumable (ExpandInventory, DragonGlow) — applies straight to the player.
+        // Deliberately does NOT close the inventory (unlike Placeable above, which needs the world
+        // grid visible) — using a Consumable like Bubble Blossom should let the player keep browsing/
+        // using more items without the panel getting dismissed out from under them each time.
         if (AbilityConsumableEffects.TryApply(data, abilityInventory.gameObject, null))
         {
             abilityInventory.TryConsume(data, 1);
-            ToggleInventory();
+            RefreshUI(); // reflect the new state (e.g. the newly expanded row, or this stack's count)
         }
     }
 

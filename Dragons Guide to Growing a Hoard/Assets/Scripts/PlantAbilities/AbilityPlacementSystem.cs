@@ -72,6 +72,12 @@ public class AbilityPlacementSystem : MonoBehaviour
         pendingItem = item;
         mode = Mode.Placing;
 
+        // Same treatment PlacementSystem's own EnterPlaceMode/EnterRemoveMode/EnterMoveMode give
+        // pot placement — cursor unlocked/visible, camera locked, camera input disabled. This was
+        // missing here entirely, which is why placing a Waterbell etc. via the hotbar didn't lock
+        // the cursor the way placing a pot does.
+        GameInputModeManager.Instance?.SetPlacementMode();
+
         SetAllGridsVisible(true);
         SpawnPreview(item);
         OnPlacingChanged?.Invoke();
@@ -83,6 +89,7 @@ public class AbilityPlacementSystem : MonoBehaviour
         CancelSelf(suppressGridHide: true);
 
         mode = Mode.Removing;
+        GameInputModeManager.Instance?.SetPlacementMode();
         SetAllGridsVisible(true);
         OnPlacingChanged?.Invoke();
     }
@@ -233,6 +240,13 @@ public class AbilityPlacementSystem : MonoBehaviour
         activeSurface?.GridVisual.ClearHover();
         activeSurface = null;
         lastHoveredCell = new Vector2Int(-999, -999);
+
+        // Mirrors PlacementSystem.CancelMode — unconditional, same as there. Called both from an
+        // actual full cancel (Cancel() below) and from BeginPlacing/BeginRemoving resetting prior
+        // state before starting a new mode; in the latter case this briefly flips back to Gameplay
+        // before the caller sets Placement mode again a moment later — harmless, PlacementSystem's
+        // own EnterPlaceMode/EnterRemoveMode/EnterMoveMode do the exact same thing.
+        GameInputModeManager.Instance?.SetGameplayMode();
 
         if (!suppressGridHide) SetAllGridsVisible(false);
     }

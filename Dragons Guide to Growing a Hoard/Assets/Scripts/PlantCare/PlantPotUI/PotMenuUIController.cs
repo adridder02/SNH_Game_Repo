@@ -208,6 +208,7 @@ public class PotMenuUIController : MonoBehaviour
         {
             RefreshMainStatusBars();
             RefreshPuffballButton();
+            RefreshHarvestButtonLabel(currentPot.HasPlant);
         }
 
         if (choosePlantPanel != null && choosePlantPanel.activeSelf)
@@ -338,10 +339,10 @@ public class PotMenuUIController : MonoBehaviour
         // the plant back into the inventory now reads "Harvest" instead — see
         // PotContents.HarvestPlant() for where that's actually handled. Everything else about
         // the button (still hasPlant-gated, still calls the same click handler) is unchanged.
-        bool isHarvestable = CurrentPlantProgress != null && CurrentPlantProgress.IsComplete;
-
-        if (choosePlantButtonLabel != null)
-            choosePlantButtonLabel.text = !hasPlant ? "Choose Plant" : isHarvestable ? "Harvest" : "Remove Plant";
+        // Pulled into RefreshHarvestButtonLabel() below so Update() can keep it live while the
+        // panel is open — progress can cross into Complete WHILE the player is looking at the
+        // panel, and this label previously only refreshed on open/close, not live.
+        RefreshHarvestButtonLabel(hasPlant);
 
         // If the pot already has something planted, this button is "Harvest"/"Remove Plant" —
         // always show it regardless of what's in the player's inventory, since that's about
@@ -417,6 +418,19 @@ public class PotMenuUIController : MonoBehaviour
         (currentPot != null && currentPot.HasPlant && currentPot.Plant != null)
             ? currentPot.Plant.GetComponent<PlantProgress>()
             : null;
+
+    /// <summary>Just the "Choose Plant"/"Harvest"/"Remove Plant" label text — split out from
+    /// RefreshMainPanel so Update() can call this cheaply every frame (see below) without re-running
+    /// the whole panel refresh (sprite/name text reassignment etc.) that doesn't need to happen that
+    /// often. Fixes the label getting stuck on "Remove Plant" if the player has the Main panel open
+    /// and watches a plant's progress cross into Complete in real time.</summary>
+    private void RefreshHarvestButtonLabel(bool hasPlant)
+    {
+        bool isHarvestable = CurrentPlantProgress != null && CurrentPlantProgress.IsComplete;
+
+        if (choosePlantButtonLabel != null)
+            choosePlantButtonLabel.text = !hasPlant ? "Choose Plant" : isHarvestable ? "Harvest" : "Remove Plant";
+    }
 
     private void OnPlantActionButtonClicked()
     {

@@ -379,18 +379,12 @@ public class PlayerController : MonoBehaviour
         // Flying locomotion
         if (locomotionState == LocomotionState.Flying)
         {
-            float inputMagnitude = moveInput.magnitude;
-
-            if (inputMagnitude > 0.1f || flyAscendHeld ||
-                (Keyboard.current != null &&
-                (Keyboard.current.leftCtrlKey.isPressed || Keyboard.current.rightCtrlKey.isPressed)))
-            {
-                playerAnim.setWalking();
-            }
-            else
-            {
-                playerAnim.setIdel();
-            }
+            // TEMP (again — see chat history, this was reverted once the Fly Idle clip's Loop Time
+            // got fixed, but the idle-not-playing bug is back): keep playing the fly-moving
+            // animation the whole time we're flying (idle or not), since Fly Idle isn't reliably
+            // wired up in the Animator right now. Swap back to the inputMagnitude/flyAscendHeld
+            // check below (calling setIdel() when there's no input) once Fly Idle is fixed for good.
+            playerAnim.setWalking();
         }
 
         // Landing transition

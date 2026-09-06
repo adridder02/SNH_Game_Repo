@@ -640,6 +640,15 @@ public class PlacementSystem : MonoBehaviour
         if (pc != null)
             pc.ClearGridInfo();
 
+        // Same cleanup AbilityPlacementSystem.TryRemove does for its own Removing mode — needed
+        // here too now that this generic Remove tool can also pick up ability placeables (e.g. a
+        // Waterbell) placed via the hotbar, not just pots. Without this, removing one through THIS
+        // tool would skip whatever cleanup the placeable's own component does (unsubscribing
+        // events, stopping effects, etc.) since only AbilityPlacementSystem's own removal path
+        // used to call it.
+        AbilityPlaceable placeable = data.PlacedObject.GetComponent<AbilityPlaceable>();
+        placeable?.NotifyRemoved();
+
         Vector2Int origin =
             new Vector2Int(data.Origin.x, data.Origin.z);
 

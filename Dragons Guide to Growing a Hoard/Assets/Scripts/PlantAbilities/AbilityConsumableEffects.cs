@@ -48,13 +48,13 @@ public static class AbilityConsumableEffects
                     PlayerInventory inv = player.GetComponent<PlayerInventory>();
                     if (inv == null) return false;
 
-                    // amountB = optional max width cap (0 = uncapped). amountA reserved for a future
-                    // "expand by more than one column at a time" tuning; unused for now (always +1).
-                    int newWidth = inv.GridWidth + 1;
-                    if (data.amountB > 0f && newWidth > (int)data.amountB) return false;
+                    // amountB = optional max height cap (0 = uncapped). amountA reserved for a future
+                    // "expand by more than one row at a time" tuning; unused for now (always +1).
+                    int newHeight = inv.GridHeight + 1;
+                    if (data.amountB > 0f && newHeight > (int)data.amountB) return false;
 
-                    inv.ExpandGrid(newWidth, inv.GridHeight);
-                    Debug.Log($"[AbilityConsumableEffects] Inventory expanded to {newWidth}x{inv.GridHeight}.");
+                    inv.ExpandGrid(inv.GridWidth, newHeight);
+                    Debug.Log($"[AbilityConsumableEffects] Inventory expanded to {inv.GridWidth}x{newHeight}.");
                     return true;
                 }
 
