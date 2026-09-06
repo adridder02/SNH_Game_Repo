@@ -55,6 +55,9 @@ public class JournalUIController : MonoBehaviour
     [SerializeField] private GameObject journalRoot;
     [Tooltip("Optional close/back button — same role as Inventory's backButton.")]
     [SerializeField] private Button journalBackButton;
+    [Tooltip("The main HUD controller — used to hide the HUD (bars/hotbar/icons) while the journal is " +
+             "open and show it again on close. Auto-found in the scene if left empty.")]
+    [SerializeField] private MainUIController mainUI;
 
     [Header("Top-Level Pages")]
     [Tooltip("The three top-level pages inside the journal. Plants is shown by default every time the " +
@@ -146,6 +149,9 @@ public class JournalUIController : MonoBehaviour
         if (journalManager == null)
             journalManager = PlantJournalManager.Instance != null ? PlantJournalManager.Instance : FindObjectOfType<PlantJournalManager>();
 
+        if (mainUI == null)
+            mainUI = FindObjectOfType<MainUIController>();
+
         if (progressPageController == null && progressPage != null)
             progressPageController = progressPage.GetComponent<ProgressPageUIController>();
 
@@ -215,9 +221,12 @@ public class JournalUIController : MonoBehaviour
     {
         isJournalOpen = !isJournalOpen;
         SetJournalVisible(isJournalOpen);
+        mainUI?.SetHudHidden(isJournalOpen, this);
 
         if (isJournalOpen)
         {
+            MenuLayerManager.NotifyOpened(this, CloseJournal);
+
             GameInputModeManager.Instance?.SetMenuUIMode();
 
             Cursor.lockState = CursorLockMode.None;
@@ -228,6 +237,7 @@ public class JournalUIController : MonoBehaviour
         }
         else
         {
+            MenuLayerManager.NotifyClosed(this);
             GameInputModeManager.Instance?.SetGameplayMode();
         }
     }

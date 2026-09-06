@@ -131,6 +131,14 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [Tooltip("Auto-found in the scene if left empty.")]
     [SerializeField] private AbilityHotbarSystem hotbarSystem;
 
+    [Header("HUD Visibility")]
+    [Tooltip("Everything on the HUD that should hide while a menu is open — water bar, miasma bar, " +
+             "zone bar, tool slots, hotbar, journal/inventory icons, etc. Parent all of that under one " +
+             "GameObject in the Editor and assign it here. The interact prompt below is handled " +
+             "separately (it's already off whenever a menu is open, via GameInputModeManager), so it " +
+             "doesn't need to live under this root.")]
+    [SerializeField] private GameObject hudRoot;
+
     [Header("Interact Prompt (HUD)")]
     [Tooltip("Fixed screen-space element (e.g. a 'Press E' panel docked on the HUD) — just enabled/" +
              "disabled, no positioning or billboarding. PotInteraction calls SetInteractPromptVisible() " +
@@ -301,6 +309,32 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
                   $"| miasma={(miasma != null ? $"{miasma.CurrentSize:F1}/{miasma.MaxSize:F1}" : "no miasma ref")} " +
                   $"| zone={(CurrentZone != null ? $"{CurrentZone.zoneName}={CurrentZone.ZoneHappiness:F1}" : "player in no zone")} " +
                   $"| waterBar={(waterBar != null)} miasmaBar={(miasmaBar != null)} zoneHappinessBar={(zoneHappinessBar != null)} playerZoneTracker={(playerZoneTracker != null)}");
+    }
+
+    // ---------------------------------------------------------------
+    // HUD visibility — called by JournalUIController / InventoryUIController / ExitMenuController
+    // whenever they open or close
+    // ---------------------------------------------------------------
+    // Same reference-counting pattern as the interact prompt below: tracks which open menus
+    // currently want the HUD hidden, rather than a single last-caller-wins bool. In practice only
+    // one of Journal/Inventory/ExitMenu is ever open at a time (see ExitMenuController's Escape
+    // handling), but this stays correct even if that ever changes — the HUD only comes back once
+    // NONE of them want it hidden anymore.
+    private readonly HashSet<object> _hudHideRequesters = new HashSet<object>();
+
+    /// <summary>Hides/shows hudRoot. Pass the calling component as <paramref name="requester"/> so
+    /// multiple menus sharing this one HUD don't show it out from under each other.</summary>
+    public void SetHudHidden(bool hidden, object requester)
+    {
+        if (requester == null) return;
+
+        if (hidden)
+            _hudHideRequesters.Add(requester);
+        else
+            _hudHideRequesters.Remove(requester);
+
+        if (hudRoot != null)
+            hudRoot.SetActive(_hudHideRequesters.Count == 0);
     }
 
     // ---------------------------------------------------------------

@@ -392,6 +392,8 @@ public class PotInteraction : MonoBehaviour
             return;
         }
 
+        MenuLayerManager.NotifyOpened(this, CloseMenu);
+
         GameInputModeManager.Instance?.SetPlacementMode();
         ThirdPersonCameraController.CameraLocked = true;
 
@@ -411,6 +413,8 @@ public class PotInteraction : MonoBehaviour
     /// <summary>Closes the pot menu. Public so PotMenuUIController's close button can call it directly.</summary>
     public void CloseMenu()
     {
+        MenuLayerManager.NotifyClosed(this);
+
         GameInputModeManager.Instance?.SetGameplayMode();
         ThirdPersonCameraController.CameraLocked = false;
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -58,6 +59,14 @@ public class AbilityHotbarSystem : MonoBehaviour
     {
         Key.Digit1, Key.Digit2, Key.Digit3, Key.Digit4, Key.Digit5
     };
+
+    // Tracks the last Time.time a given item was successfully consumed via the hotbar, keyed by
+    // the item ASSET rather than slot index — so the cooldown follows the item even if it gets
+    // reassigned to a different slot, and applies equally whether activation came from a number
+    // key or a mouse click on the HUD slot (both funnel through ActivateSlot below). A single key
+    // press is naturally rate-limited by wasPressedThisFrame, but mouse clicks aren't, which is
+    // what let a stacked Consumable get chain-spammed with nothing but stock count as a limit.
+    private readonly Dictionary<AbilityItemData, float> _lastUsedTime = new Dictionary<AbilityItemData, float>();
 
     private void Awake()
     {
@@ -243,8 +252,22 @@ public class AbilityHotbarSystem : MonoBehaviour
             return;
         }
 
+        // Cooldown gate — stops chain-spamming a stacked Consumable via rapid clicking/mashing.
+        // Silently ignored while on cooldown (same "does nothing" treatment as an empty/depleted
+        // slot above) rather than logging, since this is expected to happen constantly under
+        // normal fast play, not something worth spamming the console over.
+        if (data.useCooldown > 0f &&
+            _lastUsedTime.TryGetValue(data, out float lastUsed) &&
+            Time.time - lastUsed < data.useCooldown)
+        {
+            return;
+        }
+
         bool applied = AbilityConsumableEffects.TryApply(data, player, null);
         if (applied)
+        {
             abilityInventory.TryConsume(data, 1);
+            _lastUsedTime[data] = Time.time;
+        }
     }
 }

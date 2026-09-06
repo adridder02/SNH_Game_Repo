@@ -76,6 +76,13 @@ public class AbilityItemData : ScriptableObject
     [Tooltip("Max this item can stack to in the ability inventory. 0 = unlimited.")]
     public int maxStack = 0;
 
+    [Header("Use Cooldown")]
+    [Tooltip("Minimum seconds between activations of this specific item via the hotbar (see " +
+             "AbilityHotbarSystem.ActivateSlot). Stops a player from chain-spamming a stacked " +
+             "Consumable via rapid clicking/mashing — stock count alone doesn't prevent that, since " +
+             "mouse clicks aren't naturally rate-limited the way a single key press is. 0 = no cooldown.")]
+    public float useCooldown = 0.35f;
+
     [Header("Placement (Placeable kind only)")]
     [Tooltip("Grid footprint used by AbilityPlacementSystem — same footprint concept as PlantSizeRegistry/PotData.")]
     public Vector2Int footprint = Vector2Int.one;

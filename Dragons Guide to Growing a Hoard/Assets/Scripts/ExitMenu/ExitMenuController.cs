@@ -8,6 +8,9 @@ public class ExitMenuController : MonoBehaviour
     [SerializeField] private InventoryUIController inventoryController;
     [SerializeField] private PotMenuUIController potMenuController;
     [SerializeField] private JournalUIController journalController;
+    [Tooltip("The main HUD controller — used to hide the HUD (bars/hotbar/icons) while the exit menu is " +
+             "open and show it again on close. Auto-found in the scene if left empty.")]
+    [SerializeField] private MainUIController mainUI;
 
     public bool IsExitMenuOpen => exitMenuRoot != null && exitMenuRoot.activeSelf;
 
@@ -24,6 +27,9 @@ public class ExitMenuController : MonoBehaviour
 
         if (journalController == null)
             journalController = FindAnyObjectByType<JournalUIController>();
+
+        if (mainUI == null)
+            mainUI = FindAnyObjectByType<MainUIController>();
     }
 
     void Update()
@@ -63,6 +69,9 @@ public class ExitMenuController : MonoBehaviour
         if (exitMenuRoot != null)
             exitMenuRoot.SetActive(true);
 
+        MenuLayerManager.NotifyOpened(this, CloseExitMenu);
+        mainUI?.SetHudHidden(true, this);
+
         // Stronger forcing for the problematic Exit Menu
         ForceMenuState();
         // NOTE: this used to hide the old on-screen Tutorial panel here. Hook whatever
@@ -73,6 +82,9 @@ public class ExitMenuController : MonoBehaviour
     {
         if (exitMenuRoot != null)
             exitMenuRoot.SetActive(false);
+
+        MenuLayerManager.NotifyClosed(this);
+        mainUI?.SetHudHidden(false, this);
 
         GameInputModeManager.Instance?.SetGameplayMode();
         // NOTE: this used to re-show the old on-screen Tutorial panel here. Hook whatever

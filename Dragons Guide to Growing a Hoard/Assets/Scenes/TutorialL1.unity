@@ -5361,7 +5361,7 @@ MonoBehaviour:
   track: {fileID: 0}
   trailFill: {fileID: 0}
   fill: {fileID: 1441374863}
-  indicator: {fileID: 997654443}
+  indicator: {fileID: 0}
   outline: {fileID: 0}
   trailSpeed: 1
   fillAxis: 0
@@ -5457,7 +5457,7 @@ MonoBehaviour:
   track: {fileID: 865179480}
   trailFill: {fileID: 0}
   fill: {fileID: 1911618051}
-  indicator: {fileID: 1835468837}
+  indicator: {fileID: 0}
   outline: {fileID: 1397938323}
   trailSpeed: 1
   fillAxis: 0
@@ -5542,7 +5542,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &282937647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9914,7 +9914,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &521072270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10079,6 +10079,7 @@ MonoBehaviour:
   inventoryController: {fileID: 8910482494518653561}
   potMenuController: {fileID: 2128103705}
   journalController: {fileID: 742308971}
+  mainUI: {fileID: 552305404}
 --- !u!1 &540371262
 GameObject:
   m_ObjectHideFlags: 0
@@ -10611,6 +10612,7 @@ MonoBehaviour:
   - {fileID: 91724598}
   - {fileID: 1500333815}
   hotbarSystem: {fileID: 161992247}
+  hudRoot: {fileID: 1845067430}
   interactPromptHUD: {fileID: 1300927153913940695}
   autoStartMiasmaGrowth: 1
   debugLogging: 0
@@ -11251,7 +11253,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &576867034
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11350,7 +11352,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &592631384
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13692,6 +13694,7 @@ MonoBehaviour:
   journalManager: {fileID: 161992242}
   journalRoot: {fileID: 8621471075238398550}
   journalBackButton: {fileID: 542309066}
+  mainUI: {fileID: 552305404}
   plantsPage: {fileID: 2118942000}
   progressPage: {fileID: 1379035003}
   guidePage: {fileID: 368454107}
@@ -19517,7 +19520,7 @@ RectTransform:
   m_Father: {fileID: 541249072}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -22825,7 +22828,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1315606286
 Transform:
   m_ObjectHideFlags: 0
@@ -48204,6 +48207,7 @@ MonoBehaviour:
   hotbarSystem: {fileID: 161992247}
   collectionMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
   inventoryRoot: {fileID: 59622637}
+  mainUI: {fileID: 552305404}
   gridPanel: {fileID: 1040631135814159558}
   availablePanel: {fileID: 209175530669269957}
   availablePanelRoot: {fileID: 4569560999986381467}
