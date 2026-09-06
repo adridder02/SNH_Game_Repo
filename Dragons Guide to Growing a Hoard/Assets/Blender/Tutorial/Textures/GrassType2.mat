@@ -137,11 +137,11 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _TerrainOffset: 0
-    - _TerrainSize: 50
+    - _TerrainSize: 2000
     - _UVSec: 0
-    - _UseBaseColor: 1
-    - _UseNearFar: 0
-    - _UseTerrainColor: 0
+    - _UseBaseColor: 0
+    - _UseNearFar: 1
+    - _UseTerrainColor: 1
     - _WindIntensity: 0.2
     - _WindSpeed: 0.2
     - _WorkflowMode: 1
@@ -152,9 +152,9 @@ Material:
     - _BottomColor: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 0.19618261, g: 0.5458285, b: 0.30652714, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
-    - _FarColor: {r: 0.042016886, g: 1, b: 0, a: 1}
-    - _NearColor: {r: 1, g: 0.884058, b: 0, a: 1}
-    - _NearFarRange: {r: 10, g: 25, b: 0, a: 0}
+    - _FarColor: {r: 0.33092028, g: 0.8867924, b: 0.30954063, a: 1}
+    - _NearColor: {r: 0, g: 0, b: 0, a: 1}
+    - _NearFarRange: {r: 10, g: 300, b: 0, a: 0}
     - _ShadowColor: {r: 0, g: 0.9553773, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
