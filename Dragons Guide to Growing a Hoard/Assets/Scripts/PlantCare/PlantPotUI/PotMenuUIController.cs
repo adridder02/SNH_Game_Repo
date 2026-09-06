@@ -86,6 +86,10 @@ public class PotMenuUIController : MonoBehaviour
     [SerializeField] private Button abilityOptionTemplate;
     [SerializeField] private TextMeshProUGUI abilityEmptyText;
     [SerializeField] private Button abilityBackButton;
+    [Tooltip("Applies whichever ability item is currently selected (highlighted) in this panel — " +
+             "same select-then-confirm pattern as choosePlantConfirmButton below. Starts non-" +
+             "interactable and only enables once the player has actually clicked an item.")]
+    [SerializeField] private Button abilityContinueButton;
 
     [Header("Abilities Panel — Grid Wrapping")]
     [SerializeField] private int abilityColumns = 5;
@@ -115,6 +119,7 @@ public class PotMenuUIController : MonoBehaviour
     private PotInteraction ownerInteraction;
     private SoilKind? pendingSoil;
     private InventoryItemInstance pendingPlant;
+    private AbilityItemInstance pendingAbility;
 
     public bool IsOpen => menuRoot != null && menuRoot.activeSelf;
 
@@ -152,6 +157,7 @@ public class PotMenuUIController : MonoBehaviour
 
         useAbilityButton?.onClick.AddListener(ShowAbilities);
         abilityBackButton?.onClick.AddListener(ShowMain);
+        abilityContinueButton?.onClick.AddListener(ConfirmAbilitySelection);
         collectPuffballsButton?.onClick.AddListener(OnCollectPuffballsClicked);
 
         menuCloseButton?.onClick.AddListener(() => ownerInteraction?.CloseMenu());
@@ -208,6 +214,7 @@ public class PotMenuUIController : MonoBehaviour
         currentPot = null;
         pendingSoil = null;
         pendingPlant = null;
+        pendingAbility = null;
     }
 
     // ------------------------------------------------------------
@@ -299,14 +306,27 @@ public class PotMenuUIController : MonoBehaviour
         if (choosePlantButtonLabel != null)
             choosePlantButtonLabel.text = !hasPlant ? "Choose Plant" : isHarvestable ? "Harvest" : "Remove Plant";
 
+        // If the pot already has something planted, this button is "Harvest"/"Remove Plant" —
+        // always show it regardless of what's in the player's inventory, since that's about
+        // taking the CURRENT plant back out, not choosing a new one. If the pot is empty, only
+        // show "Choose Plant" at all when the player actually owns at least one plant to put in
+        // it — with nothing to choose from, the button has nothing useful to do, so hide it
+        // rather than leave it sitting there greyed out.
+        bool ownsAnyPlant = playerInventory != null && playerInventory.GetAllItems().Count > 0;
+        bool showChoosePlant = hasPlant || (hasSoil && ownsAnyPlant);
         if (choosePlantButton != null)
+        {
+            choosePlantButton.gameObject.SetActive(showChoosePlant);
             choosePlantButton.interactable = hasPlant ? true : hasSoil;
+        }
 
         if (waterButton != null)
             waterButton.interactable = hasSoil && hasPlant;
 
+        // Same idea — no pot-targeted consumable in the player's inventory at all means this
+        // button has nothing to open, so hide it instead of leaving a dead button on-screen.
         if (useAbilityButton != null)
-            useAbilityButton.interactable = HasAnyPotTargetedAbilityStack();
+            useAbilityButton.gameObject.SetActive(HasAnyPotTargetedAbilityStack());
 
         RefreshPuffballButton();
 
@@ -556,6 +576,10 @@ public class PotMenuUIController : MonoBehaviour
     // ------------------------------------------------------------
     private void RefreshAbilitiesPanel()
     {
+        pendingAbility = null;
+        if (abilityContinueButton != null)
+            abilityContinueButton.interactable = false;
+
         if (abilityOptionContainer != null)
         {
             for (int i = abilityOptionContainer.childCount - 1; i >= 0; i--)
@@ -595,9 +619,10 @@ public class PotMenuUIController : MonoBehaviour
 
                 AbilityOptionUI optionUI = optionButton.GetComponent<AbilityOptionUI>();
                 AbilityItemInstance capturedStack = stack;
+                Button capturedButton = optionButton;
 
                 if (optionUI != null)
-                    optionUI.Initialize(capturedStack, usable, () => SelectAbilityOption(capturedStack));
+                    optionUI.Initialize(capturedStack, usable, () => SelectAbilityOption(capturedStack, capturedButton));
                 else
                     optionButton.interactable = usable;
 
@@ -637,15 +662,36 @@ public class PotMenuUIController : MonoBehaviour
         return true;
     }
 
-    private void SelectAbilityOption(AbilityItemInstance stack)
+    /// <summary>Clicking an item in this panel just SELECTS/highlights it (same pattern as
+    /// SelectPlantOption below) — it doesn't apply anything yet. Pressing abilityContinueButton
+    /// (ConfirmAbilitySelection) is what actually uses it. This gives the player a chance to
+    /// change their mind before spending an item, and matches the Choose Plant flow's shape.</summary>
+    private void SelectAbilityOption(AbilityItemInstance stack, Button optionButton)
     {
-        if (stack?.data == null || abilityInventory == null) return;
-        AbilityItemData data = stack.data;
+        if (stack?.data == null) return;
+
+        pendingAbility = stack;
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(optionButton != null ? optionButton.gameObject : null);
+
+        if (abilityContinueButton != null)
+            abilityContinueButton.interactable = true;
+    }
+
+    /// <summary>Wired to abilityContinueButton — applies whichever item SelectAbilityOption most
+    /// recently selected. This is where the actual effect happens (previously happened immediately
+    /// on click, before the Continue step existed).</summary>
+    private void ConfirmAbilitySelection()
+    {
+        if (pendingAbility?.data == null || abilityInventory == null) return;
+        AbilityItemData data = pendingAbility.data;
 
         if (data.kind == AbilityKind.Placeable)
         {
             // Placement consumes from the inventory itself once the player actually clicks a
             // valid cell (see AbilityPlacementSystem.TryPlace) — close the pot menu and hand off.
+            // Defensive only: RefreshAbilitiesPanel's RequiresPotTarget filter means a Placeable
+            // should never actually reach this panel in the first place.
             if (abilityPlacementSystem == null)
             {
                 Debug.LogWarning("[PotMenuUIController] No AbilityPlacementSystem found — can't place " +
@@ -654,17 +700,19 @@ public class PotMenuUIController : MonoBehaviour
             }
 
             abilityPlacementSystem.BeginPlacing(data);
+            pendingAbility = null;
             ownerInteraction?.CloseMenu();
             return;
         }
 
-        // Consumable: apply immediately, only spend the item if it actually worked.
+        // Consumable: apply now, only spend the item if it actually worked.
         GameObject player = playerInventory != null ? playerInventory.gameObject : null;
         bool applied = AbilityConsumableEffects.TryApply(data, player, currentPot);
 
         if (applied)
         {
             abilityInventory.TryConsume(data, 1);
+            pendingAbility = null;
             RefreshAbilitiesPanel();
             RefreshMainPanel();
         }

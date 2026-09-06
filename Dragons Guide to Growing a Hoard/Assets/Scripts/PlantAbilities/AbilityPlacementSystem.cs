@@ -41,6 +41,15 @@ public class AbilityPlacementSystem : MonoBehaviour
 
     public bool IsActive => mode != Mode.None;
 
+    /// <summary>The item currently being placed (Mode.Placing only), or null otherwise — lets the
+    /// hotbar UI know which slot (if any) to show as "actively selected".</summary>
+    public AbilityItemData CurrentlyPlacing => mode == Mode.Placing ? pendingItem : null;
+
+    /// <summary>Fired whenever placement starts, stops, or switches items — for anything that wants
+    /// to reflect "am I placing right now, and what" without polling every frame (e.g. AbilityHotbarSystem
+    /// re-broadcasting this as its own OnSlotsChanged, so the hotbar UI highlights the active slot).</summary>
+    public event System.Action OnPlacingChanged;
+
     private void Awake()
     {
         if (placementSystem == null)
@@ -65,6 +74,7 @@ public class AbilityPlacementSystem : MonoBehaviour
 
         SetAllGridsVisible(true);
         SpawnPreview(item);
+        OnPlacingChanged?.Invoke();
     }
 
     public void BeginRemoving()
@@ -74,9 +84,17 @@ public class AbilityPlacementSystem : MonoBehaviour
 
         mode = Mode.Removing;
         SetAllGridsVisible(true);
+        OnPlacingChanged?.Invoke();
     }
 
-    public void Cancel() => CancelSelf(suppressGridHide: false);
+    /// <summary>Cancels placement/removal mode without placing anything — called on right-click
+    /// (world-space, see Update below), and reused as the "press the same hotbar slot again to
+    /// deselect" toggle in AbilityHotbarSystem.ActivateSlot.</summary>
+    public void Cancel()
+    {
+        CancelSelf(suppressGridHide: false);
+        OnPlacingChanged?.Invoke();
+    }
 
     // ---------------------------------------------------------------
     private void Update()

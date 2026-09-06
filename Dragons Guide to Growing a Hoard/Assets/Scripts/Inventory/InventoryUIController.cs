@@ -171,6 +171,11 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
     private int overlayGridHeight = -1;
     private IGridPlaceable draggedInstance;
 
+    // One highlight overlay per hotbar slot (Inventory panel's own row only — that's the row
+    // actually reachable while dragging; the HUD row isn't on-screen behind the Inventory panel).
+    // Built lazily the first time a drag starts, parallel to hotbarSlotUIs by index.
+    private Image[] hotbarOverlays;
+
     // null = no filter active, i.e. show everything (this is the default — there's
     // deliberately no "All" button; not selecting any filter button already means "all").
     private PlantType? activeFilter = null;
@@ -674,6 +679,10 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         if (wasPlaceable) ToggleInventory();
     }
 
+    /// <summary>Called by HotbarSlotUI.OnPointerClick on right-click. Just forgets the slot's
+    /// assignment — doesn't touch the player's actual item count, so nothing is lost.</summary>
+    public void ClearHotbarSlot(int slotIndex) => hotbarSystem?.Clear(slotIndex);
+
     /// <summary>Called by InventorySlotUI.OnEndDrag BEFORE the normal grid/Available move check.
     /// Only relevant for a Consumable/Placeable stack (plants never match) — if the drop point is
     /// over one of the hand-placed hotbar slots, this ASSIGNS the item there (see
@@ -720,11 +729,16 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         EnsureCellOverlays();
         LayoutCellOverlays();
         PaintBaseOverlayState();
+
+        EnsureHotbarOverlays();
+        ClearHotbarOverlays();
     }
 
     /// <summary>Call from InventorySlotUI.OnDrag (every frame while dragging).</summary>
     public void UpdateDragHighlight(PointerEventData eventData)
     {
+        UpdateHotbarDragHighlight(eventData);
+
         if (draggedInstance == null || cellOverlays == null || playerInventory == null) return;
 
         // Reset to the base empty/occupied state, then paint the footprint
@@ -763,6 +777,76 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         if (cellOverlays == null) return;
         foreach (var img in cellOverlays)
             if (img != null) img.color = Color.clear;
+
+        ClearHotbarOverlays();
+    }
+
+    // ------------------------------------------------------------
+    // HOTBAR DRAG HIGHLIGHT — same green/red valid-drop feedback as the
+    // grid cells above, applied to the Inventory panel's own hotbar row
+    // (the row actually reachable while dragging). A slot lights up
+    // green under the cursor if the item being dragged could actually be
+    // assigned there (see AbilityHotbarSystem.CanAssign — only untargeted
+    // Consumables), or red if it's hovering a slot but can't go there
+    // (a plant, a Placeable, or a pot-targeted Consumable like Algae).
+    // ------------------------------------------------------------
+
+    /// <summary>Creates one transparent overlay Image as a child of each hotbar slot's RectTransform,
+    /// the first time a drag happens — no Editor setup needed, same lazy-build approach as the grid's
+    /// cell overlays. Safe to call every drag start; does nothing once already built.</summary>
+    private void EnsureHotbarOverlays()
+    {
+        if (hotbarOverlays != null && hotbarOverlays.Length == hotbarSlotUIs.Count) return;
+
+        hotbarOverlays = new Image[hotbarSlotUIs.Count];
+        for (int i = 0; i < hotbarSlotUIs.Count; i++)
+        {
+            HotbarSlotUI slot = hotbarSlotUIs[i];
+            if (slot == null) continue;
+
+            GameObject go = new GameObject("DragHighlightOverlay", typeof(RectTransform));
+            RectTransform rt = go.GetComponent<RectTransform>();
+            rt.SetParent(slot.RectTransform, false);
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
+
+            Image img = go.AddComponent<Image>();
+            img.raycastTarget = false; // never intercept the drag's pointer events
+            img.color = Color.clear;
+
+            hotbarOverlays[i] = img;
+        }
+    }
+
+    private void ClearHotbarOverlays()
+    {
+        if (hotbarOverlays == null) return;
+        foreach (var img in hotbarOverlays)
+            if (img != null) img.color = Color.clear;
+    }
+
+    /// <summary>Called every frame while dragging (from UpdateDragHighlight above). Lights up
+    /// whichever hotbar slot is currently under the cursor — green if the dragged item could be
+    /// assigned there, red if not — and leaves every other slot transparent.</summary>
+    private void UpdateHotbarDragHighlight(PointerEventData eventData)
+    {
+        if (hotbarOverlays == null || draggedInstance == null) return;
+
+        bool eligible = draggedInstance is AbilityItemInstance stack && AbilityHotbarSystem.CanAssign(stack.data);
+
+        for (int i = 0; i < hotbarSlotUIs.Count; i++)
+        {
+            HotbarSlotUI slot = hotbarSlotUIs[i];
+            Image overlay = i < hotbarOverlays.Length ? hotbarOverlays[i] : null;
+            if (slot == null || overlay == null) continue;
+
+            bool hovering = RectTransformUtility.RectangleContainsScreenPoint(
+                slot.RectTransform, eventData.position, eventData.pressEventCamera);
+
+            overlay.color = hovering ? (eligible ? validDropColor : invalidDropColor) : Color.clear;
+        }
     }
 
     private void EnsureCellOverlays()

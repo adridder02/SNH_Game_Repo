@@ -28,6 +28,9 @@ using UnityEngine.EventSystems;
 //
 // Clicking a hotbar slot activates it directly (same effect as
 // pressing its number key) — handy for mouse-only play or testing.
+// RIGHT-clicking a slot instead CLEARS it (unassigns whatever's there,
+// e.g. leftover items assigned while testing) — same left/right split
+// as most hotbar UIs (Minecraft, etc.).
 // =============================================================
 [RequireComponent(typeof(RectTransform))]
 public class HotbarSlotUI : MonoBehaviour, IPointerClickHandler
@@ -37,6 +40,9 @@ public class HotbarSlotUI : MonoBehaviour, IPointerClickHandler
     [SerializeField] private float depletedAlpha = 0.35f;
     [Tooltip("Alpha applied when no item is assigned to this slot at all.")]
     [SerializeField] private float emptyAlpha = 0.15f;
+    [Tooltip("Tint shown over this slot while it's the one actively selected (currently placing a " +
+             "Placeable). Built automatically at runtime — no Editor setup needed.")]
+    [SerializeField] private Color selectedTint = new Color(1f, 0.85f, 0.4f, 0.4f);
 
     /// <summary>Which AbilityHotbarSystem slot (0-based) this UI element mirrors. Set by the owning
     /// controller's Awake() from its hotbarSlotUIs list order — slot 0 = key '1', etc.</summary>
@@ -45,6 +51,7 @@ public class HotbarSlotUI : MonoBehaviour, IPointerClickHandler
     public RectTransform RectTransform => (RectTransform)transform;
 
     private IHotbarActivator controller;
+    private Image selectedOverlay;
 
     public void Initialize(IHotbarActivator owningController, int slotIndex)
     {
@@ -63,13 +70,45 @@ public class HotbarSlotUI : MonoBehaviour, IPointerClickHandler
         icon.enabled = data != null && data.icon != null;
 
         Color c = icon.color;
+        // 100% opacity means "assigned AND you currently own at least one" — this is deliberate,
+        // not a bug: depletedAlpha (assigned but count is 0) and emptyAlpha (nothing assigned) are
+        // both meant to look visibly different from a slot that's actually ready to use. If a slot
+        // looks dim after you've assigned something, it means the count is 0 — pick up/keep at
+        // least one of that item and it'll snap to full opacity on the next Refresh().
         c.a = data == null ? emptyAlpha : (count > 0 ? 1f : depletedAlpha);
         icon.color = c;
+
+        EnsureSelectedOverlay();
+        selectedOverlay.color = hotbarSystem.IsSlotActive(SlotIndex) ? selectedTint : Color.clear;
+    }
+
+    /// <summary>Creates a full-cover tint overlay the first time this slot refreshes — same
+    /// "build it at runtime, no prefab editing needed" approach as the grid's drag-highlight cells.</summary>
+    private void EnsureSelectedOverlay()
+    {
+        if (selectedOverlay != null) return;
+
+        GameObject go = new GameObject("SelectedOverlay", typeof(RectTransform));
+        RectTransform rt = go.GetComponent<RectTransform>();
+        rt.SetParent(transform, false);
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.offsetMin = Vector2.zero;
+        rt.offsetMax = Vector2.zero;
+
+        selectedOverlay = go.AddComponent<Image>();
+        selectedOverlay.raycastTarget = false; // never intercept clicks meant for this slot
+        selectedOverlay.color = Color.clear;
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        controller?.ActivateHotbarSlot(SlotIndex);
+        if (controller == null) return;
+
+        if (eventData.button == PointerEventData.InputButton.Right)
+            controller.ClearHotbarSlot(SlotIndex);
+        else
+            controller.ActivateHotbarSlot(SlotIndex);
     }
 }
 
@@ -79,4 +118,8 @@ public class HotbarSlotUI : MonoBehaviour, IPointerClickHandler
 public interface IHotbarActivator
 {
     void ActivateHotbarSlot(int slotIndex);
+
+    /// <summary>Unassigns whatever's in this slot — called on right-click. Doesn't consume or
+    /// affect the player's actual item count, just clears the hotbar reference.</summary>
+    void ClearHotbarSlot(int slotIndex);
 }
