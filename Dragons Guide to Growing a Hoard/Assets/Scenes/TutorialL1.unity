@@ -43731,8 +43731,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectablePlant
   plantPrefab: {fileID: 864107347954856182, guid: 8cea0d4523543af4f9a60dcee71d2bab, type: 3}
   plantName: Verdant Algae
-  plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
-  plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
+  plantIcon: {fileID: 21300000, guid: 3e05db36bfd743342abdee2b215ee7e3, type: 3}
+  plantImage: {fileID: 21300000, guid: 3e05db36bfd743342abdee2b215ee7e3, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &5993726223858773546
 MonoBehaviour:

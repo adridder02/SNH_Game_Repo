@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e48f1d1b4a60efa43ad2034b53564901, type: 3}
+  m_Name: Verdant Algae
+  m_EditorClassIdentifier: Assembly-CSharp::PlantSpeciesData
+  speciesId: Verdant Algae
+  displayName: Verdant Algae
+  category: 2
+  room: 2
+  tier: 1
+  difficulty: 1
+  description: 
+  descriptionSecondary: 
+  journalIcon: {fileID: 21300000, guid: 3e05db36bfd743342abdee2b215ee7e3, type: 3}
+  journalImage: {fileID: 21300000, guid: 3e05db36bfd743342abdee2b215ee7e3, type: 3}
+  disabledIcon: {fileID: 21300000, guid: fa888b3521b16b14a9a184518c92d407, type: 3}
+  activeIcon: {fileID: 21300000, guid: 3e05db36bfd743342abdee2b215ee7e3, type: 3}
+  goldIcon: {fileID: 21300000, guid: c26ae10cd7aa6d640909347759e0461e, type: 3}
+  waterRequirement: 2
+  lightRequirement: 1
+  preferredSoilDisplay: 3
+  requiresRoomUnlock: 0
+  happinessThreshold: 70
