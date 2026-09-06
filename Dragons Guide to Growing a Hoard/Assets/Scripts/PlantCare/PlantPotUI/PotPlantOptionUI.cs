@@ -28,9 +28,16 @@ public class PotPlantOptionUI : MonoBehaviour
              "visible, just dimmed, matching the greyed-out treatment locked journal slots use.")]
     [SerializeField] private float dimmedAlpha = 0.35f;
 
-    public void Initialize(InventoryItemInstance item, bool fits, System.Action onClick)
+    public void Initialize(InventoryItemInstance item, bool fits, bool locked, System.Action onClick)
     {
         Button button = GetComponent<Button>();
+
+        // A size mismatch (fits=false) and a progression lock (locked=true) both dim the same way
+        // visually, but behave differently on click — see button.interactable below. Sized-wrong
+        // items have nothing useful to explain, so they stay unclickable same as before. Locked
+        // items are still the right size, so they stay clickable specifically so onClick can tell
+        // the player WHY it's locked instead of just doing nothing.
+        bool dimmed = !fits || locked;
 
         if (icon != null)
         {
@@ -39,14 +46,14 @@ public class PotPlantOptionUI : MonoBehaviour
             icon.enabled = sprite != null;
 
             Color c = icon.color;
-            c.a = fits ? 1f : dimmedAlpha;
+            c.a = dimmed ? dimmedAlpha : 1f;
             icon.color = c;
         }
 
         if (background != null)
         {
             Color c = background.color;
-            c.a = fits ? 1f : dimmedAlpha;
+            c.a = dimmed ? dimmedAlpha : 1f;
             background.color = c;
         }
 

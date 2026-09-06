@@ -77,6 +77,17 @@ public class PlantSpeciesData : ScriptableObject
     public RequirementLevel lightRequirement = RequirementLevel.Medium;
     public SoilKind preferredSoilDisplay = SoilKind.Loam;
 
+    [Header("Special Unlock (optional)")]
+    [Tooltip("If true, this species can't be planted at all until its room (above) is fully " +
+             "discovered/completed in the Journal AND that room's zone happiness (see " +
+             "RoomZoneRegistry) clears happinessThreshold below. Used for rare late-game plants — " +
+             "e.g. the tree's three crystal-heart species. Leave off for every normal plant.")]
+    public bool requiresRoomUnlock = false;
+
+    [Tooltip("Minimum ZoneHappiness (0-100) this species' room's zone must have, on top of full " +
+             "room completion, before it's plantable. Only used when requiresRoomUnlock is true.")]
+    [Range(0f, 100f)] public float happinessThreshold = 70f;
+
     /// <summary>The key actually used for save data — falls back to the asset name if speciesId is blank.</summary>
     public string ResolvedId => string.IsNullOrEmpty(speciesId) ? name : speciesId;
 }

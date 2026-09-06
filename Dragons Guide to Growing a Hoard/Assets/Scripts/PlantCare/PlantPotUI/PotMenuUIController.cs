@@ -61,6 +61,19 @@ public class PotMenuUIController : MonoBehaviour
     [SerializeField] private Button choosePlantConfirmButton;
     [SerializeField] private Button choosePlantBackButton;
 
+    [Header("Choose Plant Panel — Locked Species")]
+    [Tooltip("Needed to check PlantSpeciesData.requiresRoomUnlock species (see SpecialPlantUnlockGate) " +
+             "— same database/manager JournalUIController uses. Auto-found in the scene / via " +
+             "PlantJournalManager.Instance if left empty.")]
+    [SerializeField] private PlantJournalDatabase journalDatabase;
+    [SerializeField] private PlantJournalManager journalManager;
+    [Tooltip("Shows GetLockedReason's message for a couple of seconds when the player clicks a plant " +
+             "that's the right size but still progression-locked (requiresRoomUnlock not met yet).")]
+    [SerializeField] private TextMeshProUGUI choosePlantLockedMessageText;
+    [Tooltip("How long the locked-reason message stays on screen after clicking a locked plant.")]
+    [SerializeField] private float lockedMessageDuration = 2.5f;
+    private Coroutine lockedMessageRoutine;
+
     [Header("Choose Plant Panel — Horizontal Scroll")]
     [Tooltip("Items are laid out in a single row starting from choosePlantOptionTemplate's own position " +
              "and scroll sideways instead of wrapping into extra rows (which is what was overflowing the " +
@@ -166,6 +179,15 @@ public class PotMenuUIController : MonoBehaviour
         collectPuffballsButton?.onClick.AddListener(OnCollectPuffballsClicked);
 
         menuCloseButton?.onClick.AddListener(() => ownerInteraction?.CloseMenu());
+
+        if (journalManager == null)
+            journalManager = PlantJournalManager.Instance != null ? PlantJournalManager.Instance : FindObjectOfType<PlantJournalManager>();
+        if (journalDatabase == null)
+            Debug.LogWarning("[PotMenuUIController] journalDatabase not assigned — locked/unlockable " +
+                              "species checks will fail closed (treated as locked). Assign the same " +
+                              "PlantJournalDatabase asset used on JournalUIController.", this);
+        if (choosePlantLockedMessageText != null)
+            choosePlantLockedMessageText.gameObject.SetActive(false);
 
         // Template stays as a design-time reference in the Editor for sizing/position, but should
         // never actually be visible itself — only its clones. If it was left active in the scene
@@ -524,6 +546,8 @@ public class PotMenuUIController : MonoBehaviour
                 if (item?.plantPrefab == null) continue;
 
                 bool fits = currentPot != null && (currentPot.IsStatic || item.size == currentPot.PotSize);
+                PlantSpeciesData species = GetSpeciesFor(item);
+                bool locked = !SpecialPlantUnlockGate.IsPlantable(species, journalDatabase, journalManager);
 
                 Button optionButton = Instantiate(choosePlantOptionTemplate, choosePlantOptionContainer);
                 optionButton.gameObject.SetActive(true);
@@ -538,15 +562,19 @@ public class PotMenuUIController : MonoBehaviour
                 PotPlantOptionUI optionUI = optionButton.GetComponent<PotPlantOptionUI>();
                 InventoryItemInstance capturedItem = item;
                 Button capturedButton = optionButton;
+                PlantSpeciesData capturedSpecies = species;
+                bool capturedLocked = locked;
 
                 if (optionUI != null)
                 {
-                    optionUI.Initialize(capturedItem, fits, () => SelectPlantOption(capturedItem, capturedButton));
+                    optionUI.Initialize(capturedItem, fits, locked,
+                        () => OnPlantOptionClicked(capturedItem, capturedButton, capturedSpecies, capturedLocked));
                 }
                 else
                 {
                     optionButton.interactable = fits;
-                    optionButton.onClick.AddListener(() => SelectPlantOption(capturedItem, capturedButton));
+                    optionButton.onClick.AddListener(
+                        () => OnPlantOptionClicked(capturedItem, capturedButton, capturedSpecies, capturedLocked));
                 }
 
                 anyShown = true;
@@ -570,6 +598,42 @@ public class PotMenuUIController : MonoBehaviour
 
         if (choosePlantEmptyText != null)
             choosePlantEmptyText.gameObject.SetActive(!anyShown);
+    }
+
+    /// <summary>Resolves the PlantSpeciesData for an owned plant item — same lookup PotContents.RemovePlant
+    /// uses for its database fallback. Null for anything whose prefab isn't linked to a species asset.</summary>
+    private static PlantSpeciesData GetSpeciesFor(InventoryItemInstance item) =>
+        item?.plantPrefab != null ? item.plantPrefab.GetComponentInChildren<PlantState>()?.journalSpecies : null;
+
+    /// <summary>Routes a Choose Plant click: locked species show why instead of being selected;
+    /// everything else behaves exactly as SelectPlantOption always has.</summary>
+    private void OnPlantOptionClicked(InventoryItemInstance item, Button optionButton, PlantSpeciesData species, bool locked)
+    {
+        if (locked)
+        {
+            ShowLockedMessage(SpecialPlantUnlockGate.GetLockedReason(species, journalDatabase, journalManager));
+            return;
+        }
+
+        SelectPlantOption(item, optionButton);
+    }
+
+    private void ShowLockedMessage(string message)
+    {
+        if (choosePlantLockedMessageText == null || string.IsNullOrEmpty(message)) return;
+
+        choosePlantLockedMessageText.text = message;
+        choosePlantLockedMessageText.gameObject.SetActive(true);
+
+        if (lockedMessageRoutine != null) StopCoroutine(lockedMessageRoutine);
+        lockedMessageRoutine = StartCoroutine(HideLockedMessageAfterDelay());
+    }
+
+    private System.Collections.IEnumerator HideLockedMessageAfterDelay()
+    {
+        yield return new WaitForSeconds(lockedMessageDuration);
+        if (choosePlantLockedMessageText != null) choosePlantLockedMessageText.gameObject.SetActive(false);
+        lockedMessageRoutine = null;
     }
 
     private void SelectPlantOption(InventoryItemInstance item, Button optionButton)

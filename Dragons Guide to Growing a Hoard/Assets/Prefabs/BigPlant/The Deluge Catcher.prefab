@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 2830285115181103567}
   - component: {fileID: -7229605014074406825}
   - component: {fileID: -3384478850882547310}
+  - component: {fileID: -4170652284490370452}
   m_Layer: 3
   m_Name: The Deluge Catcher
   m_TagString: Selectable
@@ -264,3 +265,17 @@ MonoBehaviour:
   unhealthyTint: {r: 0.03773582, g: 0.037398566, b: 0.03364184, a: 1}
   urpColorProperty: _BaseColor
   legacyColorProperty: _Color
+--- !u!114 &-4170652284490370452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6397339370049151978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e406e6b2c1e7784479c80c53a2fb8f67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHarvestYield
+  yieldItem: {fileID: 11400000, guid: ee748c195e00e7a4592e264026485ca8, type: 2}
+  amountOverride: 0

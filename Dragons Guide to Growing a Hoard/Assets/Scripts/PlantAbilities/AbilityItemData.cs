@@ -69,6 +69,14 @@ public class AbilityItemData : ScriptableObject
     public AbilityKind kind = AbilityKind.Consumable;
     public AbilityEffectId effectId = AbilityEffectId.None;
 
+    [Tooltip("ON for key items that only do something when used on a specific world object other " +
+             "than a pot (e.g. the tree's crystal-heart items) — keeps them off the hotbar (see " +
+             "AbilityHotbarSystem.CanAssign) the same way RequiresPotTarget keeps pot-targeted " +
+             "Consumables off it, since activating them there would just silently do nothing. " +
+             "They still sit normally in PlayerAbilityInventory; whatever script drives that other " +
+             "object (e.g. a tree interaction script) reads/consumes them directly.")]
+    public bool requiresTreeTarget = false;
+
     [Header("Stacking")]
     [Tooltip("How many of this item a single harvest grants. Sparkmint gives 10 leaves per plant, most others give 1.")]
     public int harvestGrantAmount = 1;

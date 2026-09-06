@@ -35,3 +35,5 @@ MonoBehaviour:
   waterRequirement: 1
   lightRequirement: 1
   preferredSoilDisplay: 1
+  requiresRoomUnlock: 1
+  happinessThreshold: 70

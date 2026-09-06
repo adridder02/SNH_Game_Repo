@@ -162,6 +162,7 @@ public class AbilityHotbarSystem : MonoBehaviour
     {
         if (data == null) return false;
         if (data.kind == AbilityKind.OneOff) return false;
+        if (data.requiresTreeTarget) return false;
         return !AbilityConsumableEffects.RequiresPotTarget(data.effectId);
     }
 
