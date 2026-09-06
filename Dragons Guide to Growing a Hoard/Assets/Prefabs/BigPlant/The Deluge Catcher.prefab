@@ -138,10 +138,10 @@ MonoBehaviour:
   useManualHeight: 0
   manualHeightOffset: 1
   hoverGap: 1.5
-  fixedWorldHeight: 0.3
-  maxVisibleDistance: 6
+  fixedWorldHeight: 0.7
+  maxVisibleDistance: 30
   logVisibilityDebug: 0
-  overheadBarsTemplate: {fileID: 0}
+  overheadBarsTemplate: {fileID: 2106392375125345503, guid: 5588ba098b73e084390914cf92d297fb, type: 3}
   defaultTemplateResourcePath: PlantOverheadBarsTemplate
   plantState: {fileID: 0}
 --- !u!114 &-1741920768658100749

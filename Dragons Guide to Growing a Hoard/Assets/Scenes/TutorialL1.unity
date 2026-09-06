@@ -36282,7 +36282,7 @@ MonoBehaviour:
   journalManager: {fileID: 161992242}
   choosePlantLockedMessageText: {fileID: 0}
   lockedMessageDuration: 2.5
-  choosePlantScrollRect: {fileID: 0}
+  choosePlantScrollRect: {fileID: 576867035}
   choosePlantGapX: 8
   useAbilityButton: {fileID: 1626462428}
   collectPuffballsButton: {fileID: 0}

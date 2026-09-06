@@ -47,7 +47,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2650251699068457546}
-  m_Mesh: {fileID: 8115766481536950135, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+  m_Mesh: {fileID: -5122514456716667080, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
 --- !u!23 &2474612592971735132
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -137,10 +137,10 @@ MonoBehaviour:
   useManualHeight: 0
   manualHeightOffset: 1
   hoverGap: 1.5
-  fixedWorldHeight: 0.3
-  maxVisibleDistance: 6
+  fixedWorldHeight: 0.7
+  maxVisibleDistance: 30
   logVisibilityDebug: 0
-  overheadBarsTemplate: {fileID: 0}
+  overheadBarsTemplate: {fileID: 2106392375125345503, guid: 5588ba098b73e084390914cf92d297fb, type: 3}
   defaultTemplateResourcePath: PlantOverheadBarsTemplate
   plantState: {fileID: 0}
 --- !u!114 &-6814717730686776371
