@@ -37,12 +37,6 @@ public class PlayerController : MonoBehaviour
     [Tooltip("How strongly camera pitch steers vertical movement while flying (0 = off).")]
     [SerializeField] private float flyPitchInfluence = 1f;
 
-    [Tooltip("Slow passive sink applied while flying when the player holds neither Space nor Ctrl. " +
-             "Without this, releasing all vertical input just hovers indefinitely with nothing to " +
-             "bring the player back down - this guarantees fly mode is always exitable eventually, " +
-             "even over open water/pits where the player never actively chooses to descend.")]
-    [SerializeField] private float flyIdleDriftSpeed = 1.5f;
-
     [Header("Input")]
     [SerializeField] private InputActionAsset inputActions;
     private bool escPressed = false;
@@ -431,6 +425,17 @@ public class PlayerController : MonoBehaviour
 
             if (velocity.y < 0f)
                 velocity.y = -2f;
+
+            // Ordinary jumps only ever set velocity.y (see Jump() below), so x/z here are
+            // normally already zero. But ApplyExternalLaunch() (bounce plants, launch pads, etc.)
+            // sets the full 3D velocity, including a sideways "outward" kick - without clearing
+            // x/z on landing, that leftover launch velocity never goes away and keeps nudging the
+            // player (and therefore the camera, which follows the player) in that direction every
+            // frame forever, masked while you're holding a move key but obvious the moment you
+            // release input. WalkHorizontal() already handles all normal ground movement on its
+            // own, so velocity's x/z has no further job once grounded.
+            velocity.x = 0f;
+            velocity.z = 0f;
         }
     }
 
@@ -495,12 +500,6 @@ public class PlayerController : MonoBehaviour
 
             if (ctrlHeld)
                 intentionalVertical -= flyVerticalSpeed * (IsSprinting ? sprintMultiplier : 1f);
-
-            // Neither key held: apply a slow passive sink so the player always drifts back toward
-            // the ground eventually instead of hovering in place forever (e.g. over water or a pit
-            // where they never actively choose to descend).
-            if (!flyAscendHeld && !ctrlHeld)
-                intentionalVertical -= flyIdleDriftSpeed;
 
             verticalMove += intentionalVertical;
 

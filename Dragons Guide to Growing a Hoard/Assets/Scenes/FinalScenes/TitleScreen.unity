@@ -2238,6 +2238,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1118279878817492339, guid: f8cc4fa0fc96c0a4bb285cf0ffb8c5dd, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: c7d75d0994b6325439fcd51464d62ce2, type: 2}
     - target: {fileID: 1675648491530174799, guid: f8cc4fa0fc96c0a4bb285cf0ffb8c5dd, type: 3}
       propertyPath: m_Name
       value: TutorialCD5
