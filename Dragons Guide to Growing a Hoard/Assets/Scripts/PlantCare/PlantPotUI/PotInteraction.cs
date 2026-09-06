@@ -166,6 +166,7 @@ public class PotInteraction : MonoBehaviour
     private void OnDisable()
     {
         ClearCurrentOutline();
+        mainUI?.SetInteractPromptVisible(false, this);
     }
 
     // ---------------------------------------------------------------
@@ -350,7 +351,7 @@ public class PotInteraction : MonoBehaviour
         }
         else
         {
-            mainUI?.SetInteractPromptVisible(shouldShow);
+            mainUI?.SetInteractPromptVisible(shouldShow, this);
         }
     }
 

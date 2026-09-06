@@ -304,15 +304,33 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     }
 
     // ---------------------------------------------------------------
-    // Interact prompt (HUD) — called by PotInteraction when its useWorldSpacePrompt toggle is OFF
+    // Interact prompt (HUD) — called by PotInteraction / HarvestNodeContainer (or anything else)
+    // when their useWorldSpacePrompt toggle is OFF
     // ---------------------------------------------------------------
-    /// <summary>Shows/hides the fixed HUD interact-prompt element. This is the "just a set field that
-    /// turns on and off" alternative to PotInteraction's floating world-space prompt — no positioning
-    /// or billboarding, interactPromptHUD is simply SetActive()'d.</summary>
-    public void SetInteractPromptVisible(bool visible)
+    // Tracks which callers currently want the prompt visible. Needed because multiple scripts
+    // (PotInteraction, HarvestNodeContainer, etc.) share this one HUD element and each calls
+    // SetInteractPromptVisible(...) every frame regardless of what the others are doing. A plain
+    // SetActive(visible) meant whichever script's Update() happened to run last in a frame always
+    // won, so e.g. HarvestNodeContainer calling "hide" every frame (no node nearby) could stomp
+    // PotInteraction calling "show" (pot nearby) right after, even though a prompt SHOULD be
+    // showing. Now the HUD stays visible as long as at least one caller wants it visible.
+    private readonly HashSet<object> _interactPromptRequesters = new HashSet<object>();
+
+    /// <summary>Shows/hides the fixed HUD interact-prompt element. Pass the calling component as
+    /// <paramref name="requester"/> (e.g. "this") so multiple sources sharing this one HUD element
+    /// don't hide it out from under each other - the element stays visible as long as ANY
+    /// requester currently wants it visible.</summary>
+    public void SetInteractPromptVisible(bool visible, object requester)
     {
+        if (requester == null) return;
+
+        if (visible)
+            _interactPromptRequesters.Add(requester);
+        else
+            _interactPromptRequesters.Remove(requester);
+
         if (interactPromptHUD != null)
-            interactPromptHUD.SetActive(visible);
+            interactPromptHUD.SetActive(_interactPromptRequesters.Count > 0);
     }
 
     // ---------------------------------------------------------------

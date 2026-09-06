@@ -132,6 +132,12 @@ public class HarvestNodeContainer : MonoBehaviour
     }
 
     // =========================================================
+    private void OnDisable()
+    {
+        mainUI?.SetInteractPromptVisible(false, this);
+    }
+
+    // =========================================================
     private void Update()
     {
         if (player == null)
@@ -331,7 +337,7 @@ public class HarvestNodeContainer : MonoBehaviour
         }
         else
         {
-            mainUI?.SetInteractPromptVisible(shouldShow);
+            mainUI?.SetInteractPromptVisible(shouldShow, this);
         }
     }
 
@@ -368,7 +374,10 @@ public class HarvestNodeContainer : MonoBehaviour
         Canvas c = feedbackRoot.AddComponent<Canvas>();
         c.renderMode = RenderMode.ScreenSpaceOverlay;
         c.sortingOrder = 200;
-        feedbackRoot.AddComponent<CanvasScaler>();
+        CanvasScaler scaler = feedbackRoot.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920f, 1080f);
+        scaler.matchWidthOrHeight = 0.5f;
         feedbackRoot.AddComponent<GraphicRaycaster>();
 
         GameObject textGO = MakeRect("Label", feedbackRoot.transform);
