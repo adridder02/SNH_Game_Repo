@@ -73,6 +73,19 @@ public class JournalUIController : MonoBehaviour
     [SerializeField] private Button guideNavButton;
     [SerializeField] private Button settingsNavButton;
 
+    [Header("Progress — Room Shortcuts")]
+    [Tooltip("The Progress page's own controller — needed so these shortcut buttons can jump straight " +
+             "to a room instead of going through its Prev/Next flip sequence. Auto-found on progressPage " +
+             "if left empty.")]
+    [SerializeField] private ProgressPageUIController progressPageController;
+    [Tooltip("Nested sign-post buttons (Main Room / East Wing / West Wing) that switch to the Progress " +
+             "page AND jump straight to that room, same idea as plantsNavButton etc. above but one level " +
+             "deeper. Prev/Next on the Progress page itself still work exactly as before — these are " +
+             "just an extra, more direct way in.")]
+    [SerializeField] private Button mainRoomNavButton;
+    [SerializeField] private Button eastRoomNavButton;
+    [SerializeField] private Button westRoomNavButton;
+
     [Header("Category Rows")]
     [Tooltip("Container for the Sunny row. Anchor/pivot must be top-left (0,1), same as the inventory grid.")]
     [SerializeField] private RectTransform sunnyRow;
@@ -133,6 +146,9 @@ public class JournalUIController : MonoBehaviour
         if (journalManager == null)
             journalManager = PlantJournalManager.Instance != null ? PlantJournalManager.Instance : FindObjectOfType<PlantJournalManager>();
 
+        if (progressPageController == null && progressPage != null)
+            progressPageController = progressPage.GetComponent<ProgressPageUIController>();
+
         if (slotTemplate != null)
         {
             slotTemplateRect = slotTemplate.GetComponent<RectTransform>();
@@ -147,10 +163,26 @@ public class JournalUIController : MonoBehaviour
         guideNavButton?.onClick.AddListener(() => ShowPage(guidePage, guideNavButton));
         settingsNavButton?.onClick.AddListener(() => ShowPage(settingsPage, settingsNavButton));
 
+        // Room shortcuts: same as clicking Progress, plus jump straight to that room.
+        mainRoomNavButton?.onClick.AddListener(() => GoToRoomShortcut(RoomType.Main));
+        eastRoomNavButton?.onClick.AddListener(() => GoToRoomShortcut(RoomType.East));
+        westRoomNavButton?.onClick.AddListener(() => GoToRoomShortcut(RoomType.West));
+
         previousSpeciesButton?.onClick.AddListener(() => StepSpecies(-1));
         nextSpeciesButton?.onClick.AddListener(() => StepSpecies(1));
 
         SetJournalVisible(false);
+    }
+
+    /// <summary>Switches to the Progress page (same as progressNavButton) and then jumps straight to
+    /// the given room — called by the Main Room/East Wing/West Wing sign-post buttons. Switching the
+    /// page first matters: if the Progress page's GameObject was inactive, activating it can trigger
+    /// ProgressPageUIController's own OnEnable (which resets to the Main Hall) — calling GoToRoom
+    /// afterward ensures the requested room wins regardless.</summary>
+    private void GoToRoomShortcut(RoomType room)
+    {
+        ShowPage(progressPage, progressNavButton);
+        progressPageController?.GoToRoom(room);
     }
 
     void OnEnable()

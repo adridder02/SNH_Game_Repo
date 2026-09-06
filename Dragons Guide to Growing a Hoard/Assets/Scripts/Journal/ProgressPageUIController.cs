@@ -139,6 +139,18 @@ public class ProgressPageUIController : MonoBehaviour
             journalManager.OnJournalChanged -= RefreshCurrentRoom;
     }
 
+    /// <summary>Jumps straight to a specific room, bypassing the Prev/Next flip sequence — used by
+    /// JournalUIController's room shortcut buttons (Main Room / East Wing / West Wing) so the player
+    /// can go directly to a room instead of flipping through Prev/Next to reach it.</summary>
+    public void GoToRoom(RoomType room)
+    {
+        int index = Array.IndexOf(RoomOrder, room);
+        if (index < 0) return;
+
+        currentRoomIndex = index;
+        ShowRoom(currentRoomIndex);
+    }
+
     private void StepRoom(int direction)
     {
         int newIndex = currentRoomIndex + direction;

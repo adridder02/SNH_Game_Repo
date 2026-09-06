@@ -61,10 +61,15 @@ public class PotMenuUIController : MonoBehaviour
     [SerializeField] private Button choosePlantConfirmButton;
     [SerializeField] private Button choosePlantBackButton;
 
-    [Header("Choose Plant Panel — Grid Wrapping")]
-    [SerializeField] private int choosePlantColumns = 5;
+    [Header("Choose Plant Panel — Horizontal Scroll")]
+    [Tooltip("Items are laid out in a single row starting from choosePlantOptionTemplate's own position " +
+             "and scroll sideways instead of wrapping into extra rows (which is what was overflowing the " +
+             "panel). Assign the ScrollRect that wraps choosePlantOptionContainer (set it to Horizontal " +
+             "only, Content = choosePlantOptionContainer) — auto-found on the container's parents if left " +
+             "empty. Content Size Fitter isn't needed; this script resizes the content rect itself each " +
+             "refresh based on how many items there are.")]
+    [SerializeField] private ScrollRect choosePlantScrollRect;
     [SerializeField] private float choosePlantGapX = 8f;
-    [SerializeField] private float choosePlantGapY = 8f;
 
     // ------------------------------------------------------------
     // ABILITIES PANEL
@@ -161,6 +166,16 @@ public class PotMenuUIController : MonoBehaviour
         collectPuffballsButton?.onClick.AddListener(OnCollectPuffballsClicked);
 
         menuCloseButton?.onClick.AddListener(() => ownerInteraction?.CloseMenu());
+
+        // Template stays as a design-time reference in the Editor for sizing/position, but should
+        // never actually be visible itself — only its clones. If it was left active in the scene
+        // (common while laying out the panel), this guarantees it's hidden regardless, including
+        // in the empty-inventory case where previously nothing hid it.
+        if (choosePlantOptionTemplate != null)
+            choosePlantOptionTemplate.gameObject.SetActive(false);
+
+        if (choosePlantScrollRect == null && choosePlantOptionContainer != null)
+            choosePlantScrollRect = choosePlantOptionContainer.GetComponentInParent<ScrollRect>();
 
         if (menuRoot != null) menuRoot.SetActive(false);
     }
@@ -488,15 +503,21 @@ public class PotMenuUIController : MonoBehaviour
             }
         }
 
+        // Belt-and-suspenders: RefreshChoosePlantPanel can run more than once per panel-open
+        // (ShowChoosePlant calls it, and other refreshes may too), so make sure the template
+        // never ends up visible no matter how many times this runs.
+        if (choosePlantOptionTemplate != null)
+            choosePlantOptionTemplate.gameObject.SetActive(false);
+
         List<InventoryItemInstance> owned = playerInventory != null
             ? playerInventory.GetAllItems() : new List<InventoryItemInstance>();
 
         bool anyShown = false;
+        int index = 0;
 
         if (choosePlantOptionTemplate != null && choosePlantOptionContainer != null)
         {
             RectTransform templateRect = choosePlantOptionTemplate.GetComponent<RectTransform>();
-            int index = 0;
 
             foreach (InventoryItemInstance item in owned)
             {
@@ -507,8 +528,11 @@ public class PotMenuUIController : MonoBehaviour
                 Button optionButton = Instantiate(choosePlantOptionTemplate, choosePlantOptionContainer);
                 optionButton.gameObject.SetActive(true);
 
+                // Single horizontal row — items scroll sideways via choosePlantScrollRect instead
+                // of wrapping into extra rows, which is what was overflowing the panel before.
                 RectTransform optionRect = optionButton.GetComponent<RectTransform>();
-                optionRect.anchoredPosition = ManualSlotLayout.GetPosition(templateRect, index, choosePlantColumns, choosePlantGapX, choosePlantGapY);
+                optionRect.anchoredPosition = templateRect.anchoredPosition +
+                    new Vector2(index * (templateRect.sizeDelta.x + choosePlantGapX), 0f);
                 index++;
 
                 PotPlantOptionUI optionUI = optionButton.GetComponent<PotPlantOptionUI>();
@@ -527,7 +551,22 @@ public class PotMenuUIController : MonoBehaviour
 
                 anyShown = true;
             }
+
+            // Resize the content rect to fit everything just laid out, so the ScrollRect knows how
+            // far it's actually allowed to scroll — without this it stays whatever size it was left
+            // at in the Editor and either can't reach the last item or scrolls into empty space.
+            RectTransform contentRect = choosePlantOptionContainer as RectTransform;
+            if (contentRect != null && index > 0)
+            {
+                float totalWidth = templateRect.anchoredPosition.x + index * (templateRect.sizeDelta.x + choosePlantGapX);
+                contentRect.sizeDelta = new Vector2(totalWidth, contentRect.sizeDelta.y);
+            }
         }
+
+        // Always reopen scrolled all the way to the start rather than remembering wherever the
+        // player last scrolled to.
+        if (choosePlantScrollRect != null)
+            choosePlantScrollRect.horizontalNormalizedPosition = 0f;
 
         if (choosePlantEmptyText != null)
             choosePlantEmptyText.gameObject.SetActive(!anyShown);
