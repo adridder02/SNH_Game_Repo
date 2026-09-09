@@ -4,6 +4,12 @@
 // Attach to the ROOT of anything you want to be outline-able
 // (e.g. each plant prefab's root, next to PlantState).
 //
+// SETUP:
+//   Assign `outlineMaterial` in the Inspector to your custom
+//   outline Material asset. It's fine if that material is
+//   currently sitting in a renderer's material slot already —
+//   Awake() strips it out of the baseline so it starts OFF.
+//
 // USAGE:
 //   OutlineEffect fx = plant.GetComponent<OutlineEffect>();
 //   fx.SetOutline(true);   // turn the rim on
@@ -24,16 +30,16 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class OutlineEffect : MonoBehaviour
 {
-    [Header("Outline Appearance")]
-    public Color outlineColor = new Color(1f, 0.85f, 0.2f, 1f);
-    [Range(0f, 0.1f)] public float outlineWidth = 0.02f;
-
-    [Tooltip("Leave empty to auto-find Custom/InvertedHullOutline.")]
-    public Shader outlineShader;
+    [Header("Outline Material")]
+    [Tooltip("Your pre-made outline Material asset (your custom shader). " +
+             "It's OK if it's already assigned in a renderer's slot — " +
+             "Awake() will strip it out so the object starts un-outlined.")]
+    public Material outlineMaterial;
 
     // ---------------------------------------------------------------
     private Renderer[] renderers;
-    private Material outlineMaterialInstance;
+    // Per-renderer material list with outlineMaterial guaranteed absent.
+    private Material[][] baseMaterials;
     private bool isOutlined = false;
 
     public bool IsOutlined => isOutlined;
@@ -41,69 +47,49 @@ public class OutlineEffect : MonoBehaviour
     private void Awake()
     {
         renderers = GetComponentsInChildren<Renderer>();
+        baseMaterials = new Material[renderers.Length][];
 
-        if (outlineShader == null)
-            outlineShader = Shader.Find("Custom/InvertedHullOutline");
-
-        if (outlineShader == null)
+        for (int i = 0; i < renderers.Length; i++)
         {
-            Debug.LogWarning($"[OutlineEffect] Could not find Custom/InvertedHullOutline shader on {name}.");
-            return;
-        }
-
-        outlineMaterialInstance = new Material(outlineShader) { name = "OutlineMaterial_Instance" };
-        outlineMaterialInstance.SetColor("_OutlineColor", outlineColor);
-        outlineMaterialInstance.SetFloat("_OutlineWidth", outlineWidth);
-    }
-
-    // ---------------------------------------------------------------
-    // SetOutline — adds/removes the outline material from every
-    // renderer under this object. Idempotent: calling it with the
-    // same value twice is a no-op.
-    // ---------------------------------------------------------------
-    public void SetOutline(bool enable)
-    {
-        if (outlineMaterialInstance == null) return;
-        if (enable == isOutlined) return;
-        isOutlined = enable;
-
-        foreach (Renderer rend in renderers)
-        {
+            Renderer rend = renderers[i];
             if (rend == null) continue;
 
             List<Material> mats = new List<Material>(rend.sharedMaterials);
+            if (outlineMaterial != null)
+                mats.RemoveAll(m => m == outlineMaterial);
 
-            if (enable)
+            baseMaterials[i] = mats.ToArray();
+        }
+
+        if (outlineMaterial == null)
+            Debug.LogWarning($"[OutlineEffect] No outlineMaterial assigned on {name}.");
+    }
+
+    // ---------------------------------------------------------------
+    // SetOutline — adds/removes outlineMaterial from every renderer
+    // under this object. Idempotent: calling it with the same value
+    // twice is a no-op.
+    // ---------------------------------------------------------------
+    public void SetOutline(bool enable)
+    {
+        if (outlineMaterial == null) return;
+        if (enable == isOutlined) return;
+        isOutlined = enable;
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer rend = renderers[i];
+            if (rend == null) continue;
+
+            if (!enable)
             {
-                if (!mats.Contains(outlineMaterialInstance))
-                    mats.Add(outlineMaterialInstance);
-            }
-            else
-            {
-                mats.Remove(outlineMaterialInstance);
+                rend.materials = baseMaterials[i];
+                continue;
             }
 
+            List<Material> mats = new List<Material>(baseMaterials[i]);
+            mats.Add(outlineMaterial);
             rend.materials = mats.ToArray();
         }
-    }
-
-    // Lets a manager nudge color/width at runtime (e.g. pulse on hover)
-    // without allocating a new material.
-    public void SetAppearance(Color color, float width)
-    {
-        outlineColor = color;
-        outlineWidth = width;
-
-        if (outlineMaterialInstance != null)
-        {
-            outlineMaterialInstance.SetColor("_OutlineColor", color);
-            outlineMaterialInstance.SetFloat("_OutlineWidth", width);
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (outlineMaterialInstance != null)
-            Destroy(outlineMaterialInstance);
     }
 }

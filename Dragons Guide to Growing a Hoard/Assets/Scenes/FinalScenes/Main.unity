@@ -11422,9 +11422,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!64 &541380868
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -18632,6 +18630,119 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 904816886}
   m_CullTransparentMesh: 1
+--- !u!1 &911260911
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 911260915}
+  - component: {fileID: 911260914}
+  - component: {fileID: 911260913}
+  - component: {fileID: 911260912}
+  m_Layer: 10
+  m_Name: Cube
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &911260912
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 911260911}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &911260913
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 911260911}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: c78a665dbdd30ef409bb435d796f20f2, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &911260914
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 911260911}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &911260915
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 911260911}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
+  m_LocalPosition: {x: 66.98, y: -6.13, z: -13.03}
+  m_LocalScale: {x: 3.5674095, y: 3.567409, z: 6.9318457}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &911733272
 GameObject:
   m_ObjectHideFlags: 0
@@ -20012,6 +20123,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1030228116369640806, guid: 9d7825db8d1b18647863159addc550c8, type: 3}
+      propertyPath: outlineWidth
+      value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030228116369640806, guid: 9d7825db8d1b18647863159addc550c8, type: 3}
+      propertyPath: outlineShader
+      value: 
+      objectReference: {fileID: -6465566751694194690, guid: fa605e4cb4c69b64d8b9b9ab371b9bee, type: 3}
+    - target: {fileID: 1030228116369640806, guid: 9d7825db8d1b18647863159addc550c8, type: 3}
+      propertyPath: outlineMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: c78a665dbdd30ef409bb435d796f20f2, type: 2}
     - target: {fileID: 1203152733626262618, guid: 9d7825db8d1b18647863159addc550c8, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.5674095
@@ -23666,6 +23789,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1030228116369640806, guid: 9d7825db8d1b18647863159addc550c8, type: 3}
+      propertyPath: outlineMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: c78a665dbdd30ef409bb435d796f20f2, type: 2}
     - target: {fileID: 1203152733626262618, guid: 9d7825db8d1b18647863159addc550c8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 50.5
@@ -31766,6 +31893,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1030228116369640806, guid: 9d7825db8d1b18647863159addc550c8, type: 3}
+      propertyPath: outlineMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: c78a665dbdd30ef409bb435d796f20f2, type: 2}
     - target: {fileID: 1203152733626262618, guid: 9d7825db8d1b18647863159addc550c8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 67.4
@@ -45463,9 +45594,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &4291933659096838130
 Transform:
   m_ObjectHideFlags: 0
@@ -45510,9 +45639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &4291933659341317193
 Transform:
   m_ObjectHideFlags: 0
@@ -45557,9 +45684,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!224 &4371143484544097998
 RectTransform:
   m_ObjectHideFlags: 0
@@ -45654,9 +45779,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &4493067399654772814
 Transform:
   m_ObjectHideFlags: 0
@@ -45701,9 +45824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &4493067400138540200
 Transform:
   m_ObjectHideFlags: 0
@@ -45748,9 +45869,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &4493067400382646338
 Transform:
   m_ObjectHideFlags: 0
@@ -45795,9 +45914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &4493067400388514025
 Transform:
   m_ObjectHideFlags: 0
@@ -45842,9 +45959,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &4493067401051978268
 Transform:
   m_ObjectHideFlags: 0
@@ -45889,9 +46004,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!1 &4569560999986381467
 GameObject:
   m_ObjectHideFlags: 0
@@ -46994,9 +47107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &5993726224035614675
 Transform:
   m_ObjectHideFlags: 0
@@ -47042,9 +47153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &5993726224150290104
 Transform:
   m_ObjectHideFlags: 0
@@ -47090,9 +47199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &5993726224721456983
 Transform:
   m_ObjectHideFlags: 0
@@ -47138,9 +47245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &5993726224756795723
 Transform:
   m_ObjectHideFlags: 0
@@ -47186,9 +47291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &5993726224819624411
 Transform:
   m_ObjectHideFlags: 0
@@ -47234,9 +47337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &5993726224837094056
 Transform:
   m_ObjectHideFlags: 0
@@ -47282,9 +47383,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!4 &5993726225094243682
 Transform:
   m_ObjectHideFlags: 0
@@ -47330,9 +47429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!114 &6044300509190143521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47709,9 +47806,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!23 &6446668121109008611
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -47790,9 +47885,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!23 &6446668122177790284
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -47871,9 +47964,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!23 &6446668122179554539
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -47952,9 +48043,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!64 &6476096878466650660
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -48006,9 +48095,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!64 &6476096878520886035
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -48060,9 +48147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!64 &6476096880023233388
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -48114,9 +48199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!222 &6495883962487071100
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -48649,9 +48732,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!1 &7106053868793773818
 GameObject:
   m_ObjectHideFlags: 0
@@ -48702,9 +48783,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!1 &7106053869111921819
 GameObject:
   m_ObjectHideFlags: 0
@@ -48755,9 +48834,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!1 &7106053869885642873
 GameObject:
   m_ObjectHideFlags: 0
@@ -48808,9 +48885,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!64 &7110677182455594491
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -48988,9 +49063,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!1 &7202611676753942117
 GameObject:
   m_ObjectHideFlags: 0
@@ -49121,9 +49194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!33 &7407644071502374395
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -49161,9 +49232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!33 &7407644071775445396
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -49201,9 +49270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!33 &7407644072647991481
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -49241,9 +49308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!33 &7407644072680933914
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -49281,9 +49346,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!114 &7407644072680933917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49333,9 +49396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!224 &7429400369996801498
 RectTransform:
   m_ObjectHideFlags: 0
@@ -49553,9 +49614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!64 &7613040284714903093
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -49607,9 +49666,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!64 &7613040284836984320
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -49661,9 +49718,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!64 &7613040285220587884
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -49715,9 +49770,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!64 &7613040285280289441
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -49769,9 +49822,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!64 &7613040285820075031
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -49823,9 +49874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!222 &7624527989820678961
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -50179,9 +50228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!23 &7799830689462763670
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -50260,9 +50307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!23 &7799830689546397894
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -50341,9 +50386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!222 &7825397452465141632
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -50492,9 +50535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!64 &8096330632102485775
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -50546,9 +50587,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!64 &8096330632366887858
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -50600,9 +50639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!1 &8122533505015043988
 GameObject:
   m_ObjectHideFlags: 0
@@ -50700,9 +50737,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!23 &8228039973648303939
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -50781,9 +50816,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!23 &8228039974081671602
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -50862,9 +50895,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!114 &8266596761719244277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50986,9 +51017,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!222 &8441959387432972987
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -51228,9 +51257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!33 &8624361957940655177
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -51268,9 +51295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!33 &8624361958374831631
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -51308,9 +51333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!224 &8632567838553268302
 RectTransform:
   m_ObjectHideFlags: 0
@@ -51510,9 +51533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.02
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!1 &8857077381460762828
 GameObject:
   m_ObjectHideFlags: 0
@@ -51881,6 +51902,7 @@ SceneRoots:
   - {fileID: 186100309}
   - {fileID: 1476330453}
   - {fileID: 1997754356}
+  - {fileID: 911260915}
   - {fileID: 993257246}
   - {fileID: 1172002620}
   - {fileID: 1685297431}
