@@ -73,6 +73,10 @@ public class PlayerController : MonoBehaviour
     private playerAnimation playerAnim;
 
     private InputActionMap gameplayMap;
+    private InputAction moveAction;  // "Move" action (WASD) - subscribed in code so it doesn't
+                                      // depend on a PlayerInput component's Inspector-wired Unity
+                                      // Event (which can silently fail to carry into a build while
+                                      // everything code-subscribed, like Fly, keeps working).
     private InputAction flyAction;   // Existing "Fly" action (Space)
     private InputAction inventoryAction;
     private CharacterController controller;
@@ -110,6 +114,7 @@ public class PlayerController : MonoBehaviour
         if (inputActions != null)
         {
             gameplayMap = inputActions.FindActionMap("GamePlay", true);
+            moveAction = gameplayMap?.FindAction("Move", true);
             flyAction = gameplayMap?.FindAction("Fly", true);
             inventoryAction = gameplayMap?.FindAction("Inventory", true);
         }
@@ -130,6 +135,13 @@ public class PlayerController : MonoBehaviour
     {
         gameplayMap?.Enable();
 
+        if (moveAction != null)
+        {
+            moveAction.Enable();
+            moveAction.performed += OnMove;
+            moveAction.canceled += OnMove;
+        }
+
         if (flyAction != null)
         {
             flyAction.Enable();
@@ -145,6 +157,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnDisable()
     {
+        if (moveAction != null)
+        {
+            moveAction.performed -= OnMove;
+            moveAction.canceled -= OnMove;
+        }
+
         if (flyAction != null)
         {
             flyAction.performed -= OnSpacePressed;

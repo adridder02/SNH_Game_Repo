@@ -160,7 +160,7 @@ public class PlacementSystem : MonoBehaviour
 
         Debug.Log($"PlacementSystem: Initialized with {surfaceGridData.Count} surfaces and {availablePots.Count} pot types.");
 
-        GameInputModeManager.Instance.SetGameplayMode();
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetGameplayMode();
     }
 
     // Keep inspector-adjusted volumes live during Play Mode
@@ -366,7 +366,7 @@ public class PlacementSystem : MonoBehaviour
         if (debugMode)
             Debug.Log($"EnterPlaceMode: Entered placing mode with pot index {potIndex}");
 
-        GameInputModeManager.Instance.SetPlacementMode();
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
 
         OnModeChanged?.Invoke(mode);
     }
@@ -385,7 +385,7 @@ public class PlacementSystem : MonoBehaviour
                 surface.GridVisual.SetVisible(true);
         }
 
-        GameInputModeManager.Instance.SetPlacementMode();
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
 
         OnModeChanged?.Invoke(mode);
     }
@@ -404,7 +404,7 @@ public class PlacementSystem : MonoBehaviour
                 surface.GridVisual.SetVisible(true);
         }
 
-        GameInputModeManager.Instance.SetPlacementMode();
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
 
         OnModeChanged?.Invoke(mode);
     }
@@ -432,7 +432,7 @@ public class PlacementSystem : MonoBehaviour
 
         DestroyPreview();
 
-        GameInputModeManager.Instance.SetGameplayMode();
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetGameplayMode();
 
         if (!suppressEvent)
             OnModeChanged?.Invoke(mode);

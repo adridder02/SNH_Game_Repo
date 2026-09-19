@@ -35,6 +35,10 @@ public class ThirdPersonCameraController : MonoBehaviour
     [Header("Dragon Hide-on-Collision")]
     [Tooltip("Renderers to hide while the camera is blocked by a solid object (floor, wall, etc.), e.g. body, wings, horns.")]
     [SerializeField] private Renderer[] dragonRenderers;
+    [Tooltip("Also hide the dragon whenever the camera gets closer than this to the dragon itself (regardless of whether it's colliding with anything) - avoids the model filling/clipping through the view in tight spaces.")]
+    [SerializeField] private float dragonHideDistance = 1.2f;
+    [Tooltip("Extra distance the camera must move back out past dragonHideDistance before the dragon reappears. Prevents rapid show/hide flicker while hovering right at the threshold.")]
+    [SerializeField] private float dragonShowDistanceBuffer = 0.3f;
 
     [Header("Performance")]
     [SerializeField] private bool enableDebugLogs = false;
@@ -65,6 +69,15 @@ public class ThirdPersonCameraController : MonoBehaviour
     private CinemachineInputAxisController inputAxis;
     private Vector2 scrollDelta;
 
+    // The actual rendered/output camera (Camera.main by default). Decollider (and anything
+    // else that corrects the final blended camera pose) writes its correction to THIS
+    // transform, not to `cam`'s (the virtual CinemachineCamera's) transform - so anything
+    // that needs the true on-screen camera position (like the dragon-hide distance check)
+    // has to read from here, not from `transform`/`cam.transform`.
+    [Header("Output Camera")]
+    [Tooltip("The actual rendering Camera (usually Camera.main). Used for distance checks that need the real on-screen camera position, since Decollider's wall-pushback correction is applied here but not to this virtual camera's own transform. Leave empty to auto-find Camera.main at Start.")]
+    [SerializeField] private Camera outputCamera;
+
     public static bool CameraLocked = false;
 
     // URP Shader property IDs
@@ -85,6 +98,11 @@ public class ThirdPersonCameraController : MonoBehaviour
         cam = GetComponent<CinemachineCamera>();
         orbital = cam.GetComponent<CinemachineOrbitalFollow>();
         inputAxis = cam.GetComponent<CinemachineInputAxisController>();
+
+        if (outputCamera == null)
+            outputCamera = Camera.main;
+        if (outputCamera == null && enableDebugLogs)
+            Debug.LogWarning("[ThirdPersonCameraController] outputCamera not assigned and Camera.main is null - dragon-hide distance will fall back to this virtual camera's transform, which won't reflect Decollider's wall-pushback correction.");
 
         targetZoom = currentZoom = collisionZoom = orbital.Radius;
         ConfigureAxes();
@@ -188,6 +206,26 @@ public class ThirdPersonCameraController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Safety net: restores whatever this component was visually changing (hidden dragon,
+    /// faded renderers) the moment it stops running for ANY reason - toggled off in the
+    /// Inspector, disabled by other code, scene unload, etc. Previously only OnDestroy did
+    /// this cleanup, which doesn't fire on a simple disable - so a renderer hidden right
+    /// before the component got disabled would stay hidden forever with nothing left to
+    /// undo it. Doesn't touch `controls` (Input System) here since those are only ever
+    /// Enable()'d once in Start(), not re-initialized in a matching OnEnable.
+    /// </summary>
+    private void OnDisable()
+    {
+        RestoreAllTransparentRenderers();
+
+        if (dragonHidden)
+        {
+            SetDragonRenderersEnabled(true);
+            dragonHidden = false;
+        }
+    }
+
     private void OnDestroy()
     {
         RestoreAllTransparentRenderers();
@@ -264,7 +302,15 @@ public class ThirdPersonCameraController : MonoBehaviour
     private void HandleCameraPullAndTransparency(float dt)
     {
         Transform follow = cam.Follow;
-        if (follow == null) return;
+        if (follow == null)
+        {
+            // If this ever fires, cam.Follow is unset/lost, which means camera-pull,
+            // dragon-visibility and transparency ALL silently stop running - including
+            // whatever last set a renderer disabled, with nothing left to undo it.
+            if (enableDebugLogs)
+                Debug.LogWarning("[ThirdPersonCameraController] cam.Follow is null - camera pull/dragon-visibility/transparency are all skipped this frame.");
+            return;
+        }
 
         // Handle camera pull based on trigger collisions
         float desiredRadius = ResolveCollisionWithTrigger(currentZoom);
@@ -276,8 +322,9 @@ public class ThirdPersonCameraController : MonoBehaviour
         collisionZoom = Mathf.Lerp(collisionZoom, desiredRadius, dt * lerpSpeed);
 
         // Hide the dragon while the camera is pinned against something solid
-        // (floor, wall, etc.) so it doesn't clip through the dragon's model.
-        UpdateDragonVisibility();
+        // (floor, wall, etc.), or while it's simply too close to the dragon itself,
+        // so it doesn't clip through / fill the view in tight spaces.
+        UpdateDragonVisibility(follow);
 
         // Handle transparency for all other layers using Raycast
         HandleTransparencyForOtherLayers(dt);
@@ -371,32 +418,58 @@ public class ThirdPersonCameraController : MonoBehaviour
     }
 
     /// <summary>
-    /// Hides the dragon while the camera is actively being blocked by something solid
-    /// (floor, wall, or any other object on the collision-pull layer) - i.e. the exact
-    /// moment the camera would otherwise clip into the dragon because it's pinned
-    /// against a surface. Shows it again as soon as that collision ends. Driven off
-    /// isCollidingWithPullObject rather than raw distance, so it only fires for real
-    /// solid-object blocking, not just "camera happens to be near the dragon".
+    /// Hides the dragon whenever the camera gets closer than dragonHideDistance to the
+    /// player - e.g. zoomed in tight in a small space. Shows it again once the camera has
+    /// backed out past dragonHideDistance + dragonShowDistanceBuffer, which is added as
+    /// hysteresis so it doesn't flicker while hovering right at the threshold.
+    /// NOTE: this is distance-only for now - the wall/floor-pinned hiding this used to
+    /// also do (via isCollidingWithPullObject) is parked, not removed; see the commented
+    /// block below if you want to bring it back later.
     /// </summary>
-    private void UpdateDragonVisibility()
+    private void UpdateDragonVisibility(Transform follow)
     {
         if (dragonRenderers == null || dragonRenderers.Length == 0) return;
 
-        if (!dragonHidden && isCollidingWithPullObject)
+        // Use the actual rendered camera's position, not this virtual camera's own transform -
+        // Decollider's wall-pushback correction moves the real on-screen camera without writing
+        // that correction back to this CinemachineCamera's transform, so measuring from `this`
+        // made the distance check blind to anything closeness caused by wall pushback.
+        Transform distanceSource = outputCamera != null ? outputCamera.transform : transform;
+
+        float distanceToPlayer = follow != null
+            ? Vector3.Distance(distanceSource.position, follow.position)
+            : float.MaxValue;
+
+        bool shouldHide = distanceToPlayer < dragonHideDistance;
+        bool shouldShowAgain = distanceToPlayer > dragonHideDistance + dragonShowDistanceBuffer;
+
+        // Continuous visibility into the live number, independent of whether a hide/show
+        // transition actually fires - without this, a "why doesn't it ever hide" report
+        // gives zero data to look at, since the transition logs below only print on change.
+        if (enableDebugLogs && Time.frameCount % 30 == 0)
+            Debug.Log($"[DragonVisibility] distanceToPlayer={distanceToPlayer:F2} hideDistance={dragonHideDistance:F2} dragonHidden={dragonHidden}");
+
+        // Parked for now - OR this into shouldHide (and gate shouldShowAgain on
+        // !isCollidingWithPullObject, same as before) to bring back hide-while-pinned:
+        // bool shouldHide = isCollidingWithPullObject || distanceToPlayer < dragonHideDistance;
+        // bool shouldShowAgain = !isCollidingWithPullObject &&
+        //     distanceToPlayer > dragonHideDistance + dragonShowDistanceBuffer;
+
+        if (!dragonHidden && shouldHide)
         {
             SetDragonRenderersEnabled(false);
             dragonHidden = true;
 
             if (enableDebugLogs)
-                Debug.Log($"Camera pinned against {currentCollidingObject?.name} - hiding dragon");
+                Debug.Log($"Camera too close to dragon ({distanceToPlayer:F2}m) - hiding dragon");
         }
-        else if (dragonHidden && !isCollidingWithPullObject)
+        else if (dragonHidden && shouldShowAgain)
         {
             SetDragonRenderersEnabled(true);
             dragonHidden = false;
 
             if (enableDebugLogs)
-                Debug.Log("Camera cleared the obstruction - showing dragon");
+                Debug.Log("Camera backed away from dragon - showing dragon");
         }
     }
 
