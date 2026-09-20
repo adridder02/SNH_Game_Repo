@@ -300,8 +300,14 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     {
         // Restores the growth-start call that used to live in UI_Script.Start(). See the
         // autoStartMiasmaGrowth tooltip above for why this is here at all.
+        //
+        // NOTE: uses SetGrowing(true) rather than flipSize(). flipSize() is a toggle, so if
+        // MiasmaController.growOnStart is ALSO true, the two Start() calls fire in some
+        // (unpredictable) order and cancel each other out, leaving growth OFF and the miasma
+        // bar frozen. SetGrowing(true) is idempotent — it's safe no matter which Start() runs
+        // first or whether growOnStart is left on.
         if (autoStartMiasmaGrowth && miasma != null)
-            miasma.flipSize();
+            miasma.SetGrowing(true);
     }
 
     private void Update()

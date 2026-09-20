@@ -159,12 +159,31 @@ public class ThirdPersonCameraController : MonoBehaviour
         // whenever PlayerController enters fly mode.
         minPitchAngle = groundedMinPitch;
         maxPitchAngle = groundedMaxPitch;
+        // Cinemachine's built-in Horizontal Axis recentering should only ever run while flying -
+        // force it off here so the grounded default doesn't depend on whatever the Inspector
+        // checkbox was last left at in the editor.
+        SetHorizontalRecenteringEnabled(false);
 
         targetZoom = currentZoom = collisionZoom = orbital.Radius;
         ConfigureAxes();
         
         // Setup or find existing collider
         SetupCameraCollisionBox();
+    }
+
+    /// <summary>
+    /// Enables/disables Cinemachine's built-in automatic recentering on the Orbital Follow's
+    /// Horizontal Axis. InputAxis is a struct, so it has to be copied out, mutated, and written
+    /// back rather than set through a nested property path. Driven from setCameraZoomLimitOnFly()
+    /// so horizontal recentering only ever runs while flying, matching the vertical recentering
+    /// system above which is already fly-gated via isFlying/recenterVerticalWhileFlying.
+    /// </summary>
+    private void SetHorizontalRecenteringEnabled(bool enabled)
+    {
+        if (orbital == null) return;
+        var axis = orbital.HorizontalAxis;
+        axis.Recentering.Enabled = enabled;
+        orbital.HorizontalAxis = axis;
     }
 
     private void SetupCameraCollisionBox()
@@ -876,5 +895,8 @@ public class ThirdPersonCameraController : MonoBehaviour
         Instance.isFlying = zoom;
         Instance.minPitchAngle = zoom ? Instance.flyingMinPitch : Instance.groundedMinPitch;
         Instance.maxPitchAngle = zoom ? Instance.flyingMaxPitch : Instance.groundedMaxPitch;
+        // Cinemachine's built-in Horizontal Axis recentering (the Wait/Time fields in the
+        // Inspector) should only run while flying - on: takeoff, off: landing.
+        Instance.SetHorizontalRecenteringEnabled(zoom);
     }
 }

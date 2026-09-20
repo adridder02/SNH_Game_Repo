@@ -4872,7 +4872,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!135 &186100306
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4919,7 +4919,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 17c5e8b073b474d44991bfce0f59682b, type: 2}
+  - {fileID: 2100000, guid: da64792a2ca9e9444b6dffdc0f452677, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4960,7 +4960,7 @@ Transform:
   m_GameObject: {fileID: 186100304}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -60.4, y: 3.2, z: -6}
+  m_LocalPosition: {x: -60.4, y: 3.2, z: -3.74}
   m_LocalScale: {x: 11.2662945, y: 11.2662945, z: 11.2662945}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4996,20 +4996,27 @@ MonoBehaviour:
   intenseSoilPenalty: 1
   intenseWaterDrainMultiplier: 0.05
   debuffTickInterval: 60
-  easyColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.3}
+  easyColor: {r: 0.8805031, g: 0.473478, b: 0.801584, a: 0.3}
   mildColor: {r: 0.7, g: 0.3, b: 0.7, a: 0.4}
   intenseColor: {r: 0.9, g: 0.1, b: 0.9, a: 0.5}
-  fogParticles: {fileID: 0}
-  autoUnparentFog: 1
+  fogParticles: {fileID: 1211514646}
+  autoUnparentFog: 0
   fogPositionOffset: {x: 0, y: 0, z: 0}
   fogRadiusMultiplier: 0.5
-  fogParticleSize: 10
-  easyFogColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.15}
-  mildFogColor: {r: 0.42307463, g: 0.21026166, b: 0.5943396, a: 0.25}
-  intenseFogColor: {r: 0.25670457, g: 0.1504094, b: 0.49056602, a: 0.35}
-  easyFogEmissionRate: 30
-  mildFogEmissionRate: 60
-  intenseFogEmissionRate: 100
+  fogParticleSize: 20
+  easyFogColor: {r: 0.77270275, g: 0, b: 0.8039216, a: 0.15}
+  mildFogColor: {r: 0.49210614, g: 0, b: 0.8930817, a: 0.25}
+  intenseFogColor: {r: 0.28692234, g: 0, b: 0.9245283, a: 0.35}
+  easyFogEmissionRate: 60
+  mildFogEmissionRate: 120
+  intenseFogEmissionRate: 180
+  fogSizeGrowthFactor: 0.35
+  fogMaxParticleSize: 20
+  fogMaxParticles: 300
+  plantCheckInterval: 0.25
+  hideSphereWhenCameraOutside: 1
+  fogEmissionIntensity: 3
+  driveFogEmissionFromScript: 1
   showDebugLogs: 1
 --- !u!1 &189145782
 GameObject:
@@ -10929,6 +10936,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8961359253771211100, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.2
@@ -10985,10 +10996,38 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -8644992483036209503, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -7723479772278213661, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -6499529959314878404, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -6392131099197530670, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -5658254813677643017, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: -4505042291224054795, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: 0e0fb90c25815ce4bab51d2548ea0a29, type: 2}
+    - target: {fileID: -4474909516082176546, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -3610382427895173525, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: -2672435898572173676, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
@@ -11005,6 +11044,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[11]'
       value: 
       objectReference: {fileID: 2100000, guid: 0e0fb90c25815ce4bab51d2548ea0a29, type: 2}
+    - target: {fileID: -325112337088132202, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: -219511712984340668, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
@@ -11020,6 +11063,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
       propertyPath: m_Name
       value: GreenhouseredoCD5
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1231992583812154809, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1455771617692172737, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
       propertyPath: 'm_Materials.Array.data[26]'
@@ -11049,6 +11100,14 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[8]'
       value: 
       objectReference: {fileID: 2100000, guid: 0e0fb90c25815ce4bab51d2548ea0a29, type: 2}
+    - target: {fileID: 5815930058960889454, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032823420476312315, guid: 711aa508e1e763b4682fa30768f47bc7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -24020,7 +24079,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!198 &1211514646
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -24029,7 +24088,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1211514645}
   serializedVersion: 8
-  lengthInSec: 5
+  lengthInSec: 10
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -24044,7 +24103,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0
+    scalar: 10
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -24104,7 +24163,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 50
+      scalar: 60
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -24275,7 +24334,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 10
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -24328,7 +24387,7 @@ ParticleSystem:
     startSizeY:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 10
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -24381,7 +24440,7 @@ ParticleSystem:
     startSizeZ:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 10
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -24590,12 +24649,12 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    randomizeRotationDirection: 0
+    randomizeRotationDirection: 0.5
     gravitySource: 0
     maxNumParticles: 5000
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 1
-    rotation3D: 0
+    rotation3D: 1
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
@@ -25479,7 +25538,7 @@ ParticleSystem:
     flipU: 0
     flipV: 0
   VelocityModule:
-    enabled: 0
+    enabled: 1
     x:
       serializedVersion: 2
       minMaxState: 0
@@ -27607,13 +27666,13 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
-    type: 0
+    type: 1
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
-    multiplyColliderForceByParticleSpeed: 0
+    multiplyColliderForceByParticleSpeed: 1
     multiplyColliderForceByCollisionAngle: 1
     m_Planes: []
     m_Dampen:
@@ -27780,7 +27839,7 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 4294967295
+      m_Bits: 128
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
@@ -28833,7 +28892,7 @@ Transform:
   m_GameObject: {fileID: 1211514645}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -60.4, y: 5.9, z: -7.4}
+  m_LocalPosition: {x: -58.56, y: 5.9, z: -3.87}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -32124,7 +32183,7 @@ MonoBehaviour:
   collisionPullInSpeed: 20
   collisionPullOutSpeed: 4
   collisionBuffer: 0.3
-  showDebugBox: 1
+  showDebugBox: 0
   dragonRenderers:
   - {fileID: 2059329388}
   - {fileID: 79321554}
