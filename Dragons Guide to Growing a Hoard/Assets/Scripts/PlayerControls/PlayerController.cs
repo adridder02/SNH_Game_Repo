@@ -33,6 +33,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float flyGroundGracePeriod = 0.4f;
     [Tooltip("Vertical speed while flying (Space = up, Ctrl = down).")]
     [SerializeField] private float flyVerticalSpeed = 5f;
+    [Tooltip("Speed multiplier applied while sprinting AND flying. Separate from the ground sprintMultiplier so flying sprint can be tuned independently.")]
+    [SerializeField] private float flySprintMultiplier = 2f;
+    [Tooltip("How long (seconds) the takeoff animation is protected from being interrupted by movement/sprint animation changes after double-tapping Space. Should roughly match your takeoff clip's length.")]
+    [SerializeField] private float flyTakeoffLockDuration = 0.6f;
 
     [Tooltip("How strongly camera pitch steers vertical movement while flying (0 = off).")]
     [SerializeField] private float flyPitchInfluence = 1f;
@@ -89,6 +93,10 @@ public class PlayerController : MonoBehaviour
     // Flying vertical intent
     private bool flyAscendHeld;       // Space held while flying
     private float flyGroundGraceTimer; // countdown after entering fly, ignores isGrounded
+    private float flyTakeoffLockTimer; // countdown after entering fly, blocks WASD/sprint animation
+                                        // changes so the takeoff clip always plays start-to-finish
+                                        // uninterrupted instead of racing with UpdateAnimator()
+                                        // switching to Walk/Run the instant Flying starts.
     // Ctrl is polled via Keyboard API — no InputActionAsset mutation needed
     private bool movementEnabled = true;
 
@@ -105,6 +113,11 @@ public class PlayerController : MonoBehaviour
 
     /// <summary>Current speed, boosted by sprintMultiplier while sprinting.</summary>
     private float CurrentSpeed => speed * (IsSprinting ? sprintMultiplier : 1f);
+
+    /// <summary>Current flying speed, boosted by flySprintMultiplier while sprinting - kept
+    /// separate from CurrentSpeed/sprintMultiplier so flying sprint can be tuned without
+    /// affecting ground sprint speed.</summary>
+    private float CurrentFlySpeed => speed * (IsSprinting ? flySprintMultiplier : 1f);
 
     // ──────────────────────────────────────────────
     //  Unity lifecycle
@@ -397,12 +410,26 @@ public class PlayerController : MonoBehaviour
         // Flying locomotion
         if (locomotionState == LocomotionState.Flying)
         {
-            // TEMP (again — see chat history, this was reverted once the Fly Idle clip's Loop Time
-            // got fixed, but the idle-not-playing bug is back): keep playing the fly-moving
-            // animation the whole time we're flying (idle or not), since Fly Idle isn't reliably
-            // wired up in the Animator right now. Swap back to the inputMagnitude/flyAscendHeld
-            // check below (calling setIdel() when there's no input) once Fly Idle is fixed for good.
-            playerAnim.setWalking();
+            // While the takeoff lock is active, don't touch the Speed parameter at all - let
+            // whatever transition/state your Animator Controller set up for takeoff play out on
+            // its own, instead of us immediately forcing Walk/Run and racing with it.
+            if (flyTakeoffLockTimer <= 0f)
+            {
+                // TEMP (again — see chat history, this was reverted once the Fly Idle clip's Loop Time
+                // got fixed, but the idle-not-playing bug is back): keep playing a fly-moving
+                // animation the whole time we're flying (idle or not), since Fly Idle isn't reliably
+                // wired up in the Animator right now. Swap back to the inputMagnitude/flyAscendHeld
+                // check below (calling setIdel() when there's no input) once Fly Idle is fixed for good.
+                //
+                // Sprint-flying now plays the faster (Run, Speed=3.5) blend instead of always Walking
+                // (Speed=1.5), matching CurrentFlySpeed actually moving faster while sprinting - the
+                // animation speed was previously pinned to Walking regardless of sprint state, so
+                // sprint-flying was moving faster than it looked.
+                if (IsSprinting)
+                    playerAnim.setRunning();
+                else
+                    playerAnim.setWalking();
+            }
         }
 
         // Landing transition
@@ -470,6 +497,7 @@ public class PlayerController : MonoBehaviour
         // to yet since that on-screen system hasn't been rebuilt.
         ThirdPersonCameraController.setCameraZoomLimitOnFly(true);
         flyGroundGraceTimer = flyGroundGracePeriod;
+        flyTakeoffLockTimer = flyTakeoffLockDuration;
         Debug.Log("[PlayerController] Fly mode ON");
         playerAnim.fly();
         CompleteMovementTask(TaskFlyDoubleSpace);
@@ -487,7 +515,17 @@ public class PlayerController : MonoBehaviour
         right.Normalize();
 
         Vector3 horizontalMove =
-            (forward * moveInput.y + right * moveInput.x) * CurrentSpeed;
+            (forward * moveInput.y + right * moveInput.x) * CurrentFlySpeed;
+
+        // Ignore WASD entirely while the takeoff animation is protected - the vertical lift
+        // below (flyGroundGraceTimer) still runs as normal so you still rise up off the ground,
+        // but nothing can turn/strafe you or trigger a Walk/Run animation switch until the
+        // takeoff clip has had its full, uninterrupted window to play.
+        if (flyTakeoffLockTimer > 0f)
+        {
+            flyTakeoffLockTimer -= Time.deltaTime;
+            horizontalMove = Vector3.zero;
+        }
 
         float verticalMove = 0f;
 
@@ -508,16 +546,16 @@ public class PlayerController : MonoBehaviour
             float intentionalVertical = 0f;
 
             if (flyAscendHeld)
-                intentionalVertical += flyVerticalSpeed * (IsSprinting ? sprintMultiplier : 1f);
+                intentionalVertical += flyVerticalSpeed * (IsSprinting ? flySprintMultiplier : 1f);
 
             if (ctrlHeld)
-                intentionalVertical -= flyVerticalSpeed * (IsSprinting ? sprintMultiplier : 1f);
+                intentionalVertical -= flyVerticalSpeed * (IsSprinting ? flySprintMultiplier : 1f);
 
             verticalMove += intentionalVertical;
 
             if (flyPitchInfluence > 0f && moveInput.sqrMagnitude > 0.01f)
             {
-                float pitchVertical = cameraTransform.forward.y * flyPitchInfluence * CurrentSpeed;
+                float pitchVertical = cameraTransform.forward.y * flyPitchInfluence * CurrentFlySpeed;
                 verticalMove += pitchVertical;
 
                 // Tilt tasks: only count this as "tilt to fly up/down" when Space/Ctrl aren't already
@@ -548,6 +586,18 @@ public class PlayerController : MonoBehaviour
             {
                 Quaternion targetRotation = Quaternion.LookRotation(flightDirection.normalized, Vector3.up);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10f * Time.deltaTime);
+            }
+        }
+        else if (shouldFaceMoveDirection)
+        {
+            // Idling in place while flying (no WASD input) - nothing above ever resets pitch/roll,
+            // so without this the dragon stays frozen at whatever tilt it last had from looking
+            // up/down. Keep the current yaw (heading) but smoothly level pitch/roll back to zero.
+            Vector3 flatForward = new Vector3(transform.forward.x, 0f, transform.forward.z);
+            if (flatForward.sqrMagnitude > 0.001f)
+            {
+                Quaternion levelRotation = Quaternion.LookRotation(flatForward.normalized, Vector3.up);
+                transform.rotation = Quaternion.Slerp(transform.rotation, levelRotation, 6f * Time.deltaTime);
             }
         }
     }

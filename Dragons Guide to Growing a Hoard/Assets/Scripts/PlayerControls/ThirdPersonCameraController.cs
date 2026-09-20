@@ -16,8 +16,49 @@ public class ThirdPersonCameraController : MonoBehaviour
     [SerializeField] private float mouseSensitivityY = 4.5f;
 
     [Header("Vertical Look Limits")]
-    [SerializeField] private static float minPitchAngle = -30f;
-    [SerializeField] private static float maxPitchAngle = 70f;
+    [Tooltip("Pitch range (degrees) while grounded.")]
+    [SerializeField] private float groundedMinPitch = -40f;
+    [SerializeField] private float groundedMaxPitch = 40f;
+    [Tooltip("Pitch range (degrees) while flying - wider by default so you can look further up/down in the air.")]
+    [SerializeField] private float flyingMinPitch = -70f;
+    [SerializeField] private float flyingMaxPitch = 70f;
+
+    // Current effective range - starts at the grounded values, switched by setCameraZoomLimitOnFly()
+    // below. No longer static (see chat history: a [SerializeField] static field doesn't serialize
+    // per-instance the way it looks like it should, and could leak a runtime value back into Edit
+    // mode across Play sessions with Domain Reload disabled).
+    private float minPitchAngle;
+    private float maxPitchAngle;
+
+    [Header("Framing")]
+    [Tooltip("Vertical offset (world units) added to where the camera orbits/aims, relative to the dragon's own pivot. Raising this aims the camera above the dragon's actual body, which pushes the dragon lower in the frame instead of dead-center.")]
+    [SerializeField] private float groundedTargetOffsetY = 0.5f;
+    [Tooltip("Same idea as above, used while flying - typically higher than the grounded value so the camera sits a bit further up relative to the dragon in the air.")]
+    [SerializeField] private float flyingTargetOffsetY = 1.5f;
+    [Tooltip("How quickly the framing offset eases between the grounded and flying values on takeoff/landing (seconds - lower = snappier).")]
+    [SerializeField] private float targetOffsetLerpSpeed = 4f;
+
+    // Tracks flying vs grounded purely to pick which TargetOffset value to ease toward above -
+    // set from setCameraZoomLimitOnFly() below, the same signal PlayerController already sends
+    // on every takeoff/landing.
+    private bool isFlying = false;
+
+    [Header("Flight Recentering")]
+    [Tooltip("While flying, once movement/look input has stopped for a bit, smoothly eases the camera's pitch back to match the dragon's own current pitch - so it settles level with wherever the dragon is actually pointing, including straight up or down, instead of staying wherever you last looked. Horizontal (yaw) recentering is intentionally NOT included here - only vertical.")]
+    [SerializeField] private bool recenterVerticalWhileFlying = true;
+    [Tooltip("Seconds of no flight input (mouse look OR movement/ascend/descend keys) before recentering kicks in.")]
+    [SerializeField] private float recenterDelay = 0.8f;
+    [Tooltip("How quickly the camera eases back to centered once recentering starts (seconds - lower = snappier).")]
+    [SerializeField] private float recenterSmoothTime = 0.5f;
+    [Tooltip("Flip if recentering pushes the vertical angle the wrong way for your rig - Cinemachine's sign convention for VerticalAxis.Value can go either way depending on setup.")]
+    [SerializeField] private bool invertVerticalRecenterSign = false;
+    [Tooltip("Added to the computed target pitch before clamping - use this to bias where recentering settles when the dragon is level, e.g. a slightly downward default framing rather than dead-level. Positive/negative direction depends on your rig's sign convention (see Invert above).")]
+    [SerializeField] private float verticalRecenterCenterOffset = 0f;
+    [Tooltip("Which object's rotation to recenter toward - should be whatever GameObject PlayerController actually rotates during flight (confirmed via chat: same object as cam.Follow works). Leave empty to fall back to cam.Follow directly.")]
+    [SerializeField] private Transform recenterReferenceTransform;
+
+    private float timeSinceFlightInput = 0f;
+    private float verticalRecenterVelocity = 0f;
 
     [Header("Object Transparency (for all other layers)")]
     [SerializeField] private LayerMask transparentMask = ~0;
@@ -80,6 +121,11 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     public static bool CameraLocked = false;
 
+    // See Start() / setCameraZoomLimitOnFly() below - lets that static method reach this
+    // instance's (now non-static) pitch-range fields without PlayerController needing to hold
+    // or pass a direct reference.
+    private static ThirdPersonCameraController Instance;
+
     // URP Shader property IDs
     private static readonly int BaseColorProperty = Shader.PropertyToID("_BaseColor");
     private static readonly int ColorProperty = Shader.PropertyToID("_Color");
@@ -91,6 +137,11 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     void Start()
     {
+        // So the static setCameraZoomLimitOnFly() below (called from PlayerController without
+        // holding a direct reference) can still reach this instance's pitch-range fields now that
+        // they're no longer static themselves.
+        Instance = this;
+
         controls = new PlayerControls();
         controls.Enable();
         controls.Camera.MouseZoom.performed += HandleMouseScroll;
@@ -103,6 +154,11 @@ public class ThirdPersonCameraController : MonoBehaviour
             outputCamera = Camera.main;
         if (outputCamera == null && enableDebugLogs)
             Debug.LogWarning("[ThirdPersonCameraController] outputCamera not assigned and Camera.main is null - dragon-hide distance will fall back to this virtual camera's transform, which won't reflect Decollider's wall-pushback correction.");
+
+        // Start grounded - setCameraZoomLimitOnFly(true) switches these to the flying range
+        // whenever PlayerController enters fly mode.
+        minPitchAngle = groundedMinPitch;
+        maxPitchAngle = groundedMaxPitch;
 
         targetZoom = currentZoom = collisionZoom = orbital.Radius;
         ConfigureAxes();
@@ -326,6 +382,21 @@ public class ThirdPersonCameraController : MonoBehaviour
         // so it doesn't clip through / fill the view in tight spaces.
         UpdateDragonVisibility(follow);
 
+        // Ease the camera's pitch back to match the dragon's own current pitch while flying,
+        // once the player stops actively steering it.
+        HandleFlightRecentering(follow, dt);
+
+        // Keep the dragon framed in the lower-center of the screen rather than dead-center,
+        // with a taller offset while flying so the camera sits a bit higher relative to it in
+        // the air. Runs continuously (not gated on isFlying alone) so it eases smoothly across
+        // the takeoff/landing transition instead of snapping.
+        {
+            float desiredOffsetY = isFlying ? flyingTargetOffsetY : groundedTargetOffsetY;
+            Vector3 targetOffset = orbital.TargetOffset;
+            targetOffset.y = Mathf.Lerp(targetOffset.y, desiredOffsetY, dt * targetOffsetLerpSpeed);
+            orbital.TargetOffset = targetOffset;
+        }
+
         // Handle transparency for all other layers using Raycast
         HandleTransparencyForOtherLayers(dt);
     }
@@ -415,6 +486,53 @@ public class ThirdPersonCameraController : MonoBehaviour
         
         // Update alpha values
         UpdateAlphas(dt);
+    }
+
+    /// <summary>
+    /// While flying, once the player has stopped all flight input (mouse look AND movement/
+    /// ascend/descend keys - see chat history for why movement alone had to gate this too, not
+    /// just mouse stillness) for recenterDelay seconds, smoothly eases the camera's pitch back to
+    /// match the dragon's own current pitch. Measures the actual live camera angle vs. the
+    /// dragon's actual angle and nudges the orbital axis by the DIFFERENCE, rather than assigning
+    /// an absolute number - this sidesteps needing to know Cinemachine's exact convention for what
+    /// VerticalAxis.Value's zero-point means, which turned out not to be a safe assumption for
+    /// this rig. Reads from outputCamera (the real rendered camera) rather than this virtual
+    /// camera's own transform, for the same Decollider-correction reason as the dragon-hide
+    /// distance check uses it.
+    /// </summary>
+    private void HandleFlightRecentering(Transform follow, float dt)
+    {
+        if (orbital == null || follow == null) return;
+
+        Transform recenterSource = recenterReferenceTransform != null ? recenterReferenceTransform : follow;
+
+        bool lookInputActive = Mouse.current != null && Mouse.current.delta.ReadValue().sqrMagnitude > 0.01f;
+        bool movementInputActive = Keyboard.current != null && (
+            Keyboard.current.wKey.isPressed || Keyboard.current.aKey.isPressed ||
+            Keyboard.current.sKey.isPressed || Keyboard.current.dKey.isPressed ||
+            Keyboard.current.spaceKey.isPressed ||
+            Keyboard.current.leftCtrlKey.isPressed || Keyboard.current.rightCtrlKey.isPressed);
+
+        timeSinceFlightInput = (lookInputActive || movementInputActive) ? 0f : timeSinceFlightInput + dt;
+
+        if (!recenterVerticalWhileFlying || !isFlying || timeSinceFlightInput < recenterDelay)
+            return;
+
+        // Direct absolute assignment, not the error-correction/differential version this had
+        // briefly - that approach re-adds orbital.VerticalAxis.Value + pitchError every single
+        // frame, and if the "current" reading lags by even one frame relative to what was just
+        // set (very possible - Cinemachine's own pipeline runs after this script's Update), the
+        // correction can overshoot and compound frame over frame instead of converging, which is
+        // exactly what pinning at the Range's max looked like. This was never actually confirmed
+        // broken in its simpler form - only horizontal (Center-based) was - so there was no real
+        // reason for vertical to carry this extra complexity/risk in the first place.
+        float targetPitch = Mathf.Asin(Mathf.Clamp(recenterSource.forward.y, -1f, 1f)) * Mathf.Rad2Deg;
+        if (invertVerticalRecenterSign) targetPitch = -targetPitch;
+        targetPitch += verticalRecenterCenterOffset;
+        targetPitch = Mathf.Clamp(targetPitch, minPitchAngle, maxPitchAngle);
+
+        orbital.VerticalAxis.Value = Mathf.SmoothDampAngle(
+            orbital.VerticalAxis.Value, targetPitch, ref verticalRecenterVelocity, recenterSmoothTime);
     }
 
     /// <summary>
@@ -750,7 +868,13 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     public static void setCameraZoomLimitOnFly(bool zoom)
     {
-        minPitchAngle = zoom ? -70f : -40f;
-        maxPitchAngle = zoom ? 70f : 40f;
+        // Instance can be null for one frame if this somehow fires before Start() has run -
+        // extremely unlikely given the camera initializes well before the player can take off,
+        // but a null-check here costs nothing and avoids a hard NullReferenceException either way.
+        if (Instance == null) return;
+
+        Instance.isFlying = zoom;
+        Instance.minPitchAngle = zoom ? Instance.flyingMinPitch : Instance.groundedMinPitch;
+        Instance.maxPitchAngle = zoom ? Instance.flyingMaxPitch : Instance.groundedMaxPitch;
     }
 }
