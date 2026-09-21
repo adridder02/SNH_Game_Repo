@@ -114,6 +114,12 @@ public class AbilityPlacementSystem : MonoBehaviour
             return;
         }
 
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            Cancel();
+            return;
+        }
+
         if (placementSystem == null || placementSystem.InputManager == null) return;
 
         Vector3 mouseWorld = placementSystem.InputManager.GetSelectedMapPosition();

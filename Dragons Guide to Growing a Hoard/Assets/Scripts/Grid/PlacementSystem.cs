@@ -293,6 +293,12 @@ public class PlacementSystem : MonoBehaviour
 
         if (Keyboard.current.gKey.wasPressedThisFrame)
             ToggleMoveMode();
+
+        // Escape exits whichever tool is active, same as right-click — but only when a tool
+        // actually IS active, so this doesn't swallow Escape for anything else (a pause menu,
+        // say) on frames where this system has nothing to cancel.
+        if (mode != Mode.None && Keyboard.current.escapeKey.wasPressedThisFrame)
+            CancelMode();
     }
 
     // ---------------------------------------------------------------

@@ -3,17 +3,18 @@ using UnityEngine;
 // =============================================================
 // PotWaterGizmo.cs
 // -------------------------------------------------------------
-// Attached to a pot by Dewdrop's WaterIndicatorTag effect. For now
-// this is a Scene-view (and always-on, since it draws every frame
-// regardless of selection) gizmo bar above the plant's existing
-// health/miasma bars — a real third ImageFillBar belongs on
-// PlantOverheadBarsView/PlantUI once that prefab exists here; wiring
-// it in is a couple of fields + one more SetNormalized() call once
-// you're ready to swap this out, following the same pattern
-// PlantUI.RefreshValues() already uses for healthBar/miasmaBar.
+// Attached to a pot by Dewdrop's WaterIndicatorTag effect (see
+// AbilityConsumableEffects.WaterIndicatorTag). Its PRESENCE on a pot is
+// what PlantUI checks each frame to decide whether to show the water
+// bar on that plant's overhead UI (see PlantUI.RefreshWaterBar()) — attach
+// = bar visible, no component = bar hidden. There's currently no "detach"
+// path (AttachTo is permanent/idempotent), so once Dewdrop's been used on
+// a pot the water bar stays on for that pot from then on.
 //
-// Idempotent — attaching Dewdrop to a pot that already has one just
-// keeps the existing indicator rather than stacking duplicates.
+// The OnDrawGizmos bar below is the OLD Scene-view-only placeholder this
+// was originally built as — left in as a harmless Scene-view debug aid,
+// but the real UI ImageFillBar on PlantOverheadBarsView.waterBar is what
+// players actually see now.
 // =============================================================
 [RequireComponent(typeof(PotContents))]
 public class PotWaterGizmo : MonoBehaviour

@@ -10,11 +10,16 @@ using UnityEngine;
 //     plant at runtime — no UI is built or aligned in code here, the
 //     whole layered look (backgrounds/fills/outlines/gradients for both
 //     bars) lives in that prefab. See PlantOverheadBarsView.cs.
-//   • Drives two bars every frame:
+//   • Drives up to three bars every frame:
 //       - healthBar  — PlantState.HealthNormalized01 (same score
 //                       CalculateState() uses for Dead/Intermediate/Revived)
 //       - miasmaBar  — PlantState.MiasmaInfluence01 ("how much miasma
 //                       is currently influencing this plant")
+//       - waterBar   — OPTIONAL. PotContents.WaterLevel / plantWaterMax.
+//                       Only shown while the plant's pot has a
+//                       PotWaterGizmo attached (i.e. Dewdrop has been
+//                       used on it) — hidden entirely otherwise. See
+//                       PotWaterGizmo.cs and RefreshWaterBar() below.
 //   • Always faces the camera
 //   • Fixed world-space size (fixedWorldHeight) — bars no longer grow or
 //     shrink with camera distance, they just stay the size you set
@@ -23,11 +28,13 @@ using UnityEngine;
 //
 // SETUP (do this ONCE, not per plant):
 //   1. Build a prefab with a World Space Canvas at its root, a HealthBar
-//      child and a MiasmaBar child (each with its own ImageFillBar +
-//      Background/Fill/Outline Images, sprites/gradient set right there
-//      in the Inspector — see ImageFillBar.cs's SCENE SETUP comment).
+//      and MiasmaBar child, and OPTIONALLY a WaterBar child (each with
+//      its own ImageFillBar + Background/Fill/Outline Images, sprites/
+//      gradient set right there in the Inspector — see ImageFillBar.cs's
+//      SCENE SETUP comment).
 //   2. Add a PlantOverheadBarsView component to the prefab's root and
-//      wire its four fields to the Canvas/RectTransform/two ImageFillBars.
+//      wire its fields to the Canvas/RectTransform/ImageFillBars —
+//      waterBar can be left unassigned if you don't want it at all.
 //   3a. EASIEST — save the prefab at Resources/PlantOverheadBarsTemplate
 //       (any path, just that name) and leave overheadBarsTemplate below
 //       unassigned on every plant. PlantUI auto-loads it, so none of
@@ -44,6 +51,7 @@ public class PlantUI : MonoBehaviour
     // 0 = Dead, 1 = Intermediate, 2 = Revived
     [Range(0, 2)] public int dummyState = 1;
     [Range(0f, 1f)] public float dummyMiasma = 0f;
+    [Range(0f, 1f)] public float dummyWater = 0.5f;
 
     [Header("Layout")]
     [Tooltip("When enabled, ignores renderer bounds and places the UI at a fixed height above the plant's pivot.")]
@@ -227,6 +235,48 @@ public class PlantUI : MonoBehaviour
 
         barsInstance.healthBar.SetNormalized(healthNormalized);
         barsInstance.miasmaBar.SetNormalized(miasmaNormalized);
+
+        RefreshWaterBar();
+    }
+
+    // =========================================================
+    // Water bar is separate from the block above because it has to do something the
+    // health/miasma bars don't: decide whether it's shown AT ALL, not just what value it
+    // shows. It only appears once Dewdrop has actually been used on this plant's pot
+    // (PotWaterGizmo attached — see AbilityConsumableEffects.WaterIndicatorTag) and
+    // disappears again if that's no longer true, per the original design comment on
+    // PotWaterGizmo.cs.
+    // =========================================================
+    private void RefreshWaterBar()
+    {
+        if (barsInstance == null || barsInstance.waterBar == null) return;
+
+        PotContents pot = useDummyValues || plantState == null
+            ? null
+            : plantState.GetComponentInParent<PotContents>();
+
+        PotWaterGizmo gizmo = pot != null ? pot.GetComponent<PotWaterGizmo>() : null;
+        bool showWaterBar = useDummyValues || gizmo != null;
+
+        if (barsInstance.waterBar.gameObject.activeSelf != showWaterBar)
+            barsInstance.waterBar.gameObject.SetActive(showWaterBar);
+
+        if (!showWaterBar) return;
+
+        float waterNormalized;
+
+        if (useDummyValues)
+        {
+            waterNormalized = dummyWater;
+        }
+        else
+        {
+            waterNormalized = pot != null && pot.plantWaterMax > 0f
+                ? Mathf.Clamp01(pot.WaterLevel / pot.plantWaterMax)
+                : 0f;
+        }
+
+        barsInstance.waterBar.SetNormalized(waterNormalized);
     }
 
     // =========================================================

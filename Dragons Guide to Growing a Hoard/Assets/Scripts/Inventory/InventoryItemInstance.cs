@@ -48,6 +48,14 @@ public class InventoryItemInstance : IGridPlaceable
     // (stripping the "(Clone)" suffix Unity appends) if none was supplied.
     public readonly string displayName;
 
+    // Stable identity for "new item" badge tracking (NewItemTracker) — the SAME id
+    // PlantJournalManager uses (species.ResolvedId) whenever this plant has a journal species,
+    // so the Inventory badge and Journal badge for the same plant are guaranteed to agree on
+    // which plant they're both talking about, rather than drifting out of sync from two separate
+    // ID schemes. Falls back to a cleaned prefab name for plants with no journalSpecies assigned,
+    // matching GetDisplayName's own fallback below.
+    public readonly string newItemTypeId;
+
     public int gridX = -1;
     public int gridY = -1;
 
@@ -83,5 +91,9 @@ public class InventoryItemInstance : IGridPlaceable
         size = ps != null ? ps.plantSize : PlantSize.Small;
         plantType = ps != null ? ps.plantType : PlantType.Sunny;
         footprint = PlantSizeUtility.GetFootprint(size);
+
+        newItemTypeId = (ps != null && ps.journalSpecies != null)
+            ? ps.journalSpecies.ResolvedId
+            : (prefab != null ? prefab.name.Replace("(Clone)", "").Trim() : "Unknown");
     }
 }

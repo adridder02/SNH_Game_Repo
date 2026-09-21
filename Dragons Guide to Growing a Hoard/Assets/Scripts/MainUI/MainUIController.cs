@@ -28,6 +28,12 @@
 //                          switch to (its useWorldSpacePrompt toggle)
 //                          instead of its own floating, player-following,
 //                          billboarded world-space prompt.
+//   - Secondary HUD visibility — while placing/moving/removing a pot
+//                          (PlacementSystem) or an ability placeable
+//                          (AbilityPlacementSystem), secondaryHudRoot
+//                          hides automatically so only the hotbar and
+//                          tool selector remain visible. See
+//                          RefreshSecondaryHudVisibility().
 //
 // SETUP:
 //   1. Attach to the HUD Canvas GameObject.
@@ -91,10 +97,17 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [Header("Journal Icon")]
     [SerializeField] private Button journalButton;
     [SerializeField] private JournalUIController journalUI;
+    [Tooltip("Small dot shown on the journal icon while any species has been discovered but its page " +
+             "hasn't been opened yet (NewItemTracker.HasAnyUnseenJournal). Optional.")]
+    [SerializeField] private GameObject journalNewDot;
 
     [Header("Inventory Icon")]
     [SerializeField] private Button inventoryButton;
     [SerializeField] private InventoryUIController inventoryUI;
+    [Tooltip("Small dot shown on the inventory icon while any item type has been acquired but its " +
+             "slot hasn't been clicked yet, in either the grid or Available " +
+             "(NewItemTracker.HasAnyUnseenInventory). Optional.")]
+    [SerializeField] private GameObject inventoryNewDot;
 
     [Header("Miasma Bar")]
     [Tooltip("Fixed-colour bar (useFillGradient = false) showing the current miasma size.")]
@@ -139,6 +152,21 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
              "separately (it's already off whenever a menu is open, via GameInputModeManager), so it " +
              "doesn't need to live under this root.")]
     [SerializeField] private GameObject hudRoot;
+
+    [Tooltip("A SECOND, more selective group living INSIDE hudRoot — everything EXCEPT the hotbar and " +
+             "tool selector slots (water bar, miasma bar, zone bar, journal/inventory icons, etc). " +
+             "Parent those specific elements under their own child GameObject and assign it here; leave " +
+             "hotbar/tool slots as siblings outside it. While placing/moving/removing a pot, or placing/" +
+             "removing an ability placeable (Sparkmint leaf, Waterbell, ...), this hides while hotbar " +
+             "and the tool selector stay visible — see RefreshSecondaryHudVisibility(). Being a child of " +
+             "hudRoot means it's automatically irrelevant whenever hudRoot itself is off (Journal/" +
+             "Inventory open) — no conflict between the two systems.")]
+    [SerializeField] private GameObject secondaryHudRoot;
+
+    [Tooltip("Ability placeables (Sparkmint leaf, Waterbell, ...) — the OTHER placement mode, alongside " +
+             "PlacementSystem's pots. Auto-found in the scene if left empty. Used only to know whether " +
+             "secondaryHudRoot should be hidden right now (see IsActive below).")]
+    [SerializeField] private AbilityPlacementSystem abilityPlacementSystem;
 
     [Header("Interact Prompt (HUD)")]
     [Tooltip("Fixed screen-space element (e.g. a 'Press E' panel docked on the HUD) — just enabled/" +
@@ -218,8 +246,17 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             // buttons above, so this one subscription keeps the buttons correctly highlighted
             // (or un-highlighted) regardless of which input triggered the change.
             placementSystem.OnModeChanged += RefreshToolButtonHighlights;
+            placementSystem.OnModeChanged += OnPlacementSystemModeChanged;
             RefreshToolButtonHighlights(placementSystem.CurrentMode); // sync initial state
         }
+
+        if (abilityPlacementSystem == null)
+            abilityPlacementSystem = FindObjectOfType<AbilityPlacementSystem>();
+
+        if (abilityPlacementSystem != null)
+            abilityPlacementSystem.OnPlacingChanged += RefreshSecondaryHudVisibility;
+
+        RefreshSecondaryHudVisibility(); // sync initial state
 
         if (hotbarSystem == null)
             hotbarSystem = FindObjectOfType<AbilityHotbarSystem>();
@@ -235,18 +272,31 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             hotbarSystem.OnSlotsChanged += RefreshHotbarUI;
             RefreshHotbarUI(); // sync initial state — assignments made before this enabled shouldn't show empty
         }
+
+        if (NewItemTracker.Instance != null)
+            NewItemTracker.Instance.OnChanged += RefreshNewItemDots;
+        RefreshNewItemDots(); // sync initial state
     }
 
     private void OnDisable()
     {
         if (hotbarSystem != null)
             hotbarSystem.OnSlotsChanged -= RefreshHotbarUI;
+
+        if (NewItemTracker.Instance != null)
+            NewItemTracker.Instance.OnChanged -= RefreshNewItemDots;
     }
 
     private void OnDestroy()
     {
         if (placementSystem != null)
+        {
             placementSystem.OnModeChanged -= RefreshToolButtonHighlights;
+            placementSystem.OnModeChanged -= OnPlacementSystemModeChanged;
+        }
+
+        if (abilityPlacementSystem != null)
+            abilityPlacementSystem.OnPlacingChanged -= RefreshSecondaryHudVisibility;
     }
 
     // ---------------------------------------------------------------
@@ -355,6 +405,40 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
 
         if (hudRoot != null)
             hudRoot.SetActive(_hudHideRequesters.Count == 0);
+    }
+
+    // ---------------------------------------------------------------
+    // Secondary HUD visibility — hides everything except hotbar/tool selector while placing,
+    // moving, or removing a pot (PlacementSystem) or an ability placeable (AbilityPlacementSystem).
+    // ---------------------------------------------------------------
+    // PlacementSystem.OnModeChanged passes its Mode — ignored here, this only cares THAT it
+    // changed, not to what — kept as a separate named method (rather than a lambda) so OnDestroy
+    // can unsubscribe it the same way RefreshToolButtonHighlights already does above.
+    private void OnPlacementSystemModeChanged(PlacementSystem.Mode mode) => RefreshSecondaryHudVisibility();
+
+    private void RefreshSecondaryHudVisibility()
+    {
+        if (secondaryHudRoot == null) return;
+
+        bool placingActive =
+            (placementSystem != null && placementSystem.IsPlacementModeActive) ||
+            (abilityPlacementSystem != null && abilityPlacementSystem.IsActive);
+
+        secondaryHudRoot.SetActive(!placingActive);
+    }
+
+    // ---------------------------------------------------------------
+    // New-item HUD dots — see NewItemTracker.cs. Journal/inventory icon click already opens
+    // their respective panels via journalUI/inventoryUI above; the dots here are purely visual
+    // and don't need their own click handling.
+    // ---------------------------------------------------------------
+    private void RefreshNewItemDots()
+    {
+        if (journalNewDot != null)
+            journalNewDot.SetActive(NewItemTracker.Instance != null && NewItemTracker.Instance.HasAnyUnseenJournal);
+
+        if (inventoryNewDot != null)
+            inventoryNewDot.SetActive(NewItemTracker.Instance != null && NewItemTracker.Instance.HasAnyUnseenInventory);
     }
 
     // ---------------------------------------------------------------

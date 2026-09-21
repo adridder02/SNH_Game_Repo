@@ -445,12 +445,19 @@ public class PotContents : MonoBehaviour
         currentPlantPrefab = null;
         hasPlant = false;
         
-        // Now destroy the plant
+        // Now destroy the plant — after playing its disintegrate effect if it has one, so the
+        // plant has already been added to the inventory above (immediate), and only the visual
+        // removal is delayed.
         if (plantToDestroy != null)
         {
             if (tutorialMission != null && tutorialMission.tasks.Count > 0)
                 MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[0]); // RemovedPlant
-            Destroy(plantToDestroy);
+
+            DisintegrateEffect disintegrate = plantToDestroy.GetComponentInChildren<DisintegrateEffect>();
+            if (disintegrate != null)
+                disintegrate.Play(() => Destroy(plantToDestroy));
+            else
+                Destroy(plantToDestroy);
         }
     }
 
@@ -518,7 +525,13 @@ public class PotContents : MonoBehaviour
         hasPlant = false;
 
         if (plantToDestroy != null)
-            Destroy(plantToDestroy);
+        {
+            DisintegrateEffect disintegrate = plantToDestroy.GetComponentInChildren<DisintegrateEffect>();
+            if (disintegrate != null)
+                disintegrate.Play(() => Destroy(plantToDestroy));
+            else
+                Destroy(plantToDestroy);
+        }
     }
 
     // ---------------------------------------------------------------

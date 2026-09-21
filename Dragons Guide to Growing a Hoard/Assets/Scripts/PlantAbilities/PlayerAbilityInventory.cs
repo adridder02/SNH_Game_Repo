@@ -45,6 +45,12 @@ public class PlayerAbilityInventory : MonoBehaviour
         if (data.maxStack > 0 && existing.count > data.maxStack)
             existing.count = data.maxStack;
 
+        // Inventory "new item" badge (NewItemTracker) — safe to call every restock, not just the
+        // first: MarkAcquiredInventory only actually flags anything the very first time this
+        // data.name is ever seen. Uses the ScriptableObject asset's own .name as a stable id,
+        // since AbilityItemData has no separate string id field.
+        NewItemTracker.Instance?.MarkAcquiredInventory(data.name);
+
         Debug.Log($"[PlayerAbilityInventory] +{amount} {data.displayName} (now {existing.count}).");
         OnChanged?.Invoke();
     }

@@ -229,6 +229,11 @@ public class PlayerInventory : MonoBehaviour
         // NOTE: this used to complete an "AddedPotToInventory" checklist task here —
         // that task was dropped from the mission, so there's nothing to call anymore.
 
+        // Inventory "new item" badge (NewItemTracker) — see that file's header for why this is a
+        // separate, independently-clearing domain from the journal discovery block below even
+        // though it's often the exact same plant.
+        NewItemTracker.Instance?.MarkAcquiredInventory(instance.newItemTypeId);
+
         // Unlock the journal entry for this species, if it has one — this is the
         // single entry point for both harvesting a node and returning a plant from
         // a pot, so this is the one place that needs to know about journal discovery.
@@ -237,7 +242,10 @@ public class PlayerInventory : MonoBehaviour
         if (state != null && state.journalSpecies != null)
         {
             if (PlantJournalManager.Instance != null)
+            {
                 PlantJournalManager.Instance.MarkDiscovered(state.journalSpecies);
+                NewItemTracker.Instance?.MarkAcquiredJournal(state.journalSpecies.ResolvedId);
+            }
             else
                 Debug.LogWarning("[PlayerInventory] No PlantJournalManager in scene — journal discovery was skipped.");
         }

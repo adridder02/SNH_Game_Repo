@@ -35,6 +35,24 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
              "still works, you just won't see a stack count on the icon.")]
     [SerializeField] private TextMeshProUGUI countLabel;
 
+    [Header("Icon Sizing")]
+    [Tooltip("Empty margin left around the icon, as a FRACTION of the slot's size on each side (0.15 " +
+             "= a 15% margin on all four sides). This is a proportion, not a fixed pixel amount, so it " +
+             "scales automatically with the slot itself — including the bigger multi-cell slots big-" +
+             "footprint plants get — while still keeping the icon visibly smaller than the frame, " +
+             "matching the Choose Plant panel's look (PotPlantOptionUI) instead of the old edge-to-edge " +
+             "stretch. Tune this in the Editor with Play mode running to match Choose Plant by eye.")]
+    [Range(0f, 0.45f)]
+    [SerializeField] private float iconPaddingFraction = 0.15f;
+
+    [Header("New Item Badge")]
+    [Tooltip("Small 'new!' badge shown on this slot until the player clicks it (or clicks a " +
+             "DIFFERENT slot holding the same item type — e.g. a second copy of the same still-new " +
+             "plant species). Shown in both the main grid and Available — see GetNewItemTypeId " +
+             "below for how a slot's type id is derived. Optional — leave unassigned if a given slot " +
+             "prefab doesn't need one.")]
+    [SerializeField] private GameObject newBadge;
+
     /// <summary>Whichever item this slot currently displays — an InventoryItemInstance (plant) or an
     /// AbilityItemInstance (consumable/placeable stack). Check the type to know which.</summary>
     public IGridPlaceable Occupant { get; private set; }
@@ -60,6 +78,19 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
     }
 
+    void OnEnable()
+    {
+        if (NewItemTracker.Instance != null)
+            NewItemTracker.Instance.OnChanged += RefreshNewBadge;
+        RefreshNewBadge();
+    }
+
+    void OnDisable()
+    {
+        if (NewItemTracker.Instance != null)
+            NewItemTracker.Instance.OnChanged -= RefreshNewBadge;
+    }
+
     public void Initialize(IGridPlaceable occupant, InventoryUIController owningController, Canvas canvas, bool isAvailableSlot = false)
     {
         Occupant = occupant;
@@ -75,11 +106,7 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
                 icon.sprite = sprite;
                 icon.enabled = sprite != null;
 
-                RectTransform iconRect = icon.rectTransform;
-                iconRect.anchorMin = Vector2.zero;
-                iconRect.anchorMax = Vector2.one;
-                iconRect.offsetMin = iconRect.offsetMax = Vector2.zero;
-                icon.preserveAspect = true;
+                SizeIconWithPadding();
             }
             if (label != null)
                 label.text = !string.IsNullOrEmpty(plant.displayName)
@@ -97,11 +124,7 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
                 icon.sprite = stack.data != null ? stack.data.icon : null;
                 icon.enabled = stack.data != null && stack.data.icon != null;
 
-                RectTransform iconRect = icon.rectTransform;
-                iconRect.anchorMin = Vector2.zero;
-                iconRect.anchorMax = Vector2.one;
-                iconRect.offsetMin = iconRect.offsetMax = Vector2.zero;
-                icon.preserveAspect = true;
+                SizeIconWithPadding();
             }
             if (label != null)
                 label.text = stack.data != null ? stack.data.displayName : "Unknown";
@@ -112,6 +135,40 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
                 countLabel.text = $"x{stack.count}";
             }
         }
+
+        RefreshNewBadge();
+    }
+
+    // Insets the icon's RectTransform by iconPaddingFraction on each side instead of stretching it
+    // edge-to-edge — see the iconPaddingFraction tooltip above for why this needs to be a
+    // proportion rather than either a fixed padding or leaving the RectTransform untouched.
+    private void SizeIconWithPadding()
+    {
+        RectTransform iconRect = icon.rectTransform;
+        iconRect.anchorMin = new Vector2(iconPaddingFraction, iconPaddingFraction);
+        iconRect.anchorMax = new Vector2(1f - iconPaddingFraction, 1f - iconPaddingFraction);
+        iconRect.offsetMin = iconRect.offsetMax = Vector2.zero;
+        icon.preserveAspect = true;
+    }
+
+    /// <summary>The id NewItemTracker uses for this slot's current Occupant — a plant's
+    /// newItemTypeId (already computed to match PlantJournalManager's own species id), or an
+    /// ability stack's underlying AbilityItemData asset name. Null if Occupant is empty/unknown.</summary>
+    private string GetNewItemTypeId()
+    {
+        if (Occupant is InventoryItemInstance plant) return plant.newItemTypeId;
+        if (Occupant is AbilityItemInstance stack) return stack.data != null ? stack.data.name : null;
+        return null;
+    }
+
+    private void RefreshNewBadge()
+    {
+        if (newBadge == null) return;
+
+        bool isNew = NewItemTracker.Instance != null &&
+                     NewItemTracker.Instance.IsUnseenInInventory(GetNewItemTypeId());
+
+        newBadge.SetActive(isNew);
     }
 
     private static Sprite GetIcon(GameObject prefab)
@@ -191,6 +248,12 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public void OnPointerClick(PointerEventData eventData)
     {
         if (Occupant == null || controller == null) return;
+
+        // Clears the "new" badge the moment this slot is clicked, whether it's in the main grid
+        // or Available — both count as "the player has seen it" per how this was asked for, even
+        // though Available doesn't open a detail panel below.
+        NewItemTracker.Instance?.MarkSeenInInventory(GetNewItemTypeId());
+
         if (isAvailableSlot) return; // Available is overflow storage, not a browse/inspect area
 
         if (Occupant is InventoryItemInstance plant)
