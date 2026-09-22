@@ -100,10 +100,16 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
         if (occupant is InventoryItemInstance plant)
         {
-            // A permanently-dead plant always shows the generic dead icon, regardless of species —
-            // takes priority over both plant.icon and the SpriteRenderer fallback below.
-            Sprite sprite = plant.condition.isPermanentlyDead && controller != null && controller.DeadPlantIcon != null
-                ? controller.DeadPlantIcon
+            // A permanently-dead plant shows its species' own deadIcon (PlantSpeciesData.deadIcon)
+            // instead of its normal icon, falling back to InventoryUIController's generic
+            // deadPlantIcon if the species has none set (or has no journalSpecies linked at all) —
+            // same resolution order as the Plant detail panel (InventoryUIController.ShowPlantDetail).
+            Sprite deadSprite = plant.journalSpecies != null && plant.journalSpecies.deadIcon != null
+                ? plant.journalSpecies.deadIcon
+                : controller != null ? controller.DeadPlantIcon : null;
+
+            Sprite sprite = plant.condition.isPermanentlyDead && deadSprite != null
+                ? deadSprite
                 : plant.icon != null ? plant.icon : GetIcon(plant.plantPrefab);
             if (icon != null)
             {

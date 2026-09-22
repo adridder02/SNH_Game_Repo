@@ -54,6 +54,18 @@ public class playerAnimation : MonoBehaviour
         isInAir = true;
         //Debug.Log("We flying");
     }
+
+    /// <summary>Falling — either walked off a ledge without jumping, or auto-descending after a
+    /// double-space-while-flying. TEMP: reuses the exact same Fly Idle pose as fly() (see
+    /// PlayerController's callers) until a dedicated fall animation exists. Kept as its own method
+    /// rather than PlayerController just calling fly() directly so that swap is a one-line change
+    /// here later, without touching PlayerController.cs at all.</summary>
+    public void fall()
+    {
+        if (playerAni != null && !playerAni.GetBool("IsFlying"))
+            playerAni.SetBool("IsFlying", true);
+        isInAir = true;
+    }
     
     public void notInAir()
     {

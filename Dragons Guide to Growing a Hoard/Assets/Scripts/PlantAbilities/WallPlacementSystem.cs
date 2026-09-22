@@ -53,6 +53,10 @@ public class WallPlacementSystem : MonoBehaviour
     /// last selected instead of always resetting to index 0.</summary>
     public int SelectedIndex => selectedIndex;
 
+    /// <summary>Read-only view of the wall-mushroom types available to place — used by
+    /// MainUIController's wall-mushroom selector HUD to build its icon list in the same order.</summary>
+    public IReadOnlyList<WallMushroomData> AvailableMushrooms => availableMushrooms;
+
     private void Start()
     {
         foreach (WallSurface surface in wallSurfaces)
@@ -71,6 +75,7 @@ public class WallPlacementSystem : MonoBehaviour
 
         foreach (WallSurface s in wallSurfaces) s?.GridVisual?.SetVisible(true);
         SpawnPreview(availableMushrooms[selectedIndex]);
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
         OnModeChanged?.Invoke();
     }
 
@@ -82,6 +87,7 @@ public class WallPlacementSystem : MonoBehaviour
         CancelMode();
         mode = Mode.Removing;
         foreach (WallSurface s in wallSurfaces) s?.GridVisual?.SetVisible(true);
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
         OnModeChanged?.Invoke();
     }
 
@@ -96,6 +102,7 @@ public class WallPlacementSystem : MonoBehaviour
         DestroyPreview();
         activeSurface = null;
         lastHoveredCell = new Vector2Int(-999, -999);
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetGameplayMode();
         OnModeChanged?.Invoke();
     }
 
@@ -104,6 +111,15 @@ public class WallPlacementSystem : MonoBehaviour
         HandleModeToggleKeys();
 
         if (mode == Mode.None || inputManager == null) return;
+
+        // Checked FIRST, before any of the early-returns below (no wall surface currently hovered,
+        // cell-to-world failure) — those used to make Escape silently do nothing unless the player
+        // happened to be looking directly at a valid wall cell at that exact moment.
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            CancelMode();
+            return;
+        }
 
         Vector3 mouseWorld = inputManager.GetSelectedWallPosition();
         WallSurface hovered = GetSurfaceAtPosition(mouseWorld);
@@ -142,8 +158,9 @@ public class WallPlacementSystem : MonoBehaviour
             else if (mode == Mode.Removing) TryRemove(cell, gridData, gridVisual);
         }
 
-        if (Mouse.current.rightButton.wasPressedThisFrame)
-            CancelMode();
+        // Right-click no longer cancels the mode — it now holds to rotate the camera instead (see
+        // ThirdPersonCameraController.AllowRotationWhileLockedIfRightClickHeld, set by
+        // GameInputModeManager.SetPlacementMode()).
     }
 
     private void HandleModeToggleKeys()

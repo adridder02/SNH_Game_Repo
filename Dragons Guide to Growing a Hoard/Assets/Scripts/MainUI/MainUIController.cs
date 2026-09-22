@@ -235,6 +235,23 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [Range(0f, 1f)]
     [SerializeField] private float inactivePotIconOpacity = 0.35f;
 
+    [Header("Wall Mushroom Selector (HUD)")]
+    [Tooltip("Root of the wall-mushroom selector — pops up while in WallPlacementSystem's Placing " +
+             "mode, hidden otherwise. Shows one icon per entry in WallPlacementSystem.AvailableMushrooms, " +
+             "in the same order as wallMushroomSelectorIcons below. There's currently only ever one " +
+             "wall-mushroom type, so in practice this just shows a single always-active icon while " +
+             "placing — built the same way as the (multi-option) pot selector above for consistency, " +
+             "and so it needs no rework if more wall types are ever added.")]
+    [SerializeField] private GameObject wallMushroomSelectorRoot;
+
+    [Tooltip("One Image per wall-mushroom type, in the SAME order as WallPlacementSystem's " +
+             "availableMushrooms list.")]
+    [SerializeField] private List<Image> wallMushroomSelectorIcons;
+
+    [Tooltip("Opacity applied to every wall-mushroom icon EXCEPT the currently-selected one.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float inactiveWallMushroomIconOpacity = 0.35f;
+
     [Header("Harvest Feedback (HUD)")]
     [Tooltip("Root of the fixed HUD feedback popup (e.g. 'Harvested Sparkmint x1') — replaces the old " +
              "runtime-built floating canvas HarvestNodeContainer used to create itself. Should start " +
@@ -322,9 +339,9 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             wallPlacementSystem = FindObjectOfType<WallPlacementSystem>();
 
         if (wallPlacementSystem != null)
-            wallPlacementSystem.OnModeChanged += RefreshPlacementBanner;
+            wallPlacementSystem.OnModeChanged += RefreshWallPlacementUI;
 
-        RefreshPlacementBanner(); // sync initial state
+        RefreshWallPlacementUI(); // sync initial state
 
         if (hotbarSystem == null)
             hotbarSystem = FindObjectOfType<AbilityHotbarSystem>();
@@ -367,7 +384,7 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             abilityPlacementSystem.OnPlacingChanged -= RefreshSecondaryHudVisibility;
 
         if (wallPlacementSystem != null)
-            wallPlacementSystem.OnModeChanged -= RefreshPlacementBanner;
+            wallPlacementSystem.OnModeChanged -= RefreshWallPlacementUI;
     }
 
     // ---------------------------------------------------------------
@@ -415,10 +432,10 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
 
     /// <summary>Shows "Floor Placement Mode" while PlacementSystem is Placing, "Wall Placement
     /// Mode" while WallPlacementSystem is Placing, and hides the banner otherwise. Called both from
-    /// RefreshToolButtonHighlights (fires on every PlacementSystem.OnModeChanged) and directly from
-    /// wallPlacementSystem.OnModeChanged, since the two systems' events aren't shaped the same
-    /// (one passes a Mode, the other doesn't) — this method takes no parameters and just re-reads
-    /// both systems' current state fresh each time, so either caller can trigger the same result.</summary>
+    /// RefreshToolButtonHighlights (fires on every PlacementSystem.OnModeChanged) and from
+    /// RefreshWallPlacementUI below, since the two systems' events aren't shaped the same (one
+    /// passes a Mode, the other doesn't) — this method takes no parameters and just re-reads both
+    /// systems' current state fresh each time, so either caller can trigger the same result.</summary>
     private void RefreshPlacementBanner()
     {
         if (placementBannerRoot == null) return;
@@ -430,6 +447,44 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
 
         if (placementBannerText != null)
             placementBannerText.text = wallPlacing ? wallPlacementBannerText : floorPlacementBannerText;
+    }
+
+    /// <summary>Everything that needs to react to WallPlacementSystem.OnModeChanged specifically —
+    /// the shared banner (also driven from the floor side, see above) plus the wall-mushroom
+    /// selector, which only wall mode changes affect at all.</summary>
+    private void RefreshWallPlacementUI()
+    {
+        RefreshPlacementBanner();
+        RefreshWallMushroomSelector();
+    }
+
+    /// <summary>Shows/hides and refreshes the wall-mushroom selector — same shape as
+    /// RefreshPotSelector below, just for WallPlacementSystem instead of PlacementSystem.</summary>
+    private void RefreshWallMushroomSelector()
+    {
+        bool visible = wallPlacementSystem != null && wallPlacementSystem.CurrentMode == WallPlacementSystem.Mode.Placing;
+
+        if (wallMushroomSelectorRoot != null)
+            wallMushroomSelectorRoot.SetActive(visible);
+
+        if (!visible || wallMushroomSelectorIcons == null || wallPlacementSystem == null) return;
+
+        IReadOnlyList<WallMushroomData> mushrooms = wallPlacementSystem.AvailableMushrooms;
+        int activeIndex = wallPlacementSystem.SelectedIndex;
+
+        for (int i = 0; i < wallMushroomSelectorIcons.Count; i++)
+        {
+            Image img = wallMushroomSelectorIcons[i];
+            if (img == null) continue;
+
+            WallMushroomData data = mushrooms != null && i < mushrooms.Count ? mushrooms[i] : null;
+            img.sprite = data != null ? data.icon : null;
+            img.enabled = data != null && data.icon != null;
+
+            Color c = img.color;
+            c.a = i == activeIndex ? 1f : inactiveWallMushroomIconOpacity;
+            img.color = c;
+        }
     }
 
     /// <summary>Shows/hides and refreshes the pot-type selector. Called from

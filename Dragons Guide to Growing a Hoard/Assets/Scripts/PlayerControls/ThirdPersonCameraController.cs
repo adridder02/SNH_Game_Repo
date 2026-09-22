@@ -44,14 +44,18 @@ public class ThirdPersonCameraController : MonoBehaviour
     private bool isFlying = false;
 
     [Header("Flight Recentering")]
-    [Tooltip("While flying, once movement/look input has stopped for a bit, smoothly eases the camera's pitch back to match the dragon's own current pitch - so it settles level with wherever the dragon is actually pointing, including straight up or down, instead of staying wherever you last looked. Horizontal (yaw) recentering is intentionally NOT included here - only vertical.")]
+    [Tooltip("While flying, once movement/look input has stopped for a bit, smoothly eases the camera's pitch back to match the dragon's own current pitch - so it settles level with wherever the dragon is actually pointing, including straight up or down, instead of staying wherever you last looked.")]
     [SerializeField] private bool recenterVerticalWhileFlying = true;
+    [Tooltip("Same idea as vertical recentering above, but for YAW (horizontal heading) - eases the camera back to face the same direction the dragon is actually flying, once input has stopped. Same trigger timing (recenterDelay) as vertical; uses its own smoothing state so the two axes don't interfere with each other.")]
+    [SerializeField] private bool recenterHorizontalWhileFlying = true;
     [Tooltip("Seconds of no flight input (mouse look OR movement/ascend/descend keys) before recentering kicks in.")]
     [SerializeField] private float recenterDelay = 0.8f;
-    [Tooltip("How quickly the camera eases back to centered once recentering starts (seconds - lower = snappier).")]
+    [Tooltip("How quickly the camera eases back to centered once recentering starts (seconds - lower = snappier). Shared by both vertical and horizontal recentering.")]
     [SerializeField] private float recenterSmoothTime = 0.5f;
     [Tooltip("Flip if recentering pushes the vertical angle the wrong way for your rig - Cinemachine's sign convention for VerticalAxis.Value can go either way depending on setup.")]
     [SerializeField] private bool invertVerticalRecenterSign = false;
+    [Tooltip("Same as Invert Vertical Recenter Sign above, but for HorizontalAxis.Value - separate flag since the two axes can have independent sign conventions depending on rig setup.")]
+    [SerializeField] private bool invertHorizontalRecenterSign = false;
     [Tooltip("Added to the computed target pitch before clamping - use this to bias where recentering settles when the dragon is level, e.g. a slightly downward default framing rather than dead-level. Positive/negative direction depends on your rig's sign convention (see Invert above).")]
     [SerializeField] private float verticalRecenterCenterOffset = 0f;
     [Tooltip("Which object's rotation to recenter toward - should be whatever GameObject PlayerController actually rotates during flight (confirmed via chat: same object as cam.Follow works). Leave empty to fall back to cam.Follow directly.")]
@@ -59,6 +63,7 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     private float timeSinceFlightInput = 0f;
     private float verticalRecenterVelocity = 0f;
+    private float horizontalRecenterVelocity = 0f;
 
     [Header("Object Transparency (for all other layers)")]
     [SerializeField] private LayerMask transparentMask = ~0;
@@ -120,6 +125,14 @@ public class ThirdPersonCameraController : MonoBehaviour
     [SerializeField] private Camera outputCamera;
 
     public static bool CameraLocked = false;
+
+    /// <summary>When true AND CameraLocked is also true, holding the right mouse button
+    /// temporarily re-enables rotation anyway — released, it drops back to fully locked. Set by
+    /// GameInputModeManager.SetPlacementMode() (and cleared by its other Set*Mode methods) so
+    /// Placement mode gets "camera stays put by default, hold right-click to reposition it"
+    /// instead of either fully free (swivels while just trying to aim at a cell) or fully frozen
+    /// (no way to look around without backing out of the mode entirely).</summary>
+    public static bool AllowRotationWhileLockedIfRightClickHeld = false;
 
     /// <summary>When true, scroll wheel input should NOT zoom the camera — something else (e.g.
     /// PotInteraction's Interact/Water Plant prompt selection) is consuming it instead this frame.
@@ -312,7 +325,10 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     void Update()
     {
-        if (CameraLocked)
+        bool rightClickOverride = CameraLocked && AllowRotationWhileLockedIfRightClickHeld &&
+                                   Mouse.current != null && Mouse.current.rightButton.isPressed;
+
+        if (CameraLocked && !rightClickOverride)
         {
             scrollDelta = Vector2.zero;
             if (inputAxis != null) inputAxis.enabled = false;
@@ -524,7 +540,7 @@ public class ThirdPersonCameraController : MonoBehaviour
 
         timeSinceFlightInput = (lookInputActive || movementInputActive) ? 0f : timeSinceFlightInput + dt;
 
-        if (!recenterVerticalWhileFlying || !isFlying || timeSinceFlightInput < recenterDelay)
+        if (!isFlying || timeSinceFlightInput < recenterDelay)
             return;
 
         // Direct absolute assignment, not the error-correction/differential version this had
@@ -534,14 +550,34 @@ public class ThirdPersonCameraController : MonoBehaviour
         // correction can overshoot and compound frame over frame instead of converging, which is
         // exactly what pinning at the Range's max looked like. This was never actually confirmed
         // broken in its simpler form - only horizontal (Center-based) was - so there was no real
-        // reason for vertical to carry this extra complexity/risk in the first place.
-        float targetPitch = Mathf.Asin(Mathf.Clamp(recenterSource.forward.y, -1f, 1f)) * Mathf.Rad2Deg;
-        if (invertVerticalRecenterSign) targetPitch = -targetPitch;
-        targetPitch += verticalRecenterCenterOffset;
-        targetPitch = Mathf.Clamp(targetPitch, minPitchAngle, maxPitchAngle);
+        // reason for vertical to carry this extra complexity/risk in the first place. Horizontal
+        // recentering below uses the same direct-assignment approach for the same reason.
 
-        orbital.VerticalAxis.Value = Mathf.SmoothDampAngle(
-            orbital.VerticalAxis.Value, targetPitch, ref verticalRecenterVelocity, recenterSmoothTime);
+        if (recenterVerticalWhileFlying)
+        {
+            float targetPitch = Mathf.Asin(Mathf.Clamp(recenterSource.forward.y, -1f, 1f)) * Mathf.Rad2Deg;
+            if (invertVerticalRecenterSign) targetPitch = -targetPitch;
+            targetPitch += verticalRecenterCenterOffset;
+            targetPitch = Mathf.Clamp(targetPitch, minPitchAngle, maxPitchAngle);
+
+            orbital.VerticalAxis.Value = Mathf.SmoothDampAngle(
+                orbital.VerticalAxis.Value, targetPitch, ref verticalRecenterVelocity, recenterSmoothTime);
+        }
+
+        if (recenterHorizontalWhileFlying)
+        {
+            // Yaw (heading) from the same reference transform's forward vector, flattened onto
+            // the horizontal plane - atan2(x, z) matches Unity's convention where +Z is 0 degrees.
+            float targetYaw = Mathf.Atan2(recenterSource.forward.x, recenterSource.forward.z) * Mathf.Rad2Deg;
+            if (invertHorizontalRecenterSign) targetYaw = -targetYaw;
+
+            // HorizontalAxis is Wrap=true over its full -180..180 range (see chat history for why
+            // that range specifically matters), and SmoothDampAngle is already wrap-aware - it
+            // takes the shortest path around the circle rather than the long way through 180/-180,
+            // so no extra wrapping logic is needed here.
+            orbital.HorizontalAxis.Value = Mathf.SmoothDampAngle(
+                orbital.HorizontalAxis.Value, targetYaw, ref horizontalRecenterVelocity, recenterSmoothTime);
+        }
     }
 
     /// <summary>

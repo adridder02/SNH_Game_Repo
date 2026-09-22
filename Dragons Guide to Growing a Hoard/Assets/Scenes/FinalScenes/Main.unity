@@ -284,6 +284,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   plantImage: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!1 &2012147
 GameObject:
   m_ObjectHideFlags: 0
@@ -2236,6 +2239,7 @@ MonoBehaviour:
   flyVerticalSpeed: 7
   flySprintMultiplier: 3.5
   flyTakeoffLockDuration: 0.6
+  autoDescendSpeed: 3
   flyPitchInfluence: 1
   inputActions: {fileID: -944628639613478452, guid: 96f9bf046802d4545868fdcc2b9f308a, type: 3}
   movementMission: {fileID: 11400000, guid: bc08ac5a41257484bb6bf6139a8d2944, type: 2}
@@ -4690,6 +4694,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   plantImage: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!1 &180111409
 GameObject:
   m_ObjectHideFlags: 0
@@ -9633,6 +9640,84 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   plantImage: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
+--- !u!1 &418946827
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 418946828}
+  - component: {fileID: 418946830}
+  - component: {fileID: 418946829}
+  m_Layer: 0
+  m_Name: MushroomIcon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &418946828
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418946827}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1116903215}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -21, y: -0.00012207031}
+  m_SizeDelta: {x: 174.6554, y: 174.6554}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &418946829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418946827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: d6e55c2ac8ff58449bdda624ac2689d0, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &418946830
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418946827}
+  m_CullTransparentMesh: 1
 --- !u!1 &419578550 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2337326077826242012, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -12705,6 +12790,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &541380867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13225,6 +13313,10 @@ MonoBehaviour:
   - {fileID: 1284583244}
   - {fileID: 730742037}
   inactivePotIconOpacity: 0.35
+  wallMushroomSelectorRoot: {fileID: 1116903214}
+  wallMushroomSelectorIcons:
+  - {fileID: 418946829}
+  inactiveWallMushroomIconOpacity: 0.35
   harvestFeedbackRoot: {fileID: 608572598}
   harvestFeedbackText: {fileID: 2090750295}
   harvestFeedbackDuration: 2.5
@@ -14942,6 +15034,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   plantImage: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!1 &638393675
 GameObject:
   m_ObjectHideFlags: 0
@@ -24292,6 +24387,7 @@ RectTransform:
   - {fileID: 280252696}
   - {fileID: 200617794}
   - {fileID: 1904911094}
+  - {fileID: 1116903215}
   m_Father: {fileID: 1845067431}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -25848,6 +25944,42 @@ RectTransform:
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 1.9003, y: -100.4853}
   m_SizeDelta: {x: 1026.5134, y: 980.7667}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1116903214
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1116903215}
+  m_Layer: 0
+  m_Name: MushroomScroll
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1116903215
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1116903214}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 418946828}
+  m_Father: {fileID: 1048826177}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 1671, y: 418}
+  m_SizeDelta: {x: 281.73, y: 174.66}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1118536129
 GameObject:
@@ -34962,11 +35094,11 @@ MonoBehaviour:
   RecenteringTarget: 2
   HorizontalAxis:
     Value: 0
-    Center: -0
+    Center: 0
     Range: {x: -180, y: 180}
     Wrap: 1
     Recentering:
-      Enabled: 1
+      Enabled: 0
       Wait: 1
       Time: 2
     Restrictions: 0
@@ -43215,6 +43347,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   plantImage: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!1 &1582432004
 GameObject:
   m_ObjectHideFlags: 0
@@ -45593,6 +45728,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   plantImage: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!1 &1710622936
 GameObject:
   m_ObjectHideFlags: 0
@@ -46167,6 +46305,7 @@ MonoBehaviour:
   waterThresholdLow: 3
   revivedMinScore: 5
   intermediateMinScore: 2
+  permanentDeathDelay: 30
   lightSensor: {fileID: 0}
   revivedVisual: {fileID: 0}
   intermediateVisual: {fileID: 0}
@@ -46190,6 +46329,7 @@ MonoBehaviour:
   soilScore: 0
   lightScore: 0
   waterScore: 0
+  isPermanentlyDead: 0
 --- !u!136 &1738163110
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -59052,6 +59192,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &4291933657754705773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59097,6 +59240,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &4291933659096838132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59142,6 +59288,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &4291933659341317195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59237,6 +59386,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &4493067399300467294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59282,6 +59434,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &4493067399654772816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59327,6 +59482,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &4493067400138540202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59372,6 +59530,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &4493067400382646340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59417,6 +59578,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &4493067400388514027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59462,6 +59626,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &4493067401051978270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60566,6 +60733,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 3e05db36bfd743342abdee2b215ee7e3, type: 3}
   plantImage: {fileID: 21300000, guid: 3e05db36bfd743342abdee2b215ee7e3, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &5993726223858773546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60612,6 +60782,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &5993726224035614677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60658,6 +60831,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &5993726224150290106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60704,6 +60880,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &5993726224721456985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60750,6 +60929,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &5993726224756795725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60796,6 +60978,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &5993726224819624413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60842,6 +61027,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &5993726224837094058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60888,6 +61076,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &5993726225094243684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61265,6 +61456,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &6446668121091367355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61344,6 +61538,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &6446668121109008613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61423,6 +61620,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &6446668122177790286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61502,6 +61702,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &6446668122179554541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61554,6 +61757,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &6476096878466650663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61606,6 +61812,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &6476096878520886038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61658,6 +61867,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &6476096880023233391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62191,6 +62403,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7106053868695405843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62242,6 +62457,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7106053868793773820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62293,6 +62511,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7106053869111921821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62344,6 +62565,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7106053869885642875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62522,6 +62746,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7137621011250287860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62631,6 +62858,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7407644071231462201
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62691,6 +62921,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7407644071502374397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62729,6 +62962,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7407644071775445398
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62767,6 +63003,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7407644072647991483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62805,6 +63044,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7407644072680933916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62855,6 +63097,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7407644072696828652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63073,6 +63318,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7613040284510583601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63125,6 +63373,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7613040284714903095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63177,6 +63428,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7613040284836984322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63229,6 +63483,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7613040285220587886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63281,6 +63538,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7613040285280289443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63333,6 +63593,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7613040285820075033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63687,6 +63950,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7799830688855472680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63766,6 +64032,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7799830689462763672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63845,6 +64114,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &7799830689546397896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63989,6 +64261,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &8096330631364292476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64041,6 +64316,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &8096330632102485777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64093,6 +64371,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &8096330632366887860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64191,6 +64472,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &8228039973461473959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64270,6 +64554,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &8228039973648303941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64349,6 +64636,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &8228039974081671604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64471,6 +64761,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &8388192504769381663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64712,6 +65005,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &8624361956960177348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64750,6 +65046,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &8624361957940655179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64788,6 +65087,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &8624361958374831633
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64988,6 +65290,9 @@ MonoBehaviour:
   plantIcon: {fileID: 21300000, guid: 31a9bf879bc240a48b6080fa1ed324c5, type: 3}
   plantImage: {fileID: 21300000, guid: 06a7e9c50582f60428f1b7bef4ae2964, type: 3}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  startingCondition:
+    isPermanentlyDead: 0
+    startingHealth01: 1
 --- !u!114 &8812342830093620888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65201,6 +65506,7 @@ MonoBehaviour:
   consumablePanelDescription: {fileID: 0}
   consumablePanelCloseButton: {fileID: 0}
   consumablePanelUseButton: {fileID: 0}
+  deadPlantIcon: {fileID: 0}
   allFilterButton: {fileID: 2090894713670955818}
   sunnyFilterButton: {fileID: 3560706741991287798}
   darkFilterButton: {fileID: 6205113780548004768}

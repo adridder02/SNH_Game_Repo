@@ -21,6 +21,10 @@ public class WallMushroomData : ScriptableObject
     public GameObject prefab;
     public GameObject previewPrefab;
 
+    [Tooltip("Icon shown in the wall-mushroom selector HUD (MainUIController) while this is the " +
+             "active type in Wall Placing mode.")]
+    public Sprite icon;
+
     [Tooltip("Roughly how much weight this can support standing on it — 'the big ones can hold an " +
              "average basset hound or a puppy St. Bernard'. Not simulated yet; exposed so a future " +
              "creature-weight system has something to check against.")]

@@ -57,6 +57,13 @@ public class PlantSpeciesData : ScriptableObject
     [Tooltip("Larger illustration shown on the detail page. Falls back to journalIcon if left blank.")]
     public Sprite journalImage;
 
+    [Tooltip("Shown INSTEAD OF journalIcon in the Inventory (grid, Available, and the detail panel) " +
+             "once this specific plant has died permanently (PlantState.IsPermanentlyDead). Per-" +
+             "species since different plants should die differently. Falls back to " +
+             "InventoryUIController's deadPlantIcon if left blank — see InventorySlotUI/" +
+             "InventoryUIController for the resolution order.")]
+    public Sprite deadIcon;
+
     [Header("Progression Icons")]
     [Tooltip("Shown on the Progress page while this species is undiscovered.")]
     public Sprite disabledIcon;

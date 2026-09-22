@@ -128,6 +128,7 @@ public class GameInputModeManager : MonoBehaviour
         Cursor.visible = false;
 
         ThirdPersonCameraController.CameraLocked = false;
+        ThirdPersonCameraController.AllowRotationWhileLockedIfRightClickHeld = false;
 
         var camController = FindAnyObjectByType<ThirdPersonCameraController>();
         if (camController != null)
@@ -161,6 +162,7 @@ public class GameInputModeManager : MonoBehaviour
 
         // Explicitly lock camera
         ThirdPersonCameraController.CameraLocked = true;
+        ThirdPersonCameraController.AllowRotationWhileLockedIfRightClickHeld = false;
 
         // Disable camera input component as backup
         var camController = FindAnyObjectByType<ThirdPersonCameraController>();
@@ -190,6 +192,14 @@ public class GameInputModeManager : MonoBehaviour
         Cursor.visible = true;
 
         ThirdPersonCameraController.CameraLocked = true;
+
+        // The one difference from SetMenuUIMode's identical-looking lock above: holding right-click
+        // still lets the player reposition the camera without leaving Placement mode (see the field's
+        // own comment on ThirdPersonCameraController) — a deliberate action instead of the camera
+        // swiveling on every small mouse movement while they're just trying to hold a hover cell
+        // steady. Right-click no longer cancels the mode either (PlacementSystem/WallPlacementSystem
+        // dropped that) — Escape is the only way out now.
+        ThirdPersonCameraController.AllowRotationWhileLockedIfRightClickHeld = true;
 
         var camController = FindAnyObjectByType<ThirdPersonCameraController>();
         if (camController != null)

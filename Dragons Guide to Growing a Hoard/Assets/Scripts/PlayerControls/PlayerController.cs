@@ -38,6 +38,12 @@ public class PlayerController : MonoBehaviour
     [Tooltip("How long (seconds) the takeoff animation is protected from being interrupted by movement/sprint animation changes after double-tapping Space. Should roughly match your takeoff clip's length.")]
     [SerializeField] private float flyTakeoffLockDuration = 0.6f;
 
+    [Tooltip("Downward speed while auto-descending (double-tapped Space while already flying). " +
+             "Deliberately separate from flyVerticalSpeed (the manual Ctrl-held descent speed) so " +
+             "this can be tuned to feel gradual/controlled rather than a straight drop, independent " +
+             "of manual descent speed.")]
+    [SerializeField] private float autoDescendSpeed = 3f;
+
     [Tooltip("How strongly camera pitch steers vertical movement while flying (0 = off).")]
     [SerializeField] private float flyPitchInfluence = 1f;
 
@@ -97,6 +103,7 @@ public class PlayerController : MonoBehaviour
                                         // changes so the takeoff clip always plays start-to-finish
                                         // uninterrupted instead of racing with UpdateAnimator()
                                         // switching to Walk/Run the instant Flying starts.
+    private bool autoDescending;       // double-tapped Space while already flying — see OnSpacePressed
     // Ctrl is polled via Keyboard API — no InputActionAsset mutation needed
     private bool movementEnabled = true;
 
@@ -290,7 +297,28 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case LocomotionState.Flying:
-                flyAscendHeld = true;
+                if (autoDescending)
+                {
+                    // Pressing Space again mid-descent cancels it and hands control back to the
+                    // player, rather than stacking/ignoring the press — in case they change their
+                    // mind about where to land.
+                    autoDescending = false;
+                    flyAscendHeld = true;
+                }
+                else if (Time.time - lastSpacePressTime <= doubleTapWindow)
+                {
+                    // Double-tapped Space again while already flying — begin a controlled, gradual
+                    // descent (see autoDescendSpeed / UpdateFlyingLocomotion) instead of the usual
+                    // single-press ascend, and play the (TEMP) fall animation for it.
+                    autoDescending = true;
+                    flyAscendHeld = false;
+                    playerAnim.fall();
+                }
+                else
+                {
+                    flyAscendHeld = true;
+                }
+                lastSpacePressTime = Time.time;
                 break;
         }
     }
@@ -387,23 +415,37 @@ public class PlayerController : MonoBehaviour
         // Grounded locomotion
         if (locomotionState == LocomotionState.Grounded)
         {
-            float inputMagnitude = moveInput.magnitude;
-            bool isSprinting = IsSprinting;
-
-            if (inputMagnitude > 0.8f && isSprinting)
+            if (!controller.isGrounded)
             {
-                playerAnim.setRunning();
-            }
-            else if (inputMagnitude > 0.1f)
-            {
-                playerAnim.setWalking();
-                // NOTE: this used to advance the old on-screen Tutorial instruction text here
-                // (Tutorial_1.Instance.OnMove()) — not a checklist task, nothing to repoint it
-                // to yet since that on-screen system hasn't been rebuilt.
+                // Walked off a ledge without jumping — nothing else ever transitions
+                // locomotionState to Jumping unless Space was actually pressed, so without this
+                // check walk/run/idle kept playing the whole way down. See playerAnimation.fall()
+                // for why this calls a separate method from fly() despite doing the same thing
+                // right now. The landing transition below already handles this correctly with no
+                // further changes — it's keyed on controller.isGrounded/wasGrounded, not on how
+                // the player became airborne.
+                playerAnim.fall();
             }
             else
             {
-                playerAnim.setIdel();
+                float inputMagnitude = moveInput.magnitude;
+                bool isSprinting = IsSprinting;
+
+                if (inputMagnitude > 0.8f && isSprinting)
+                {
+                    playerAnim.setRunning();
+                }
+                else if (inputMagnitude > 0.1f)
+                {
+                    playerAnim.setWalking();
+                    // NOTE: this used to advance the old on-screen Tutorial instruction text here
+                    // (Tutorial_1.Instance.OnMove()) — not a checklist task, nothing to repoint it
+                    // to yet since that on-screen system hasn't been rebuilt.
+                }
+                else
+                {
+                    playerAnim.setIdel();
+                }
             }
         }
 
@@ -492,6 +534,7 @@ public class PlayerController : MonoBehaviour
     {
         locomotionState = LocomotionState.Flying;
         velocity = Vector3.zero;
+        autoDescending = false; // defensive — shouldn't ever be true entering fresh, but don't inherit stale state
         // NOTE: this used to advance the old on-screen Tutorial instruction text here
         // (Tutorial_1.Instance.FlyOnTable()) — not a checklist task, nothing to repoint it
         // to yet since that on-screen system hasn't been rebuilt.
@@ -545,15 +588,27 @@ public class PlayerController : MonoBehaviour
             // can't cancel out a held Ctrl and silently prevent the player from ever landing.
             float intentionalVertical = 0f;
 
-            if (flyAscendHeld)
-                intentionalVertical += flyVerticalSpeed * (IsSprinting ? flySprintMultiplier : 1f);
+            if (autoDescending)
+            {
+                // Double-tapped Space while flying — steady, gradual descent rather than a straight
+                // drop, and deliberately NOT steered by camera pitch (see the skipped block below),
+                // so it stays controlled regardless of where the player happens to be looking.
+                // Horizontal WASD movement still works normally during this — it's just gliding
+                // down, not frozen in place.
+                intentionalVertical -= autoDescendSpeed;
+            }
+            else
+            {
+                if (flyAscendHeld)
+                    intentionalVertical += flyVerticalSpeed * (IsSprinting ? flySprintMultiplier : 1f);
 
-            if (ctrlHeld)
-                intentionalVertical -= flyVerticalSpeed * (IsSprinting ? flySprintMultiplier : 1f);
+                if (ctrlHeld)
+                    intentionalVertical -= flyVerticalSpeed * (IsSprinting ? flySprintMultiplier : 1f);
+            }
 
             verticalMove += intentionalVertical;
 
-            if (flyPitchInfluence > 0f && moveInput.sqrMagnitude > 0.01f)
+            if (!autoDescending && flyPitchInfluence > 0f && moveInput.sqrMagnitude > 0.01f)
             {
                 float pitchVertical = cameraTransform.forward.y * flyPitchInfluence * CurrentFlySpeed;
                 verticalMove += pitchVertical;
@@ -570,6 +625,9 @@ public class PlayerController : MonoBehaviour
 
             if (controller.isGrounded && intentionalVertical <= 0f)
             {
+                // Covers both the normal manual landing (fly yourself down) and auto-descending
+                // touching ground — autoDescending is reset inside ExitFlyMode() itself, so this
+                // needs no special-casing here at all; intentionalVertical is already <= 0 either way.
                 ExitFlyMode();
                 return;
             }
@@ -607,6 +665,7 @@ public class PlayerController : MonoBehaviour
         locomotionState = LocomotionState.Grounded;
         velocity = Vector3.zero;
         flyAscendHeld = false;
+        autoDescending = false;
         ThirdPersonCameraController.setCameraZoomLimitOnFly(false);
 
         Vector3 flatForward = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;

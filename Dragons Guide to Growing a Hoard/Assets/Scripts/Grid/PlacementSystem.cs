@@ -291,10 +291,10 @@ public class PlacementSystem : MonoBehaviour
                 TryWater(hoveredCell);
         }
 
-        if (Mouse.current.rightButton.wasPressedThisFrame)
-        {
-            CancelMode();
-        }
+        // Right-click no longer cancels the mode (any of the four) — it now holds to rotate the
+        // camera instead, see ThirdPersonCameraController.AllowRotationWhileLockedIfRightClickHeld,
+        // set by GameInputModeManager.SetPlacementMode(). Escape (HandleModeToggleKeys) is the way
+        // out now, uniformly across all four modes.
     }
 
     private void HandleModeToggleKeys()
