@@ -48,12 +48,20 @@ public class PlacementSystem : MonoBehaviour
              "there. Tasks 1/2/3 (Small/Medium/Large pot planted) are completed from here, offset by +1 " +
              "from availablePots' index since task 0 is taken by OpenedInventory.")]
     [SerializeField] private MissionData collectionMission;
+    [Header("Watering")]
+    [Tooltip("Reuses PotInteraction.WaterPot() — the same logic the old temporary pot-menu Water " +
+             "button and the 'Q' quick-water key already use, so this tool behaves identically to " +
+             "those (same transfer amount, same empty-pool/full-pot messages), just targeted by " +
+             "hovering a square like Place/Remove/Move instead of by proximity.")]
+    [SerializeField] private PotInteraction potInteraction;
+
     public enum Mode
     {
         None,
         Placing,
         Removing,
-        Moving
+        Moving,
+        Watering
     }
 
     private Mode mode = Mode.None;
@@ -70,6 +78,10 @@ public class PlacementSystem : MonoBehaviour
 
     /// <summary>Which pot index Placing mode would use right now (last cycled-to / selected pot).</summary>
     public int SelectedPotIndex => selectedIndex;
+
+    /// <summary>Read-only view of the pot types available to cycle through in Placing mode — used
+    /// by MainUIController's pot-selector HUD to build its icon list in the same order.</summary>
+    public IReadOnlyList<PotData> AvailablePots => availablePots;
 
     /// <summary>All greenhouse surfaces this system manages. Read by AbilityPlacementSystem so
     /// ability placeables (Sparkmint leaves, Waterbells, ...) hover/place across the same surfaces
@@ -132,6 +144,9 @@ public class PlacementSystem : MonoBehaviour
 
     private void Start()
     {
+        if (potInteraction == null)
+            potInteraction = FindObjectOfType<PotInteraction>();
+
         if (surfaces == null || surfaces.Count == 0)
         {
             Debug.LogError("PlacementSystem: No GreenhouseSurfaces assigned.");
@@ -272,6 +287,8 @@ public class PlacementSystem : MonoBehaviour
                 TryRemove(hoveredCell);
             else if (mode == Mode.Moving)
                 TryPickupOrDrop(hoveredCell);
+            else if (mode == Mode.Watering)
+                TryWater(hoveredCell);
         }
 
         if (Mouse.current.rightButton.wasPressedThisFrame)
@@ -288,11 +305,40 @@ public class PlacementSystem : MonoBehaviour
         if (Keyboard.current.fKey.wasPressedThisFrame)
             TogglePlaceMode();
 
-        if (Keyboard.current.xKey.wasPressedThisFrame)
+        if (Keyboard.current.rKey.wasPressedThisFrame)
             ToggleRemoveMode();
 
         if (Keyboard.current.gKey.wasPressedThisFrame)
             ToggleMoveMode();
+
+        if (Keyboard.current.qKey.wasPressedThisFrame)
+            ToggleWaterMode();
+
+        // Tab cycles between pot-Placing and wall-Placing — the SOLE place this is handled, on
+        // purpose. WallPlacementSystem used to independently poll its own key (R, now freed up for
+        // Remove above) for entering its Placing mode; if it ALSO polled Tab itself here, both
+        // scripts would react to the same press in the same frame — whichever Update() runs first
+        // flips its own mode, and the other script's check (now reading that freshly-changed state)
+        // could immediately flip it right back, ping-ponging within one frame. Only PlacementSystem
+        // polls Tab, and it decides which direction to go by checking BOTH systems' current mode.
+        //
+        // NOTE: this is now the ONLY way to enter wall-Placing mode at all — you have to be in pot-
+        // Placing (F) first, then Tab across. There's no standalone "just enter wall placing" key
+        // anymore now that R belongs to pot-Remove.
+        if (Keyboard.current.tabKey.wasPressedThisFrame)
+        {
+            if (mode == Mode.Placing)
+            {
+                CancelMode();
+                if (wallPlacementSystem != null)
+                    wallPlacementSystem.ToggleMushroomPlaceMode(wallPlacementSystem.SelectedIndex);
+            }
+            else if (wallPlacementSystem != null && wallPlacementSystem.CurrentMode == WallPlacementSystem.Mode.Placing)
+            {
+                wallPlacementSystem.CancelMode();
+                EnterPlaceMode(selectedIndex);
+            }
+        }
 
         // Escape exits whichever tool is active, same as right-click — but only when a tool
         // actually IS active, so this doesn't swallow Escape for anything else (a pause menu,
@@ -334,6 +380,14 @@ public class PlacementSystem : MonoBehaviour
             CancelMode();
         else
             EnterMoveMode();
+    }
+
+    public void ToggleWaterMode()
+    {
+        if (mode == Mode.Watering)
+            CancelMode();
+        else
+            EnterWaterMode();
     }
 
     /// <summary>Force-cancels whatever pot tool (Place/Remove/Move) is active, with no side effect if
@@ -402,6 +456,25 @@ public class PlacementSystem : MonoBehaviour
         wallPlacementSystem?.CancelMode();
 
         mode = Mode.Moving;
+
+        // Show all grids
+        foreach (var surface in surfaces)
+        {
+            if (surface != null)
+                surface.GridVisual.SetVisible(true);
+        }
+
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
+
+        OnModeChanged?.Invoke(mode);
+    }
+
+    private void EnterWaterMode()
+    {
+        CancelMode(suppressEvent: true);
+        wallPlacementSystem?.CancelMode();
+
+        mode = Mode.Watering;
 
         // Show all grids
         foreach (var surface in surfaces)
@@ -493,6 +566,36 @@ public class PlacementSystem : MonoBehaviour
                             origin,
                             data.Size,
                             GridVisual.CellState.Invalid
+                        );
+                    }
+
+                    break;
+                }
+
+            case Mode.Watering:
+                {
+                    PlacementData data =
+                        gridData.GetPlacement(ToGridVec3(cell));
+
+                    if (data != null)
+                    {
+                        Vector2Int origin =
+                            new Vector2Int(data.Origin.x, data.Origin.z);
+
+                        // Valid (green) only when there's actually a plant here to water — matches
+                        // the same check QuickWater() itself makes. Empty water pool / already-full
+                        // pot aren't checked here (kept cheap, hover-only) and instead surface via
+                        // WaterPot()'s own Debug.Log messages on click, same as the old button/Q key.
+                        PotContents pc = data.PlacedObject != null
+                            ? data.PlacedObject.GetComponent<PotContents>()
+                            : null;
+
+                        gridVisual.SetFootprint(
+                            origin,
+                            data.Size,
+                            pc != null && pc.HasPlant
+                                ? GridVisual.CellState.Valid
+                                : GridVisual.CellState.Invalid
                         );
                     }
 
@@ -664,6 +767,30 @@ public class PlacementSystem : MonoBehaviour
         Destroy(data.PlacedObject);
 
         PlaySFX(removeSoundClip);
+    }
+
+    private void TryWater(Vector2Int cell)
+    {
+        if (activeSurface == null)
+            return;
+
+        GridData gridData = surfaceGridData[activeSurface];
+
+        PlacementData data =
+            gridData.GetPlacement(ToGridVec3(cell));
+
+        if (data == null)
+            return;
+
+        PotContents pc = data.PlacedObject.GetComponent<PotContents>();
+        if (pc == null)
+            return;
+
+        // Delegates to the SAME logic the old temporary pot-menu Water button and the "Q" proximity
+        // quick-water key already use — same transfer amount, same water-pool/full-pot messages,
+        // same mission-task hook. This tool is just a different way of TARGETING that logic (hover a
+        // square instead of standing near the pot), not a reimplementation of watering itself.
+        potInteraction?.WaterPot(pc);
     }
 
     private void TryPickupOrDrop(Vector2Int cell)

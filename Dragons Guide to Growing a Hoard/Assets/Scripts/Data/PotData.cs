@@ -32,6 +32,10 @@ public class PotData : ScriptableObject
     [Tooltip("Name shown in the placement HUD / UI.")]
     public string potName = "Pot";
 
+    [Tooltip("Icon shown in the pot-type selector HUD (MainUIController) while cycling pot types " +
+             "with scroll in Placing mode.")]
+    public Sprite icon;
+
     [Header("Grid")]
     [Tooltip("The PlantSize category this pot belongs to. This is the ONLY size knob you set - the actual " +
              "footprint (below) is looked up from the PlantSizeRegistry asset, so every pot and plant sharing " +

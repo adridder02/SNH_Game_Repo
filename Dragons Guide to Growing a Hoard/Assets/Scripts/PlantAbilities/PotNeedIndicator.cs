@@ -24,7 +24,11 @@ public class PotNeedIndicator : MonoBehaviour
     private PotContents pot;
     private float remainingSeconds;
 
-    public static PotNeedIndicator AttachTo(PotContents pot, float duration, GameObject markerPrefab)
+    /// <summary>The Pollen Puff AbilityItemData that attached this — used to show its icon (the
+    /// SAME sprite Inventory shows for it) in PotMenuUIController's active-consumable indicator.</summary>
+    public AbilityItemData sourceData;
+
+    public static PotNeedIndicator AttachTo(PotContents pot, float duration, GameObject markerPrefab, AbilityItemData data = null)
     {
         if (pot == null || pot.Plant == null) return null;
 
@@ -44,6 +48,7 @@ public class PotNeedIndicator : MonoBehaviour
         PotNeedIndicator indicator = markerGO.AddComponent<PotNeedIndicator>();
         indicator.pot = pot;
         indicator.remainingSeconds = duration;
+        indicator.sourceData = data;
         indicator.Refresh();
         return indicator;
     }

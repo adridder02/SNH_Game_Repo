@@ -24,6 +24,10 @@ public class PotMenuUIController : MonoBehaviour
              "Distinct from choosePlantCurrentSoilIcon below — that one lives on the Choose Plant panel. Both " +
              "read the same currentPot.CurrentSoil, they just refresh in different panels.")]
     [SerializeField] private Image mainSoilIcon;
+    [Tooltip("Shows the icon of whichever pot-targeted consumable is CURRENTLY active on this pot " +
+             "(Dewdrop/Pollen Puff/Verdant Algae) — same sprite Inventory shows for that item. Hidden " +
+             "when none are active. See AbilityConsumableEffects.GetActiveConsumableIcon().")]
+    [SerializeField] private Image activeConsumableIcon;
     [SerializeField] private Button soilActionButton;
     [SerializeField] private TextMeshProUGUI soilActionButtonLabel;
     [SerializeField] private Button choosePlantButton;
@@ -328,6 +332,13 @@ public class PotMenuUIController : MonoBehaviour
             Sprite soilSprite = hasSoil ? GetSoilIcon(currentPot.CurrentSoil) : null;
             mainSoilIcon.sprite = soilSprite;
             mainSoilIcon.enabled = soilSprite != null;
+        }
+
+        if (activeConsumableIcon != null)
+        {
+            Sprite consumableSprite = AbilityConsumableEffects.GetActiveConsumableIcon(currentPot);
+            activeConsumableIcon.sprite = consumableSprite;
+            activeConsumableIcon.enabled = consumableSprite != null;
         }
 
         if (soilActionButtonLabel != null)

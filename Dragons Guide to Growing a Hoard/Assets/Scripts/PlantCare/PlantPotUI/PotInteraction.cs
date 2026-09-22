@@ -6,11 +6,14 @@
 // HOW IT WORKS:
 //   - Each frame, a sphere cast finds the nearest PotContents
 //     within interactRange.
-//   - Press E to open the pot menu (built by PotMenuUIController —
-//     this script no longer builds any UI itself, see the note below).
-//   - Press E again or walk away to close without acting.
-//   - Q quick-waters the nearby pot directly, whether the menu is
-//     open or not — unchanged from before.
+//   - Two stacked prompts can show above the pot: "Interact" (always,
+//     when in range) and "Water Plant" (only when the pot HAS a plant).
+//     Scroll to pick which one is active (highlighted, full opacity —
+//     the other dims to inactivePromptOpacity). Press E to run
+//     whichever one is currently active. See RefreshPromptHighlight()/
+//     UpdateInteractPromptVisibility() below.
+//   - Press E again (while the menu from Interact is open) or walk
+//     away to close without acting.
 //
 // UI CHANGE:
 //   All the runtime-built text menu code (BuildMenuCanvas, OpenMenu's
@@ -29,7 +32,9 @@
 //   4. Adjust interactRange so it feels natural.
 //   5. Assign promptTemplate — an InteractPromptView prefab (background +
 //      keybind icon + label, built once — see InteractPromptView.cs).
-//      This script only instantiates it and fills in the sprite/text.
+//      This script instantiates TWO copies of it (Interact, Water Plant)
+//      and fills in each one's label — it never builds or aligns the
+//      prefab's own three parts itself.
 // =============================================================
 
 using UnityEngine;
@@ -54,7 +59,8 @@ public class PotInteraction : MonoBehaviour
     [SerializeField] private PotMenuUIController potMenuUI;
 
     [Header("Watering")]
-    [Tooltip("How much water is added per Q press when watering.")]
+    [Tooltip("How much water is added when watering (triggered by E while the Water Plant prompt " +
+             "option is the active one — see the prompt fields below).")]
     public float waterPerPress = 2f;
 
     [Header("Mission")]
@@ -97,6 +103,22 @@ public class PotInteraction : MonoBehaviour
              "Label. Only used when useWorldSpacePrompt is ON.")]
     public string interactPromptLabel = "Interact";
 
+    [Header("UI — Water Plant Prompt")]
+    [Tooltip("A second prompt shown below the Interact prompt whenever the nearby pot actually has " +
+             "a plant in it (hidden entirely otherwise — an empty pot has nothing to water). Scroll to " +
+             "switch which prompt is the active one (highlighted, full opacity — the other dims); E " +
+             "runs whichever is active. Works with EITHER prompt style: the world-space prompt (a " +
+             "second instance of promptTemplate) when useWorldSpacePrompt is ON, or MainUIController's " +
+             "waterPromptHUD element when it's OFF.")]
+    public string waterPromptLabel = "Water Plant";
+
+    [Tooltip("Vertical gap between the Interact prompt and the Water Plant prompt below it.")]
+    public float waterPromptVerticalGap = 0.4f;
+
+    [Tooltip("Opacity applied to whichever prompt is NOT currently the active/selected one.")]
+    [Range(0f, 1f)]
+    public float inactivePromptOpacity = 0.45f;
+
     [Tooltip("The main HUD controller whose fixed interactPromptHUD element gets shown/hidden instead, " +
              "when useWorldSpacePrompt is OFF. Auto-found in the scene if left empty.")]
     [SerializeField] private MainUIController mainUI;
@@ -118,6 +140,15 @@ public class PotInteraction : MonoBehaviour
     // Interact prompt UI
     private GameObject promptRoot;
     private InteractPromptView promptView;
+    private CanvasGroup promptCanvasGroup;
+
+    // Water Plant prompt UI — second instance of the SAME promptTemplate
+    private GameObject waterPromptRoot;
+    private InteractPromptView waterPromptView;
+    private CanvasGroup waterPromptCanvasGroup;
+
+    private enum PromptOption { Interact, WaterPlant }
+    private PromptOption activePromptOption = PromptOption.Interact;
 
     // ---------------------------------------------------------------
     // Start
@@ -167,6 +198,7 @@ public class PotInteraction : MonoBehaviour
     {
         ClearCurrentOutline();
         mainUI?.SetInteractPromptVisible(false, this);
+        ThirdPersonCameraController.ScrollSuppressed = false;
     }
 
     // ---------------------------------------------------------------
@@ -185,6 +217,10 @@ public class PotInteraction : MonoBehaviour
             ClearCurrentOutline();
             nearbyPot = found;
             ApplyOutlineFor(nearbyPot);
+
+            // Always default back to Interact for a newly-focused pot, rather than carrying over
+            // whatever was selected for the previous one.
+            activePromptOption = PromptOption.Interact;
         }
 
         // Show/hide the interact prompt now; its position/rotation are updated in LateUpdate (see below),
@@ -192,18 +228,38 @@ public class PotInteraction : MonoBehaviour
         // stale position on frames where movement hadn't been applied yet, which read as flicker/jitter.
         UpdateInteractPromptVisibility();
 
-        // E — toggle menu
+        // Scroll switches which prompt option is active, only while there's actually a choice to
+        // make (Water Plant prompt visible). Down = Water Plant, up = back to Interact — matches
+        // scrolling "down" toward the lower prompt in the stack.
+        bool waterOptionAvailable = nearbyPot != null && !menuOpen && nearbyPot.HasPlant;
+
+        // Suppress camera zoom exactly while scroll is meaningful here — not for the whole time a
+        // pot is nearby (that would block zoom near every empty pot too, which has nothing to do
+        // with this prompt). Reset in OnDisable() too, in case Update() stops running mid-suppress.
+        ThirdPersonCameraController.ScrollSuppressed = waterOptionAvailable;
+
+        if (waterOptionAvailable && Mouse.current != null)
+        {
+            float scroll = Mouse.current.scroll.ReadValue().y;
+            if (scroll < 0f) activePromptOption = PromptOption.WaterPlant;
+            else if (scroll > 0f) activePromptOption = PromptOption.Interact;
+        }
+
+        // E — runs whichever prompt option is currently active
         if (Keyboard.current.eKey.wasPressedThisFrame)
         {
             if (menuOpen)
+            {
                 CloseMenu();
+            }
             else if (nearbyPot != null)
-                OpenMenu(nearbyPot);
+            {
+                if (activePromptOption == PromptOption.WaterPlant && waterOptionAvailable)
+                    QuickWater(nearbyPot);
+                else
+                    OpenMenu(nearbyPot);
+            }
         }
-
-        // Q — quick water (works whether menu is open or not)
-        if (Keyboard.current.qKey.wasPressedThisFrame && nearbyPot != null)
-            QuickWater(nearbyPot);
     }
 
     private void LateUpdate()
@@ -335,24 +391,80 @@ public class PotInteraction : MonoBehaviour
         if (promptView.label != null && !string.IsNullOrEmpty(interactPromptLabel))
             promptView.label.text = interactPromptLabel;
 
+        // CanvasGroup for opacity dimming (RefreshPromptHighlight) rather than assuming anything
+        // about promptTemplate's internal Image/Text structure — works regardless of how the
+        // prefab is actually built inside.
+        promptCanvasGroup = promptRoot.GetComponent<CanvasGroup>();
+        if (promptCanvasGroup == null)
+            promptCanvasGroup = promptRoot.AddComponent<CanvasGroup>();
+
         promptRoot.SetActive(false); // Hidden by default
+
+        // Second copy of the SAME template for the Water Plant option — same look, different label,
+        // positioned below the Interact prompt (see UpdateInteractPromptTransform).
+        waterPromptView = Instantiate(promptTemplate);
+        waterPromptRoot = waterPromptView.gameObject;
+        waterPromptRoot.name = "WaterPlantPrompt";
+        waterPromptRoot.transform.SetParent(null);
+        DontDestroyOnLoad(waterPromptRoot);
+
+        if (waterPromptView.canvas != null)
+            waterPromptView.canvas.renderMode = RenderMode.WorldSpace;
+
+        if (waterPromptView.keybindIcon != null && interactKeybindSprite != null)
+        {
+            waterPromptView.keybindIcon.sprite = interactKeybindSprite;
+            waterPromptView.keybindIcon.enabled = true;
+        }
+
+        if (waterPromptView.label != null && !string.IsNullOrEmpty(waterPromptLabel))
+            waterPromptView.label.text = waterPromptLabel;
+
+        waterPromptCanvasGroup = waterPromptRoot.GetComponent<CanvasGroup>();
+        if (waterPromptCanvasGroup == null)
+            waterPromptCanvasGroup = waterPromptRoot.AddComponent<CanvasGroup>();
+
+        waterPromptRoot.SetActive(false); // Hidden by default — and whenever the pot has no plant
     }
 
     private void UpdateInteractPromptVisibility()
     {
         if (!showInteractPrompt) return;
 
-        bool shouldShow = nearbyPot != null && !menuOpen;
+        bool showInteract = nearbyPot != null && !menuOpen;
+        bool showWater = showInteract && nearbyPot.HasPlant;
+
+        // If the Water Plant option just became unavailable (pot changed, plant removed, ...) while
+        // it was the active selection, fall back to Interact so E always does something sensible.
+        if (!showWater && activePromptOption == PromptOption.WaterPlant)
+            activePromptOption = PromptOption.Interact;
 
         if (useWorldSpacePrompt)
         {
             if (promptRoot != null)
-                promptRoot.SetActive(shouldShow);
+                promptRoot.SetActive(showInteract);
+            if (waterPromptRoot != null)
+                waterPromptRoot.SetActive(showWater);
+
+            RefreshPromptHighlight();
         }
         else
         {
-            mainUI?.SetInteractPromptVisible(shouldShow, this);
+            mainUI?.SetInteractPromptVisible(showInteract, this);
+            mainUI?.SetWaterPromptVisible(showWater);
+            mainUI?.SetActiveHUDPrompt(activePromptOption == PromptOption.WaterPlant);
         }
+    }
+
+    /// <summary>Full opacity on whichever prompt option is active, inactivePromptOpacity on the
+    /// other. Safe to call even when only one (or neither) prompt is currently visible.</summary>
+    private void RefreshPromptHighlight()
+    {
+        if (promptCanvasGroup != null)
+            promptCanvasGroup.alpha = activePromptOption == PromptOption.Interact ? 1f : inactivePromptOpacity;
+
+        if (waterPromptCanvasGroup != null)
+            waterPromptCanvasGroup.alpha = activePromptOption == PromptOption.WaterPlant ? 1f : inactivePromptOpacity;
     }
 
     private void UpdateInteractPromptTransform()
@@ -360,23 +472,34 @@ public class PotInteraction : MonoBehaviour
         // Only the world-space prompt needs positioning/billboarding — the HUD version is a fixed
         // screen-space element that MainUIController just enables/disables.
         if (!useWorldSpacePrompt) return;
-        if (!showInteractPrompt || promptRoot == null || !promptRoot.activeSelf) return;
+        if (!showInteractPrompt) return;
 
         // Position above the PLAYER (this script's own transform) rather than the stationary pot —
         // that way it moves naturally with the player (walking, jumping, stairs, slopes) instead of
         // sitting at one fixed height the whole time.
-        promptRoot.transform.position = transform.position + Vector3.up * promptHeightOffset;
+        Vector3 basePos = transform.position + Vector3.up * promptHeightOffset;
 
-        // Billboard toward camera
-        if (Camera.main != null)
+        if (promptRoot != null && promptRoot.activeSelf)
         {
-            Vector3 toCamera = Camera.main.transform.position - promptRoot.transform.position;
-            toCamera.y = 0f;
-            if (toCamera.sqrMagnitude > 0.0001f)
-            {
-                promptRoot.transform.rotation = Quaternion.LookRotation(-toCamera);
-            }
+            promptRoot.transform.position = basePos;
+            BillboardTowardCamera(promptRoot);
         }
+
+        if (waterPromptRoot != null && waterPromptRoot.activeSelf)
+        {
+            waterPromptRoot.transform.position = basePos + Vector3.down * waterPromptVerticalGap;
+            BillboardTowardCamera(waterPromptRoot);
+        }
+    }
+
+    private static void BillboardTowardCamera(GameObject promptObj)
+    {
+        if (Camera.main == null) return;
+
+        Vector3 toCamera = Camera.main.transform.position - promptObj.transform.position;
+        toCamera.y = 0f;
+        if (toCamera.sqrMagnitude > 0.0001f)
+            promptObj.transform.rotation = Quaternion.LookRotation(-toCamera);
     }
 
     // ===============================================================

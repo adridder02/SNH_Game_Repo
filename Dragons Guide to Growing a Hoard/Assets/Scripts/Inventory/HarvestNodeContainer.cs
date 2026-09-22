@@ -256,6 +256,15 @@ public class HarvestNodeContainer : MonoBehaviour
         {
             if (node == null || !node.gameObject.activeSelf) continue;
 
+            // Skip a node that's currently mid-dissolve — it's still active() on purpose (so the
+            // DisintegrateEffect can finish playing before it's deactivated), but it's already been
+            // harvested and shouldn't be re-selectable, re-outlined, or re-harvestable in the
+            // meantime. This is the single choke point FindClosestNode() feeds into (outline,
+            // prompt, and the E-key handler in Update() all go through currentNode), so excluding
+            // it here is enough to stop the whole re-interact bug at the source.
+            DisintegrateEffect disintegrate = node.GetComponent<DisintegrateEffect>();
+            if (disintegrate != null && disintegrate.IsPlaying) continue;
+
             float d = Vector3.Distance(player.position, node.position);
             if (d < bestDist)
             {

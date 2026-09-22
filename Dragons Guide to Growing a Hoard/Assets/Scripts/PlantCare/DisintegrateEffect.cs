@@ -69,6 +69,10 @@ public class DisintegrateEffect : MonoBehaviour
     private MaterialPropertyBlock propBlock;
     private Coroutine playingCoroutine;
 
+    /// <summary>True from the moment Play() starts until its effect finishes (or a new Play() call
+    /// restarts it) — use this to stop something from being re-interacted-with while it's mid-dissolve.</summary>
+    public bool IsPlaying => playingCoroutine != null;
+
     private void Awake()
     {
         propBlock = new MaterialPropertyBlock();

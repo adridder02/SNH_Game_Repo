@@ -21,13 +21,26 @@ public class PotWaterGizmo : MonoBehaviour
 {
     private PotContents pot;
 
-    public static void AttachTo(PotContents pot)
+    /// <summary>The Dewdrop AbilityItemData that attached this — used to show its icon (the SAME
+    /// sprite Inventory shows for it) in PotMenuUIController's active-consumable indicator. Not
+    /// involved in the water bar itself, only this component's own PRESENCE drives that (see the
+    /// class comment above).</summary>
+    public AbilityItemData sourceData;
+
+    public static void AttachTo(PotContents pot, AbilityItemData data = null)
     {
         if (pot == null) return;
-        if (pot.GetComponent<PotWaterGizmo>() != null) return; // already tagged
+
+        PotWaterGizmo existing = pot.GetComponent<PotWaterGizmo>();
+        if (existing != null)
+        {
+            if (data != null) existing.sourceData = data; // keep the icon current even on a re-use
+            return; // already tagged
+        }
 
         PotWaterGizmo gizmoComp = pot.gameObject.AddComponent<PotWaterGizmo>();
         gizmoComp.pot = pot;
+        gizmoComp.sourceData = data;
     }
 
     private void Awake()

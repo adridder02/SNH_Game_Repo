@@ -56,6 +56,11 @@ public class InventoryItemInstance : IGridPlaceable
     // matching GetDisplayName's own fallback below.
     public readonly string newItemTypeId;
 
+    // The species this plant belongs to in the Journal, if any — same source as newItemTypeId
+    // above. Used by the Plant detail panel's Journal button (InventoryUIController) to jump
+    // straight to this species' page.
+    public readonly PlantSpeciesData journalSpecies;
+
     public int gridX = -1;
     public int gridY = -1;
 
@@ -95,5 +100,7 @@ public class InventoryItemInstance : IGridPlaceable
         newItemTypeId = (ps != null && ps.journalSpecies != null)
             ? ps.journalSpecies.ResolvedId
             : (prefab != null ? prefab.name.Replace("(Clone)", "").Trim() : "Unknown");
+
+        journalSpecies = ps != null ? ps.journalSpecies : null;
     }
 }

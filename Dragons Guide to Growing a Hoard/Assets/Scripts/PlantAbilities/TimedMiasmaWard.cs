@@ -14,7 +14,11 @@ public class TimedMiasmaWard : MonoBehaviour
     private PlantState plant;
     private float remaining;
 
-    public static TimedMiasmaWard ApplyTo(PlantState plant, float duration)
+    /// <summary>The Verdant Algae AbilityItemData that applied this — used to show its icon (the
+    /// SAME sprite Inventory shows for it) in PotMenuUIController's active-consumable indicator.</summary>
+    public AbilityItemData sourceData;
+
+    public static TimedMiasmaWard ApplyTo(PlantState plant, float duration, AbilityItemData data = null)
     {
         if (plant == null) return null;
 
@@ -24,6 +28,7 @@ public class TimedMiasmaWard : MonoBehaviour
         TimedMiasmaWard ward = go.AddComponent<TimedMiasmaWard>();
         ward.plant = plant;
         ward.remaining = duration;
+        ward.sourceData = data;
         plant.AddMiasmaImmunitySource(ward);
         return ward;
     }

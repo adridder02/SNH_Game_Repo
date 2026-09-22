@@ -38,7 +38,7 @@ public static class AbilityConsumableEffects
                 {
                     if (targetPot == null || targetPot.Plant == null) return false;
                     float duration = data.amountA > 0f ? data.amountA : 20f;
-                    PotNeedIndicator.AttachTo(targetPot, duration, data.placedPrefab);
+                    PotNeedIndicator.AttachTo(targetPot, duration, data.placedPrefab, data);
                     return true;
                 }
 
@@ -62,7 +62,7 @@ public static class AbilityConsumableEffects
                 {
                     if (targetPot == null || targetPot.Plant == null) return false;
                     float duration = data.amountA > 0f ? data.amountA : 60f;
-                    TimedMiasmaWard.ApplyTo(targetPot.Plant, duration);
+                    TimedMiasmaWard.ApplyTo(targetPot.Plant, duration, data);
                     return true;
                 }
 
@@ -77,7 +77,7 @@ public static class AbilityConsumableEffects
             case AbilityEffectId.WaterIndicatorTag:
                 {
                     if (targetPot == null) return false;
-                    PotWaterGizmo.AttachTo(targetPot);
+                    PotWaterGizmo.AttachTo(targetPot, data);
                     return true;
                 }
 
@@ -86,5 +86,29 @@ public static class AbilityConsumableEffects
                                   $"effectId '{data.effectId}'.");
                 return false;
         }
+    }
+
+    /// <summary>Read by PotMenuUIController to show a single icon (same sprite Inventory shows for
+    /// that item) representing whichever pot-targeted consumable is CURRENTLY active on this pot —
+    /// mirrors mainSoilIcon's role for soil. Checks all three pot-targeted effect types; if more
+    /// than one happens to be active at once, returns the first found in this priority order
+    /// (Water, Pollen, Miasma Ward) rather than showing several at once. Returns null if none are
+    /// active, or if the active one's source AbilityItemData wasn't captured (shouldn't happen for
+    /// anything applied through TryApply above, but a pot could theoretically have one of these
+    /// components added some other way).</summary>
+    public static Sprite GetActiveConsumableIcon(PotContents pot)
+    {
+        if (pot == null) return null;
+
+        PotWaterGizmo water = pot.GetComponent<PotWaterGizmo>();
+        if (water != null && water.sourceData != null) return water.sourceData.icon;
+
+        PotNeedIndicator pollen = pot.GetComponentInChildren<PotNeedIndicator>();
+        if (pollen != null && pollen.sourceData != null) return pollen.sourceData.icon;
+
+        TimedMiasmaWard ward = pot.Plant != null ? pot.Plant.GetComponentInChildren<TimedMiasmaWard>() : null;
+        if (ward != null && ward.sourceData != null) return ward.sourceData.icon;
+
+        return null;
     }
 }

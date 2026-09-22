@@ -121,6 +121,12 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     public static bool CameraLocked = false;
 
+    /// <summary>When true, scroll wheel input should NOT zoom the camera — something else (e.g.
+    /// PotInteraction's Interact/Water Plant prompt selection) is consuming it instead this frame.
+    /// Deliberately separate from CameraLocked, which also locks mouse-look rotation — this only
+    /// suppresses zoom, looking around still works normally.</summary>
+    public static bool ScrollSuppressed = false;
+
     // See Start() / setCameraZoomLimitOnFly() below - lets that static method reach this
     // instance's (now non-static) pitch-range fields without PlayerController needing to hold
     // or pass a direct reference.
@@ -159,31 +165,12 @@ public class ThirdPersonCameraController : MonoBehaviour
         // whenever PlayerController enters fly mode.
         minPitchAngle = groundedMinPitch;
         maxPitchAngle = groundedMaxPitch;
-        // Cinemachine's built-in Horizontal Axis recentering should only ever run while flying -
-        // force it off here so the grounded default doesn't depend on whatever the Inspector
-        // checkbox was last left at in the editor.
-        SetHorizontalRecenteringEnabled(false);
 
         targetZoom = currentZoom = collisionZoom = orbital.Radius;
         ConfigureAxes();
         
         // Setup or find existing collider
         SetupCameraCollisionBox();
-    }
-
-    /// <summary>
-    /// Enables/disables Cinemachine's built-in automatic recentering on the Orbital Follow's
-    /// Horizontal Axis. InputAxis is a struct, so it has to be copied out, mutated, and written
-    /// back rather than set through a nested property path. Driven from setCameraZoomLimitOnFly()
-    /// so horizontal recentering only ever runs while flying, matching the vertical recentering
-    /// system above which is already fly-gated via isFlying/recenterVerticalWhileFlying.
-    /// </summary>
-    private void SetHorizontalRecenteringEnabled(bool enabled)
-    {
-        if (orbital == null) return;
-        var axis = orbital.HorizontalAxis;
-        axis.Recentering.Enabled = enabled;
-        orbital.HorizontalAxis = axis;
     }
 
     private void SetupCameraCollisionBox()
@@ -352,10 +339,13 @@ public class ThirdPersonCameraController : MonoBehaviour
         // the player actually had the camera, causing snapping/jumping.
         if (scrollDelta.y != 0f)
         {
-            targetZoom = Mathf.Clamp(
-                currentZoom - scrollDelta.y * zoomSpeed,
-                minDistance, maxDistance);
-            scrollDelta = Vector2.zero;
+            if (!ScrollSuppressed)
+            {
+                targetZoom = Mathf.Clamp(
+                    currentZoom - scrollDelta.y * zoomSpeed,
+                    minDistance, maxDistance);
+            }
+            scrollDelta = Vector2.zero; // clear regardless, so a suppressed scroll doesn't leak through and zoom once suppression lifts
         }
 
         currentZoom = Mathf.Lerp(currentZoom, targetZoom, dt * zoomLerpSpeed);
@@ -895,8 +885,5 @@ public class ThirdPersonCameraController : MonoBehaviour
         Instance.isFlying = zoom;
         Instance.minPitchAngle = zoom ? Instance.flyingMinPitch : Instance.groundedMinPitch;
         Instance.maxPitchAngle = zoom ? Instance.flyingMaxPitch : Instance.groundedMaxPitch;
-        // Cinemachine's built-in Horizontal Axis recentering (the Wait/Time fields in the
-        // Inspector) should only run while flying - on: takeoff, off: landing.
-        Instance.SetHorizontalRecenteringEnabled(zoom);
     }
 }

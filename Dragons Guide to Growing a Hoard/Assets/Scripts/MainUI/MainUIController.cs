@@ -49,7 +49,7 @@
 //      attach PlayerZoneTracker.cs to the player/dragon GameObject
 //      (see that file's header) and assign it to playerZoneTracker.
 //   6. Drag the 4 tool-selector slot buttons into toolSlots (slot 0 =
-//      Place, 1 = Remove, 2 = Move, 3 = still reserved) and assign the
+//      Place, 1 = Remove, 2 = Move, 3 = Water) and assign the
 //      scene's PlacementSystem to placementSystem. Nothing else to
 //      wire up — clicking a slot calls the matching Toggle*Mode() on
 //      PlacementSystem, and the slot's tint follows PlacementSystem's
@@ -168,12 +168,72 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
              "secondaryHudRoot should be hidden right now (see IsActive below).")]
     [SerializeField] private AbilityPlacementSystem abilityPlacementSystem;
 
+    [Tooltip("Wall placeables (Clovenwick, etc). Auto-found in the scene if left empty. Used for the " +
+             "Floor/Wall Placement Mode banner below.")]
+    [SerializeField] private WallPlacementSystem wallPlacementSystem;
+
+    [Header("Placement Mode Banner")]
+    [Tooltip("Root of the banner shown while PlacementSystem (Floor) or WallPlacementSystem (Wall) is " +
+             "in Placing mode — just an image with text on it. Hidden the rest of the time.")]
+    [SerializeField] private GameObject placementBannerRoot;
+    [SerializeField] private TextMeshProUGUI placementBannerText;
+    [SerializeField] private string floorPlacementBannerText = "Floor Placement Mode";
+    [SerializeField] private string wallPlacementBannerText = "Wall Placement Mode";
+
     [Header("Interact Prompt (HUD)")]
     [Tooltip("Fixed screen-space element (e.g. a 'Press E' panel docked on the HUD) — just enabled/" +
              "disabled, no positioning or billboarding. PotInteraction calls SetInteractPromptVisible() " +
              "on this when its own useWorldSpacePrompt toggle is OFF, instead of using its floating " +
              "world-space prompt.")]
     [SerializeField] private GameObject interactPromptHUD;
+
+    [Tooltip("Second fixed screen-space element, positioned directly below interactPromptHUD in the " +
+             "Editor (the 'Quick Water' / 'Water Plant' option) — shown only while the nearby pot " +
+             "actually has a plant. Unlike interactPromptHUD, only PotInteraction ever drives this one " +
+             "(HarvestNodeContainer etc. have no use for it), so it doesn't need the same multi-" +
+             "requester tracking interactPromptHUD has — a plain show/hide is enough.")]
+    [SerializeField] private GameObject waterPromptHUD;
+
+    [Tooltip("The 'E' key icon Image on interactPromptHUD — hidden entirely (not just dimmed) while " +
+             "this prompt isn't the active selection, so only the currently-active option shows a key " +
+             "to press.")]
+    [SerializeField] private Image interactPromptEIcon;
+
+    [Tooltip("Same as interactPromptEIcon, but for waterPromptHUD.")]
+    [SerializeField] private Image waterPromptEIcon;
+
+    [Tooltip("CanvasGroup on interactPromptHUD, used to dim it when the Water prompt below is the " +
+             "active selection instead — see SetActiveHUDPrompt(). Auto-added if missing.")]
+    [SerializeField] private CanvasGroup interactPromptHUDGroup;
+
+    [Tooltip("CanvasGroup on waterPromptHUD, same purpose as interactPromptHUDGroup but for this prompt.")]
+    [SerializeField] private CanvasGroup waterPromptHUDGroup;
+
+    [Tooltip("Opacity applied to whichever of interactPromptHUD/waterPromptHUD is NOT the active " +
+             "selection (scrolled-to) one.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float inactiveHUDPromptOpacity = 0.45f;
+
+    [Tooltip("Small 'scroll to switch' hint icon — shown alongside the two HUD prompts whenever " +
+             "waterPromptHUD is visible (i.e. whenever scrolling would actually do something), hidden " +
+             "the rest of the time. Optional.")]
+    [SerializeField] private GameObject promptScrollHint;
+
+    [Header("Pot Selector (HUD)")]
+    [Tooltip("Root of the pot-type selector — pops up while in PlacementSystem's Placing mode, " +
+             "hidden otherwise. Shows one icon per entry in PlacementSystem.AvailablePots, in the " +
+             "same order as potSelectorIcons below.")]
+    [SerializeField] private GameObject potSelectorRoot;
+
+    [Tooltip("One Image per pot type, in the SAME order as PlacementSystem's availablePots list. The " +
+             "currently-selected pot's icon shows at full opacity; the others dim to " +
+             "inactivePotIconOpacity. Assign as many as there are pot types — extra slots beyond " +
+             "AvailablePots.Count are just left blank/hidden.")]
+    [SerializeField] private List<Image> potSelectorIcons;
+
+    [Tooltip("Opacity applied to every pot icon EXCEPT the currently-selected one.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float inactivePotIconOpacity = 0.35f;
 
     [Header("Harvest Feedback (HUD)")]
     [Tooltip("Root of the fixed HUD feedback popup (e.g. 'Harvested Sparkmint x1') — replaces the old " +
@@ -238,7 +298,7 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         WireToolSlot(0, () => placementSystem.TogglePlaceMode());
         WireToolSlot(1, () => placementSystem.ToggleRemoveMode());
         WireToolSlot(2, () => placementSystem.ToggleMoveMode());
-        // toolSlots[3] intentionally left unwired — still reserved.
+        WireToolSlot(3, () => placementSystem.ToggleWaterMode());
 
         if (placementSystem != null)
         {
@@ -257,6 +317,14 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             abilityPlacementSystem.OnPlacingChanged += RefreshSecondaryHudVisibility;
 
         RefreshSecondaryHudVisibility(); // sync initial state
+
+        if (wallPlacementSystem == null)
+            wallPlacementSystem = FindObjectOfType<WallPlacementSystem>();
+
+        if (wallPlacementSystem != null)
+            wallPlacementSystem.OnModeChanged += RefreshPlacementBanner;
+
+        RefreshPlacementBanner(); // sync initial state
 
         if (hotbarSystem == null)
             hotbarSystem = FindObjectOfType<AbilityHotbarSystem>();
@@ -297,6 +365,9 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
 
         if (abilityPlacementSystem != null)
             abilityPlacementSystem.OnPlacingChanged -= RefreshSecondaryHudVisibility;
+
+        if (wallPlacementSystem != null)
+            wallPlacementSystem.OnModeChanged -= RefreshPlacementBanner;
     }
 
     // ---------------------------------------------------------------
@@ -336,6 +407,60 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         SetToolSlotHighlight(0, mode == PlacementSystem.Mode.Placing);
         SetToolSlotHighlight(1, mode == PlacementSystem.Mode.Removing);
         SetToolSlotHighlight(2, mode == PlacementSystem.Mode.Moving);
+        SetToolSlotHighlight(3, mode == PlacementSystem.Mode.Watering);
+
+        RefreshPotSelector(mode);
+        RefreshPlacementBanner();
+    }
+
+    /// <summary>Shows "Floor Placement Mode" while PlacementSystem is Placing, "Wall Placement
+    /// Mode" while WallPlacementSystem is Placing, and hides the banner otherwise. Called both from
+    /// RefreshToolButtonHighlights (fires on every PlacementSystem.OnModeChanged) and directly from
+    /// wallPlacementSystem.OnModeChanged, since the two systems' events aren't shaped the same
+    /// (one passes a Mode, the other doesn't) — this method takes no parameters and just re-reads
+    /// both systems' current state fresh each time, so either caller can trigger the same result.</summary>
+    private void RefreshPlacementBanner()
+    {
+        if (placementBannerRoot == null) return;
+
+        bool floorPlacing = placementSystem != null && placementSystem.CurrentMode == PlacementSystem.Mode.Placing;
+        bool wallPlacing = wallPlacementSystem != null && wallPlacementSystem.CurrentMode == WallPlacementSystem.Mode.Placing;
+
+        placementBannerRoot.SetActive(floorPlacing || wallPlacing);
+
+        if (placementBannerText != null)
+            placementBannerText.text = wallPlacing ? wallPlacementBannerText : floorPlacementBannerText;
+    }
+
+    /// <summary>Shows/hides and refreshes the pot-type selector. Called from
+    /// RefreshToolButtonHighlights, which already fires on every PlacementSystem.OnModeChanged —
+    /// including every single scroll-cycle step while in Placing mode (EnterPlaceMode fires the
+    /// event on each call, not just the first), so this stays in sync with scrolling for free.</summary>
+    private void RefreshPotSelector(PlacementSystem.Mode mode)
+    {
+        bool visible = mode == PlacementSystem.Mode.Placing;
+
+        if (potSelectorRoot != null)
+            potSelectorRoot.SetActive(visible);
+
+        if (!visible || potSelectorIcons == null || placementSystem == null) return;
+
+        IReadOnlyList<PotData> pots = placementSystem.AvailablePots;
+        int activeIndex = placementSystem.SelectedPotIndex;
+
+        for (int i = 0; i < potSelectorIcons.Count; i++)
+        {
+            Image img = potSelectorIcons[i];
+            if (img == null) continue;
+
+            PotData data = pots != null && i < pots.Count ? pots[i] : null;
+            img.sprite = data != null ? data.icon : null;
+            img.enabled = data != null && data.icon != null;
+
+            Color c = img.color;
+            c.a = i == activeIndex ? 1f : inactivePotIconOpacity;
+            img.color = c;
+        }
     }
 
     private void SetToolSlotHighlight(int index, bool active)
@@ -495,6 +620,58 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
 
         if (interactPromptHUD != null)
             interactPromptHUD.SetActive(_interactPromptRequesters.Count > 0);
+    }
+
+    /// <summary>Shows/hides the Water Plant HUD prompt, and the "scroll to switch" hint alongside
+    /// it — they always share the same visibility condition (there's nothing to scroll BETWEEN
+    /// unless this second prompt exists), so one method covers both. Only PotInteraction calls
+    /// this — see the waterPromptHUD tooltip for why it doesn't need interactPromptHUD's
+    /// requester-tracking.</summary>
+    public void SetWaterPromptVisible(bool visible)
+    {
+        if (waterPromptHUD != null)
+            waterPromptHUD.SetActive(visible);
+
+        if (promptScrollHint != null)
+            promptScrollHint.SetActive(visible);
+    }
+
+    /// <summary>Sets which HUD prompt is the active/highlighted one (full opacity, E icon shown),
+    /// dimming the other to inactiveHUDPromptOpacity AND hiding its E icon entirely. Call whenever
+    /// the selection OR either prompt's visibility changes — safe even if one or both prompts are
+    /// currently hidden.</summary>
+    public void SetActiveHUDPrompt(bool waterIsActive)
+    {
+        EnsureHUDPromptGroups();
+
+        if (interactPromptHUDGroup != null)
+            interactPromptHUDGroup.alpha = waterIsActive ? inactiveHUDPromptOpacity : 1f;
+
+        if (waterPromptHUDGroup != null)
+            waterPromptHUDGroup.alpha = waterIsActive ? 1f : inactiveHUDPromptOpacity;
+
+        if (interactPromptEIcon != null)
+            interactPromptEIcon.enabled = !waterIsActive;
+
+        if (waterPromptEIcon != null)
+            waterPromptEIcon.enabled = waterIsActive;
+    }
+
+    private void EnsureHUDPromptGroups()
+    {
+        if (interactPromptHUD != null && interactPromptHUDGroup == null)
+        {
+            interactPromptHUDGroup = interactPromptHUD.GetComponent<CanvasGroup>();
+            if (interactPromptHUDGroup == null)
+                interactPromptHUDGroup = interactPromptHUD.AddComponent<CanvasGroup>();
+        }
+
+        if (waterPromptHUD != null && waterPromptHUDGroup == null)
+        {
+            waterPromptHUDGroup = waterPromptHUD.GetComponent<CanvasGroup>();
+            if (waterPromptHUDGroup == null)
+                waterPromptHUDGroup = waterPromptHUD.AddComponent<CanvasGroup>();
+        }
     }
 
     // ---------------------------------------------------------------
