@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: LongPot
   m_EditorClassIdentifier: Assembly-CSharp::PotData
   potName: Pot
-  size: {x: 1, y: 2}
+  icon: {fileID: 21300000, guid: c336ec9695f087f4ab617a5fb0c59753, type: 3}
+  correspondingPlantSize: 1
   potPrefab: {fileID: 994234851134939008, guid: c638b776491b6cf418267b1bbd0d8024, type: 3}
   previewPrefab: {fileID: 994234851134939008, guid: c638b776491b6cf418267b1bbd0d8024, type: 3}
   defaultSoil: 1
