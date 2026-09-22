@@ -44,6 +44,12 @@ public class PlayerController : MonoBehaviour
              "of manual descent speed.")]
     [SerializeField] private float autoDescendSpeed = 3f;
 
+    [Tooltip("Forward speed automatically added while auto-descending, so it reads as a glide down " +
+             "rather than dropping straight down with no forward motion. Added on TOP of whatever " +
+             "WASD gives — the player can still steer left/right during the glide, this just " +
+             "guarantees baseline forward motion even with no input held.")]
+    [SerializeField] private float autoDescendForwardSpeed = 3f;
+
     [Tooltip("How strongly camera pitch steers vertical movement while flying (0 = off).")]
     [SerializeField] private float flyPitchInfluence = 1f;
 
@@ -66,6 +72,14 @@ public class PlayerController : MonoBehaviour
     private const string TaskFlyUpTilt = "fly_up_tilt";
     private const string TaskFlyDownTilt = "fly_down_tilt";
     private const string TaskLandGround = "land_ground";
+
+    [Tooltip("How long (seconds) the dragon must be continuously airborne WITHOUT having jumped " +
+             "before the fall animation kicks in. CharacterController.isGrounded can flicker false " +
+             "for a single frame during completely normal walking (stairs, bumpy terrain, the tail " +
+             "end of landing) — without this debounce, every one of those blips triggered the fall " +
+             "animation, which read as firing constantly during ordinary movement.")]
+    [SerializeField] private float fallAnimationDelay = 0.15f;
+    private float ungroundedTimer = 0f;
 
     /*[SerializeField] private Animator animator;
 
@@ -291,7 +305,16 @@ public class PlayerController : MonoBehaviour
 
             case LocomotionState.Jumping:
                 if (Time.time - lastSpacePressTime <= doubleTapWindow)
+                {
                     EnterFlyMode();
+                    // Refresh the timestamp the instant flying actually starts — without this, it
+                    // stays stale from the FIRST of the two launch taps, and a normal eager third
+                    // tap (tap-tap to launch, tap again quickly to ascend) lands within
+                    // doubleTapWindow of that stale time and gets misread as a double-tap-while-
+                    // flying, triggering autoDescending immediately on takeoff and stomping the
+                    // takeoff animation before it can play.
+                    lastSpacePressTime = Time.time;
+                }
                 else
                     lastSpacePressTime = Time.time;
                 break;
@@ -424,10 +447,27 @@ public class PlayerController : MonoBehaviour
                 // right now. The landing transition below already handles this correctly with no
                 // further changes — it's keyed on controller.isGrounded/wasGrounded, not on how
                 // the player became airborne.
-                playerAnim.fall();
+                //
+                // Debounced (fallAnimationDelay) rather than firing on the very first ungrounded
+                // frame — CharacterController.isGrounded flickers false for single frames during
+                // completely normal walking (stairs, bumpy terrain), which was triggering this
+                // constantly. Below the threshold, just leave whatever animation was already
+                // playing alone rather than switching to anything.
+                ungroundedTimer += Time.deltaTime;
+                if (ungroundedTimer >= fallAnimationDelay)
+                {
+                    playerAnim.fall();
+
+                    // Just Fly Idle for the falling pose "for now" regardless of input — no need to
+                    // blend walk/run here the way real flying does; this is a placeholder until a
+                    // dedicated fall animation exists anyway (see playerAnimation.fall()'s comment).
+                    playerAnim.setIdel();
+                }
             }
             else
             {
+                ungroundedTimer = 0f;
+
                 float inputMagnitude = moveInput.magnitude;
                 bool isSprinting = IsSprinting;
 
@@ -457,20 +497,24 @@ public class PlayerController : MonoBehaviour
             // its own, instead of us immediately forcing Walk/Run and racing with it.
             if (flyTakeoffLockTimer <= 0f)
             {
-                // TEMP (again — see chat history, this was reverted once the Fly Idle clip's Loop Time
-                // got fixed, but the idle-not-playing bug is back): keep playing a fly-moving
-                // animation the whole time we're flying (idle or not), since Fly Idle isn't reliably
-                // wired up in the Animator right now. Swap back to the inputMagnitude/flyAscendHeld
-                // check below (calling setIdel() when there's no input) once Fly Idle is fixed for good.
-                //
-                // Sprint-flying now plays the faster (Run, Speed=3.5) blend instead of always Walking
-                // (Speed=1.5), matching CurrentFlySpeed actually moving faster while sprinting - the
-                // animation speed was previously pinned to Walking regardless of sprint state, so
-                // sprint-flying was moving faster than it looked.
-                if (IsSprinting)
-                    playerAnim.setRunning();
+                // Back to using Fly Idle properly (the TEMP always-walk/run workaround is reverted
+                // now that Fly Idle is reliable again) - walk/run only while there's actual flight
+                // input, idle otherwise, exactly matching autoDescending's own Fly Idle treatment
+                // above and the un-frozen ground-locomotion pattern below.
+                bool hasFlightInput = moveInput.sqrMagnitude > 0.01f || flyAscendHeld ||
+                    (Keyboard.current != null && (Keyboard.current.leftCtrlKey.isPressed || Keyboard.current.rightCtrlKey.isPressed));
+
+                if (hasFlightInput)
+                {
+                    if (IsSprinting)
+                        playerAnim.setRunning();
+                    else
+                        playerAnim.setWalking();
+                }
                 else
-                    playerAnim.setWalking();
+                {
+                    playerAnim.setIdel();
+                }
             }
         }
 
@@ -559,6 +603,12 @@ public class PlayerController : MonoBehaviour
 
         Vector3 horizontalMove =
             (forward * moveInput.y + right * moveInput.x) * CurrentFlySpeed;
+
+        // Guarantees forward motion during an auto-descend even with no WASD held, so it reads as
+        // a glide down rather than dropping straight down. Added on top of whatever WASD already
+        // gave above — the player can still steer, this just sets a baseline.
+        if (autoDescending)
+            horizontalMove += forward * autoDescendForwardSpeed;
 
         // Ignore WASD entirely while the takeoff animation is protected - the vertical lift
         // below (flyGroundGraceTimer) still runs as normal so you still rise up off the ground,

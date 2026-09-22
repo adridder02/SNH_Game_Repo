@@ -2240,9 +2240,11 @@ MonoBehaviour:
   flySprintMultiplier: 3.5
   flyTakeoffLockDuration: 0.6
   autoDescendSpeed: 3
+  autoDescendForwardSpeed: 3
   flyPitchInfluence: 1
   inputActions: {fileID: -944628639613478452, guid: 96f9bf046802d4545868fdcc2b9f308a, type: 3}
   movementMission: {fileID: 11400000, guid: bc08ac5a41257484bb6bf6139a8d2944, type: 2}
+  fallAnimationDelay: 0.05
 --- !u!65 &74016815
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2338,7 +2340,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 70.18, y: -12.71}
+  m_AnchoredPosition: {x: 70.18, y: -8.46}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &74016819
@@ -6485,7 +6487,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &282937647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7222,7 +7224,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.08819469, y: 7.3461964e-22, z: -6.504301e-23, w: 0.9961033}
-  m_LocalPosition: {x: 70.04823, y: -6.465953, z: -32.182213}
+  m_LocalPosition: {x: 70.04823, y: -2.2159526, z: -32.182213}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12016,7 +12018,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &521072270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14419,7 +14421,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &592631384
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18827,6 +18829,17 @@ RectTransform:
   m_AnchoredPosition: {x: 1045, y: -213.81685}
   m_SizeDelta: {x: 100, y: 177.6589}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &828364765 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5336577020063006378, guid: 5588ba098b73e084390914cf92d297fb, type: 3}
+  m_PrefabInstance: {fileID: 6616727830521836187}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94ed5dde3b4f0fe4b90c8c8508fe4283, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ImageFillBar
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -26027,7 +26040,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1118541572
 Transform:
   m_ObjectHideFlags: 0
@@ -34924,7 +34937,7 @@ Transform:
   m_GameObject: {fileID: 1393679874}
   serializedVersion: 2
   m_LocalRotation: {x: 0.08819468, y: 7.306786e-22, z: -2.0532942e-23, w: 0.9961033}
-  m_LocalPosition: {x: -47.481766, y: 19.934048, z: -66.03221}
+  m_LocalPosition: {x: -47.481766, y: 24.184048, z: -66.03221}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -35008,9 +35021,11 @@ MonoBehaviour:
   flyingTargetOffsetY: 1.5
   targetOffsetLerpSpeed: 4
   recenterVerticalWhileFlying: 1
+  recenterHorizontalWhileFlying: 1
   recenterDelay: 0.8
   recenterSmoothTime: 0.5
   invertVerticalRecenterSign: 0
+  invertHorizontalRecenterSign: 0
   verticalRecenterCenterOffset: 12
   recenterReferenceTransform: {fileID: 32051273}
   transparentMask:
@@ -62011,6 +62026,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1094209399}
     m_Modifications:
+    - target: {fileID: 2106392375125345503, guid: 5588ba098b73e084390914cf92d297fb, type: 3}
+      propertyPath: waterBar
+      value: 
+      objectReference: {fileID: 828364765}
     - target: {fileID: 3812166483520552981, guid: 5588ba098b73e084390914cf92d297fb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
