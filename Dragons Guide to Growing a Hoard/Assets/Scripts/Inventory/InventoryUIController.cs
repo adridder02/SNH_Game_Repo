@@ -139,6 +139,14 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
              "from inside a specific pot's own Abilities panel — PotMenuUIController).")]
     [SerializeField] private Button consumablePanelUseButton;
 
+    [Header("Dead Plants")]
+    [Tooltip("Shown INSTEAD OF a plant's normal species icon (in the grid, Available, and the detail " +
+             "panel) once it's permanently dead (PlantState.IsPermanentlyDead / " +
+             "InventoryItemInstance.condition.isPermanentlyDead) — one generic 'dead plant' look " +
+             "regardless of species, read by InventorySlotUI.")]
+    [SerializeField] private Sprite deadPlantIcon;
+    public Sprite DeadPlantIcon => deadPlantIcon;
+
     [Header("Filter Bar")]
     [Tooltip("Infinity icon — explicitly shows everything (clears the filter). This is the one that's " +
              "selected/highlighted by default when the inventory opens with no filter active.")]
@@ -423,7 +431,10 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             // displayImage is the larger "info card" image — deliberately distinct
             // from instance.icon, which is only the small slot thumbnail. Fall back
             // to the icon so the panel isn't blank if no detail image was assigned.
-            Sprite detail = instance.displayImage != null ? instance.displayImage : instance.icon;
+            // A permanently-dead plant shows the generic dead icon here too, same as the slot.
+            Sprite detail = instance.condition.isPermanentlyDead && deadPlantIcon != null
+                ? deadPlantIcon
+                : instance.displayImage != null ? instance.displayImage : instance.icon;
             plantPanelImage.sprite = detail;
             plantPanelImage.enabled = detail != null;
         }

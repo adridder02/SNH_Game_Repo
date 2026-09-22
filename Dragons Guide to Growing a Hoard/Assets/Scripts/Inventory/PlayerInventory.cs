@@ -172,7 +172,7 @@ public class PlayerInventory : MonoBehaviour
                 GameObject plantPrefab = plant.GetPlantPrefab();
                 if (plantPrefab != null)
                 {
-                    AddPlantToInventory(plantPrefab, plant.GetPlantIcon(), plant.GetPlantImage(), plant.GetPlantName());
+                    AddPlantToInventory(plantPrefab, plant.GetPlantIcon(), plant.GetPlantImage(), plant.GetPlantName(), plant.StartingCondition);
                     Destroy(collision.gameObject);
                     Debug.Log($"Collected: {plantPrefab.name}. Inventory: {GetInventorySize()} items ({GetGridItems().Count} in grid, {GetAvailableItems().Count} in Available)");
                 }
@@ -214,8 +214,12 @@ public class PlayerInventory : MonoBehaviour
     /// PlantState.journalSpecies is set — this is why a harvested-but-undiscovered
     /// species shows up correctly positioned in the journal grid but with no icon
     /// and no click response otherwise: IsDiscovered would be false.
+    /// Pass 'condition' to carry a plant's saved state through — PotContents.RemovePlant()
+    /// captures the LIVE condition of a plant being pulled from a pot; HarvestNodeContainer
+    /// passes a harvest node's designer-set starting condition. Defaults to fully healthy
+    /// (PlantCondition.Healthy) if omitted.
     /// </summary>
-    public bool AddPlantToInventory(GameObject plantPrefab, Sprite icon = null, Sprite displayImage = null, string displayName = null)
+    public bool AddPlantToInventory(GameObject plantPrefab, Sprite icon = null, Sprite displayImage = null, string displayName = null, PlantCondition condition = null)
     {
         if (plantPrefab == null)
         {
@@ -223,7 +227,7 @@ public class PlayerInventory : MonoBehaviour
             return false;
         }
 
-        var instance = new InventoryItemInstance(plantPrefab, icon, displayImage, displayName);
+        var instance = new InventoryItemInstance(plantPrefab, icon, displayImage, displayName, condition);
         bool placedInGrid = grid.TryAutoPlace(instance);
         items.Add(instance);
         // NOTE: this used to complete an "AddedPotToInventory" checklist task here —

@@ -47,6 +47,17 @@ public class CollectablePlant : MonoBehaviour
              "sure a task with Task Id 'plant_pickup' exists on it.")]
     [SerializeField] private MissionData tutorialMission;
 
+    [Header("Starting Condition")]
+    [Tooltip("The condition this plant is picked up WITH — carries into the resulting " +
+             "InventoryItemInstance.condition, same as a plant pulled out of a pot carries its live " +
+             "condition. Lets specific harvest nodes be set up as already-unhealthy (or, once " +
+             "isPermanentlyDead is checked, already-dead-and-unusable) rather than every node always " +
+             "starting fully healthy. No visual difference on the node itself yet — that's a later " +
+             "pass — this only affects the item once it's actually picked up.")]
+    [SerializeField] private PlantCondition startingCondition = new PlantCondition { isPermanentlyDead = false, startingHealth01 = 1f };
+
+    public PlantCondition StartingCondition => startingCondition;
+
     public GameObject GetPlantPrefab()
     {
         if (plantPrefab == null)

@@ -570,7 +570,8 @@ public class PotMenuUIController : MonoBehaviour
             {
                 if (item?.plantPrefab == null) continue;
 
-                bool fits = currentPot != null && (currentPot.IsStatic || item.size == currentPot.PotSize);
+                bool fits = currentPot != null && (currentPot.IsStatic || item.size == currentPot.PotSize)
+                            && !item.condition.isPermanentlyDead;
                 PlantSpeciesData species = GetSpeciesFor(item);
                 bool locked = !SpecialPlantUnlockGate.IsPlantable(species, journalDatabase, journalManager);
 
@@ -682,7 +683,7 @@ public class PotMenuUIController : MonoBehaviour
     {
         if (currentPot == null || item?.plantPrefab == null) return;
 
-        bool success = currentPot.AddPlant(item.plantPrefab);
+        bool success = currentPot.AddPlant(item.plantPrefab, item.condition);
         if (!success) return;
 
         if (currentPot.Plant != null)

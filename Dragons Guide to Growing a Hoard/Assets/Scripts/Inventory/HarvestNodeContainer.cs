@@ -320,7 +320,7 @@ public class HarvestNodeContainer : MonoBehaviour
         // Pass the icon, detail image, and name too — plant prefabs are 3D and
         // have no SpriteRenderer, so these getters are the only source the
         // inventory slot / detail panel can display.
-        playerInventory.AddPlantToInventory(plantPrefab, plant.GetPlantIcon(), plant.GetPlantImage(), plant.GetPlantName());
+        playerInventory.AddPlantToInventory(plantPrefab, plant.GetPlantIcon(), plant.GetPlantImage(), plant.GetPlantName(), plant.StartingCondition);
 
         Debug.Log($"[HarvestNodeContainer] Harvested: {node.name}");
         ShowFeedback($"{harvestMessage}  ({node.name})");

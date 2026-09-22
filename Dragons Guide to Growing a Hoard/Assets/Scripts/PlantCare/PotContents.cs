@@ -328,9 +328,20 @@ public class PotContents : MonoBehaviour
     // ---------------------------------------------------------------
     // AddPlant — returns false if already planted or size mismatches.
     // ---------------------------------------------------------------
-    public bool AddPlant(GameObject prefab)
+    public bool AddPlant(GameObject prefab, PlantCondition condition = null)
     {
         if (hasPlant) return false;
+
+        // A permanently-dead plant can never be planted again — this is the single choke point
+        // every planting path goes through (PotMenuUIController's Choose Plant, and anywhere else
+        // that might call this directly), so it's enough to guard here rather than also filtering
+        // the Choose Plant list UI-side. That'd be a nicer UX (greying it out instead of silently
+        // failing) — worth doing later, not required for this to work correctly now.
+        if (condition != null && condition.isPermanentlyDead)
+        {
+            Debug.LogWarning("[PotContents] Tried to plant a permanently-dead plant — refused.");
+            return false;
+        }
 
         currentPlantPrefab = prefab;
         PlantState candidate = prefab.GetComponentInChildren<PlantState>();
@@ -394,6 +405,7 @@ public class PotContents : MonoBehaviour
 
         hasPlant = true;
         Plant.SetPotContents(this);
+        Plant.ApplyCondition(condition ?? PlantCondition.Healthy);
         if (tutorialMission != null && tutorialMission.tasks.Count > 3)
             MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[3]); // PlantedSeed
         return true;
@@ -434,10 +446,16 @@ public class PotContents : MonoBehaviour
             : species != null ? species.displayName
             : null;
 
+        // Snapshot the plant's LIVE condition (health, and whether it's died permanently) before
+        // it's destroyed below — this is what makes "remove a half-dead plant, replant it later,
+        // it's still in roughly that state" work. Captured fresh here rather than reading anything
+        // stashed at plant-time, since the whole point is this reflects time spent in THIS pot.
+        PlantCondition condition = Plant.CaptureCondition();
+
         // Add to inventory first
         if (prefabToReturn != null && dragonInventory != null)
         {
-            dragonInventory.AddPlantToInventory(prefabToReturn, icon, displayImage, displayName);
+            dragonInventory.AddPlantToInventory(prefabToReturn, icon, displayImage, displayName, condition);
         }
         
         // Clear references BEFORE destroying

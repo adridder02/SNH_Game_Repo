@@ -91,6 +91,17 @@ public class PlantState : MonoBehaviour
     [Range(0, 6)] public int intermediateMinScore = 2;
 
     // ---------------------------------------------------------------
+    // PERMANENT DEATH
+    // ---------------------------------------------------------------
+    [Header("Permanent Death")]
+    [Tooltip("How long (seconds) this plant has to sit continuously in the LIVE Dead state (the " +
+             "usual, recoverable one CalculateState() computes each frame from soil/light/water) " +
+             "before it dies PERMANENTLY — see IsPermanentlyDead. Resets to 0 any time the plant " +
+             "recovers out of Dead before reaching this, so it has to be continuously dead, not " +
+             "cumulatively.")]
+    public float permanentDeathDelay = 30f;
+
+    // ---------------------------------------------------------------
     // REFERENCES
     // ---------------------------------------------------------------
     [Header("References")]
@@ -152,6 +163,8 @@ public class PlantState : MonoBehaviour
     [SerializeField] private int soilScore = 0;
     [SerializeField] private int lightScore = 0;
     [SerializeField] private int waterScore = 0;
+    [SerializeField] private bool isPermanentlyDead = false;
+    private float timeInLiveDeadState = 0f;
 
     // ---------------------------------------------------------------
     // PUBLIC ACCESSORS
@@ -163,6 +176,44 @@ public class PlantState : MonoBehaviour
     public int WaterScore => waterScore;
     public LightSensor LightSensor => lightSensor;
     public float GetWaterDrainMultiplier() => isMiasmaDebuffActive ? miasmaWaterDrainMultiplier : 1f;
+
+    /// <summary>True once this SPECIFIC plant has died permanently — see permanentDeathDelay. Once
+    /// set, CalculateState() always returns Dead regardless of live soil/light/water conditions;
+    /// there is no recovery. Read by InventoryItemInstance (forces PlantType.Dead for filtering)
+    /// and InventorySlotUI (shows the dead icon) once this plant is picked up.</summary>
+    public bool IsPermanentlyDead => isPermanentlyDead;
+
+    /// <summary>Snapshots this plant's current state for carrying across pot removal -> inventory
+    /// -> replanting. Call this BEFORE destroying/detaching the plant (PotContents.RemovePlant).</summary>
+    public PlantCondition CaptureCondition()
+    {
+        return new PlantCondition
+        {
+            isPermanentlyDead = isPermanentlyDead,
+            startingHealth01 = HealthNormalized01,
+        };
+    }
+
+    /// <summary>Restores a previously-captured (or harvest-node-preset) condition onto this plant.
+    /// Call right after instantiating/planting, before the first Update() tick. isPermanentlyDead
+    /// carries over exactly (a plant that died stays dead forever, even replanted in a perfect pot);
+    /// startingHealth01 only seeds the INITIAL displayed score/state — see PlantCondition's own
+    /// comment for why that's cosmetic, not a lasting value.</summary>
+    public void ApplyCondition(PlantCondition condition)
+    {
+        if (condition == null) return;
+
+        isPermanentlyDead = condition.isPermanentlyDead;
+        lastTotalScore = Mathf.RoundToInt(Mathf.Clamp01(condition.startingHealth01) * 6f);
+
+        currentState = isPermanentlyDead ? PlantStateEnum.Dead
+            : lastTotalScore >= revivedMinScore ? PlantStateEnum.Revived
+            : lastTotalScore >= intermediateMinScore ? PlantStateEnum.Intermediate
+            : PlantStateEnum.Dead;
+
+        timeInLiveDeadState = 0f; // fresh start for the permanent-death timer either way
+        UpdateVisuals();
+    }
 
     /// <summary>True while any ability source (Windmill Aster, Verdant Algae, a closed Sparkmint
     /// circuit, ...) is actively warding this plant against miasma. See AddMiasmaImmunitySource.</summary>
@@ -240,6 +291,27 @@ public class PlantState : MonoBehaviour
             currentState = newState;
             UpdateVisuals();
             Debug.Log($"[PlantState] State -> {currentState} ({lastTotalScore}/6)");
+        }
+
+        // Permanent death — only tracked while not already permanent, and only while genuinely
+        // Dead right now (not just low): recovering out of Dead before permanentDeathDelay resets
+        // this to 0, so it has to be continuously dead, not accumulated across separate dips.
+        if (!isPermanentlyDead)
+        {
+            if (currentState == PlantStateEnum.Dead)
+            {
+                timeInLiveDeadState += Time.deltaTime;
+                if (timeInLiveDeadState >= permanentDeathDelay)
+                {
+                    isPermanentlyDead = true;
+                    Debug.Log($"[PlantState] {gameObject.name} has died PERMANENTLY after " +
+                              $"{permanentDeathDelay}s in the Dead state.");
+                }
+            }
+            else
+            {
+                timeInLiveDeadState = 0f;
+            }
         }
     }
 
@@ -324,6 +396,11 @@ public class PlantState : MonoBehaviour
     // ---------------------------------------------------------------
     private PlantStateEnum CalculateState()
     {
+        // Locked — a permanently-dead plant never recovers, so skip recalculating from live
+        // conditions entirely.
+        if (isPermanentlyDead)
+            return PlantStateEnum.Dead;
+
         soilScore = CalculateSoilScore();
 
         float lightLevel = lightSensor != null ? lightSensor.NormalisedIntensity : 0f;
