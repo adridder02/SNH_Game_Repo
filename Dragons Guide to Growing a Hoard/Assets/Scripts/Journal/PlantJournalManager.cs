@@ -58,6 +58,33 @@ public class PlantJournalManager : MonoBehaviour
         return species != null && discoveredIds.Contains(species.ResolvedId);
     }
 
+    /// <summary>Whether EVERY species at exactly this tier (across the whole database, all rooms —
+    /// tiers aren't scoped per-room) has hit its gold/fully-ripened milestone at least once — see
+    /// IsCompleted. Crystal species (requiresRoomUnlock == true) are excluded regardless of
+    /// whatever tier value they happen to have, since they're not really "in" a tier — they're the
+    /// separate top-of-the-pyramid reward above tiers 1-3. Used by JournalUIController's gradual
+    /// description-unlock rules (see its GetUnlockedDescriptions), not by anything else — this
+    /// doesn't affect the Progress page's own tier grouping, which reads tier/requiresRoomUnlock
+    /// directly off each species instead.</summary>
+    public bool AllOfTierCompleted(int tier)
+    {
+        if (database == null || database.allSpecies == null) return false;
+
+        bool anyAtThisTier = false;
+
+        foreach (PlantSpeciesData species in database.allSpecies)
+        {
+            if (species == null || species.requiresRoomUnlock || species.tier != tier) continue;
+
+            anyAtThisTier = true;
+            if (!IsCompleted(species)) return false;
+        }
+
+        // No species exist at this tier at all — treat as "not satisfied" rather than vacuously
+        // true, so an empty/misconfigured tier doesn't silently unlock everything above it.
+        return anyAtThisTier;
+    }
+
     /// <summary>Marks a species as seen. Returns true only if this was a NEW discovery (useful for a "New!" popup later).</summary>
     public bool MarkDiscovered(PlantSpeciesData species)
     {

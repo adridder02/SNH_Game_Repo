@@ -38,11 +38,41 @@ public class PlayerController : MonoBehaviour
     [Tooltip("How long (seconds) the takeoff animation is protected from being interrupted by movement/sprint animation changes after double-tapping Space. Should roughly match your takeoff clip's length.")]
     [SerializeField] private float flyTakeoffLockDuration = 0.6f;
 
-    [Tooltip("Downward speed while auto-descending (double-tapped Space while already flying). " +
-             "Deliberately separate from flyVerticalSpeed (the manual Ctrl-held descent speed) so " +
-             "this can be tuned to feel gradual/controlled rather than a straight drop, independent " +
-             "of manual descent speed.")]
+    [Tooltip("Downward speed while auto-descending (double-tapped Space while already flying, or " +
+             "FlightBlocked forcing you down). Deliberately separate from flyVerticalSpeed (the " +
+             "manual Ctrl-held descent speed) so this can be tuned to feel gradual/controlled rather " +
+             "than a straight drop, independent of manual descent speed.")]
     [SerializeField] private float autoDescendSpeed = 3f;
+
+    [Header("Miasma Flight Restriction")]
+    [Tooltip("Additional downward force applied while flying and ForceGradualDescend is true — " +
+             "biases altitude downward over time, but (unlike autoDescending/FlightBlocked) Space/" +
+             "Ctrl/WASD all still work normally alongside it, so the player CAN fight it off by " +
+             "actively holding Space. A headwind, not a full override.")]
+    [SerializeField] private float miasmaGradualDescendForce = 1.5f;
+
+    /// <summary>Passive downward bias while flying — set externally (MiasmaScreenEffectController,
+    /// for the miasma's middle stage in whatever zone the player's currently in). Space/Ctrl/WASD
+    /// all still work normally alongside this; it has no effect while autoDescending/FlightBlocked
+    /// already have full control (those take priority — see UpdateFlyingLocomotion).</summary>
+    public bool ForceGradualDescend { get; set; }
+
+    /// <summary>Blocks flight entirely while true — set externally (MiasmaScreenEffectController,
+    /// for the miasma's worst stage). Can't enter fly mode (OnSpacePressed's double-tap silently
+    /// does nothing while this is true), and if already flying when this turns on, immediately
+    /// forced into the same clean auto-descend-to-landing double-tap-while-flying already uses.</summary>
+    public bool FlightBlocked
+    {
+        get => flightBlocked;
+        set
+        {
+            bool wasBlocked = flightBlocked;
+            flightBlocked = value;
+            if (flightBlocked && !wasBlocked && locomotionState == LocomotionState.Flying)
+                autoDescending = true; // force them down the instant this turns on, not next input
+        }
+    }
+    private bool flightBlocked = false;
 
     [Tooltip("Forward speed automatically added while auto-descending, so it reads as a glide down " +
              "rather than dropping straight down with no forward motion. Added on TOP of whatever " +
@@ -306,6 +336,15 @@ public class PlayerController : MonoBehaviour
             case LocomotionState.Jumping:
                 if (Time.time - lastSpacePressTime <= doubleTapWindow)
                 {
+                    if (flightBlocked)
+                    {
+                        // Miasma's worst stage in this room — can't take off here right now.
+                        // Silently ignored rather than logged/messaged; the screen overlay (image 3,
+                        // MiasmaScreenEffectController) is what communicates why to the player.
+                        lastSpacePressTime = Time.time;
+                        break;
+                    }
+
                     EnterFlyMode();
                     // Refresh the timestamp the instant flying actually starts — without this, it
                     // stays stale from the FIRST of the two launch taps, and a normal eager third
@@ -654,6 +693,14 @@ public class PlayerController : MonoBehaviour
 
                 if (ctrlHeld)
                     intentionalVertical -= flyVerticalSpeed * (IsSprinting ? flySprintMultiplier : 1f);
+
+                // Miasma's middle stage in whatever zone the player's currently in — a headwind, not
+                // a full override, so it stacks with whatever the player's already doing above
+                // rather than replacing it. FlightBlocked (worst stage) doesn't need its own branch
+                // here — it just sets autoDescending=true the instant it turns on (see the
+                // FlightBlocked property), so it's already covered by the branch above.
+                if (ForceGradualDescend)
+                    intentionalVertical -= miasmaGradualDescendForce;
             }
 
             verticalMove += intentionalVertical;

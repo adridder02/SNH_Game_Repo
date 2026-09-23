@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Glowcap
   category: 1
   room: 0
-  tier: 2
+  tier: 1
   difficulty: 1
   description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
     tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
@@ -29,9 +29,12 @@ MonoBehaviour:
     inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. '
   journalIcon: {fileID: 21300000, guid: caa4a470026dbeb4ab7b33be0df45f05, type: 3}
   journalImage: {fileID: 21300000, guid: caa4a470026dbeb4ab7b33be0df45f05, type: 3}
+  deadIcon: {fileID: 0}
   disabledIcon: {fileID: 21300000, guid: 761bda71600e4ad4d9c6911cb1f753af, type: 3}
   activeIcon: {fileID: 21300000, guid: caa4a470026dbeb4ab7b33be0df45f05, type: 3}
   goldIcon: {fileID: 21300000, guid: 08447a50c4f135944bae8cce8fb7495d, type: 3}
   waterRequirement: 1
   lightRequirement: 1
   preferredSoilDisplay: 1
+  requiresRoomUnlock: 0
+  happinessThreshold: 70

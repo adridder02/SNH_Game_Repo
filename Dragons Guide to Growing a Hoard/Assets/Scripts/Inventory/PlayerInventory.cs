@@ -422,4 +422,19 @@ public class PlayerInventory : MonoBehaviour
     public float getMaxWaterPool() => maxWaterRefill;
     public void reduceWaterPool(float decreaseW) => waterPool = Mathf.Max(0f, waterPool - decreaseW);
     public void refillWaterPool() => waterPool = maxWaterRefill;
+
+    [Tooltip("How many units of water refill per second while standing in a water source (see " +
+             "PlayerWaterSource) — replaces the old instant-fill behavior.")]
+    public float waterRefillRate = 10f;
+
+    /// <summary>Adds water gradually rather than instantly maxing the pool — call every frame the
+    /// player is standing in a water source (PlayerWaterSource.OnTriggerStay), passing Time.deltaTime
+    /// (safe to use directly here even though this fires from a trigger callback — Unity's
+    /// Time.deltaTime already reflects the physics step duration in that context). Overload of
+    /// refillWaterPool() above, which is left in place as an instant full-refill for anything else
+    /// that might still want that (a debug/cheat action, a full-refill consumable, ...).</summary>
+    public void refillWaterPool(float deltaTime)
+    {
+        waterPool = Mathf.Min(waterPool + waterRefillRate * deltaTime, maxWaterRefill);
+    }
 }

@@ -119,6 +119,11 @@ public class JournalUIController : MonoBehaviour
              "species asset if you don't need a second section for that plant.")]
     [SerializeField] private TMP_Text detailDescriptionSecondary;
 
+    [Tooltip("Shown in place of a description block that isn't unlocked yet (Tier 2/3's gradual " +
+             "unlock — see GetUnlockedDescriptions) instead of leaving it blank, so the layout " +
+             "doesn't collapse to nothing while the player's still working toward unlocking it.")]
+    [SerializeField] private string lockedPlaceholderText = "???";
+
     [Header("Detail Panel — Prev/Next")]
     [Tooltip("Steps to the previous discovered species within the same category row. Disabled at the start of the row.")]
     [SerializeField] private Button previousSpeciesButton;
@@ -389,12 +394,60 @@ public class JournalUIController : MonoBehaviour
 
         if (detailName != null) detailName.text = species.displayName;
         if (detailTier != null) detailTier.text = $"Tier {species.tier}";
-        if (detailDescription != null) detailDescription.text = species.description;
-        if (detailDescriptionSecondary != null) detailDescriptionSecondary.text = species.descriptionSecondary;
+
+        (string firstText, string secondText) = GetUnlockedDescriptions(species);
+        if (detailDescription != null) detailDescription.text = firstText;
+        if (detailDescriptionSecondary != null) detailDescriptionSecondary.text = secondText;
 
         RefreshDifficultyDots(species.difficulty);
         RefreshCareRow(species);
         RefreshSpeciesNavButtons();
+    }
+
+    /// <summary>Gradual description unlock, by tier:
+    ///   - Tier 1 (and crystals — requiresRoomUnlock species aren't part of this at all, so they
+    ///     just get the simplest/no-gating treatment): both blocks unlock immediately on pickup
+    ///     (PlantJournalManager.IsDiscovered).
+    ///   - Tier 2: first block on pickup; second block only once EVERY Tier 1 species has hit its
+    ///     gold/fully-ripened milestone at least once — PlantJournalManager.IsCompleted, via
+    ///     AllOfTierCompleted(1). NOT the same as "picked up" — a Tier 1 plant harvested before it
+    ///     was fully ripened doesn't count here even though it's discovered.
+    ///   - Tier 3: first block only once every Tier 1 AND Tier 2 species has been completed this
+    ///     way ("all the other tiers"); second block only once THIS species itself has been
+    ///     completed (harvested at 100% at least once — the same event that unlocks its own Gold
+    ///     icon on the Progress page).
+    /// A locked block shows lockedPlaceholderText instead of going blank, so the layout doesn't
+    /// collapse to nothing while the player's waiting on it.
+    /// </summary>
+    private (string first, string second) GetUnlockedDescriptions(PlantSpeciesData species)
+    {
+        bool discovered = journalManager != null && journalManager.IsDiscovered(species);
+
+        // Not discovered at all yet — nothing to show regardless of tier (ShowSpeciesDetail is only
+        // reachable for discovered species via JournalSlotUI anyway, but stay defensive).
+        if (!discovered)
+            return (lockedPlaceholderText, lockedPlaceholderText);
+
+        if (species.requiresRoomUnlock || species.tier <= 1)
+            return (species.description, species.descriptionSecondary);
+
+        if (species.tier == 2)
+        {
+            bool secondUnlocked = journalManager != null && journalManager.AllOfTierCompleted(1);
+            return (species.description, secondUnlocked ? species.descriptionSecondary : lockedPlaceholderText);
+        }
+
+        // Tier 3 and anything above.
+        bool firstUnlocked = journalManager != null &&
+            journalManager.AllOfTierCompleted(1) && journalManager.AllOfTierCompleted(2);
+        // "The player has gotten it completed" — this species' own gold/fully-ripened milestone,
+        // same event that unlocks its Gold icon on the Progress page.
+        bool secondUnlockedT3 = journalManager != null && journalManager.IsCompleted(species);
+
+        return (
+            firstUnlocked ? species.description : lockedPlaceholderText,
+            secondUnlockedT3 ? species.descriptionSecondary : lockedPlaceholderText
+        );
     }
 
     // ------------------------------------------------------------

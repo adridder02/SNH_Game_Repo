@@ -14,17 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlantSpeciesData
   speciesId: SparkMint
   displayName: SparkMint
-  category: 1
-  room: 0
-  tier: 1
-  difficulty: 1
-  description: 
-  descriptionSecondary: 
+  category: 0
+  room: 1
+  tier: 2
+  difficulty: 2
+  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+    eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+    in culpa qui officia deserunt mollit anim id est laborum.
+  descriptionSecondary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+    accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
+    inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. '
   journalIcon: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   journalImage: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
+  deadIcon: {fileID: 0}
   disabledIcon: {fileID: 21300000, guid: da73aae2586795f40a86cf9056a53d83, type: 3}
   activeIcon: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   goldIcon: {fileID: 21300000, guid: 8c348d8a27387504d814ed6a84185a0d, type: 3}
   waterRequirement: 1
-  lightRequirement: 0
+  lightRequirement: 2
   preferredSoilDisplay: 1
+  requiresRoomUnlock: 0
+  happinessThreshold: 70

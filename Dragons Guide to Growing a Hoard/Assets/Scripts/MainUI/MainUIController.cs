@@ -180,6 +180,14 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [SerializeField] private string floorPlacementBannerText = "Floor Placement Mode";
     [SerializeField] private string wallPlacementBannerText = "Wall Placement Mode";
 
+    [Header("Placement Mode Sections")]
+    [Tooltip("Shown the rest of the time, hidden while EITHER PlacementSystem (Floor) or " +
+             "WallPlacementSystem (Wall) is in Placing mode — same condition as the banner above.")]
+    [SerializeField] private GameObject nonPlacementSection;
+    [Tooltip("The opposite of nonPlacementSection above — hidden normally, shown while either " +
+             "placement mode is active.")]
+    [SerializeField] private GameObject placementSection;
+
     [Header("Interact Prompt (HUD)")]
     [Tooltip("Fixed screen-space element (e.g. a 'Press E' panel docked on the HUD) — just enabled/" +
              "disabled, no positioning or billboarding. PotInteraction calls SetInteractPromptVisible() " +
@@ -438,15 +446,21 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     /// systems' current state fresh each time, so either caller can trigger the same result.</summary>
     private void RefreshPlacementBanner()
     {
-        if (placementBannerRoot == null) return;
-
         bool floorPlacing = placementSystem != null && placementSystem.CurrentMode == PlacementSystem.Mode.Placing;
         bool wallPlacing = wallPlacementSystem != null && wallPlacementSystem.CurrentMode == WallPlacementSystem.Mode.Placing;
+        bool eitherPlacing = floorPlacing || wallPlacing;
 
-        placementBannerRoot.SetActive(floorPlacing || wallPlacing);
+        if (placementBannerRoot != null)
+            placementBannerRoot.SetActive(eitherPlacing);
 
         if (placementBannerText != null)
             placementBannerText.text = wallPlacing ? wallPlacementBannerText : floorPlacementBannerText;
+
+        // Same condition as the banner above — see the header tooltips on these two fields.
+        if (nonPlacementSection != null)
+            nonPlacementSection.SetActive(!eitherPlacing);
+        if (placementSection != null)
+            placementSection.SetActive(eitherPlacing);
     }
 
     /// <summary>Everything that needs to react to WallPlacementSystem.OnModeChanged specifically —

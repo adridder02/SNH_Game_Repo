@@ -38,6 +38,13 @@ public class PlantSpeciesData : ScriptableObject
 
     public int tier = 1;
 
+    [Tooltip("Marks this species as its room's Crystal — the Progress page's dedicated crystal row " +
+             "(ProgressPageUIController), separate from tiers 1-3. Independent of tier above (a " +
+             "crystal's tier value is unused/ignored) and independent of requiresRoomUnlock below — " +
+             "that flag is a general 'needs something met before planting' gate other species " +
+             "(including ordinary tier 3 ones) can use too, it doesn't by itself mean 'crystal'.")]
+    public bool isCrystal = false;
+
     [Tooltip("Filled dots shown on the detail page, out of 4.")]
     [Range(0, 4)] public int difficulty = 1;
 
