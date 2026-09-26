@@ -187,6 +187,11 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [Tooltip("The opposite of nonPlacementSection above — hidden normally, shown while either " +
              "placement mode is active.")]
     [SerializeField] private GameObject placementSection;
+    [Tooltip("A SECOND selective-hide group, separate from secondaryHudRoot/nonPlacementSection — for " +
+             "things that should hide specifically during WALL placement mode but stay visible during " +
+             "FLOOR placement mode (the two groups above treat Floor and Wall identically). Shown the " +
+             "rest of the time, hidden only while WallPlacementSystem is in Placing/Removing mode.")]
+    [SerializeField] private GameObject wallOnlySection;
 
     [Header("Interact Prompt (HUD)")]
     [Tooltip("Fixed screen-space element (e.g. a 'Press E' panel docked on the HUD) — just enabled/" +
@@ -366,9 +371,10 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             RefreshHotbarUI(); // sync initial state — assignments made before this enabled shouldn't show empty
         }
 
-        if (NewItemTracker.Instance != null)
-            NewItemTracker.Instance.OnChanged += RefreshNewItemDots;
-        RefreshNewItemDots(); // sync initial state
+        // NOTE: does NOT subscribe here if NewItemTracker.Instance isn't set yet — see
+        // newItemTrackerSubscribed / Update() below for why that used to permanently miss the dots
+        // whenever NewItemTracker's own Awake() happened to run after this OnEnable.
+        TrySubscribeToNewItemTracker();
     }
 
     private void OnDisable()
@@ -376,8 +382,32 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         if (hotbarSystem != null)
             hotbarSystem.OnSlotsChanged -= RefreshHotbarUI;
 
-        if (NewItemTracker.Instance != null)
+        if (newItemTrackerSubscribed && NewItemTracker.Instance != null)
+        {
             NewItemTracker.Instance.OnChanged -= RefreshNewItemDots;
+            newItemTrackerSubscribed = false;
+        }
+    }
+
+    // Set once TrySubscribeToNewItemTracker() actually succeeds, so OnDisable only unsubscribes
+    // when there's a real subscription to remove, and Update() below stops retrying once it does.
+    private bool newItemTrackerSubscribed = false;
+
+    /// <summary>Subscribes to NewItemTracker.OnChanged the moment Instance actually becomes
+    /// available. OnEnable() alone isn't reliable for this — if NewItemTracker's own Awake() (a
+    /// separate persistent object, possibly from a different scene/bootstrap order) happens to run
+    /// AFTER this component's OnEnable, Instance was null at that exact moment, the subscription
+    /// got silently skipped, and — since nothing ever retried — the HUD dots would never update for
+    /// the rest of the session no matter what got picked up afterward. Called from OnEnable (the
+    /// common case, ready immediately) and every frame from Update() until it succeeds (the late-
+    /// init case), then never again once subscribed.</summary>
+    private void TrySubscribeToNewItemTracker()
+    {
+        if (newItemTrackerSubscribed || NewItemTracker.Instance == null) return;
+
+        NewItemTracker.Instance.OnChanged += RefreshNewItemDots;
+        newItemTrackerSubscribed = true;
+        RefreshNewItemDots(); // sync state immediately — don't wait for the first real change
     }
 
     private void OnDestroy()
@@ -464,12 +494,27 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     }
 
     /// <summary>Everything that needs to react to WallPlacementSystem.OnModeChanged specifically —
-    /// the shared banner (also driven from the floor side, see above) plus the wall-mushroom
-    /// selector, which only wall mode changes affect at all.</summary>
+    /// the shared banner (also driven from the floor side, see above), the wall-mushroom selector,
+    /// secondaryHudRoot (also driven from the floor/ability sides — see RefreshSecondaryHudVisibility
+    /// itself, which now checks wallPlacementSystem too), and wallOnlySection below.</summary>
     private void RefreshWallPlacementUI()
     {
         RefreshPlacementBanner();
         RefreshWallMushroomSelector();
+        RefreshSecondaryHudVisibility();
+        RefreshWallOnlySection();
+    }
+
+    /// <summary>A SECOND selective-hide group, separate from secondaryHudRoot — things that should
+    /// hide specifically during WALL placement mode but stay visible during FLOOR placement mode
+    /// (secondaryHudRoot hides for both). Parent whatever those wall-specific elements are under
+    /// their own GameObject and assign it to wallOnlySection.</summary>
+    private void RefreshWallOnlySection()
+    {
+        if (wallOnlySection == null) return;
+
+        bool wallPlacing = wallPlacementSystem != null && wallPlacementSystem.CurrentMode != WallPlacementSystem.Mode.None;
+        wallOnlySection.SetActive(!wallPlacing);
     }
 
     /// <summary>Shows/hides and refreshes the wall-mushroom selector — same shape as
@@ -560,6 +605,11 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         RefreshMiasmaBar();
         RefreshZoneHappinessBar();
 
+        // Cheap once-subscribed-stays-off check — see TrySubscribeToNewItemTracker's own comment
+        // for why OnEnable alone can miss this.
+        if (!newItemTrackerSubscribed)
+            TrySubscribeToNewItemTracker();
+
         if (debugLogging) RunDebugLog();
     }
 
@@ -616,7 +666,8 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
 
         bool placingActive =
             (placementSystem != null && placementSystem.IsPlacementModeActive) ||
-            (abilityPlacementSystem != null && abilityPlacementSystem.IsActive);
+            (abilityPlacementSystem != null && abilityPlacementSystem.IsActive) ||
+            (wallPlacementSystem != null && wallPlacementSystem.CurrentMode != WallPlacementSystem.Mode.None);
 
         secondaryHudRoot.SetActive(!placingActive);
     }

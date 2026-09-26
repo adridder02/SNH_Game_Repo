@@ -340,11 +340,12 @@ public class PlacementSystem : MonoBehaviour
             }
         }
 
-        // Escape exits whichever tool is active, same as right-click — but only when a tool
-        // actually IS active, so this doesn't swallow Escape for anything else (a pause menu,
-        // say) on frames where this system has nothing to cancel.
-        if (mode != Mode.None && Keyboard.current.escapeKey.wasPressedThisFrame)
-            CancelMode();
+        // Escape is now handled centrally by ExitMenuController, which calls CancelActiveMode()
+        // directly rather than this polling for it independently — having multiple scripts each
+        // poll the SAME Escape press and act on it within the same frame is a script-execution-
+        // order race: whichever runs first changes state the other reads, so which one "wins" (or
+        // whether the exit menu ALSO opens on the same press) depended on unpredictable ordering.
+        // One authority checking "is a mode active, then cancel it" removes the race entirely.
     }
 
     // ---------------------------------------------------------------

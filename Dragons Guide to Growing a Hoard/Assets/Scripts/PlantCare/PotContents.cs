@@ -71,6 +71,27 @@ public class PotContents : MonoBehaviour
     [Tooltip("Material applied to the water soil prefab's Renderer. Leave null to keep prefab default.")]
     public Material waterMaterial;
 
+    [Header("Algae Materials")]
+    [Tooltip("Used INSTEAD OF the normal material above, for the matching soil kind, while Verdant " +
+             "Algae's ward is currently active on this pot's plant (see SetAlgaeActive, called from " +
+             "AbilityConsumableEffects). Leave a slot null to just keep that kind's normal material " +
+             "while algae is active — no swap for that specific kind.")]
+    public Material clayAlgaeMaterial;
+    public Material loamAlgaeMaterial;
+    public Material sandyAlgaeMaterial;
+    public Material waterAlgaeMaterial;
+
+    [Header("Soil Water Tint")]
+    [Tooltip("Color the soil shows at 0 water (bone dry).")]
+    public Color dryTintColor = Color.white;
+
+    [Tooltip("Maximum/deepest shade of gray the soil gradually tints toward as WaterLevel approaches " +
+             "plantWaterMax (fully watered) — Lerp's from dryTintColor to this. Applies to whichever " +
+             "material is currently showing, normal or algae.")]
+    public Color wetTintColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+
+    private bool algaeActive = false;
+
     // ---------------------------------------------------------------
     [Header("Water")]
     public float plantWaterMax = 10f;
@@ -288,15 +309,6 @@ public class PotContents : MonoBehaviour
             _ => null
         };
 
-        Material materialToApply = kind switch
-        {
-            SoilKind.Clay => clayMaterial,
-            SoilKind.Loam => loamMaterial,
-            SoilKind.Sandy => sandyMaterial,
-            SoilKind.Water => waterMaterial,
-            _ => null
-        };
-
         if (prefabToSpawn == null)
         {
             Debug.LogWarning($"[PotContents] No soil prefab assigned for {kind}. " +
@@ -315,14 +327,87 @@ public class PotContents : MonoBehaviour
         currentSoilObject.transform.localRotation = Quaternion.identity;
         currentSoilObject.name = $"SoilVisual_{kind}";
 
-        // Apply the soil-specific material to every Renderer in the prefab.
-        if (materialToApply != null)
+        if (ApplySoilMaterial() && tutorialMission != null && tutorialMission.tasks.Count > 2)
+            MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[2]); // AddedSoil
+    }
+
+    /// <summary>Picks the material for currentSoil — the algae variant if algaeActive and one's
+    /// assigned for this kind, otherwise the normal one — applies it to every Renderer on
+    /// currentSoilObject, and re-applies the current water tint on top (so swapping material, e.g.
+    /// via SetAlgaeActive, never flashes untinted for a frame). Returns false if there was no
+    /// currentSoilObject or no material to apply (matches SpawnSoilPrefab's old inline behavior,
+    /// which only fired the AddedSoil mission task when a material was actually found).</summary>
+    private bool ApplySoilMaterial()
+    {
+        if (currentSoilObject == null) return false;
+
+        Material materialToApply = GetSoilMaterial(currentSoil);
+        if (materialToApply == null) return false;
+
+        foreach (Renderer rend in currentSoilObject.GetComponentsInChildren<Renderer>())
+            rend.material = materialToApply;
+
+        RefreshSoilWaterTint();
+        return true;
+    }
+
+    private Material GetSoilMaterial(SoilKind kind)
+    {
+        if (algaeActive)
         {
-            foreach (Renderer rend in currentSoilObject.GetComponentsInChildren<Renderer>())
-                rend.material = materialToApply;
-            if (tutorialMission != null && tutorialMission.tasks.Count > 2)
-                MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[2]); // AddedSoil
+            Material algaeMat = kind switch
+            {
+                SoilKind.Clay => clayAlgaeMaterial,
+                SoilKind.Loam => loamAlgaeMaterial,
+                SoilKind.Sandy => sandyAlgaeMaterial,
+                SoilKind.Water => waterAlgaeMaterial,
+                _ => null
+            };
+            if (algaeMat != null) return algaeMat;
+            // No algae variant assigned for this specific kind — fall through to the normal one
+            // below rather than showing nothing.
         }
+
+        return kind switch
+        {
+            SoilKind.Clay => clayMaterial,
+            SoilKind.Loam => loamMaterial,
+            SoilKind.Sandy => sandyMaterial,
+            SoilKind.Water => waterMaterial,
+            _ => null
+        };
+    }
+
+    /// <summary>Swaps this pot's soil over to (or back from) its algae-variant material — called by
+    /// AbilityConsumableEffects when Verdant Algae's TimedMiasmaWard is applied/ends. Safe to call
+    /// with the same value it's already at (no-op).</summary>
+    public void SetAlgaeActive(bool active)
+    {
+        if (algaeActive == active) return;
+        algaeActive = active;
+        ApplySoilMaterial();
+    }
+
+    /// <summary>Blends the soil's material color from dryTintColor (0 water) to wetTintColor
+    /// (plantWaterMax) based on the CURRENT WaterLevel — called continuously from Update() as water
+    /// drains, and once immediately after AddWater()/ApplySoilMaterial() so the tint never lags a
+    /// frame behind a visible change. rend.material (not sharedMaterial) already creates a per-pot
+    /// instance the first time it's touched (see ApplySoilMaterial), so repeatedly setting .color
+    /// here is safe/cheap — it's not re-instantiating anything each call.</summary>
+    private void RefreshSoilWaterTint()
+    {
+        if (currentSoilObject == null || plantWaterMax <= 0f) return;
+
+        // Water soil is procedural (no base texture) and always at max wetness by definition — the
+        // tint has nothing meaningful to show there and would just be tinting a shader that isn't
+        // built for it. Skip it entirely for this one kind.
+        if (currentSoil == SoilKind.Water) return;
+
+        float t = Mathf.Clamp01(waterLevel / plantWaterMax);
+        Color tint = Color.Lerp(dryTintColor, wetTintColor, t);
+
+        foreach (Renderer rend in currentSoilObject.GetComponentsInChildren<Renderer>())
+            rend.material.color = tint;
     }
 
     // ---------------------------------------------------------------
@@ -559,6 +644,7 @@ public class PotContents : MonoBehaviour
     {
         if (waterLevel >= plantWaterMax) return false;
         waterLevel = Mathf.Min(waterLevel + amount, plantWaterMax);
+        RefreshSoilWaterTint(); // immediate feedback — Update() below would also catch this next frame either way
         if (tutorialMission != null && tutorialMission.tasks.Count > 4)
             MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[4]); // AddedWater
         return true;
@@ -570,6 +656,10 @@ public class PotContents : MonoBehaviour
     // ---------------------------------------------------------------
     private void Update()
     {
+        // Runs regardless of hasPlant/waterLevel below — the soil's tint should track its actual
+        // water content even with no plant currently in the pot (e.g. freshly watered, empty pot).
+        RefreshSoilWaterTint();
+
         if (!hasPlant || waterLevel <= 0f) return;
 
         // Water soil keeps the medium permanently saturated — no draining.

@@ -83,6 +83,13 @@ public class PlantState : MonoBehaviour
     [Range(0f, 10f)] public float waterThresholdHigh = 6f;
     [Range(0f, 10f)] public float waterThresholdLow = 3f;
 
+    [Tooltip("Overwatering. At or above this level, the plant is waterlogged and the water score " +
+             "drops back to 0 — same as being too dry. Must be higher than waterThresholdHigh for " +
+             "there to be an actual 'ideal' window between them (by default: 6-9). Set this to " +
+             "plantWaterMax or higher on a specific plant to effectively disable overwatering for " +
+             "just that species, if some shouldn't be affected by it.")]
+    [Range(0f, 10f)] public float waterThresholdOverwater = 9f;
+
     // ---------------------------------------------------------------
     // INSPECTOR — Score Boundaries
     // ---------------------------------------------------------------
@@ -408,7 +415,7 @@ public class PlantState : MonoBehaviour
         lightScore = ScoreValue(adjustedLight, lightThresholdHigh, lightThresholdLow);
 
         float waterLevel = ownerPot != null ? ownerPot.WaterLevel : 0f;
-        waterScore = ScoreValue(waterLevel, waterThresholdHigh, waterThresholdLow);
+        waterScore = ScoreWater(waterLevel);
 
         lastTotalScore = soilScore + lightScore + waterScore;
 
@@ -436,6 +443,16 @@ public class PlantState : MonoBehaviour
         if (value >= high) return 2;
         if (value >= low) return 1;
         return 0;
+    }
+
+    /// <summary>Water specifically gets a CEILING on top of ScoreValue's floor-only shape — too
+    /// little is bad (0), an ideal window is best (2), and now too MUCH is also bad (0) — a proper
+    /// "sweet spot" between waterThresholdLow/High and waterThresholdOverwater, rather than more
+    /// water always being at worst neutral.</summary>
+    private int ScoreWater(float value)
+    {
+        if (value >= waterThresholdOverwater) return 0; // waterlogged
+        return ScoreValue(value, waterThresholdHigh, waterThresholdLow);
     }
 
     private void UpdateVisuals()

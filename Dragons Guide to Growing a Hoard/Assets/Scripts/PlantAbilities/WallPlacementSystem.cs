@@ -112,14 +112,10 @@ public class WallPlacementSystem : MonoBehaviour
 
         if (mode == Mode.None || inputManager == null) return;
 
-        // Checked FIRST, before any of the early-returns below (no wall surface currently hovered,
-        // cell-to-world failure) — those used to make Escape silently do nothing unless the player
-        // happened to be looking directly at a valid wall cell at that exact moment.
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            CancelMode();
-            return;
-        }
+        // Escape is now handled centrally by ExitMenuController, which calls CancelMode() directly
+        // rather than this polling for it independently — see PlacementSystem's matching comment
+        // for why (a script-execution-order race between multiple independent pollers of the same
+        // keypress within the same frame).
 
         Vector3 mouseWorld = inputManager.GetSelectedWallPosition();
         WallSurface hovered = GetSurfaceAtPosition(mouseWorld);

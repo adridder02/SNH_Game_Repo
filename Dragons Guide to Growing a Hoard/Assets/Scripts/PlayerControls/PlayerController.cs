@@ -361,6 +361,17 @@ public class PlayerController : MonoBehaviour
             case LocomotionState.Flying:
                 if (autoDescending)
                 {
+                    if (flightBlocked)
+                    {
+                        // Miasma's worst stage forced this descent (FlightBlocked's setter) — unlike
+                        // the voluntary double-tap case below, this can't be cancelled by pressing
+                        // Space. Without this check, a player who habitually holds/taps Space to stay
+                        // airborne would cancel the forced landing on their very next press, undoing
+                        // the restriction almost immediately.
+                        lastSpacePressTime = Time.time;
+                        break;
+                    }
+
                     // Pressing Space again mid-descent cancels it and hands control back to the
                     // player, rather than stacking/ignoring the press — in case they change their
                     // mind about where to land.

@@ -62,7 +62,13 @@ public static class AbilityConsumableEffects
                 {
                     if (targetPot == null || targetPot.Plant == null) return false;
                     float duration = data.amountA > 0f ? data.amountA : 60f;
-                    TimedMiasmaWard.ApplyTo(targetPot.Plant, duration, data);
+
+                    // Swaps the soil to its algae-variant material for the duration, reverting
+                    // automatically when the ward ends (naturally or otherwise) via OnEnded —
+                    // PotContents.SetAlgaeActive is idempotent, so this is safe even if called
+                    // redundantly.
+                    targetPot.SetAlgaeActive(true);
+                    TimedMiasmaWard.ApplyTo(targetPot.Plant, duration, data, () => targetPot.SetAlgaeActive(false));
                     return true;
                 }
 

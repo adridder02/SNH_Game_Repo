@@ -18,7 +18,13 @@ public class TimedMiasmaWard : MonoBehaviour
     /// SAME sprite Inventory shows for it) in PotMenuUIController's active-consumable indicator.</summary>
     public AbilityItemData sourceData;
 
-    public static TimedMiasmaWard ApplyTo(PlantState plant, float duration, AbilityItemData data = null)
+    /// <summary>Fires exactly once, whether the ward ends naturally (duration runs out) or this
+    /// GameObject is destroyed some other way — see OnDestroy(), the single place this actually
+    /// fires from. Used by AbilityConsumableEffects to revert the pot's soil off its algae material
+    /// variant once the ward is gone.</summary>
+    public event System.Action OnEnded;
+
+    public static TimedMiasmaWard ApplyTo(PlantState plant, float duration, AbilityItemData data = null, System.Action onEnded = null)
     {
         if (plant == null) return null;
 
@@ -29,6 +35,7 @@ public class TimedMiasmaWard : MonoBehaviour
         ward.plant = plant;
         ward.remaining = duration;
         ward.sourceData = data;
+        if (onEnded != null) ward.OnEnded += onEnded;
         plant.AddMiasmaImmunitySource(ward);
         return ward;
     }
@@ -47,7 +54,12 @@ public class TimedMiasmaWard : MonoBehaviour
 
     private void OnDestroy()
     {
+        // The single place OnEnded actually fires — covers BOTH natural expiry (EndWard() calls
+        // Destroy(), which triggers this) and any other path that destroys this GameObject, in one
+        // place, exactly once, rather than firing it separately from EndWard() too and risking a
+        // double-invoke.
         if (plant != null) plant.RemoveMiasmaImmunitySource(this);
+        OnEnded?.Invoke();
     }
 
     private void OnDrawGizmos()

@@ -129,17 +129,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   plantAnchor: {fileID: 0}
   isStaticPot: 0
-  potData: {fileID: 0}
+  potData: {fileID: 11400000, guid: 436aed676e7c07e40b5b5dc610152462, type: 2}
   potSize: 0
   plantSurfaceOffset: 0
   claySoilPrefab: {fileID: 1981260749521629902, guid: 8d37ce2db3671ef4eb9df9ae561ab0f7, type: 3}
   loamSoilPrefab: {fileID: 1981260749521629902, guid: 8d37ce2db3671ef4eb9df9ae561ab0f7, type: 3}
   sandySoilPrefab: {fileID: 1981260749521629902, guid: 8d37ce2db3671ef4eb9df9ae561ab0f7, type: 3}
   waterSoilPrefab: {fileID: 1981260749521629902, guid: 8d37ce2db3671ef4eb9df9ae561ab0f7, type: 3}
-  clayMaterial: {fileID: 2100000, guid: 97e1609a0714ef34aaae06110f28666d, type: 2}
-  loamMaterial: {fileID: 2100000, guid: aa04b5e1d02c8e74aa0dff17ef7ee3b1, type: 2}
-  sandyMaterial: {fileID: 2100000, guid: e6f341860e588e34abbae233ffc22ed9, type: 2}
+  clayMaterial: {fileID: 2100000, guid: 5a8255b1aa1624f449abf894bea440b0, type: 2}
+  loamMaterial: {fileID: 2100000, guid: cb52f20938f505d47b1dce748faded6f, type: 2}
+  sandyMaterial: {fileID: 2100000, guid: 95ae844b486b1ed4482d190254225178, type: 2}
   waterMaterial: {fileID: 2100000, guid: 3eec692de4cc51941a0bbe7771e9fdbe, type: 2}
+  clayAlgaeMaterial: {fileID: 2100000, guid: 76d55fe326a562c43a53ba2a3fa6d440, type: 2}
+  loamAlgaeMaterial: {fileID: 2100000, guid: 8442d3609c0ba044fae9133b86942d92, type: 2}
+  sandyAlgaeMaterial: {fileID: 2100000, guid: c8a4eb6b3c9b6424a9465b87df2c3b4a, type: 2}
+  waterAlgaeMaterial: {fileID: 2100000, guid: 3eec692de4cc51941a0bbe7771e9fdbe, type: 2}
+  dryTintColor: {r: 1, g: 1, b: 1, a: 1}
+  wetTintColor: {r: 0.6313726, g: 0.6313726, b: 0.6313726, a: 1}
   plantWaterMax: 10
   baseDrainRate: 0.3
   sunDrainMultiplier: 0.4
@@ -162,6 +168,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.05
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}

@@ -12,6 +12,15 @@ public class ExitMenuController : MonoBehaviour
              "open and show it again on close. Auto-found in the scene if left empty.")]
     [SerializeField] private MainUIController mainUI;
 
+    [Tooltip("This is the single authority for Escape while one of these is active — none of the " +
+             "three poll Escape themselves anymore (that used to race with this check: whichever " +
+             "script's Update() ran first that frame decided the outcome, so the exit menu could " +
+             "ALSO open on the same press that cancelled a placement mode). Auto-found in the scene " +
+             "if left empty.")]
+    [SerializeField] private PlacementSystem placementSystem;
+    [SerializeField] private WallPlacementSystem wallPlacementSystem;
+    [SerializeField] private AbilityPlacementSystem abilityPlacementSystem;
+
     public bool IsExitMenuOpen => exitMenuRoot != null && exitMenuRoot.activeSelf;
 
     void Awake()
@@ -30,6 +39,15 @@ public class ExitMenuController : MonoBehaviour
 
         if (mainUI == null)
             mainUI = FindAnyObjectByType<MainUIController>();
+
+        if (placementSystem == null)
+            placementSystem = FindAnyObjectByType<PlacementSystem>();
+
+        if (wallPlacementSystem == null)
+            wallPlacementSystem = FindAnyObjectByType<WallPlacementSystem>();
+
+        if (abilityPlacementSystem == null)
+            abilityPlacementSystem = FindAnyObjectByType<AbilityPlacementSystem>();
     }
 
     void Update()
@@ -58,6 +76,30 @@ public class ExitMenuController : MonoBehaviour
         if (journalController != null && journalController.IsJournalOpen)
         {
             journalController.CloseJournal();
+            return;
+        }
+
+        // Each of these now OWNS cancelling itself, rather than each polling Escape independently
+        // and racing with this check on the same frame (see PlacementSystem's comment on its old
+        // Escape handler for exactly why that was broken — whichever script's Update() happened to
+        // run first determined whether the exit menu ALSO opened on the same press). This is the
+        // single authority for Escape now, same as it already was for pot menu/inventory/journal
+        // above — it decides, then tells the right system to cancel.
+        if (placementSystem != null && placementSystem.IsPlacementModeActive)
+        {
+            placementSystem.CancelActiveMode();
+            return;
+        }
+
+        if (wallPlacementSystem != null && wallPlacementSystem.CurrentMode != WallPlacementSystem.Mode.None)
+        {
+            wallPlacementSystem.CancelMode();
+            return;
+        }
+
+        if (abilityPlacementSystem != null && abilityPlacementSystem.IsActive)
+        {
+            abilityPlacementSystem.Cancel();
             return;
         }
 
