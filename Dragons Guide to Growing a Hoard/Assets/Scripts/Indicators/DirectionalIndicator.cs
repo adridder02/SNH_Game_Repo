@@ -108,7 +108,7 @@ public class DirectionalIndicator : MonoBehaviour
         entries.Clear();
 
         // Find all TrackedTargets in the scene.
-        TrackedTarget[] targets = FindObjectsByType<TrackedTarget>(FindObjectsSortMode.None);
+        TrackedTarget[] targets = FindObjectsByType<TrackedTarget>();
         foreach (TrackedTarget t in targets)
             entries.Add(CreateEntry(t));
 
@@ -165,7 +165,7 @@ public class DirectionalIndicator : MonoBehaviour
         tmp.fontSize = labelFontSize;
         tmp.color = target.indicatorColor;
         tmp.alignment = TextAlignmentOptions.Center;
-        tmp.enableWordWrapping = false;
+        tmp.textWrappingMode = TextWrappingModes.NoWrap; // replaces the deprecated enableWordWrapping = false
 
         // Size the label rect to fit the text with a little padding.
         Vector2 textSize = new Vector2(tmp.preferredWidth + 16f, labelFontSize + 10f);

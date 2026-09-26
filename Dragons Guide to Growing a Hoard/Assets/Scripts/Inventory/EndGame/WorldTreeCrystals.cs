@@ -66,11 +66,11 @@ public class WorldTreeCrystals : MonoBehaviour
     private void Start()
     {
         if (dragonAbilityInventory == null)
-            dragonAbilityInventory = FindObjectOfType<PlayerAbilityInventory>();
+            dragonAbilityInventory = FindAnyObjectByType<PlayerAbilityInventory>();
 
         if (player == null)
         {
-            PlayerInventory inv = FindObjectOfType<PlayerInventory>();
+            PlayerInventory inv = FindAnyObjectByType<PlayerInventory>();
             player = inv != null ? inv.transform : null;
         }
 
@@ -78,7 +78,7 @@ public class WorldTreeCrystals : MonoBehaviour
             Debug.LogWarning("[WorldTreeCrystals] No PlayerAbilityInventory found — crystals can never be revealed.", this);
 
         if (mainUI == null && showInteractPrompt)
-            mainUI = FindObjectOfType<MainUIController>();
+            mainUI = FindAnyObjectByType<MainUIController>();
 
         // Crystals should already be hidden in the scene per-file, but this guarantees it —
         // same "never trust the scene's starting active-state alone" treatment used elsewhere

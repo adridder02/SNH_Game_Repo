@@ -162,7 +162,7 @@ public class PotInteraction : MonoBehaviour
 
             if (dragonInventory == null)
             {
-                dragonInventory = FindObjectOfType<PlayerInventory>();
+                dragonInventory = FindAnyObjectByType<PlayerInventory>();
 
                 if (dragonInventory == null)
                 {
@@ -184,7 +184,7 @@ public class PotInteraction : MonoBehaviour
             }
             else if (mainUI == null)
             {
-                mainUI = FindObjectOfType<MainUIController>();
+                mainUI = FindAnyObjectByType<MainUIController>();
                 if (mainUI == null)
                     Debug.LogWarning("[PotInteraction] useWorldSpacePrompt is OFF but no MainUIController " +
                                       "was found/assigned — the interact prompt won't be shown.", this);

@@ -306,7 +306,7 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             // FindObjectOfType just grabs whichever instance it happens to find first — if there's
             // more than one PlayerInventory in the scene (e.g. one accidentally left on a UI prefab
             // alongside the real one on the player), which one "wins" is down to luck, not correctness.
-            PlayerInventory[] allInventories = FindObjectsOfType<PlayerInventory>();
+            PlayerInventory[] allInventories = FindObjectsByType<PlayerInventory>();
 
             if (allInventories.Length > 1)
                 Debug.LogWarning($"[MainUIController] Found {allInventories.Length} PlayerInventory " +
@@ -341,7 +341,7 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         }
 
         if (abilityPlacementSystem == null)
-            abilityPlacementSystem = FindObjectOfType<AbilityPlacementSystem>();
+            abilityPlacementSystem = FindAnyObjectByType<AbilityPlacementSystem>();
 
         if (abilityPlacementSystem != null)
             abilityPlacementSystem.OnPlacingChanged += RefreshSecondaryHudVisibility;
@@ -349,7 +349,7 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         RefreshSecondaryHudVisibility(); // sync initial state
 
         if (wallPlacementSystem == null)
-            wallPlacementSystem = FindObjectOfType<WallPlacementSystem>();
+            wallPlacementSystem = FindAnyObjectByType<WallPlacementSystem>();
 
         if (wallPlacementSystem != null)
             wallPlacementSystem.OnModeChanged += RefreshWallPlacementUI;
@@ -357,7 +357,7 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         RefreshWallPlacementUI(); // sync initial state
 
         if (hotbarSystem == null)
-            hotbarSystem = FindObjectOfType<AbilityHotbarSystem>();
+            hotbarSystem = FindAnyObjectByType<AbilityHotbarSystem>();
 
         for (int i = 0; i < hudHotbarSlotUIs.Count; i++)
             hudHotbarSlotUIs[i]?.Initialize(this, i);

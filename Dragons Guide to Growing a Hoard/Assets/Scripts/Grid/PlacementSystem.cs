@@ -145,7 +145,7 @@ public class PlacementSystem : MonoBehaviour
     private void Start()
     {
         if (potInteraction == null)
-            potInteraction = FindObjectOfType<PotInteraction>();
+            potInteraction = FindAnyObjectByType<PotInteraction>();
 
         if (surfaces == null || surfaces.Count == 0)
         {

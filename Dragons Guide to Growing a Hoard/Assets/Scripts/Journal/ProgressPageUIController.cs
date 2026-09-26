@@ -126,7 +126,7 @@ public class ProgressPageUIController : MonoBehaviour
     void Awake()
     {
         if (journalManager == null)
-            journalManager = PlantJournalManager.Instance != null ? PlantJournalManager.Instance : FindObjectOfType<PlantJournalManager>();
+            journalManager = PlantJournalManager.Instance != null ? PlantJournalManager.Instance : FindAnyObjectByType<PlantJournalManager>();
 
         foreach (RoomPage room in Rooms)
         {

@@ -254,15 +254,15 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
                             "PlayerController uses (must have a GamePlay map with an Inventory action).");
 
         if (playerInventory == null)
-            playerInventory = FindObjectOfType<PlayerInventory>();
+            playerInventory = FindAnyObjectByType<PlayerInventory>();
         if (abilityInventory == null)
-            abilityInventory = FindObjectOfType<PlayerAbilityInventory>();
+            abilityInventory = FindAnyObjectByType<PlayerAbilityInventory>();
         if (hotbarSystem == null)
-            hotbarSystem = FindObjectOfType<AbilityHotbarSystem>();
+            hotbarSystem = FindAnyObjectByType<AbilityHotbarSystem>();
         if (mainUI == null)
-            mainUI = FindObjectOfType<MainUIController>();
+            mainUI = FindAnyObjectByType<MainUIController>();
         if (journalUI == null)
-            journalUI = FindObjectOfType<JournalUIController>();
+            journalUI = FindAnyObjectByType<JournalUIController>();
 
         if (backButton != null)
             backButton.onClick.AddListener(ToggleInventory);
@@ -757,7 +757,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
 
         if (data.kind == AbilityKind.Placeable)
         {
-            AbilityPlacementSystem placementSystem = FindObjectOfType<AbilityPlacementSystem>();
+            AbilityPlacementSystem placementSystem = FindAnyObjectByType<AbilityPlacementSystem>();
             if (placementSystem == null)
             {
                 Debug.LogWarning("[InventoryUIController] No AbilityPlacementSystem in scene.");

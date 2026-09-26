@@ -51,7 +51,7 @@ public class TutorialObjectiveUI : MonoBehaviour
         if (progressManager == null)
             progressManager = MissionProgressManager.Instance != null
                 ? MissionProgressManager.Instance
-                : FindObjectOfType<MissionProgressManager>();
+                : FindAnyObjectByType<MissionProgressManager>();
     }
 
     void OnEnable()

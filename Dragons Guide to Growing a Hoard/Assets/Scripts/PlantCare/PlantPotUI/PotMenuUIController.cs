@@ -185,7 +185,7 @@ public class PotMenuUIController : MonoBehaviour
         menuCloseButton?.onClick.AddListener(() => ownerInteraction?.CloseMenu());
 
         if (journalManager == null)
-            journalManager = PlantJournalManager.Instance != null ? PlantJournalManager.Instance : FindObjectOfType<PlantJournalManager>();
+            journalManager = PlantJournalManager.Instance != null ? PlantJournalManager.Instance : FindAnyObjectByType<PlantJournalManager>();
         if (journalDatabase == null)
             Debug.LogWarning("[PotMenuUIController] journalDatabase not assigned — locked/unlockable " +
                               "species checks will fail closed (treated as locked). Assign the same " +
@@ -228,7 +228,7 @@ public class PotMenuUIController : MonoBehaviour
         if (abilityInventory == null && inventory != null)
             abilityInventory = inventory.GetComponent<PlayerAbilityInventory>();
         if (abilityPlacementSystem == null)
-            abilityPlacementSystem = FindObjectOfType<AbilityPlacementSystem>();
+            abilityPlacementSystem = FindAnyObjectByType<AbilityPlacementSystem>();
 
         if (menuRoot != null) menuRoot.SetActive(true);
 

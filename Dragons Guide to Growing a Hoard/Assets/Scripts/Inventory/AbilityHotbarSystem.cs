@@ -73,7 +73,7 @@ public class AbilityHotbarSystem : MonoBehaviour
         if (abilityInventory == null)
             abilityInventory = GetComponent<PlayerAbilityInventory>();
         if (abilityPlacementSystem == null)
-            abilityPlacementSystem = FindObjectOfType<AbilityPlacementSystem>();
+            abilityPlacementSystem = FindAnyObjectByType<AbilityPlacementSystem>();
         if (player == null)
             player = gameObject;
 

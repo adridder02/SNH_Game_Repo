@@ -152,10 +152,10 @@ public class JournalUIController : MonoBehaviour
     void Awake()
     {
         if (journalManager == null)
-            journalManager = PlantJournalManager.Instance != null ? PlantJournalManager.Instance : FindObjectOfType<PlantJournalManager>();
+            journalManager = PlantJournalManager.Instance != null ? PlantJournalManager.Instance : FindAnyObjectByType<PlantJournalManager>();
 
         if (mainUI == null)
-            mainUI = FindObjectOfType<MainUIController>();
+            mainUI = FindAnyObjectByType<MainUIController>();
 
         if (progressPageController == null && progressPage != null)
             progressPageController = progressPage.GetComponent<ProgressPageUIController>();

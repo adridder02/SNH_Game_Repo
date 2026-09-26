@@ -95,7 +95,7 @@ public class TutorialSequenceController : MonoBehaviour
         if (progressManager == null)
             progressManager = MissionProgressManager.Instance != null
                 ? MissionProgressManager.Instance
-                : FindObjectOfType<MissionProgressManager>();
+                : FindAnyObjectByType<MissionProgressManager>();
 
         if (promptUI != null) promptUI.OnAdvanceRequested += HandleAdvanceRequested;
         if (bottomPopupUI != null) bottomPopupUI.OnAdvanceRequested += HandleAdvanceRequested;

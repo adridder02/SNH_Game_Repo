@@ -82,9 +82,9 @@ public class MiasmaScreenEffectController : MonoBehaviour
     private void Awake()
     {
         if (playerZoneTracker == null)
-            playerZoneTracker = FindObjectOfType<PlayerZoneTracker>();
+            playerZoneTracker = FindAnyObjectByType<PlayerZoneTracker>();
         if (playerController == null)
-            playerController = FindObjectOfType<PlayerController>();
+            playerController = FindAnyObjectByType<PlayerController>();
     }
 
     private void Update()

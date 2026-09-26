@@ -85,7 +85,6 @@ public class PlayerController : MonoBehaviour
 
     [Header("Input")]
     [SerializeField] private InputActionAsset inputActions;
-    private bool escPressed = false;
 
     [Header("Tutorial Hookup")]
     [Tooltip("The MissionData asset that owns the six 'movement basics' bottom-bar tutorial tasks " +
