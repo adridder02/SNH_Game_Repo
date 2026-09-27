@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameInputModeManager : MonoBehaviour
 {
@@ -47,11 +48,40 @@ public class GameInputModeManager : MonoBehaviour
 
         if (gameplayMap == null) Debug.LogError("Missing Action Map: GamePlay");
         if (cameraMap == null) Debug.LogError("Missing Action Map: Camera");
+
+        // This object is DontDestroyOnLoad, so Start() below only ever fires once, the very
+        // first time it's created — a later scene reload (Restart from the exit menu, a scene
+        // change generally) doesn't re-run it, but Cursor.lockState/Cursor.visible are global
+        // engine state that ISN'T reset by a scene load either. Net result without this: the
+        // cursor stays stuck at whatever the exit menu last set it to (visible/unlocked) after
+        // Restart, until the player happens to open+close a menu again, which is the only other
+        // place that calls SetGameplayMode(). Re-syncing on every scene load fixes that generally,
+        // not just for the exit menu's Restart button specifically.
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void Start()
     {
         SetGameplayMode();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)
+    {
+        // playerController was pointing at the PREVIOUS scene's player, which got destroyed on
+        // load — re-find it in whatever just loaded rather than keep a dangling reference.
+        playerController = FindAnyObjectByType<PlayerController>();
+
+        // Only auto-lock the cursor into gameplay mode if there's actually a player to control in
+        // this scene. Guards against this firing on a menu-only scene (title screen, etc.) that
+        // might load later and has no PlayerController — locking/hiding the cursor there would
+        // break clicking its own UI buttons.
+        if (playerController != null)
+            SetGameplayMode();
     }
 
     private void Update()
