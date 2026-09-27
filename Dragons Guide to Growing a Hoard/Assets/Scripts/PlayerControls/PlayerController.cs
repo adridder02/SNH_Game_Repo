@@ -381,7 +381,8 @@ public class PlayerController : MonoBehaviour
                 {
                     // Double-tapped Space again while already flying — begin a controlled, gradual
                     // descent (see autoDescendSpeed / UpdateFlyingLocomotion) instead of the usual
-                    // single-press ascend, and play the (TEMP) fall animation for it.
+                    // single-press ascend, and play the dragon_fall animation for it (fall() also
+                    // drops IsFlying itself, so Fly Idle doesn't keep competing with it).
                     autoDescending = true;
                     flyAscendHeld = false;
                     playerAnim.fall();
@@ -491,11 +492,9 @@ public class PlayerController : MonoBehaviour
             {
                 // Walked off a ledge without jumping — nothing else ever transitions
                 // locomotionState to Jumping unless Space was actually pressed, so without this
-                // check walk/run/idle kept playing the whole way down. See playerAnimation.fall()
-                // for why this calls a separate method from fly() despite doing the same thing
-                // right now. The landing transition below already handles this correctly with no
-                // further changes — it's keyed on controller.isGrounded/wasGrounded, not on how
-                // the player became airborne.
+                // check walk/run/idle kept playing the whole way down. The landing transition below
+                // already handles this correctly with no further changes — it's keyed on
+                // controller.isGrounded/wasGrounded, not on how the player became airborne.
                 //
                 // Debounced (fallAnimationDelay) rather than firing on the very first ungrounded
                 // frame — CharacterController.isGrounded flickers false for single frames during
@@ -505,12 +504,9 @@ public class PlayerController : MonoBehaviour
                 ungroundedTimer += Time.deltaTime;
                 if (ungroundedTimer >= fallAnimationDelay)
                 {
+                    // dragon_fall plays on its own now (playerAnimation.fall() drives "IsFalling"
+                    // directly) — no more setIdel() here to fake it via Fly Idle's Speed float.
                     playerAnim.fall();
-
-                    // Just Fly Idle for the falling pose "for now" regardless of input — no need to
-                    // blend walk/run here the way real flying does; this is a placeholder until a
-                    // dedicated fall animation exists anyway (see playerAnimation.fall()'s comment).
-                    playerAnim.setIdel();
                 }
             }
             else
@@ -548,8 +544,9 @@ public class PlayerController : MonoBehaviour
             {
                 // Back to using Fly Idle properly (the TEMP always-walk/run workaround is reverted
                 // now that Fly Idle is reliable again) - walk/run only while there's actual flight
-                // input, idle otherwise, exactly matching autoDescending's own Fly Idle treatment
-                // above and the un-frozen ground-locomotion pattern below.
+                // input, idle otherwise, matching the un-frozen ground-locomotion pattern below.
+                // Only touches the Speed float, so this stays harmless during autoDescending too -
+                // fall() already dropped IsFlying for that case, so this can't re-trigger Fly Idle.
                 bool hasFlightInput = moveInput.sqrMagnitude > 0.01f || flyAscendHeld ||
                     (Keyboard.current != null && (Keyboard.current.leftCtrlKey.isPressed || Keyboard.current.rightCtrlKey.isPressed));
 
