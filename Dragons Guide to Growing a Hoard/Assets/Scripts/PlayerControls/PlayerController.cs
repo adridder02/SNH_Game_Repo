@@ -110,6 +110,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float fallAnimationDelay = 0.15f;
     private float ungroundedTimer = 0f;
 
+    [Tooltip("Mirror of fallAnimationDelay for the OPPOSITE direction. controller.isGrounded can " +
+             "also flicker TRUE for a single frame while genuinely still airborne (grazing a bump, a " +
+             "sloped collider edge, foliage, a ledge corner) — without this debounce, that one frame " +
+             "instantly fired the Landing transition (unsetting IsFalling, snapping the animator back " +
+             "to idle/walk), then the very next frame re-entered the ungrounded branch and needed a " +
+             "fresh fallAnimationDelay before the fall animation played again. On bumpy/cluttered " +
+             "terrain during an actual fall this repeats rapidly - a Fall/Idle pose ping-pong that " +
+             "reads as violent camera shaking, since the camera follows a rig transform whose position " +
+             "differs a lot between those two poses. Keep this short (landings should still feel " +
+             "instant) - it only needs to be longer than a single-frame flicker.")]
+    [SerializeField] private float landingConfirmDelay = 0.05f;
+    private float groundedTimer = 0f;
+    private bool wasConfirmedGrounded = true;
+
     /*[SerializeField] private Animator animator;
 
     // Animator hashes — faster than string lookups
@@ -485,6 +499,25 @@ public class PlayerController : MonoBehaviour
     {
         if (playerAnim == null) return;
 
+        // Continuous grounded/ungrounded timers so a single-frame flicker of controller.isGrounded
+        // (documented below — happens constantly on bumpy terrain, slopes, and even mid-fall when
+        // grazing geometry) can't snap the animator back and forth on its own. ungroundedTimer/
+        // fallAnimationDelay already debounced entering the fall animation this way; groundedTimer/
+        // landingConfirmDelay does the same for leaving it — see that field's tooltip for why a
+        // single flickered "grounded" frame mid-fall used to cause a rapid Fall/Idle pose ping-pong
+        // that read as the camera itself shaking.
+        if (controller.isGrounded)
+        {
+            groundedTimer += Time.deltaTime;
+            ungroundedTimer = 0f;
+        }
+        else
+        {
+            ungroundedTimer += Time.deltaTime;
+            groundedTimer = 0f;
+        }
+        bool confirmedGrounded = groundedTimer >= landingConfirmDelay;
+
         // Grounded locomotion
         if (locomotionState == LocomotionState.Grounded)
         {
@@ -494,14 +527,13 @@ public class PlayerController : MonoBehaviour
                 // locomotionState to Jumping unless Space was actually pressed, so without this
                 // check walk/run/idle kept playing the whole way down. The landing transition below
                 // already handles this correctly with no further changes — it's keyed on
-                // controller.isGrounded/wasGrounded, not on how the player became airborne.
+                // confirmedGrounded, not on how the player became airborne.
                 //
                 // Debounced (fallAnimationDelay) rather than firing on the very first ungrounded
                 // frame — CharacterController.isGrounded flickers false for single frames during
                 // completely normal walking (stairs, bumpy terrain), which was triggering this
                 // constantly. Below the threshold, just leave whatever animation was already
                 // playing alone rather than switching to anything.
-                ungroundedTimer += Time.deltaTime;
                 if (ungroundedTimer >= fallAnimationDelay)
                 {
                     // dragon_fall plays on its own now (playerAnimation.fall() drives "IsFalling"
@@ -511,8 +543,6 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                ungroundedTimer = 0f;
-
                 float inputMagnitude = moveInput.magnitude;
                 bool isSprinting = IsSprinting;
 
@@ -564,20 +594,18 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // Landing transition
-        if (locomotionState != LocomotionState.Flying && controller.isGrounded)
+        // Landing transition — gated on confirmedGrounded (landingConfirmDelay), not a raw single-
+        // frame isGrounded flip, so a chatter blip mid-fall can't fire this prematurely (see
+        // landingConfirmDelay's tooltip).
+        if (locomotionState != LocomotionState.Flying && confirmedGrounded && !wasConfirmedGrounded)
         {
-            if (!wasGrounded)
-            {
-                playerAnim.setJumpFalse();
-                playerAnim.notInAir();
-                CompleteMovementTask(TaskLandGround);
-            }
+            playerAnim.setJumpFalse();
+            playerAnim.notInAir();
+            CompleteMovementTask(TaskLandGround);
         }
 
-        wasGrounded = controller.isGrounded;
+        wasConfirmedGrounded = confirmedGrounded;
     }
-    private bool wasGrounded = true;
 
     // ──────────────────────────────────────────────
     //  Normal locomotion (walk + gravity)

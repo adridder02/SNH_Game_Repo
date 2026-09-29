@@ -13983,6 +13983,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainUIController
   playerInventory: {fileID: 74016824}
+  abilityInventoryForGating: {fileID: 0}
   waterBar: {fileID: 280252697}
   journalButton: {fileID: 1903572062}
   journalUI: {fileID: 742308971}
@@ -39000,7 +39001,7 @@ MonoBehaviour:
   - {fileID: 286721992}
   dragonHideDistance: 5
   dragonShowDistanceBuffer: 0.3
-  enableDebugLogs: 0
+  enableDebugLogs: 1
   outputCamera: {fileID: 0}
 --- !u!114 &1393679878
 MonoBehaviour:
