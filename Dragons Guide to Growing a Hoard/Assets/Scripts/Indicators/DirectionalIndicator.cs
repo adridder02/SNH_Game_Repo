@@ -75,6 +75,42 @@ public class DirectionalIndicator : MonoBehaviour
     private List<IndicatorEntry> entries = new List<IndicatorEntry>();
     private RectTransform canvasRect;
 
+    /// <summary>Auto-set in Awake — lets tutorial/gameplay code reach ActivateTarget/DeactivateTarget
+    /// below without holding its own reference (same pattern as TutorialSequenceController.Instance).</summary>
+    public static DirectionalIndicator Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+    }
+
+    // ---------------------------------------------------------------
+    // Only-sometimes-tracked targets — for a TrackedTarget that shouldn't always show an arrow (e.g.
+    // a tutorial-only pointer at a placement grid or the water source), leave its GameObject disabled
+    // in the scene (FindObjectsByType in RefreshTargets skips inactive objects by default, so it's
+    // simply never picked up) and enable/disable it through these instead of always-on.
+    // ---------------------------------------------------------------
+    /// <summary>Enables the target's GameObject and refreshes so its arrow/label appears immediately.
+    /// Wire this from a TutorialStep's onStepShown (see TutorialStepData) for a step that should point
+    /// the player somewhere. Safe to call on an already-active target (just re-refreshes).</summary>
+    public void ActivateTarget(TrackedTarget target)
+    {
+        if (target == null) return;
+        target.gameObject.SetActive(true);
+        RefreshTargets();
+    }
+
+    /// <summary>Disables the target's GameObject and refreshes so its arrow/label disappears
+    /// immediately. Wire this from a TutorialStep's onStepHidden to turn a step's indicator back off
+    /// once that step is done (see TutorialStepData). Safe to call on an already-inactive target.</summary>
+    public void DeactivateTarget(TrackedTarget target)
+    {
+        if (target == null) return;
+        target.gameObject.SetActive(false);
+        RefreshTargets();
+    }
+
     // ---------------------------------------------------------------
     private void Start()
     {

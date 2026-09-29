@@ -234,6 +234,13 @@ public class TutorialSequenceController : MonoBehaviour
     private void AdvanceToNextStep()
     {
         StopAutoAdvanceTimer();
+
+        // Fire the step we're LEAVING's onStepHidden before switching away — same event regardless of
+        // why we're leaving (click, timer, mission task, or external trigger), so anything turned on by
+        // that step's onStepShown (a DirectionalIndicator target, say) has one reliable place to turn
+        // back off. No-op on the very first call (CurrentStep is null before the sequence has begun).
+        CurrentStep?.onStepHidden?.Invoke();
+
         promptUI?.Hide();
         bottomPopupUI?.Hide();
 
@@ -281,6 +288,12 @@ public class TutorialSequenceController : MonoBehaviour
                 // OnProgressChanged tick) finds its linked task done and advances past it.
                 break;
         }
+
+        // Fires for every type, including Gate — "shown" here means "became the current step", not
+        // literally visible on screen. Side effects (revealing a HUD icon, arming a proximity check,
+        // activating a DirectionalIndicator target) should happen the instant a step becomes current
+        // regardless of whether it has its own visible UI.
+        step.onStepShown?.Invoke();
 
         if (step.autoAdvanceAfterSeconds > 0f)
             autoAdvanceRoutine = StartCoroutine(AutoAdvanceAfter(step.autoAdvanceAfterSeconds));

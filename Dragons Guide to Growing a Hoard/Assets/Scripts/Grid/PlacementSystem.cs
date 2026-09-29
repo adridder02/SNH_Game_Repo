@@ -526,7 +526,14 @@ public class PlacementSystem : MonoBehaviour
         if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetGameplayMode();
 
         if (!suppressEvent)
+        {
+            // "Exit placement mode" tutorial step — deliberately only on a REAL exit (Escape via
+            // ExitMenuController, or CancelActiveMode from elsewhere), not the suppressEvent=true
+            // calls at the top of each Enter*Mode method that just switch from one tool straight to
+            // another. Same guard OnModeChanged already uses for the same reason.
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("exited_placement_mode");
             OnModeChanged?.Invoke(mode);
+        }
     }
 
     private void UpdateHoverVisual(Vector2Int cell)
@@ -779,6 +786,9 @@ public class PlacementSystem : MonoBehaviour
         Destroy(data.PlacedObject);
 
         PlaySFX(removeSoundClip);
+
+        // "Remove a pot" tutorial step — fires on a completed removal, not just entering Remove mode.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("removed_pot");
     }
 
     private void TryWater(Vector2Int cell)
@@ -803,6 +813,11 @@ public class PlacementSystem : MonoBehaviour
         // same mission-task hook. This tool is just a different way of TARGETING that logic (hover a
         // square instead of standing near the pot), not a reimplementation of watering itself.
         potInteraction?.WaterPot(pc);
+
+        // "Water a pot" tutorial step — fires on any use of the Water tool against an actual placed
+        // pot (best-effort, matching WaterPot's own void/no-success-flag signature — an empty water
+        // pool or already-full pot still just logs a message rather than reporting failure here).
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("watered_pot_via_tool");
     }
 
     private void TryPickupOrDrop(Vector2Int cell)
@@ -879,6 +894,10 @@ public class PlacementSystem : MonoBehaviour
             DestroyPreview();
 
             PlaySFX(dropSoundClip);
+
+            // "Move a pot" tutorial step — fires on a completed move (pickup + successful drop), not
+            // just entering Move mode, since picking the tool alone doesn't prove anything moved.
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("moved_pot");
         }
     }
 
@@ -957,6 +976,12 @@ public class PlacementSystem : MonoBehaviour
             selectedIndex = availablePots.Count - 1;
 
         EnterPlaceMode(selectedIndex);
+
+        // Generic "used the scroll wheel to switch pots" tutorial step — fires on every scroll cycle,
+        // regardless of which pot it lands on. Separate from EnterPlaceMode's own
+        // "selected_smallest_pot" (still fires alongside this for the specific-size-only step, if any
+        // step is still using it), since this one just needs "the player scrolled at all".
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("cycled_pot_selection");
     }
 
     private void PlaySFX(AudioClip clip)

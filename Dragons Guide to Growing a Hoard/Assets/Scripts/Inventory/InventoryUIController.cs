@@ -272,7 +272,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             journalUI = FindAnyObjectByType<JournalUIController>();
 
         if (backButton != null)
-            backButton.onClick.AddListener(ToggleInventory);
+            backButton.onClick.AddListener(OnBackButtonClicked);
 
         if (plantPanelCloseButton != null)
             plantPanelCloseButton.onClick.AddListener(HidePlantDetail);
@@ -365,6 +365,15 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
 
     private void OnInventoryPerformed(InputAction.CallbackContext context)
     {
+        ToggleInventory();
+    }
+
+    /// <summary>The panel's own Back button — distinct from ToggleInventory's other close paths
+    /// (Escape/MenuLayerManager, pressing I again), so this fires a trigger specific to the tutorial
+    /// step that actually says "click the back button".</summary>
+    private void OnBackButtonClicked()
+    {
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("closed_inventory_back_button");
         ToggleInventory();
     }
 
@@ -585,6 +594,10 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         showOnlyConsumables = false; // mutually exclusive with the Consumables filter
         RefreshFilterButtonVisuals();
         RefreshUI();
+
+        // Covers all(clear)/Sunny/Dark/Water/Dead — ToggleFilter routes here too. Consumables goes
+        // through ToggleConsumablesFilter below instead, same trigger id either way.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("used_inventory_filter");
     }
 
     private void ToggleConsumablesFilter()
@@ -595,6 +608,8 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
 
         RefreshFilterButtonVisuals();
         RefreshUI();
+
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("used_inventory_filter");
     }
 
     private void RefreshFilterButtonVisuals()
@@ -1165,6 +1180,10 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             if (occupant.IsInGrid)
             {
                 playerInventory.MoveToAvailable(occupant);
+
+                // "Long-click and drag a plant to Available to make room" tutorial step — only
+                // fires for an actual grid->Available move, not the no-op below.
+                TutorialSequenceController.Instance?.NotifyExternalTrigger("moved_plant_to_available");
                 return true;
             }
             return true; // already in Available, dropped back onto Available — treat as a no-op success

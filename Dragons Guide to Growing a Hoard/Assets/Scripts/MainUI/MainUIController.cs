@@ -128,10 +128,9 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [SerializeField] private PlayerZoneTracker playerZoneTracker;
 
     [Header("Tool Selector Slots")]
-    [Tooltip("Slot 0 = Place tool, slot 1 = Remove tool, slot 2 = Move tool. Slot 3 is still " +
-             "reserved/unused. Each slot toggles its tool on PlacementSystem — pressing it while " +
-             "that tool is active turns the tool back off, same as pressing its keybind (F/X/G) " +
-             "would.")]
+    [Tooltip("Slot 0 = Place (F), slot 1 = Remove (R), slot 2 = Move (G), slot 3 = Water (Q). Each " +
+             "slot toggles its tool on PlacementSystem — pressing it while that tool is active turns " +
+             "the tool back off, same as pressing its keybind would.")]
     [SerializeField] private Button[] toolSlots = new Button[4];
     [Tooltip("The scene's PlacementSystem. Required for the tool slots above to do anything.")]
     [SerializeField] private PlacementSystem placementSystem;
@@ -139,6 +138,12 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [SerializeField] private Color toolActiveColor = new Color(1f, 0.85f, 0.4f);
     [Tooltip("Tint applied to a tool slot's button graphic while that tool is NOT active.")]
     [SerializeField] private Color toolInactiveColor = Color.white;
+    [Tooltip("If on, all four tool slots start hidden and only reveal one at a time via RevealToolSlot " +
+             "below — the Place->Move->Water->Remove tutorial walkthrough (wire each step's onStepShown " +
+             "on TutorialStepData to RevealToolSlot with the matching index). Once revealed a slot stays " +
+             "revealed for good. Leave off if you don't want this gating and all four should just show " +
+             "normally from the start.")]
+    [SerializeField] private bool toolSlotsStartHidden = true;
 
     [Header("Hotbar")]
     [Tooltip("The persistent hotbar row shown on the main gameplay HUD (as opposed to the preview " +
@@ -361,6 +366,12 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         WireToolSlot(2, () => placementSystem.ToggleMoveMode());
         WireToolSlot(3, () => placementSystem.ToggleWaterMode());
 
+        if (toolSlotsStartHidden)
+        {
+            for (int i = 0; i < toolSlots.Length; i++)
+                if (toolSlots[i] != null) toolSlots[i].gameObject.SetActive(false);
+        }
+
         if (placementSystem != null)
         {
             // OnModeChanged fires no matter whether the mode changed via keybind or via one of the
@@ -512,6 +523,17 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         if (index < 0 || index >= toolSlots.Length || toolSlots[index] == null) return;
 
         toolSlots[index].onClick.AddListener(onClick);
+    }
+
+    /// <summary>Reveals one tool-selector slot (0=Place,1=Remove,2=Move,3=Water) without affecting the
+    /// others — cumulative reveal for the placement tutorial walkthrough, see toolSlotsStartHidden's
+    /// tooltip. Wire this from a TutorialStep's onStepShown (TutorialStepData) for whichever step first
+    /// asks the player to use that tool. Safe to call repeatedly, out of order, or on an already-
+    /// revealed slot.</summary>
+    public void RevealToolSlot(int index)
+    {
+        if (index < 0 || index >= toolSlots.Length || toolSlots[index] == null) return;
+        toolSlots[index].gameObject.SetActive(true);
     }
 
     /// <summary>Tints each tool slot to show which tool (if any) is currently active.</summary>

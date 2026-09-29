@@ -66,4 +66,19 @@ public class TutorialStep
              "TutorialSequenceController.Instance.NotifyExternalTrigger(sameId) when it happens. If this step " +
              "is the one currently showing, it advances immediately, same as a click. Leave blank if unused.")]
     public string externalTriggerId;
+
+    [Header("Side effects (optional)")]
+    [Tooltip("Invoked once, the instant this step becomes the current one (right as its UI is shown — or, " +
+             "for a Gate step, the instant it becomes current even though it shows nothing). Use this to " +
+             "trigger one-off gameplay side effects tied to a specific step appearing — revealing a HUD " +
+             "icon (MainUIController.RevealToolSlot), arming a proximity check (ProximityTutorialTrigger." +
+             "Arm), turning on a DirectionalIndicator target (DirectionalIndicator.ActivateTarget) — " +
+             "without hardcoding every one-off case into TutorialSequenceController itself.")]
+    public UnityEngine.Events.UnityEvent onStepShown;
+
+    [Tooltip("Invoked once, the instant this step advances away — to the next step, however that " +
+             "actually happens (click, timer, mission task, or external trigger). Pairs with onStepShown " +
+             "for effects that need to turn back off once the step is done, e.g. DirectionalIndicator." +
+             "DeactivateTarget once the linked mission task (like water_refill) completes.")]
+    public UnityEngine.Events.UnityEvent onStepHidden;
 }
