@@ -173,6 +173,22 @@ public class TutorialSequenceController : MonoBehaviour
             AdvanceToNextStep();
     }
 
+    /// <summary>True only if the step CURRENTLY SHOWING is linked to this exact mission task — i.e. the
+    /// tutorial sequence has actually reached this point, not just that the task happens to be next in
+    /// the mission's own ordering. CheckLinkedTaskComplete's own comment describes the normal, intended
+    /// behavior for most linked steps: if the player does the real action slightly ahead of the tutorial
+    /// UI catching up, the step just gets silently skipped the instant it becomes current, since the
+    /// task is already done. Some actions (e.g. placing a pot) shouldn't get that pass — the player
+    /// doing it early shouldn't bank the task at all, so the full prompt still shows later, exactly as
+    /// if it hadn't happened yet. Gate a CompleteTask/CompleteOrderedTask call at the gameplay call site
+    /// on this (only complete the task if this returns true, or if TutorialSequenceController.Instance
+    /// is null) to get that stricter behavior for that one action specifically.</summary>
+    public bool IsCurrentLinkedTask(MissionData mission, string taskId)
+    {
+        TutorialStep step = CurrentStep;
+        return step != null && step.linkedMission == mission && step.linkedTaskId == taskId;
+    }
+
     /// <summary>Jumps straight to a specific step, e.g. to resume a tutorial mid-way after a save load.</summary>
     public void SkipToStep(int index)
     {

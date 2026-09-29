@@ -484,6 +484,11 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         detailInstanceId = instance.instanceId;
         plantPanel.SetActive(true);
 
+        // "Click an item to see its details" tutorial step — fires on actually opening a detail
+        // panel (not the toggle-closed branch above), same trigger id as ShowAbilityDetail below so
+        // one tutorial step covers either kind of item.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_item_detail");
+
         // Hide the whole Available panel — including its "Available" header text,
         // since that lives on the parent (availablePanelRoot), not on the item
         // container (availablePanel/AvailableGrid) — while the detail view is up.
@@ -537,6 +542,10 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         detailAbilityData = stack.data;
         consumablePanel.SetActive(true);
 
+        // Same trigger as ShowPlantDetail above — either kind of item opening its detail panel
+        // satisfies the same tutorial step.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_item_detail");
+
         if (availablePanelRoot != null) availablePanelRoot.SetActive(false);
     }
 
@@ -548,6 +557,11 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             plantPanel.SetActive(false);
 
         if (availablePanelRoot != null) availablePanelRoot.SetActive(true);
+
+        // "Click it again to close it" tutorial step — fires whether the panel was closed by
+        // re-clicking the same item (the toggle in ShowPlantDetail) or by plantPanelCloseButton,
+        // since both end up here. Same trigger id as HideConsumableDetail below.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("closed_item_detail");
     }
 
     /// <summary>Hides the Consumable detail panel, returning the player to the default Available view.</summary>
@@ -560,6 +574,10 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             consumablePanel.SetActive(false);
 
         if (availablePanelRoot != null) availablePanelRoot.SetActive(true);
+
+        // Same trigger as HidePlantDetail above — either kind of item's detail panel closing
+        // satisfies the same tutorial step.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("closed_item_detail");
     }
 
     /// <summary>Closes Inventory and jumps straight to this plant's page in the Journal. Opens the

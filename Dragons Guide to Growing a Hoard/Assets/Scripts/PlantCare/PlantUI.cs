@@ -160,7 +160,12 @@ public class PlantUI : MonoBehaviour
     public void SetVisible(bool visible)
     {
         isVisible = visible;
-        ThirdPersonCameraController.CameraLocked = visible;
+        // NOTE: this used to also set ThirdPersonCameraController.CameraLocked = visible here, but
+        // the only caller of this method (via PlantState.SetUIVisible) is PlacementSystem hiding/
+        // showing this plant's overhead bars while its pot is being picked up/moved/dropped — that
+        // has nothing to do with camera lock, and toggling it here was unlocking the camera the
+        // instant a pot got picked up mid-Move-mode. Camera lock during placement/move/remove/water
+        // modes is owned by GameInputModeManager (see SetPlacementMode), so it's left alone here.
 
         if (canvasRef != null)
             canvasRef.gameObject.SetActive(ShouldShowUI() && isVisible && WithinVisibleDistance());

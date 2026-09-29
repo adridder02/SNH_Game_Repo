@@ -55,6 +55,11 @@ public class PlacementSystem : MonoBehaviour
              "hovering a square like Place/Remove/Move instead of by proximity.")]
     [SerializeField] private PotInteraction potInteraction;
 
+    [Tooltip("Auto-found in the scene if left empty. Used by the Remove tool so a pot's plant (if any) " +
+             "goes back into the player's inventory instead of being destroyed along with the pot — " +
+             "same PotContents.RemovePlant() call PotInteraction uses for a by-hand pickup.")]
+    [SerializeField] private PlayerInventory playerInventory;
+
     public enum Mode
     {
         None,
@@ -146,6 +151,9 @@ public class PlacementSystem : MonoBehaviour
     {
         if (potInteraction == null)
             potInteraction = FindAnyObjectByType<PotInteraction>();
+
+        if (playerInventory == null)
+            playerInventory = FindAnyObjectByType<PlayerInventory>();
 
         if (surfaces == null || surfaces.Count == 0)
         {
@@ -737,8 +745,19 @@ public class PlacementSystem : MonoBehaviour
 
         PlaySFX(placeSoundClip);
 
-        if (tutorialMission != null)
+        // Only counts toward the tutorial's "place a pot" task once the tutorial sequence has actually
+        // reached that step — placing a pot early (ahead of the tutorial UI) used to silently bank the
+        // task via ordering alone (see CheckLinkedTaskComplete's comment), so the "Left-click on a sunny
+        // square..." prompt would just get skipped the instant the tutorial caught up. Now an early
+        // placement simply doesn't count yet, same as if it hadn't happened, and the full prompt still
+        // shows when the tutorial gets there. Falls through to the old ordering-only behavior if there's
+        // no TutorialSequenceController in the scene at all.
+        if (tutorialMission != null &&
+            (TutorialSequenceController.Instance == null ||
+             TutorialSequenceController.Instance.IsCurrentLinkedTask(tutorialMission, "place_pot")))
+        {
             MissionProgressManager.Instance?.CompleteOrderedTask(tutorialMission, "place_pot");
+        }
 
         int potSizeTaskIndex = selectedIndex + 1; // index 0 is OpenedInventory (completed elsewhere)
         if (collectionMission != null && potSizeTaskIndex >= 1 && potSizeTaskIndex < collectionMission.tasks.Count)
@@ -766,7 +785,14 @@ public class PlacementSystem : MonoBehaviour
         PotContents pc = data.PlacedObject.GetComponent<PotContents>();
 
         if (pc != null)
+        {
+            // Return whatever plant is currently in this pot to the player's inventory before the
+            // pot itself is destroyed below — same RemovePlant() a by-hand pickup uses, so a
+            // half-grown (or fully-grown, un-harvested) plant isn't just lost when its pot is
+            // removed with this tool. No-ops harmlessly if the pot has no plant.
+            pc.RemovePlant(playerInventory);
             pc.ClearGridInfo();
+        }
 
         // Same cleanup AbilityPlacementSystem.TryRemove does for its own Removing mode — needed
         // here too now that this generic Remove tool can also pick up ability placeables (e.g. a

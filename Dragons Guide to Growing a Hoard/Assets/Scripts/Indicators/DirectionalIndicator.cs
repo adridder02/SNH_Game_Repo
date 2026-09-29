@@ -87,28 +87,27 @@ public class DirectionalIndicator : MonoBehaviour
 
     // ---------------------------------------------------------------
     // Only-sometimes-tracked targets — for a TrackedTarget that shouldn't always show an arrow (e.g.
-    // a tutorial-only pointer at a placement grid or the water source), leave its GameObject disabled
-    // in the scene (FindObjectsByType in RefreshTargets skips inactive objects by default, so it's
-    // simply never picked up) and enable/disable it through these instead of always-on.
+    // a tutorial-only pointer at a placement grid or the water source), these toggle ONLY the
+    // target's TrackedTarget.IsTrackingActive flag (see TrackedTarget.cs), never the GameObject's own
+    // active state — that GameObject is usually the real grid/water source itself, so disabling it
+    // would disable the actual object, not just its arrow.
     // ---------------------------------------------------------------
-    /// <summary>Enables the target's GameObject and refreshes so its arrow/label appears immediately.
+    /// <summary>Turns this target's arrow/label on immediately (the object itself is never touched).
     /// Wire this from a TutorialStep's onStepShown (see TutorialStepData) for a step that should point
-    /// the player somewhere. Safe to call on an already-active target (just re-refreshes).</summary>
+    /// the player somewhere. Safe to call on an already-active target.</summary>
     public void ActivateTarget(TrackedTarget target)
     {
         if (target == null) return;
-        target.gameObject.SetActive(true);
-        RefreshTargets();
+        target.IsTrackingActive = true;
     }
 
-    /// <summary>Disables the target's GameObject and refreshes so its arrow/label disappears
-    /// immediately. Wire this from a TutorialStep's onStepHidden to turn a step's indicator back off
-    /// once that step is done (see TutorialStepData). Safe to call on an already-inactive target.</summary>
+    /// <summary>Turns this target's arrow/label off immediately (the object itself is never touched).
+    /// Wire this from a TutorialStep's onStepHidden to turn a step's indicator back off once that
+    /// step is done (see TutorialStepData). Safe to call on an already-inactive target.</summary>
     public void DeactivateTarget(TrackedTarget target)
     {
         if (target == null) return;
-        target.gameObject.SetActive(false);
-        RefreshTargets();
+        target.IsTrackingActive = false;
     }
 
     // ---------------------------------------------------------------
@@ -236,6 +235,16 @@ public class DirectionalIndicator : MonoBehaviour
             if (e.target == null)
             {
                 // Target was destroyed — hide its UI and skip.
+                SetAlpha(ref e, 0f);
+                entries[i] = e;
+                continue;
+            }
+
+            if (!e.target.IsTrackingActive)
+            {
+                // Tracking turned off for this target (e.g. tutorial step ended) — hide its arrow
+                // and label, but leave the target's own GameObject completely alone.
+                if (e.arrowRect != null) e.arrowRect.gameObject.SetActive(false);
                 SetAlpha(ref e, 0f);
                 entries[i] = e;
                 continue;

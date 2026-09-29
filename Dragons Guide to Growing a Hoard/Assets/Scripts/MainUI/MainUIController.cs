@@ -144,6 +144,14 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
              "revealed for good. Leave off if you don't want this gating and all four should just show " +
              "normally from the start.")]
     [SerializeField] private bool toolSlotsStartHidden = true;
+    [Tooltip("The shared parent/backdrop behind all four tool slot buttons above (background panel, " +
+             "frame, whatever visually groups them) — separate from each individual slot Button. While " +
+             "toolSlotsStartHidden is on, this hides at Awake right alongside the slots themselves, and " +
+             "reveals the first time ANY slot is revealed via RevealToolSlot — unlike the slots, it " +
+             "doesn't need per-slot reveals, since the moment the tutorial starts teaching the first " +
+             "tool the whole selector frame should already be on screen. Optional — leave unassigned if " +
+             "there's no separate backdrop to hide.")]
+    [SerializeField] private GameObject toolSelectorRoot;
 
     [Header("Hotbar")]
     [Tooltip("The persistent hotbar row shown on the main gameplay HUD (as opposed to the preview " +
@@ -370,6 +378,9 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         {
             for (int i = 0; i < toolSlots.Length; i++)
                 if (toolSlots[i] != null) toolSlots[i].gameObject.SetActive(false);
+
+            if (toolSelectorRoot != null)
+                toolSelectorRoot.SetActive(false);
         }
 
         if (placementSystem != null)
@@ -534,6 +545,11 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     {
         if (index < 0 || index >= toolSlots.Length || toolSlots[index] == null) return;
         toolSlots[index].gameObject.SetActive(true);
+
+        // The shared backdrop behind the slots reveals on the FIRST call regardless of which index —
+        // once the tutorial is teaching any tool, the whole selector frame should be visible too.
+        if (toolSelectorRoot != null)
+            toolSelectorRoot.SetActive(true);
     }
 
     /// <summary>Tints each tool slot to show which tool (if any) is currently active.</summary>
@@ -556,7 +572,7 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     /// systems' current state fresh each time, so either caller can trigger the same result.</summary>
     private void RefreshPlacementBanner()
     {
-        bool floorPlacing = placementSystem != null && placementSystem.CurrentMode == PlacementSystem.Mode.Placing;
+        bool floorPlacing = placementSystem != null && placementSystem.IsPlacementModeActive;
         bool wallPlacing = wallPlacementSystem != null && wallPlacementSystem.CurrentMode == WallPlacementSystem.Mode.Placing;
         bool eitherPlacing = floorPlacing || wallPlacing;
 
