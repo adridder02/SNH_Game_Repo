@@ -1378,7 +1378,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TitleScreenController
   startButton: {fileID: 927401735}
   exitButton: {fileID: 9441496}
-  tutorialSceneName: Tutorial
+  tutorialSceneName: Main
   transitionAnimator: {fileID: 0}
   transitionTime: 1
 --- !u!1 &1159566693

@@ -169,6 +169,13 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
              "AbilityHotbarSystem's own slots array (index 0 = key '1', etc.) — mismatched order " +
              "means clicking/pressing a slot won't visually match what actually activates.")]
     [SerializeField] private List<HotbarSlotUI> hotbarSlotUIs = new List<HotbarSlotUI>();
+    [Tooltip("The hand-placed hotbar row's shared parent GameObject — hidden (same as MainUIController's " +
+             "HUD hotbar row and PotMenuUIController's ability button) until the player's first " +
+             "HARVEST FROM A POT — a fully-grown plant removed for a Consumable/Placeable ability item " +
+             "(PlayerAbilityInventory.OnFirstAbilityItemHarvested/HasHarvestedFirstAbilityItem), NOT " +
+             "the inventory icon's plant-pickup flag on MainUIController. Parent hotbarSlotUIs under " +
+             "one GameObject in the Editor and assign it here.")]
+    [SerializeField] private GameObject hotbarRoot;
 
     [Header("Layout")]
     [Tooltip("Pixel size of one grid cell. Item visuals are drawn at footprint * cellSizePx.")]
@@ -289,6 +296,8 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         for (int i = 0; i < hotbarSlotUIs.Count; i++)
             hotbarSlotUIs[i]?.Initialize(this, i);
 
+        RefreshFirstHarvestGatedUI(); // sync initial state — hotbarRoot hidden pre-harvest, visible if already harvested this session
+
         SetInventoryVisible(false);
 
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
@@ -311,7 +320,9 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             abilityInventory.OnChanged += RefreshUI;
         if (hotbarSystem != null)
             hotbarSystem.OnSlotsChanged += RefreshHotbarUI;
-    }  
+        if (abilityInventory != null)
+            abilityInventory.OnFirstAbilityItemHarvested += OnFirstAbilityItemHarvested;
+    }
 
     void OnDisable()
     {
@@ -321,6 +332,8 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             abilityInventory.OnChanged -= RefreshUI;
         if (hotbarSystem != null)
             hotbarSystem.OnSlotsChanged -= RefreshHotbarUI;
+        if (abilityInventory != null)
+            abilityInventory.OnFirstAbilityItemHarvested -= OnFirstAbilityItemHarvested;
     }
 
     void OnDestroy()
@@ -791,6 +804,17 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         if (hotbarSystem == null) return;
         foreach (var slot in hotbarSlotUIs)
             slot?.Refresh(hotbarSystem);
+    }
+
+    // Hidden until the player's first pot harvest (Consumable/Placeable ability item, NOT a plain
+    // plant pickup) — same flag/event MainUIController's HUD hotbar row and PotMenuUIController's
+    // ability button gate themselves off.
+    private void OnFirstAbilityItemHarvested() => RefreshFirstHarvestGatedUI();
+
+    private void RefreshFirstHarvestGatedUI()
+    {
+        if (hotbarRoot != null)
+            hotbarRoot.SetActive(abilityInventory != null && abilityInventory.HasHarvestedFirstAbilityItem);
     }
 
     public void ActivateHotbarSlot(int slotIndex)

@@ -92,6 +92,18 @@ public class PlayerInventory : MonoBehaviour
     /// <summary>Fired whenever the grid or available contents change, so the UI can redraw.</summary>
     public event Action OnInventoryChanged;
 
+    /// <summary>Fires exactly once — the first time the player ever receives a plant into their
+    /// inventory (harvest node, physical pickup, or pulling one back out of a pot). Lets onboarding-
+    /// only UI (hotbar, inventory icon, the pot menu's ability button) stay hidden until there's
+    /// actually something in the player's hands to use them with. See HasHarvestedFirstPlant for the
+    /// already-happened case (UI that initializes after this already fired once this session).</summary>
+    public event Action OnFirstPlantHarvested;
+
+    /// <summary>True once OnFirstPlantHarvested has fired. Check this on Start()/OnEnable() for UI
+    /// that initializes after the first harvest already happened this session — the event alone only
+    /// reaches listeners that were already subscribed at the moment it fired.</summary>
+    public bool HasHarvestedFirstPlant { get; private set; }
+
     public InventoryGrid Grid => grid;
     public int GridWidth => grid.Width;
     public int GridHeight => grid.Height;
@@ -257,6 +269,12 @@ public class PlayerInventory : MonoBehaviour
         Debug.Log(placedInGrid
             ? $"Added {plantPrefab.name} to grid at ({instance.gridX},{instance.gridY})"
             : $"Grid full — {plantPrefab.name} sent to Available");
+
+        if (!HasHarvestedFirstPlant)
+        {
+            HasHarvestedFirstPlant = true;
+            OnFirstPlantHarvested?.Invoke();
+        }
 
         OnInventoryChanged?.Invoke();
         return true;

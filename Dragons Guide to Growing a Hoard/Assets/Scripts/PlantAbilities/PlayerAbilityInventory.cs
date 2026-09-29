@@ -24,6 +24,21 @@ public class PlayerAbilityInventory : MonoBehaviour
     /// <summary>Fired whenever a stack is added/consumed, so ability-inventory UI can redraw.</summary>
     public event Action OnChanged;
 
+    /// <summary>Fires exactly once — the first time the player ever receives a Consumable/Placeable
+    /// ability item from harvesting a fully-grown plant out of a pot (PotContents.HarvestPlant, the
+    /// only caller of Add() below). Lets onboarding-only UI that's specifically about USING harvested
+    /// items (the hotbar rows, the pot menu's ability button) stay hidden until there's actually
+    /// something to put in them — distinct from PlayerInventory.OnFirstPlantHarvested, which fires on
+    /// ANY plant entering the plant inventory (harvest node, physical pickup, or pulled back out of a
+    /// pot) and gates the inventory icon instead. See HasHarvestedFirstAbilityItem for the already-
+    /// happened case (UI that initializes after this already fired once this session).</summary>
+    public event Action OnFirstAbilityItemHarvested;
+
+    /// <summary>True once OnFirstAbilityItemHarvested has fired. Check this on Start()/OnEnable() for
+    /// UI that initializes after the first pot-harvest already happened this session — the event alone
+    /// only reaches listeners that were already subscribed at the moment it fired.</summary>
+    public bool HasHarvestedFirstAbilityItem { get; private set; }
+
     public IReadOnlyList<AbilityItemInstance> Stacks => stacks;
 
     // ---------------------------------------------------------------
@@ -53,6 +68,12 @@ public class PlayerAbilityInventory : MonoBehaviour
 
         Debug.Log($"[PlayerAbilityInventory] +{amount} {data.displayName} (now {existing.count}).");
         OnChanged?.Invoke();
+
+        if (!HasHarvestedFirstAbilityItem)
+        {
+            HasHarvestedFirstAbilityItem = true;
+            OnFirstAbilityItemHarvested?.Invoke();
+        }
     }
 
     // ---------------------------------------------------------------

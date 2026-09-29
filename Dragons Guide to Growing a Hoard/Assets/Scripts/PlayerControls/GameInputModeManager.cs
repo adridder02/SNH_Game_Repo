@@ -239,7 +239,10 @@ public class GameInputModeManager : MonoBehaviour
                 inputAxis.enabled = false;
         }
 
-        // Same as menu UI mode — hide the bottom-bar tip while placement mode's own UI is up.
-        TutorialSequenceController.Instance?.SetMenuOpen(true);
+        // Deliberately NOT hiding the bottom-bar tutorial tip here (unlike SetMenuUIMode above) —
+        // placement mode is exactly when steps like "press F", "scroll to find the smallest pot",
+        // "left-click to place" need to stay visible so the player can actually follow them while
+        // they're in the mode the step is guiding them through. Real menus (Inventory/Journal/Pot
+        // Menu/Exit Menu, via SetMenuUIMode) still hide it, since those genuinely cover the screen.
     }
 }

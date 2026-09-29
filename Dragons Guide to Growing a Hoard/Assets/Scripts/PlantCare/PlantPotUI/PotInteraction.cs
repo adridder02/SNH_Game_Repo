@@ -527,6 +527,10 @@ public class PotInteraction : MonoBehaviour
 
         menuOpen = true;
 
+        // Tutorial hook — "Press [E] to interact with the pot" advances the moment the menu
+        // actually opens, rather than on a click/timer guess.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("interacted_with_pot");
+
         if (potMenuUI != null)
             potMenuUI.Open(pot, dragonInventory, this);
         // NOTE: this used to hide the old on-screen Tutorial panel here. Hook whatever

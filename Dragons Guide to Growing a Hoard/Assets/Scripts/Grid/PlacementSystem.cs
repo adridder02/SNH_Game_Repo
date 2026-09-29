@@ -429,6 +429,17 @@ public class PlacementSystem : MonoBehaviour
 
         if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
 
+        // Tutorial hooks — fired here rather than only from the F-key/scroll input handlers, since
+        // EnterPlaceMode is the single funnel every entry point (F key, Tab back from wall placing,
+        // a UI pot-selector button, CycleSelection's scroll-wheel path below) already goes through.
+        // "entered_placement_mode" fires every time (both step and hook match on the SAME event, so
+        // firing it once for the first pot selected as well as every later re-entry is harmless —
+        // NotifyExternalTrigger only acts if that specific step is still the current one).
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("entered_placement_mode");
+
+        if (availablePots[selectedIndex].correspondingPlantSize == PlantSize.Small)
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("selected_smallest_pot");
+
         OnModeChanged?.Invoke(mode);
     }
 

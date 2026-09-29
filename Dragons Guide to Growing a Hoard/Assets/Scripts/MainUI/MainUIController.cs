@@ -88,6 +88,10 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
              "Only used for the water bar — NOT the player's world position (see " +
              "playerZoneTracker below for that).")]
     [SerializeField] private PlayerInventory playerInventory;
+    [Tooltip("Auto-found in the scene if left empty (same GameObject as playerInventory). Used only to " +
+             "gate the hotbar row — see hotbarRoot's tooltip below. The inventory icon gates on " +
+             "playerInventory's plant-pickup flag instead, not this.")]
+    [SerializeField] private PlayerAbilityInventory abilityInventoryForGating;
 
     [Header("Water Bar")]
     [Tooltip("Same ImageFillBar setup/prefab as PotMenuUIController's water bar. Fixed colour, " +
@@ -144,6 +148,13 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [SerializeField] private List<HotbarSlotUI> hudHotbarSlotUIs = new List<HotbarSlotUI>();
     [Tooltip("Auto-found in the scene if left empty.")]
     [SerializeField] private AbilityHotbarSystem hotbarSystem;
+    [Tooltip("The hotbar row's shared parent GameObject — hidden (same as PotMenuUIController's " +
+             "ability button, and InventoryUIController's own hand-placed hotbar row) until the " +
+             "player's first HARVEST FROM A POT — a fully-grown plant removed for a Consumable/" +
+             "Placeable ability item (PlayerAbilityInventory.OnFirstAbilityItemHarvested/" +
+             "HasHarvestedFirstAbilityItem), NOT the inventory icon's plant-pickup flag below. Parent " +
+             "the hotbar slots (hudHotbarSlotUIs) under one GameObject in the Editor and assign it here.")]
+    [SerializeField] private GameObject hotbarRoot;
 
     [Header("HUD Visibility")]
     [Tooltip("Everything on the HUD that should hide while a menu is open — water bar, miasma bar, " +
@@ -319,11 +330,31 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             playerInventory = allInventories.Length > 0 ? allInventories[0] : null;
         }
 
+        if (abilityInventoryForGating == null && playerInventory != null)
+            abilityInventoryForGating = playerInventory.GetComponent<PlayerAbilityInventory>();
+        if (abilityInventoryForGating == null)
+            abilityInventoryForGating = FindAnyObjectByType<PlayerAbilityInventory>();
+
         if (journalButton != null)
             journalButton.onClick.AddListener(() => journalUI?.ToggleJournal());
 
         if (inventoryButton != null)
             inventoryButton.onClick.AddListener(() => inventoryUI?.ToggleInventory());
+
+        // Inventory icon stays hidden until the player's picked up a plant at all (any of harvest
+        // node / physical pickup / pulled back out of a pot — PlayerInventory.OnFirstPlantHarvested).
+        // The hotbar row is gated separately, on a pot HARVEST specifically — a fully-grown plant
+        // removed for a Consumable/Placeable ability item (PlayerAbilityInventory.
+        // OnFirstAbilityItemHarvested) — since that's the only way the player ever gets anything to
+        // put ON a hotbar. HasHarvestedFirstPlant/HasHarvestedFirstAbilityItem cover the case where
+        // this UI enables AFTER either already happened this session (the events alone would've been
+        // missed by a listener that wasn't subscribed yet).
+        if (playerInventory != null)
+            playerInventory.OnFirstPlantHarvested += OnFirstPlantHarvested;
+        if (abilityInventoryForGating != null)
+            abilityInventoryForGating.OnFirstAbilityItemHarvested += OnFirstAbilityItemHarvested;
+
+        RefreshFirstHarvestGatedUI();
 
         WireToolSlot(0, () => placementSystem.TogglePlaceMode());
         WireToolSlot(1, () => placementSystem.ToggleRemoveMode());
@@ -423,6 +454,12 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
 
         if (wallPlacementSystem != null)
             wallPlacementSystem.OnModeChanged -= RefreshWallPlacementUI;
+
+        if (playerInventory != null)
+            playerInventory.OnFirstPlantHarvested -= OnFirstPlantHarvested;
+
+        if (abilityInventoryForGating != null)
+            abilityInventoryForGating.OnFirstAbilityItemHarvested -= OnFirstAbilityItemHarvested;
     }
 
     // ---------------------------------------------------------------
@@ -446,6 +483,27 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     /// <summary>Called by HotbarSlotUI.OnPointerClick on right-click. Just forgets the slot's
     /// assignment — doesn't touch the player's actual item count, so nothing is lost.</summary>
     public void ClearHotbarSlot(int slotIndex) => hotbarSystem?.Clear(slotIndex);
+
+    // ---------------------------------------------------------------
+    // First-harvest gated UI — two separate flags, two separate gates:
+    //   - inventoryButton unlocks on ANY plant pickup (PlayerInventory.HasHarvestedFirstPlant).
+    //   - hotbarRoot unlocks on a POT harvest specifically — a fully-grown plant removed for a
+    //     Consumable/Placeable item (PlayerAbilityInventory.HasHarvestedFirstAbilityItem), since
+    //     that's the only way the player gets anything to actually put on a hotbar.
+    // PotMenuUIController's ability button and InventoryUIController's own hotbar row gate the same
+    // way as hotbarRoot, off the same PlayerAbilityInventory flag.
+    // ---------------------------------------------------------------
+    private void OnFirstPlantHarvested() => RefreshFirstHarvestGatedUI();
+    private void OnFirstAbilityItemHarvested() => RefreshFirstHarvestGatedUI();
+
+    private void RefreshFirstHarvestGatedUI()
+    {
+        if (inventoryButton != null)
+            inventoryButton.gameObject.SetActive(playerInventory != null && playerInventory.HasHarvestedFirstPlant);
+
+        if (hotbarRoot != null)
+            hotbarRoot.SetActive(abilityInventoryForGating != null && abilityInventoryForGating.HasHarvestedFirstAbilityItem);
+    }
 
     /// <summary>Adds a click listener to toolSlots[index] if both the slot and placementSystem exist.</summary>
     private void WireToolSlot(int index, UnityEngine.Events.UnityAction onClick)
