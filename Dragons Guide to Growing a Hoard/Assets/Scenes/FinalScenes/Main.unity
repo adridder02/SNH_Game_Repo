@@ -22961,7 +22961,19 @@ MonoBehaviour:
           m_CallState: 1
     onStepHidden:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 74016827}
+          m_TargetAssemblyTypeName: DirectionalIndicator, Assembly-CSharp
+          m_MethodName: DeactivateTarget
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 465881501}
+            m_ObjectArgumentAssemblyTypeName: TrackedTarget, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - type: 0
     message: Use the scroll wheel to switch pots. Choose the middle  one for now.
     portablePrompt: {fileID: 188994802}
