@@ -63,15 +63,15 @@ public class TutorialSequenceController : MonoBehaviour
     [SerializeField] private bool autoStart = true;
 
     [Header("Scene-Transition Gate (optional)")]
-    [Tooltip("This GameObject needs to survive the tutorial-scene -> main-scene load for a Gate step to " +
-             "wait across that transition at all — see the DontDestroyOnLoad call in Awake below. If your " +
-             "two halves instead use separate UI references per scene (a different promptUI/portablePrompt " +
-             "set once you're in the main scene), leave this whole section blank and drive that Gate step's " +
-             "advance some other way (e.g. the main scene's own bootstrap script calling CompleteCurrentStep " +
-             "or NotifyExternalTrigger once its own UI is ready).")]
     [Tooltip("Exact scene name that, once loaded, fires sceneLoadTriggerId below via NotifyExternalTrigger " +
              "— the natural fit for a Gate step sitting between two halves of the tutorial (tutorial scene " +
-             "-> main scene). Leave blank if nothing in this sequence needs this.")]
+             "-> main scene). Leave blank if nothing in this sequence needs this. Note this GameObject " +
+             "needs to survive the tutorial-scene -> main-scene load for a Gate step to wait across that " +
+             "transition at all — see the DontDestroyOnLoad call in Awake below. If your two halves instead " +
+             "use separate UI references per scene (a different promptUI/portablePrompt set once you're in " +
+             "the main scene), leave this whole section blank and drive that Gate step's advance some other " +
+             "way (e.g. the main scene's own bootstrap script calling CompleteCurrentStep or " +
+             "NotifyExternalTrigger once its own UI is ready).")]
     [SerializeField] private string sceneLoadTriggerSceneName;
     [Tooltip("The id fired when sceneLoadTriggerSceneName above finishes loading — must match the waiting " +
              "Gate step's External Trigger Id exactly.")]
