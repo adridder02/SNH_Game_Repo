@@ -174,14 +174,53 @@ public class TutorialSequenceController : MonoBehaviour
 
     /// <summary>Fires sceneLoadTriggerId the moment sceneLoadTriggerSceneName finishes loading — the
     /// mechanism behind the scene-transition Gate step described in the header above. No-op if either
-    /// field is blank, or if the scene that loaded isn't the one being waited on.</summary>
+    /// field is blank, or if the scene that loaded isn't the one being waited on.
+    ///
+    /// Also covers the player leaving the tutorial scene EARLY, before finishing everything the Gate
+    /// step was waiting behind (e.g. they quit out, or whatever lets them reach the main scene doesn't
+    /// actually require the tutorial to be done first). In that case the current step is still
+    /// somewhere BEFORE the Gate, so a plain NotifyExternalTrigger call would do nothing (it only ever
+    /// matches the CURRENT step's own id) and the player would be stuck on a first-half step whose UI
+    /// no longer exists. Detected by searching for the step that actually owns sceneLoadTriggerId — if
+    /// the sequence hasn't reached it yet, every step up to and including it is skipped (auto-marked
+    /// done, same effect as if the player had legitimately finished them) so the second half still
+    /// starts normally.</summary>
     private void OnSceneLoadedForTutorial(Scene scene, LoadSceneMode mode)
     {
         if (string.IsNullOrEmpty(sceneLoadTriggerSceneName) || string.IsNullOrEmpty(sceneLoadTriggerId))
             return;
 
-        if (scene.name == sceneLoadTriggerSceneName)
-            NotifyExternalTrigger(sceneLoadTriggerId);
+        if (scene.name != sceneLoadTriggerSceneName)
+            return;
+
+        int gateIndex = FindStepIndexByExternalTrigger(sceneLoadTriggerId);
+
+        if (gateIndex >= 0 && currentIndex < gateIndex)
+        {
+            // Left early — jump straight past the Gate (and every unfinished step before it) to
+            // whatever comes next, exactly as if the Gate had just advanced normally. Deliberately NOT
+            // going through the public SkipToStep — its bounds guard refuses an index == steps.Count,
+            // which would silently do nothing if the Gate happened to be the very last step; inlining
+            // its two lines here instead lets AdvanceToNextStep's own out-of-range handling (fire
+            // OnSequenceComplete) take over correctly in that case too.
+            currentIndex = gateIndex; // AdvanceToNextStep increments past this to gateIndex + 1
+            AdvanceToNextStep();
+            return;
+        }
+
+        // Otherwise the sequence is already sitting on (or past) the Gate — the normal path handles
+        // it: this only actually advances if the CURRENT step's externalTriggerId matches.
+        NotifyExternalTrigger(sceneLoadTriggerId);
+    }
+
+    /// <summary>First step in the list whose External Trigger Id matches, or -1 if none do. Used to
+    /// find "the Gate step" by its own id rather than needing a second, separately-authored index.</summary>
+    private int FindStepIndexByExternalTrigger(string triggerId)
+    {
+        for (int i = 0; i < steps.Count; i++)
+            if (steps[i] != null && steps[i].externalTriggerId == triggerId)
+                return i;
+        return -1;
     }
 
     void Start()
