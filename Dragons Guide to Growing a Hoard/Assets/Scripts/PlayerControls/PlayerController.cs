@@ -148,6 +148,12 @@ public class PlayerController : MonoBehaviour
     private InputAction inventoryAction;
     private CharacterController controller;
 
+    // Captured once in Start() — where the player actually started this play session (NOT reset by a
+    // scene reload, since that just runs Start() again wherever the scene puts the player). Used only
+    // by ResetToSpawnPosition() below, for the Exit Menu's "Unstuck" button.
+    private Vector3 spawnPosition;
+    private Quaternion spawnRotation;
+
     private Vector2 moveInput;
     private Vector3 velocity;   // gravity / jump velocity (unused during Flying)
     private LocomotionState locomotionState = LocomotionState.Grounded;
@@ -206,6 +212,8 @@ public class PlayerController : MonoBehaviour
             Debug.LogError("playerAnimation component is missing from " + gameObject.name);
         }
 
+        spawnPosition = transform.position;
+        spawnRotation = transform.rotation;
     }
 
     private void OnEnable()
@@ -266,6 +274,31 @@ public class PlayerController : MonoBehaviour
             velocity = Vector3.zero;
             flyAscendHeld = false;
         }
+    }
+
+    /// <summary>Teleports the player back to wherever they started THIS play session (captured once in
+    /// Start() — not reset by a scene reload/Restart, since that runs Start() again at whatever position
+    /// the reloaded scene places the player). Used by the Exit Menu's "Unstuck" button — only resets
+    /// position/rotation/velocity, nothing else (inventory, planted pots, mission progress, etc. are all
+    /// untouched, unlike an actual game restart).</summary>
+    public void ResetToSpawnPosition()
+    {
+        // CharacterController fights a direct transform.position set while enabled (it recomputes
+        // movement from its own internal state next Move() call and can shove the player right back
+        // out) — the standard workaround is to disable it for the actual teleport, then re-enable.
+        if (controller != null) controller.enabled = false;
+
+        transform.position = spawnPosition;
+        transform.rotation = spawnRotation;
+
+        velocity = Vector3.zero;
+        locomotionState = LocomotionState.Grounded;
+        flyAscendHeld = false;
+
+        if (controller != null) controller.enabled = true;
+
+        // Clears any stuck jump/fall animation state left over from wherever the player was before.
+        playerAnim?.setJumpFalse();
     }
 
     // ──────────────────────────────────────────────
@@ -337,6 +370,14 @@ public class PlayerController : MonoBehaviour
     private void OnSpacePressed(InputAction.CallbackContext ctx)
     {
         if (!movementEnabled) return;
+
+        // A menu (Inventory/Journal/Pot Menu/etc.) deliberately leaves movement enabled while it's
+        // open, so Space still jumps by default even with one up. But when the tutorial itself is
+        // currently using Space for something (dismissing a Portable prompt like the pot menu's health
+        // bar callout, or a Sidebar page's Next/Complete button), that same press shouldn't ALSO make
+        // the dragon jump underneath it.
+        if (TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsConsumingSpacebar)
+            return;
 
         switch (locomotionState)
         {

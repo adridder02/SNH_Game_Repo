@@ -104,6 +104,11 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [Tooltip("Small dot shown on the journal icon while any species has been discovered but its page " +
              "hasn't been opened yet (NewItemTracker.HasAnyUnseenJournal). Optional.")]
     [SerializeField] private GameObject journalNewDot;
+    [Tooltip("If on, the journal icon starts hidden and only reveals via RevealJournalIcon below — wire " +
+             "that to the 'Press [J] to open your journal' tutorial step's onStepShown (same one-time-" +
+             "reveal pattern as toolSlotsStartHidden/RevealToolSlot above). Leave off if the icon should " +
+             "just show normally from the start.")]
+    [SerializeField] private bool journalButtonStartsHidden = true;
 
     [Header("Inventory Icon")]
     [SerializeField] private Button inventoryButton;
@@ -117,6 +122,11 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [Tooltip("Fixed-colour bar (useFillGradient = false) showing the current miasma size.")]
     [SerializeField] private ImageFillBar miasmaBar;
     [SerializeField] private MiasmaController miasma;
+    [Tooltip("If on, the miasma bar starts hidden and only reveals via RevealMiasmaBar below — wire " +
+             "that to its own Portable prompt's onStepShown (same one-time-reveal pattern as " +
+             "toolSlotsStartHidden/RevealToolSlot above). Leave off if the bar should just show " +
+             "normally from the start.")]
+    [SerializeField] private bool miasmaBarStartsHidden = true;
 
     [Header("Zone Happiness Bar")]
     [Tooltip("Gradient bar (useFillGradient = true, e.g. red->yellow->green) showing the " +
@@ -126,6 +136,11 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
              "the player is currently overlapping. NOT PlayerInventory (that's UI-space, not a " +
              "world position).")]
     [SerializeField] private PlayerZoneTracker playerZoneTracker;
+    [Tooltip("If on, the zone happiness bar starts hidden and only reveals via RevealZoneHappinessBar " +
+             "below — wire that to its own Portable prompt's onStepShown (same one-time-reveal pattern " +
+             "as toolSlotsStartHidden/RevealToolSlot above). Leave off if the bar should just show " +
+             "normally from the start.")]
+    [SerializeField] private bool zoneHappinessBarStartsHidden = true;
 
     [Header("Tool Selector Slots")]
     [Tooltip("Slot 0 = Place (F), slot 1 = Remove (R), slot 2 = Move (G), slot 3 = Water (Q). Each " +
@@ -216,6 +231,14 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
              "FLOOR placement mode (the two groups above treat Floor and Wall identically). Shown the " +
              "rest of the time, hidden only while WallPlacementSystem is in Placing/Removing mode.")]
     [SerializeField] private GameObject wallOnlySection;
+
+    [Tooltip("The 'press Tab to switch to wall placement' hint icon — shown ONLY while " +
+             "PlacementSystem (Floor) is in Placing mode, and only once the player has actually " +
+             "unlocked wall placement (picked up Clovenwick for the first time — see " +
+             "PlayerInventory.HasUnlockedWallPlacement/OnWallPlacementUnlocked). Hidden the rest of " +
+             "the time, including during Wall placing itself and during Floor placing before " +
+             "Clovenwick's been picked up, so it doesn't hint at a mode the player can't reach yet.")]
+    [SerializeField] private GameObject tabToggleHintIcon;
 
     [Header("Interact Prompt (HUD)")]
     [Tooltip("Fixed screen-space element (e.g. a 'Press E' panel docked on the HUD) — just enabled/" +
@@ -354,6 +377,16 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         if (inventoryButton != null)
             inventoryButton.onClick.AddListener(() => inventoryUI?.ToggleInventory());
 
+        // One-time-reveal gating — same pattern as toolSlotsStartHidden/RevealToolSlot below, just for
+        // three individual elements instead of a group of four. Each stays hidden until its own
+        // Reveal*() method is called (wire those to the matching tutorial step's onStepShown).
+        if (journalButtonStartsHidden && journalButton != null)
+            journalButton.gameObject.SetActive(false);
+        if (miasmaBarStartsHidden && miasmaBar != null)
+            miasmaBar.gameObject.SetActive(false);
+        if (zoneHappinessBarStartsHidden && zoneHappinessBar != null)
+            zoneHappinessBar.gameObject.SetActive(false);
+
         // Inventory icon stays hidden until the player's picked up a plant at all (any of harvest
         // node / physical pickup / pulled back out of a pot — PlayerInventory.OnFirstPlantHarvested).
         // The hotbar row is gated separately, on a pot HARVEST specifically — a fully-grown plant
@@ -366,6 +399,12 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             playerInventory.OnFirstPlantHarvested += OnFirstPlantHarvested;
         if (abilityInventoryForGating != null)
             abilityInventoryForGating.OnFirstAbilityItemHarvested += OnFirstAbilityItemHarvested;
+
+        // tabToggleHintIcon's visibility depends on this too (see RefreshPlacementBanner) — refresh
+        // it the moment wall placement actually unlocks, in case the player is mid-Floor-placing
+        // right when they pick up their first Clovenwick.
+        if (playerInventory != null)
+            playerInventory.OnWallPlacementUnlocked += RefreshPlacementBanner;
 
         RefreshFirstHarvestGatedUI();
 
@@ -478,7 +517,10 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             wallPlacementSystem.OnModeChanged -= RefreshWallPlacementUI;
 
         if (playerInventory != null)
+        {
             playerInventory.OnFirstPlantHarvested -= OnFirstPlantHarvested;
+            playerInventory.OnWallPlacementUnlocked -= RefreshPlacementBanner;
+        }
 
         if (abilityInventoryForGating != null)
             abilityInventoryForGating.OnFirstAbilityItemHarvested -= OnFirstAbilityItemHarvested;
@@ -552,6 +594,28 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             toolSelectorRoot.SetActive(true);
     }
 
+    /// <summary>Reveals the journal icon (Button.gameObject) — safe to call repeatedly or if it's
+    /// already visible. Wire this from the "Press [J] to open your journal" tutorial step's
+    /// onStepShown.</summary>
+    public void RevealJournalIcon()
+    {
+        if (journalButton != null) journalButton.gameObject.SetActive(true);
+    }
+
+    /// <summary>Reveals the miasma bar (ImageFillBar.gameObject) — safe to call repeatedly or if it's
+    /// already visible. Wire this from that bar's own tutorial step's onStepShown.</summary>
+    public void RevealMiasmaBar()
+    {
+        if (miasmaBar != null) miasmaBar.gameObject.SetActive(true);
+    }
+
+    /// <summary>Reveals the zone happiness bar (ImageFillBar.gameObject) — safe to call repeatedly or
+    /// if it's already visible. Wire this from that bar's own tutorial step's onStepShown.</summary>
+    public void RevealZoneHappinessBar()
+    {
+        if (zoneHappinessBar != null) zoneHappinessBar.gameObject.SetActive(true);
+    }
+
     /// <summary>Tints each tool slot to show which tool (if any) is currently active.</summary>
     private void RefreshToolButtonHighlights(PlacementSystem.Mode mode)
     {
@@ -587,6 +651,13 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             nonPlacementSection.SetActive(!eitherPlacing);
         if (placementSection != null)
             placementSection.SetActive(eitherPlacing);
+
+        // Floor-only, and only once Clovenwick's actually been picked up — see the field's own
+        // tooltip for why. Deliberately re-read fresh each call rather than cached, same as
+        // floorPlacing/wallPlacing above, so OnWallPlacementUnlocked firing mid-Floor-placing
+        // updates this immediately without needing a mode change to trigger the refresh.
+        if (tabToggleHintIcon != null)
+            tabToggleHintIcon.SetActive(floorPlacing && playerInventory != null && playerInventory.HasUnlockedWallPlacement);
     }
 
     /// <summary>Everything that needs to react to WallPlacementSystem.OnModeChanged specifically —

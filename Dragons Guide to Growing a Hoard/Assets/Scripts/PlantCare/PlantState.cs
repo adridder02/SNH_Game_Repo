@@ -372,10 +372,16 @@ public class PlantState : MonoBehaviour
         // circuit) — miasma simply has no effect on this plant right now.
         if (IsMiasmaImmune) return;
 
-        // Accumulate penalties over time (permanent until soil replacement)
+        // Accumulate penalties over time (permanent until soil replacement) — miasmaWaterDrainMultiplier
+        // used to just be OVERWRITTEN with Mathf.Max(1f, waterDrainMultiplier) each tick instead of
+        // accumulating like the other two. Since the Inspector's per-tick values (easy/mild/intense
+        // WaterDrainMultiplier) are small fractions like 0.02-0.05, that Max() always evaluated to a flat
+        // 1f no matter the intensity or how long the plant sat in miasma — the water drain effect (and
+        // MiasmaInfluence01's water-derived third of the overhead bar) could never actually rise above
+        // its "no effect" baseline. Now it climbs the same way light/soil do.
         miasmaLightPenalty = Mathf.Clamp01(miasmaLightPenalty + lightPenalty);
         miasmaSoilPenalty += soilPenalty;
-        miasmaWaterDrainMultiplier = Mathf.Max(1f, waterDrainMultiplier);
+        miasmaWaterDrainMultiplier = Mathf.Max(1f, miasmaWaterDrainMultiplier + waterDrainMultiplier);
         isMiasmaDebuffActive = true;
 
         // Clamp soil penalty to reasonable max

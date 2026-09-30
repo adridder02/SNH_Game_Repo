@@ -169,9 +169,25 @@ public class JournalUIController : MonoBehaviour
         if (journalBackButton != null)
             journalBackButton.onClick.AddListener(ToggleJournal);
 
-        plantsNavButton?.onClick.AddListener(() => ShowPage(plantsPage, plantsNavButton));
-        progressNavButton?.onClick.AddListener(() => ShowPage(progressPage, progressNavButton));
-        guideNavButton?.onClick.AddListener(() => ShowPage(guidePage, guideNavButton));
+        // Tutorial hooks on the three bookmark tabs — matches steps reading 'Open the "Plants"/
+        // "Progress"/"Guide" bookmark'. Fired from the click listener itself rather than from inside
+        // ShowPage() (which also runs on journal-open auto-reset-to-Plants and the room-shortcut
+        // buttons below), so these only fire on an actual, deliberate tab click.
+        plantsNavButton?.onClick.AddListener(() =>
+        {
+            ShowPage(plantsPage, plantsNavButton);
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_plants_bookmark");
+        });
+        progressNavButton?.onClick.AddListener(() =>
+        {
+            ShowPage(progressPage, progressNavButton);
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_progress_bookmark");
+        });
+        guideNavButton?.onClick.AddListener(() =>
+        {
+            ShowPage(guidePage, guideNavButton);
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_guide_bookmark");
+        });
         settingsNavButton?.onClick.AddListener(() => ShowPage(settingsPage, settingsNavButton));
 
         // Room shortcuts: same as clicking Progress, plus jump straight to that room.
@@ -239,11 +255,19 @@ public class JournalUIController : MonoBehaviour
             ThirdPersonCameraController.CameraLocked = true;
 
             RefreshUI();
+
+            // Tutorial hook — matches a step reading "Press [J] to open your journal".
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("journal_opened");
         }
         else
         {
             MenuLayerManager.NotifyClosed(this);
             GameInputModeManager.Instance?.SetGameplayMode();
+
+            // Tutorial hook — matches a step reading "Press the back button to return to the
+            // game" (this used to be an Escape-based step; both the back button AND Escape route
+            // through here via CloseJournal(), so either one satisfies it).
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("closed_journal_back_button");
         }
     }
     /// <summary>Closes the journal if it's open. Does nothing if already closed. Call this from ExitMenuController on Escape.</summary>

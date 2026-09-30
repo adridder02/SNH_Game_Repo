@@ -84,6 +84,11 @@ public class PlayerInventory : MonoBehaviour
              "this script just also gives each stack a spot in the same grid plants use.")]
     [SerializeField] private PlayerAbilityInventory abilityInventory;
 
+    [Tooltip("The Clovenwick species asset (PlantSpeciesData) — used only to fire a one-time tutorial " +
+             "hook (see AddPlantToInventory below) the very first time one is ever picked up, so the " +
+             "wall-placement tutorial chain can start itself. Leave empty if nothing depends on it.")]
+    [SerializeField] private PlantSpeciesData clovenwickSpecies;
+
     // Which ability stacks (by instanceId) have already had their one-time auto-place attempt —
     // see ReconcileAbilityGridPlacement(). Prevents re-placing a stack the player has since
     // dragged to Available themselves.
@@ -91,6 +96,17 @@ public class PlayerInventory : MonoBehaviour
 
     /// <summary>Fired whenever the grid or available contents change, so the UI can redraw.</summary>
     public event Action OnInventoryChanged;
+
+    /// <summary>Fires exactly once — the first time the player ever picks up Clovenwick specifically
+    /// (see clovenwickSpecies/AddPlantToInventory below). Lets onboarding-only UI that's specifically
+    /// about wall placement (e.g. MainUIController's Tab-to-switch hint icon during floor Placing
+    /// mode) stay hidden until wall placement is actually something the player can do. See
+    /// HasUnlockedWallPlacement for the already-happened case.</summary>
+    public event Action OnWallPlacementUnlocked;
+
+    /// <summary>True once OnWallPlacementUnlocked has fired. Check this on Start()/OnEnable() for UI
+    /// that initializes after the first Clovenwick pickup already happened this session.</summary>
+    public bool HasUnlockedWallPlacement { get; private set; }
 
     /// <summary>Fires exactly once — the first time the player ever receives a plant into their
     /// inventory (harvest node, physical pickup, or pulling one back out of a pot). Lets onboarding-
@@ -259,8 +275,27 @@ public class PlayerInventory : MonoBehaviour
         {
             if (PlantJournalManager.Instance != null)
             {
+                // Checked BEFORE MarkDiscovered so the tutorial hook below only ever fires on the
+                // actual first pickup of this species, not every subsequent one.
+                bool wasAlreadyDiscovered = PlantJournalManager.Instance.IsDiscovered(state.journalSpecies);
+
                 PlantJournalManager.Instance.MarkDiscovered(state.journalSpecies);
                 NewItemTracker.Instance?.MarkAcquiredJournal(state.journalSpecies.ResolvedId);
+
+                // Wall-placement tutorial hook — fires exactly once, the very first time Clovenwick
+                // specifically is picked up (harvest node, physical pickup, or pulled back out of a
+                // pot — same as everything else this method handles). Assign clovenwickSpecies in
+                // the Inspector to wire this up; a harmless no-op otherwise.
+                if (!wasAlreadyDiscovered && clovenwickSpecies != null && state.journalSpecies == clovenwickSpecies)
+                {
+                    TutorialSequenceController.Instance?.NotifyExternalTrigger("picked_up_clovenwick");
+
+                    if (!HasUnlockedWallPlacement)
+                    {
+                        HasUnlockedWallPlacement = true;
+                        OnWallPlacementUnlocked?.Invoke();
+                    }
+                }
             }
             else
                 Debug.LogWarning("[PlayerInventory] No PlantJournalManager in scene — journal discovery was skipped.");

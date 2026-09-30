@@ -76,6 +76,12 @@ public class WallPlacementSystem : MonoBehaviour
         foreach (WallSurface s in wallSurfaces) s?.GridVisual?.SetVisible(true);
         SpawnPreview(availableMushrooms[selectedIndex]);
         if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
+
+        // Tutorial hook — matches a step reading something like "press Tab to enter wall
+        // placement". This is the only way into wall-Placing mode right now (PlacementSystem's
+        // Tab toggle is the sole caller), so firing here covers it regardless of entry point.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("entered_wall_placement_mode");
+
         OnModeChanged?.Invoke();
     }
 
@@ -217,6 +223,10 @@ public class WallPlacementSystem : MonoBehaviour
 
         gridData.AddPlacement(key, data.size, placed);
         gridVisual.MarkOccupied(cell, data.size);
+
+        // Tutorial hook — matches a step reading something like "left-click to place it",
+        // the wall-placement equivalent of PlacementSystem.TryPlace's own trigger calls.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("placed_wall_mushroom");
     }
 
     private void TryRemove(Vector2Int cell, GridData gridData, WallGridVisual gridVisual)

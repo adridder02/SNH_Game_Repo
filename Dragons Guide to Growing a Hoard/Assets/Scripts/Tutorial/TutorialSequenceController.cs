@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 // =============================================================
 // TutorialSequenceController.cs
@@ -47,6 +49,9 @@ public class TutorialSequenceController : MonoBehaviour
 {
     [SerializeField] private TutorialPromptUI promptUI;
     [SerializeField] private TutorialBottomPopupUI bottomPopupUI;
+    [Tooltip("The paginated image/title/description panel with Previous/Next buttons, used by Sidebar-" +
+             "type steps. Leave blank if you don't use that type.")]
+    [SerializeField] private TutorialSidebarUI sidebarUI;
     [Tooltip("Auto-found via MissionProgressManager.Instance if left empty. Only needed for steps that use " +
              "linkedMission/linkedTaskId — leave both this and those blank if your tutorial never ties into missions.")]
     [SerializeField] private MissionProgressManager progressManager;
@@ -56,6 +61,21 @@ public class TutorialSequenceController : MonoBehaviour
     [SerializeField] private List<TutorialStep> steps = new List<TutorialStep>();
 
     [SerializeField] private bool autoStart = true;
+
+    [Header("Scene-Transition Gate (optional)")]
+    [Tooltip("This GameObject needs to survive the tutorial-scene -> main-scene load for a Gate step to " +
+             "wait across that transition at all — see the DontDestroyOnLoad call in Awake below. If your " +
+             "two halves instead use separate UI references per scene (a different promptUI/portablePrompt " +
+             "set once you're in the main scene), leave this whole section blank and drive that Gate step's " +
+             "advance some other way (e.g. the main scene's own bootstrap script calling CompleteCurrentStep " +
+             "or NotifyExternalTrigger once its own UI is ready).")]
+    [Tooltip("Exact scene name that, once loaded, fires sceneLoadTriggerId below via NotifyExternalTrigger " +
+             "— the natural fit for a Gate step sitting between two halves of the tutorial (tutorial scene " +
+             "-> main scene). Leave blank if nothing in this sequence needs this.")]
+    [SerializeField] private string sceneLoadTriggerSceneName;
+    [Tooltip("The id fired when sceneLoadTriggerSceneName above finishes loading — must match the waiting " +
+             "Gate step's External Trigger Id exactly.")]
+    [SerializeField] private string sceneLoadTriggerId = "entered_main_scene";
 
     [Tooltip("Optional. Only used by the 'Load Hardcoded Tutorial Script' context menu action below — if " +
              "assigned, the six movement-tip BottomBar steps it generates are auto-linked to this mission's " +
@@ -84,13 +104,34 @@ public class TutorialSequenceController : MonoBehaviour
     private int currentIndex = -1;
     private Coroutine autoAdvanceRoutine;
 
+    /// <summary>Tracks whether SetMenuUIMode() is currently active on the Sidebar type's behalf, so
+    /// entering/leaving a run of Sidebar pages locks/unlocks the camera exactly once each way — see
+    /// SyncSidebarCameraLock — instead of toggling on every single page turn within the same run.</summary>
+    private bool sidebarCameraLockActive = false;
+
     public int CurrentIndex => currentIndex;
     public TutorialStep CurrentStep => (currentIndex >= 0 && currentIndex < steps.Count) ? steps[currentIndex] : null;
 
     void Awake()
     {
-        if (Instance == null)
-            Instance = this;
+        if (Instance != null && Instance != this)
+        {
+            // A second instance showed up (e.g. one already persisted from the tutorial scene, and the
+            // main scene's own copy just loaded alongside it) — the persisted one is the one actually
+            // running the sequence, so this newcomer has nothing to do.
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+
+        // Needed for sceneLoadTriggerSceneName below to ever fire — without this, the whole object
+        // (and its subscription to SceneManager.sceneLoaded just below) is destroyed the instant the
+        // tutorial scene unloads, and a Gate step waiting on the main scene loading would wait forever.
+        // Harmless to leave on even if you don't use the scene-transition gate at all.
+        DontDestroyOnLoad(gameObject);
+
+        SceneManager.sceneLoaded += OnSceneLoadedForTutorial;
 
         if (progressManager == null)
             progressManager = MissionProgressManager.Instance != null
@@ -99,6 +140,11 @@ public class TutorialSequenceController : MonoBehaviour
 
         if (promptUI != null) promptUI.OnAdvanceRequested += HandleAdvanceRequested;
         if (bottomPopupUI != null) bottomPopupUI.OnAdvanceRequested += HandleAdvanceRequested;
+        if (sidebarUI != null)
+        {
+            sidebarUI.OnNextRequested += HandleAdvanceRequested;
+            sidebarUI.OnPreviousRequested += GoToPreviousStep;
+        }
     }
 
     void OnEnable()
@@ -115,13 +161,100 @@ public class TutorialSequenceController : MonoBehaviour
 
     void OnDestroy()
     {
+        SceneManager.sceneLoaded -= OnSceneLoadedForTutorial;
+
         if (promptUI != null) promptUI.OnAdvanceRequested -= HandleAdvanceRequested;
         if (bottomPopupUI != null) bottomPopupUI.OnAdvanceRequested -= HandleAdvanceRequested;
+        if (sidebarUI != null)
+        {
+            sidebarUI.OnNextRequested -= HandleAdvanceRequested;
+            sidebarUI.OnPreviousRequested -= GoToPreviousStep;
+        }
+    }
+
+    /// <summary>Fires sceneLoadTriggerId the moment sceneLoadTriggerSceneName finishes loading — the
+    /// mechanism behind the scene-transition Gate step described in the header above. No-op if either
+    /// field is blank, or if the scene that loaded isn't the one being waited on.</summary>
+    private void OnSceneLoadedForTutorial(Scene scene, LoadSceneMode mode)
+    {
+        if (string.IsNullOrEmpty(sceneLoadTriggerSceneName) || string.IsNullOrEmpty(sceneLoadTriggerId))
+            return;
+
+        if (scene.name == sceneLoadTriggerSceneName)
+            NotifyExternalTrigger(sceneLoadTriggerId);
     }
 
     void Start()
     {
         if (autoStart) BeginSequence();
+    }
+
+    void Update()
+    {
+        if (currentIndex < 0 || currentIndex >= steps.Count) return; // sequence not running
+        if (Keyboard.current == null || !Keyboard.current.spaceKey.wasPressedThisFrame) return;
+
+        TutorialStep step = CurrentStep;
+        if (step == null) return;
+
+        if (step.type == TutorialPromptType.Sidebar)
+        {
+            // Same as clicking Next — Next stays active even on the last page of a run (it just reads
+            // "Complete" there, see TutorialSidebarUI), so this always has something to do while a
+            // Sidebar step is current.
+            AdvanceToNextStep();
+            return;
+        }
+
+        // Any other step opts in individually via advanceOnSpacebar (e.g. a Portable prompt pointing
+        // at the pot menu's health bar, which you'd rather not make the player click on directly).
+        if (step.advanceOnSpacebar)
+            AdvanceToNextStep();
+    }
+
+    /// <summary>True while the CURRENT step will react to the spacebar itself — a Sidebar page (Next/
+    /// Complete) or any other step with advanceOnSpacebar on. Gameplay code that also binds Space (e.g.
+    /// PlayerController's Jump) should check this and skip its own action so a single press doesn't
+    /// both dismiss/advance the tutorial step AND do the gameplay thing at the same time.</summary>
+    public bool IsConsumingSpacebar
+    {
+        get
+        {
+            TutorialStep step = CurrentStep;
+            if (step == null) return false;
+            return step.type == TutorialPromptType.Sidebar || step.advanceOnSpacebar;
+        }
+    }
+
+    /// <summary>Whether the step at (index + direction) is itself a Sidebar step — used to decide
+    /// whether THIS Sidebar step's Previous/Next button should be visible at all (direction -1/+1
+    /// respectively). Adjacency is checked by TYPE, not just list bounds, so a Sidebar run correctly
+    /// hides Previous/Next at either end even when other, non-Sidebar steps happen to sit right before
+    /// or after it in the master `steps` list.</summary>
+    private bool HasAdjacentSidebarStep(int index, int direction)
+    {
+        int neighborIndex = index + direction;
+        if (neighborIndex < 0 || neighborIndex >= steps.Count) return false;
+
+        TutorialStep neighbor = steps[neighborIndex];
+        return neighbor != null && neighbor.type == TutorialPromptType.Sidebar;
+    }
+
+    /// <summary>Locks/unlocks the camera for a Sidebar step exactly like every other full-screen menu
+    /// (Inventory/Journal/Pot Menu/Exit Menu all do this themselves via GameInputModeManager) — called
+    /// whenever the CURRENT step changes, in both directions. Only actually calls SetMenuUIMode/
+    /// SetGameplayMode on an actual ENTER/EXIT of a Sidebar run, not on every page turn within one (page
+    /// turns stay Sidebar->Sidebar, so sidebarCameraLockActive is already true and this no-ops).</summary>
+    private void SyncSidebarCameraLock(TutorialPromptType? currentType)
+    {
+        bool shouldLock = currentType == TutorialPromptType.Sidebar;
+        if (shouldLock == sidebarCameraLockActive) return;
+
+        sidebarCameraLockActive = shouldLock;
+        if (shouldLock)
+            GameInputModeManager.Instance?.SetMenuUIMode();
+        else
+            GameInputModeManager.Instance?.SetGameplayMode();
     }
 
     // ------------------------------------------------------------
@@ -202,7 +335,44 @@ public class TutorialSequenceController : MonoBehaviour
         StopAutoAdvanceTimer();
         promptUI?.Hide();
         bottomPopupUI?.Hide();
+        sidebarUI?.Hide();
+        SyncSidebarCameraLock(null); // force-unlock if a Sidebar run was cut short mid-sequence
         currentIndex = -1;
+    }
+
+    /// <summary>Steps backward one entry — what a Sidebar page's Previous button (or TutorialSidebarUI.
+    /// OnPreviousRequested) calls. Unlike AdvanceToNextStep, this deliberately does NOT fire onStepShown/
+    /// onStepHidden, touch any linked mission task, or restart an auto-advance timer — going back is just
+    /// re-displaying an already-seen page, not a fresh state change. Does nothing on the first step.</summary>
+    public void GoToPreviousStep()
+    {
+        if (currentIndex <= 0 || currentIndex >= steps.Count) return;
+
+        StopAutoAdvanceTimer();
+        promptUI?.Hide();
+        bottomPopupUI?.Hide();
+        sidebarUI?.Hide();
+
+        currentIndex--;
+        TutorialStep step = steps[currentIndex];
+        if (step == null) return;
+
+        SyncSidebarCameraLock(step.type);
+
+        switch (step.type)
+        {
+            case TutorialPromptType.Portable:
+                promptUI?.Show(step);
+                break;
+            case TutorialPromptType.BottomBar:
+                bottomPopupUI?.Show(step);
+                break;
+            case TutorialPromptType.Sidebar:
+                sidebarUI?.Show(step, HasAdjacentSidebarStep(currentIndex, -1), HasAdjacentSidebarStep(currentIndex, 1));
+                break;
+            case TutorialPromptType.Gate:
+                break;
+        }
     }
 
     // ------------------------------------------------------------
@@ -259,11 +429,13 @@ public class TutorialSequenceController : MonoBehaviour
 
         promptUI?.Hide();
         bottomPopupUI?.Hide();
+        sidebarUI?.Hide();
 
         currentIndex++;
 
         if (currentIndex >= steps.Count)
         {
+            SyncSidebarCameraLock(null); // release the lock if the sequence ends mid-Sidebar-run
             OnSequenceComplete?.Invoke();
             return;
         }
@@ -275,6 +447,8 @@ public class TutorialSequenceController : MonoBehaviour
             AdvanceToNextStep();
             return;
         }
+
+        SyncSidebarCameraLock(step.type);
 
         switch (step.type)
         {
@@ -298,10 +472,20 @@ public class TutorialSequenceController : MonoBehaviour
                 bottomPopupUI.Show(step);
                 break;
 
+            case TutorialPromptType.Sidebar:
+                if (sidebarUI == null)
+                {
+                    Debug.LogWarning("[TutorialSequenceController] Sidebar step but no sidebarUI assigned — skipping.");
+                    AdvanceToNextStep();
+                    return;
+                }
+                sidebarUI.Show(step, HasAdjacentSidebarStep(currentIndex, -1), HasAdjacentSidebarStep(currentIndex, 1));
+                break;
+
             case TutorialPromptType.Gate:
-                // Deliberately shows nothing — promptUI/bottomPopupUI were already both Hide()'d above.
-                // This step just sits here until CheckLinkedTaskComplete() below (or a future
-                // OnProgressChanged tick) finds its linked task done and advances past it.
+                // Deliberately shows nothing — promptUI/bottomPopupUI/sidebarUI were already all
+                // Hide()'d above. This step just sits here until CheckLinkedTaskComplete() below (or a
+                // future OnProgressChanged tick) finds its linked task done and advances past it.
                 break;
         }
 

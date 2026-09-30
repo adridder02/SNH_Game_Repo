@@ -1,10 +1,17 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class ExitMenuController : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private GameObject exitMenuRoot;
+    [Tooltip("Auto-found in the scene if left empty. Used by unstuckButton below.")]
+    [SerializeField] private PlayerController playerController;
+    [Tooltip("Teleports the player back to wherever they started THIS play session — position/rotation " +
+             "only (see PlayerController.ResetToSpawnPosition). Does NOT reset the game, inventory, " +
+             "planted pots, or mission progress, unlike the Restart button.")]
+    [SerializeField] private Button unstuckButton;
     [SerializeField] private InventoryUIController inventoryController;
     [SerializeField] private PotMenuUIController potMenuController;
     [SerializeField] private JournalUIController journalController;
@@ -48,6 +55,12 @@ public class ExitMenuController : MonoBehaviour
 
         if (abilityPlacementSystem == null)
             abilityPlacementSystem = FindAnyObjectByType<AbilityPlacementSystem>();
+
+        if (playerController == null)
+            playerController = FindAnyObjectByType<PlayerController>();
+
+        if (unstuckButton != null)
+            unstuckButton.onClick.AddListener(UnstuckPlayer);
     }
 
     void Update()
@@ -131,6 +144,18 @@ public class ExitMenuController : MonoBehaviour
         GameInputModeManager.Instance?.SetGameplayMode();
         // NOTE: this used to re-show the old on-screen Tutorial panel here. Hook whatever
         // replaces it in when that system exists.
+    }
+
+    /// <summary>The "Unstuck" button — teleports the player back to their spawn position for this play
+    /// session (see PlayerController.ResetToSpawnPosition) and closes the exit menu afterward, same as
+    /// any other action button here. Only touches position/rotation, nothing else about the game state.</summary>
+    public void UnstuckPlayer()
+    {
+        if (playerController == null)
+            playerController = FindAnyObjectByType<PlayerController>();
+
+        playerController?.ResetToSpawnPosition();
+        CloseExitMenu();
     }
 
     /// <summary>
