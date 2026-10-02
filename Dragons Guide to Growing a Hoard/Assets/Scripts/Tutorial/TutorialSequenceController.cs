@@ -125,6 +125,14 @@ public class TutorialSequenceController : MonoBehaviour
 
         Instance = this;
 
+        // DontDestroyOnLoad silently refuses to persist a non-root GameObject (just logs a warning and
+        // does nothing) — if this object happens to be nested under some parent (a "Managers" object,
+        // a Canvas, whatever your scene's organized under), detach it to root first so it actually
+        // works regardless of where it sits in the hierarchy. true keeps its current world position/
+        // rotation/scale rather than snapping to the parent-less defaults.
+        if (transform.parent != null)
+            transform.SetParent(null, true);
+
         // Needed for sceneLoadTriggerSceneName below to ever fire — without this, the whole object
         // (and its subscription to SceneManager.sceneLoaded just below) is destroyed the instant the
         // tutorial scene unloads, and a Gate step waiting on the main scene loading would wait forever.
@@ -192,6 +200,16 @@ public class TutorialSequenceController : MonoBehaviour
 
         if (scene.name != sceneLoadTriggerSceneName)
             return;
+
+        // Every HUD element that's gated behind "reveal once the tutorial reaches this point" (journal
+        // icon, miasma/zone bars, tool selector slots — see MainUIController) had its reveal fired
+        // against the TUTORIAL scene's MainUIController instance specifically. That instance is gone
+        // now; the main scene's own fresh copy starts hidden again regardless of how much of the
+        // tutorial was actually finished. Reaching this scene at all means everything up to the gate
+        // counts as done (see the skip-ahead logic below), so force all of it visible right away on
+        // whichever MainUIController just loaded here, rather than relying on those now-unreachable
+        // per-step onStepShown hooks.
+        FindAnyObjectByType<MainUIController>()?.RevealAllTutorialGatedUI();
 
         int gateIndex = FindStepIndexByExternalTrigger(sceneLoadTriggerId);
 

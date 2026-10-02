@@ -4540,14 +4540,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 161992241}
-  - component: {fileID: 161992240}
   - component: {fileID: 161992239}
   - component: {fileID: 161992238}
-  - component: {fileID: 161992242}
   - component: {fileID: 161992243}
   - component: {fileID: 161992244}
   - component: {fileID: 161992245}
-  - component: {fileID: 161992246}
   - component: {fileID: 161992247}
   - component: {fileID: 161992248}
   m_Layer: 0
@@ -4591,56 +4588,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 32768
   debugRaycast: 0
---- !u!114 &161992240
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 161992237}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87fa58b54a87e7e498fac887c6168665, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputManager: {fileID: 161992239}
-  surfaces:
-  - {fileID: 465881495}
-  - {fileID: 20684808}
-  - {fileID: 1828575736}
-  - {fileID: 738555592}
-  - {fileID: 1389070841}
-  - {fileID: 157204144}
-  - {fileID: 1921177846}
-  - {fileID: 628980177}
-  - {fileID: 705570828}
-  - {fileID: 882501575}
-  - {fileID: 1367397643}
-  - {fileID: 1102698686}
-  - {fileID: 1460219918}
-  - {fileID: 769201322}
-  - {fileID: 1984744640}
-  - {fileID: 1501522206}
-  - {fileID: 1814211583}
-  wallPlacementSystem: {fileID: 161992246}
-  availablePots:
-  - {fileID: 11400000, guid: 436aed676e7c07e40b5b5dc610152462, type: 2}
-  - {fileID: 11400000, guid: 697b9909e231f8e4eaa08224acc23148, type: 2}
-  - {fileID: 11400000, guid: 250dc76ea43d8a44698faca40d5ef1c1, type: 2}
-  showPreviewObject: 1
-  debugMode: 0
-  placeSoundClip: {fileID: 8300000, guid: db4804d240a6c0b44a30f637241afaa4, type: 3}
-  pickupSoundClip: {fileID: 0}
-  dropSoundClip: {fileID: 0}
-  removeSoundClip: {fileID: 0}
-  sfxVolume: 1
-  ambientMusicClip: {fileID: 8300000, guid: 23e7cfffa201fdf45b6dd89b9b477780, type: 3}
-  ambientVolume: 0.216
-  loopAmbientMusic: 1
-  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
-  collectionMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
-  potInteraction: {fileID: 74016811}
-  playerInventory: {fileID: 0}
 --- !u!4 &161992241
 Transform:
   m_ObjectHideFlags: 0
@@ -4657,19 +4604,6 @@ Transform:
   - {fileID: 1539513752}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &161992242
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 161992237}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ab4175e5be5d9443a525360481de0aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlantJournalManager
-  database: {fileID: 11400000, guid: 2dcc47511b44df64f9f7508d51045970, type: 2}
 --- !u!114 &161992243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4712,27 +4646,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdc258b453152949a502b5d903e506e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AbilityPlacementSystem
-  placementSystem: {fileID: 161992240}
+  placementSystem: {fileID: 0}
   abilityInventory: {fileID: 74016825}
---- !u!114 &161992246
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 161992237}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 136c057146e891c4183ffb5dc4b8cc7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WallPlacementSystem
-  inputManager: {fileID: 161992239}
-  wallSurfaces:
-  - {fileID: 1969525299}
-  placementSystem: {fileID: 161992240}
-  availableMushrooms:
-  - {fileID: 11400000, guid: 4eea3bfabe17cdf40af5b4ccfd2bb0cf, type: 2}
-  showPreviewObject: 1
 --- !u!114 &161992247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12848,13 +12763,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ExitMenuController
   exitMenuRoot: {fileID: 2048362275}
   playerController: {fileID: 74016814}
-  unstuckButton: {fileID: 1043754907}
+  unstuckButton: {fileID: 0}
   inventoryController: {fileID: 8910482494518653561}
   potMenuController: {fileID: 2128103705}
   journalController: {fileID: 742308971}
   mainUI: {fileID: 552305404}
-  placementSystem: {fileID: 161992240}
-  wallPlacementSystem: {fileID: 161992246}
+  placementSystem: {fileID: 0}
+  wallPlacementSystem: {fileID: 0}
   abilityPlacementSystem: {fileID: 161992245}
 --- !u!1 &540371262
 GameObject:
@@ -13563,19 +13478,22 @@ MonoBehaviour:
   journalButton: {fileID: 1903572062}
   journalUI: {fileID: 742308971}
   journalNewDot: {fileID: 1418553383}
+  journalButtonStartsHidden: 1
   inventoryButton: {fileID: 1940648729}
   inventoryUI: {fileID: 8910482494518653561}
   inventoryNewDot: {fileID: 582429446}
   miasmaBar: {fileID: 267348993}
   miasma: {fileID: 186100310}
+  miasmaBarStartsHidden: 1
   zoneHappinessBar: {fileID: 1094983230}
   playerZoneTracker: {fileID: 74016822}
+  zoneHappinessBarStartsHidden: 1
   toolSlots:
   - {fileID: 1358406208}
   - {fileID: 1393011414}
   - {fileID: 1556749759}
   - {fileID: 717616736}
-  placementSystem: {fileID: 161992240}
+  placementSystem: {fileID: 1014228678}
   toolActiveColor: {r: 1, g: 0.85, b: 0.4, a: 1}
   toolInactiveColor: {r: 1, g: 1, b: 1, a: 1}
   toolSlotsStartHidden: 1
@@ -13591,7 +13509,7 @@ MonoBehaviour:
   hudRoot: {fileID: 1845067430}
   secondaryHudRoot: {fileID: 399700866}
   abilityPlacementSystem: {fileID: 161992245}
-  wallPlacementSystem: {fileID: 161992246}
+  wallPlacementSystem: {fileID: 1014228679}
   placementBannerRoot: {fileID: 200617793}
   placementBannerText: {fileID: 180111411}
   floorPlacementBannerText: Floor Placement Mode
@@ -14960,6 +14878,85 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 598874734}
   m_CullTransparentMesh: 1
+--- !u!1 &600670138
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 600670141}
+  - component: {fileID: 600670140}
+  - component: {fileID: 600670139}
+  m_Layer: 0
+  m_Name: EventSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &600670139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600670138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
+  m_SendPointerHoverToParent: 1
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_CancelAction: {fileID: 7727032971491509709, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_LeftClickAction: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MiddleClickAction: {fileID: -2185481485913320682, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_RightClickAction: {fileID: -4090225696740746782, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
+--- !u!114 &600670140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600670138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventSystem
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+--- !u!4 &600670141
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600670138}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.4621596, z: -0, w: 0.8867968}
+  m_LocalPosition: {x: 117.53, y: 7.98, z: 33.85}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &608572598
 GameObject:
   m_ObjectHideFlags: 0
@@ -17342,7 +17339,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JournalUIController
   database: {fileID: 11400000, guid: 2dcc47511b44df64f9f7508d51045970, type: 2}
-  journalManager: {fileID: 161992242}
+  journalManager: {fileID: 0}
   journalRoot: {fileID: 8621471075238398550}
   journalBackButton: {fileID: 542309066}
   mainUI: {fileID: 552305404}
@@ -17397,7 +17394,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProgressPageUIController
   database: {fileID: 11400000, guid: 2dcc47511b44df64f9f7508d51045970, type: 2}
-  journalManager: {fileID: 161992242}
+  journalManager: {fileID: 0}
   mainRoom:
     page: {fileID: 389703320}
     tier1Row: {fileID: 1786567613}
@@ -23003,6 +23000,108 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1907230027328997607, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+--- !u!1 &1014228677
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1014228680}
+  - component: {fileID: 1014228679}
+  - component: {fileID: 1014228678}
+  m_Layer: 0
+  m_Name: PlacementManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1014228678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014228677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87fa58b54a87e7e498fac887c6168665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputManager: {fileID: 161992239}
+  surfaces:
+  - {fileID: 465881495}
+  - {fileID: 20684808}
+  - {fileID: 1814211583}
+  - {fileID: 1828575736}
+  - {fileID: 738555592}
+  - {fileID: 1389070841}
+  - {fileID: 157204144}
+  - {fileID: 1921177846}
+  - {fileID: 628980177}
+  - {fileID: 705570828}
+  - {fileID: 882501575}
+  - {fileID: 1367397643}
+  - {fileID: 1102698686}
+  - {fileID: 1460219918}
+  - {fileID: 769201322}
+  - {fileID: 1984744640}
+  - {fileID: 1501522206}
+  wallPlacementSystem: {fileID: 1014228679}
+  availablePots:
+  - {fileID: 11400000, guid: 436aed676e7c07e40b5b5dc610152462, type: 2}
+  - {fileID: 11400000, guid: 697b9909e231f8e4eaa08224acc23148, type: 2}
+  - {fileID: 11400000, guid: 250dc76ea43d8a44698faca40d5ef1c1, type: 2}
+  showPreviewObject: 1
+  debugMode: 0
+  placeSoundClip: {fileID: 8300000, guid: db4804d240a6c0b44a30f637241afaa4, type: 3}
+  pickupSoundClip: {fileID: 0}
+  dropSoundClip: {fileID: 0}
+  removeSoundClip: {fileID: 0}
+  sfxVolume: 1
+  ambientMusicClip: {fileID: 8300000, guid: 23e7cfffa201fdf45b6dd89b9b477780, type: 3}
+  ambientVolume: 0.216
+  loopAmbientMusic: 1
+  tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  collectionMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  potInteraction: {fileID: 74016811}
+  playerInventory: {fileID: 74016824}
+--- !u!114 &1014228679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014228677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 136c057146e891c4183ffb5dc4b8cc7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WallPlacementSystem
+  inputManager: {fileID: 161992239}
+  wallSurfaces:
+  - {fileID: 1969525299}
+  placementSystem: {fileID: 1014228678}
+  availableMushrooms:
+  - {fileID: 11400000, guid: 4eea3bfabe17cdf40af5b4ccfd2bb0cf, type: 2}
+  showPreviewObject: 1
+--- !u!4 &1014228680
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014228677}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3314.9966, y: -57.01261, z: -777.45184}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1014586574 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2045257923548263128, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -24726,9 +24825,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1731900415}
-        m_TargetAssemblyTypeName: Buttons, Assembly-CSharp
-        m_MethodName: RestartGame
+      - m_Target: {fileID: 536544428}
+        m_TargetAssemblyTypeName: ExitMenuController, Assembly-CSharp
+        m_MethodName: UnstuckPlayer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -55329,7 +55428,7 @@ MonoBehaviour:
   choosePlantConfirmButton: {fileID: 1835481892}
   choosePlantBackButton: {fileID: 818837792}
   journalDatabase: {fileID: 11400000, guid: 2dcc47511b44df64f9f7508d51045970, type: 2}
-  journalManager: {fileID: 161992242}
+  journalManager: {fileID: 0}
   choosePlantLockedMessageText: {fileID: 0}
   lockedMessageDuration: 2.5
   choosePlantScrollRect: {fileID: 576867035}
@@ -68834,3 +68933,5 @@ SceneRoots:
   - {fileID: 1332469685}
   - {fileID: 8504964293506777104}
   - {fileID: 1483850455}
+  - {fileID: 600670141}
+  - {fileID: 1014228680}

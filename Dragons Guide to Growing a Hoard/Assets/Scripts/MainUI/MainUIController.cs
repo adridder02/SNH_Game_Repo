@@ -616,6 +616,34 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         if (zoneHappinessBar != null) zoneHappinessBar.gameObject.SetActive(true);
     }
 
+    /// <summary>Force-reveals every "starts hidden until the tutorial reaches it" HUD element at once —
+    /// the journal icon, miasma bar, zone happiness bar, and all four tool-selector slots. Called by
+    /// TutorialSequenceController the instant the player enters the main scene (see its
+    /// OnSceneLoadedForTutorial): by that point everything gated behind the pre-gate half of the
+    /// tutorial is supposed to already be unlocked (either legitimately, or fast-forwarded past by the
+    /// early-exit skip), but each element's own per-step onStepShown wiring targeted the TUTORIAL
+    /// scene's MainUIController instance specifically — this fresh instance here in the main scene has
+    /// no memory of that and starts every one of them hidden again regardless. This re-applies all of
+    /// them at once instead of relying on those now-unreachable per-step hooks.</summary>
+    public void RevealAllTutorialGatedUI()
+    {
+        RevealJournalIcon();
+        RevealMiasmaBar();
+        RevealZoneHappinessBar();
+        RevealToolSlot(0);
+        RevealToolSlot(1);
+        RevealToolSlot(2);
+        RevealToolSlot(3);
+
+        // Same problem as the elements above, but the flags behind these two live on PlayerInventory/
+        // PlayerAbilityInventory (HasHarvestedFirstPlant/HasHarvestedFirstAbilityItem) rather than on
+        // this component — if the Player itself doesn't persist into the main scene, those reset to
+        // false too and RefreshFirstHarvestGatedUI (called once in Awake) hides both of these right
+        // alongside everything else. Force them on directly rather than going through that flag check.
+        if (inventoryButton != null) inventoryButton.gameObject.SetActive(true);
+        if (hotbarRoot != null) hotbarRoot.SetActive(true);
+    }
+
     /// <summary>Tints each tool slot to show which tool (if any) is currently active.</summary>
     private void RefreshToolButtonHighlights(PlacementSystem.Mode mode)
     {

@@ -288,7 +288,26 @@ public class JournalUIController : MonoBehaviour
         // Plants is always where the journal opens back up to, regardless of
         // whichever page it was left on last time.
         if (visible)
+        {
             ShowPage(plantsPage, plantsNavButton);
+            SelectFirstDiscoveredSpecies();
+        }
+    }
+
+    /// <summary>Auto-opens the first discovered species' detail page the instant the journal opens, so
+    /// the Plants page never starts on an empty right-hand page — mirrors GuideUIController's own
+    /// auto-select-first-mission behavior. Checks Sunny, then Dark, then Water, in that order (same
+    /// order PopulateRow draws the rows in); does nothing if nothing's been discovered yet.</summary>
+    private void SelectFirstDiscoveredSpecies()
+    {
+        if (database == null) return;
+
+        List<PlantSpeciesData> candidates = GetNavigableSpecies(PlantType.Sunny);
+        if (candidates.Count == 0) candidates = GetNavigableSpecies(PlantType.Dark);
+        if (candidates.Count == 0) candidates = GetNavigableSpecies(PlantType.Water);
+
+        if (candidates.Count > 0)
+            ShowSpeciesDetail(candidates[0]);
     }
 
     // ------------------------------------------------------------
