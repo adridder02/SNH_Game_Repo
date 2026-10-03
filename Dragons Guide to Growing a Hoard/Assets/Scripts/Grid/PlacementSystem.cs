@@ -1,0 +1,1082 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class PlacementSystem : MonoBehaviour
+{
+    [Header("References")]
+    [SerializeField] private InputManager inputManager;
+    [Tooltip("All greenhouse surfaces in the scene. The system will auto-detect which one the mouse is over.")]
+    [SerializeField] private List<GreenhouseSurface> surfaces = new List<GreenhouseSurface>();
+    [Tooltip("Optional. If assigned, entering any pot tool here (Place/Remove/Move) cancels wall " +
+             "placement mode first, so the pot grid and the wall grid can never both be 'hot' at the " +
+             "same time — same pattern AbilityPlacementSystem already uses against this script.")]
+    [SerializeField] private WallPlacementSystem wallPlacementSystem;
+
+    [Header("Pot Types")]
+    [SerializeField] private List<PotData> availablePots;
+
+    [Header("Preview")]
+    [SerializeField] private bool showPreviewObject = true;
+
+    [Header("Debug")]
+    [SerializeField] private bool debugMode = false;
+
+    [Header("Audio - Placement SFX")]
+    [SerializeField] private AudioClip placeSoundClip;
+    [SerializeField] private AudioClip pickupSoundClip;
+    [SerializeField] private AudioClip dropSoundClip;
+    [SerializeField] private AudioClip removeSoundClip;
+    [Range(0f, 1f)]
+    [SerializeField] private float sfxVolume = 1f;
+
+    [Header("Audio - Ambient Music")]
+    [SerializeField] private AudioClip ambientMusicClip;
+    [Range(0f, 1f)]
+    [SerializeField] private float ambientVolume = 0.4f;
+    [SerializeField] private bool loopAmbientMusic = true;
+
+    private AudioSource sfxSource;
+    private AudioSource ambientSource;
+
+    [Header("Missions")]
+    [Tooltip("The movement/harvest tutorial mission (find_node/plant_pickup/place_pot/water_plant/" +
+             "find_water/water_refill). Only 'place_pot' is reported from this script — assign the SAME " +
+             "asset used on CollectablePlant/HarvestNodeContainer/PotInteraction.")]
+    [SerializeField] private MissionData tutorialMission;
+    [Tooltip("Task 0 (OpenedInventory) is completed from InventoryUIController — assign the SAME asset " +
+             "there. Tasks 1/2/3 (Small/Medium/Large pot planted) are completed from here, offset by +1 " +
+             "from availablePots' index since task 0 is taken by OpenedInventory.")]
+    [SerializeField] private MissionData collectionMission;
+    [Header("Watering")]
+    [Tooltip("Reuses PotInteraction.WaterPot() — the same logic the old temporary pot-menu Water " +
+             "button and the 'Q' quick-water key already use, so this tool behaves identically to " +
+             "those (same transfer amount, same empty-pool/full-pot messages), just targeted by " +
+             "hovering a square like Place/Remove/Move instead of by proximity.")]
+    [SerializeField] private PotInteraction potInteraction;
+
+    [Tooltip("Auto-found in the scene if left empty. Used by the Remove tool so a pot's plant (if any) " +
+             "goes back into the player's inventory instead of being destroyed along with the pot — " +
+             "same PotContents.RemovePlant() call PotInteraction uses for a by-hand pickup.")]
+    [SerializeField] private PlayerInventory playerInventory;
+
+    public enum Mode
+    {
+        None,
+        Placing,
+        Removing,
+        Moving,
+        Watering
+    }
+
+    private Mode mode = Mode.None;
+
+    /// <summary>
+    /// Fired whenever the active tool actually changes (Place/Remove/Move/None), regardless of
+    /// whether the change came from a keybind or from UI. Anything driving tool-button highlight
+    /// state should subscribe to this instead of polling, so button and key stay in sync.
+    /// </summary>
+    public event System.Action<Mode> OnModeChanged;
+
+    /// <summary>The currently active tool, or Mode.None if no tool is in use.</summary>
+    public Mode CurrentMode => mode;
+
+    /// <summary>Which pot index Placing mode would use right now (last cycled-to / selected pot).</summary>
+    public int SelectedPotIndex => selectedIndex;
+
+    /// <summary>Read-only view of the pot types available to cycle through in Placing mode — used
+    /// by MainUIController's pot-selector HUD to build its icon list in the same order.</summary>
+    public IReadOnlyList<PotData> AvailablePots => availablePots;
+
+    /// <summary>All greenhouse surfaces this system manages. Read by AbilityPlacementSystem so
+    /// ability placeables (Sparkmint leaves, Waterbells, ...) hover/place across the same surfaces
+    /// pots do, using the SAME InputManager raycast and GreenhouseSurface detection.</summary>
+    public IReadOnlyList<GreenhouseSurface> Surfaces => surfaces;
+
+    /// <summary>The InputManager this system uses for mouse->world raycasting. Ability placement
+    /// reuses this rather than raycasting a second time with different settings.</summary>
+    public InputManager InputManager => inputManager;
+
+    /// <summary>Shared GridData for a surface, or null if that surface isn't registered. Ability
+    /// placeables occupy cells in this SAME dictionary as pots do, so a leaf/waterbell can never
+    /// overlap a pot (or another placeable) and vice versa — one occupancy source of truth per surface.</summary>
+    public GridData GetGridData(GreenhouseSurface surface) =>
+        surface != null && surfaceGridData.TryGetValue(surface, out GridData gd) ? gd : null;
+
+    /// <summary>Which surface (if any) is currently under the mouse, per this frame's own hover scan.
+    /// Ability placement reuses this instead of re-deriving it, so both systems always agree on
+    /// which surface is "active" — avoids a frame where pots think they're over Surface A while
+    /// ability placement thinks Surface B.</summary>
+    public GreenhouseSurface GetSurfaceAtWorldPosition(Vector3 worldPos) => GetSurfaceAtPosition(worldPos);
+
+    // One GridData per surface
+    private Dictionary<GreenhouseSurface, GridData> surfaceGridData = new Dictionary<GreenhouseSurface, GridData>();
+
+    // Currently active surface (the one mouse is hovering over)
+    private GreenhouseSurface activeSurface;
+
+    private int selectedIndex = 0;
+    private Vector2Int lastHoveredCell = new Vector2Int(-999, -999);
+
+    private GameObject previewObject;
+
+    private PlacementData movingData;
+    private GameObject movingObject;
+    private GreenhouseSurface movingSourceSurface; // track which surface the object was picked up from
+
+    public bool IsPlacementModeActive => mode != Mode.None;
+
+    private void Awake()
+    {
+        // SFX source — short one-shot sounds
+        sfxSource = gameObject.AddComponent<AudioSource>();
+        sfxSource.playOnAwake = false;
+        sfxSource.loop = false;
+        sfxSource.volume = sfxVolume;
+
+        // Ambient source — looping background music
+        ambientSource = gameObject.AddComponent<AudioSource>();
+        ambientSource.playOnAwake = false;
+        ambientSource.loop = loopAmbientMusic;
+        ambientSource.volume = ambientVolume;
+
+        if (ambientMusicClip != null)
+        {
+            ambientSource.clip = ambientMusicClip;
+            ambientSource.Play();
+        }
+    }
+
+    private void Start()
+    {
+        if (potInteraction == null)
+            potInteraction = FindAnyObjectByType<PotInteraction>();
+
+        if (playerInventory == null)
+            playerInventory = FindAnyObjectByType<PlayerInventory>();
+
+        if (surfaces == null || surfaces.Count == 0)
+        {
+            Debug.LogError("PlacementSystem: No GreenhouseSurfaces assigned.");
+            return;
+        }
+
+        // Initialize GridData for each surface
+        foreach (var surface in surfaces)
+        {
+            if (surface != null)
+            {
+                surfaceGridData[surface] = new GridData();
+                Debug.Log($"PlacementSystem: Initialized surface '{surface.name}' with dimensions {surface.GridDimensions} at origin {surface.GridOriginWorld}");
+            }
+            else
+            {
+                Debug.LogWarning("PlacementSystem: Null surface found in surfaces list!");
+            }
+        }
+
+        if (availablePots == null || availablePots.Count == 0)
+        {
+            Debug.LogError("PlacementSystem: No pots assigned.");
+            return;
+        }
+
+        Debug.Log($"PlacementSystem: Initialized with {surfaceGridData.Count} surfaces and {availablePots.Count} pot types.");
+
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetGameplayMode();
+    }
+
+    // Keep inspector-adjusted volumes live during Play Mode
+    private void OnValidate()
+    {
+        if (sfxSource != null)
+            sfxSource.volume = sfxVolume;
+
+        if (ambientSource != null)
+        {
+            ambientSource.volume = ambientVolume;
+            ambientSource.loop = loopAmbientMusic;
+        }
+    }
+
+    private void Update()
+    {
+        HandleModeToggleKeys();
+
+        if (mode == Mode.None)
+            return;
+
+        if (mode == Mode.Placing)
+        {
+            float scroll = Mouse.current.scroll.ReadValue().y;
+
+            if (scroll > 0f)
+                CycleSelection(1);
+            else if (scroll < 0f)
+                CycleSelection(-1);
+        }
+
+        Vector3 mouseWorld = inputManager.GetSelectedMapPosition();
+
+        // Determine which surface the mouse is over
+        GreenhouseSurface hoveredSurface = GetSurfaceAtPosition(mouseWorld);
+
+        if (debugMode && Time.frameCount % 30 == 0) // Log every 30 frames to avoid spam
+        {
+            Debug.Log($"Mode: {mode}, Mouse world pos: {mouseWorld}, Hovered surface: {(hoveredSurface != null ? hoveredSurface.name : "NONE")}, Active surface: {(activeSurface != null ? activeSurface.name : "NONE")}");
+        }
+
+        // If we moved to a different surface or off all surfaces
+        if (hoveredSurface != activeSurface)
+        {
+            // Clear hover on old surface
+            if (activeSurface != null)
+            {
+                activeSurface.GridVisual.ClearHover();
+            }
+
+            activeSurface = hoveredSurface;
+            // Force hover update to fire immediately on the new surface
+            lastHoveredCell = new Vector2Int(-999, -999);
+
+            if (debugMode && activeSurface != null)
+            {
+                Debug.Log($"Switched to surface: {activeSurface.name}");
+            }
+        }
+
+        // No valid surface under mouse
+        if (activeSurface == null)
+        {
+            SetPreviewVisible(false);
+            if (debugMode && Time.frameCount % 60 == 0)
+                Debug.Log("No active surface - preview hidden");
+            return;
+        }
+
+        GridVisual gridVisual = activeSurface.GridVisual;
+
+        if (!gridVisual.WorldToCell(mouseWorld, out Vector2Int hoveredCell))
+        {
+            gridVisual.ClearHover();
+            SetPreviewVisible(false);
+            if (debugMode && Time.frameCount % 60 == 0)
+                Debug.Log($"WorldToCell failed for position {mouseWorld}");
+            return;
+        }
+
+        if (hoveredCell != lastHoveredCell)
+        {
+            lastHoveredCell = hoveredCell;
+            UpdateHoverVisual(hoveredCell);
+            if (debugMode)
+                Debug.Log($"Hovering cell: {hoveredCell} on surface '{activeSurface.name}'");
+        }
+
+        if (previewObject != null)
+        {
+            Vector2Int size =
+                mode == Mode.Moving && movingData != null
+                ? movingData.Size
+                : availablePots[selectedIndex].size;
+
+            previewObject.transform.position =
+                CellToWorldCentre(hoveredCell, size, activeSurface);
+        }
+
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            if (debugMode)
+                Debug.Log($"Left click at cell {hoveredCell}, mode: {mode}");
+
+            if (mode == Mode.Placing)
+                TryPlace(hoveredCell);
+            else if (mode == Mode.Removing)
+                TryRemove(hoveredCell);
+            else if (mode == Mode.Moving)
+                TryPickupOrDrop(hoveredCell);
+            else if (mode == Mode.Watering)
+                TryWater(hoveredCell);
+        }
+
+        // Right-click no longer cancels the mode (any of the four) — it now holds to rotate the
+        // camera instead, see ThirdPersonCameraController.AllowRotationWhileLockedIfRightClickHeld,
+        // set by GameInputModeManager.SetPlacementMode(). Escape (HandleModeToggleKeys) is the way
+        // out now, uniformly across all four modes.
+    }
+
+    private void HandleModeToggleKeys()
+    {
+        if (Keyboard.current == null)
+            return;
+
+        if (Keyboard.current.fKey.wasPressedThisFrame)
+            TogglePlaceMode();
+
+        if (Keyboard.current.rKey.wasPressedThisFrame)
+            ToggleRemoveMode();
+
+        if (Keyboard.current.gKey.wasPressedThisFrame)
+            ToggleMoveMode();
+
+        if (Keyboard.current.qKey.wasPressedThisFrame)
+            ToggleWaterMode();
+
+        // Tab cycles between pot-Placing and wall-Placing — the SOLE place this is handled, on
+        // purpose. WallPlacementSystem used to independently poll its own key (R, now freed up for
+        // Remove above) for entering its Placing mode; if it ALSO polled Tab itself here, both
+        // scripts would react to the same press in the same frame — whichever Update() runs first
+        // flips its own mode, and the other script's check (now reading that freshly-changed state)
+        // could immediately flip it right back, ping-ponging within one frame. Only PlacementSystem
+        // polls Tab, and it decides which direction to go by checking BOTH systems' current mode.
+        //
+        // NOTE: this is now the ONLY way to enter wall-Placing mode at all — you have to be in pot-
+        // Placing (F) first, then Tab across. There's no standalone "just enter wall placing" key
+        // anymore now that R belongs to pot-Remove.
+        if (Keyboard.current.tabKey.wasPressedThisFrame)
+        {
+            if (mode == Mode.Placing)
+            {
+                CancelMode();
+                if (wallPlacementSystem != null)
+                    wallPlacementSystem.ToggleMushroomPlaceMode(wallPlacementSystem.SelectedIndex);
+            }
+            else if (wallPlacementSystem != null && wallPlacementSystem.CurrentMode == WallPlacementSystem.Mode.Placing)
+            {
+                wallPlacementSystem.CancelMode();
+                EnterPlaceMode(selectedIndex);
+            }
+        }
+
+        // Escape is now handled centrally by ExitMenuController, which calls CancelActiveMode()
+        // directly rather than this polling for it independently — having multiple scripts each
+        // poll the SAME Escape press and act on it within the same frame is a script-execution-
+        // order race: whichever runs first changes state the other reads, so which one "wins" (or
+        // whether the exit menu ALSO opens on the same press) depended on unpredictable ordering.
+        // One authority checking "is a mode active, then cancel it" removes the race entirely.
+    }
+
+    // ---------------------------------------------------------------
+    // Public toggle API — the single entry point for turning a tool on/off.
+    // Both keybinds (above) and UI tool buttons call these, so "is the tool
+    // currently in use" can never disagree between the two: whichever one
+    // fires second just flips the same underlying `mode` back off again.
+    // ---------------------------------------------------------------
+
+    /// <summary>Toggles Placing mode using whatever pot is currently selected.</summary>
+    public void TogglePlaceMode() => TogglePlaceMode(selectedIndex);
+
+    /// <summary>Toggles Placing mode for a specific pot index (e.g. from a pot-specific button).</summary>
+    public void TogglePlaceMode(int potIndex)
+    {
+        if (mode == Mode.Placing)
+            CancelMode();
+        else
+            EnterPlaceMode(potIndex);
+    }
+
+    public void ToggleRemoveMode()
+    {
+        if (mode == Mode.Removing)
+            CancelMode();
+        else
+            EnterRemoveMode();
+    }
+
+    public void ToggleMoveMode()
+    {
+        if (mode == Mode.Moving)
+            CancelMode();
+        else
+            EnterMoveMode();
+    }
+
+    public void ToggleWaterMode()
+    {
+        if (mode == Mode.Watering)
+            CancelMode();
+        else
+            EnterWaterMode();
+    }
+
+    /// <summary>Force-cancels whatever pot tool (Place/Remove/Move) is active, with no side effect if
+    /// none is. AbilityPlacementSystem calls this before starting ability placement so the two systems
+    /// can never both be "hot" over the same grid at once.</summary>
+    public void CancelActiveMode() => CancelMode();
+
+    public void EnterPlaceMode(int potIndex)
+    { // lock camera here....
+        if (potIndex < 0 || potIndex >= availablePots.Count)
+            return;
+
+        CancelMode(suppressEvent: true);
+        wallPlacementSystem?.CancelMode(); // pot grid and wall grid can never both be active at once
+
+        selectedIndex = potIndex;
+        mode = Mode.Placing;
+
+        // Show all grids
+        foreach (var surface in surfaces)
+        {
+            if (surface != null && surface.GridVisual != null)
+            {
+                surface.GridVisual.SetVisible(true);
+                if (debugMode)
+                    Debug.Log($"EnterPlaceMode: Showing grid for surface '{surface.name}'");
+            }
+            else if (debugMode)
+            {
+                Debug.LogWarning($"EnterPlaceMode: Surface or GridVisual is null!");
+            }
+        }
+
+        SpawnPreview(availablePots[selectedIndex]);
+
+        if (debugMode)
+            Debug.Log($"EnterPlaceMode: Entered placing mode with pot index {potIndex}");
+
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
+
+        // Tutorial hooks — fired here rather than only from the F-key/scroll input handlers, since
+        // EnterPlaceMode is the single funnel every entry point (F key, Tab back from wall placing,
+        // a UI pot-selector button, CycleSelection's scroll-wheel path below) already goes through.
+        // "entered_placement_mode" fires every time (both step and hook match on the SAME event, so
+        // firing it once for the first pot selected as well as every later re-entry is harmless —
+        // NotifyExternalTrigger only acts if that specific step is still the current one).
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("entered_placement_mode");
+
+        if (availablePots[selectedIndex].correspondingPlantSize == PlantSize.Small)
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("selected_smallest_pot");
+
+        OnModeChanged?.Invoke(mode);
+    }
+
+    private void EnterRemoveMode()
+    {
+        CancelMode(suppressEvent: true);
+        wallPlacementSystem?.CancelMode();
+
+        mode = Mode.Removing;
+
+        // Show all grids
+        foreach (var surface in surfaces)
+        {
+            if (surface != null)
+                surface.GridVisual.SetVisible(true);
+        }
+
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
+
+        OnModeChanged?.Invoke(mode);
+    }
+
+    private void EnterMoveMode()
+    {
+        CancelMode(suppressEvent: true);
+        wallPlacementSystem?.CancelMode();
+
+        mode = Mode.Moving;
+
+        // Show all grids
+        foreach (var surface in surfaces)
+        {
+            if (surface != null)
+                surface.GridVisual.SetVisible(true);
+        }
+
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
+
+        OnModeChanged?.Invoke(mode);
+    }
+
+    private void EnterWaterMode()
+    {
+        CancelMode(suppressEvent: true);
+        wallPlacementSystem?.CancelMode();
+
+        mode = Mode.Watering;
+
+        // Show all grids
+        foreach (var surface in surfaces)
+        {
+            if (surface != null)
+                surface.GridVisual.SetVisible(true);
+        }
+
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
+
+        OnModeChanged?.Invoke(mode);
+    }
+
+    private void CancelMode(bool suppressEvent = false)
+    {// unlock camera here...
+        if (mode == Mode.Moving && movingData != null)
+            PutMovingPotBack();
+
+        mode = Mode.None;
+
+        movingData = null;
+        movingObject = null;
+        movingSourceSurface = null;
+
+        // Hide and clear all grids
+        foreach (var surface in surfaces)
+        {
+            if (surface != null)
+            {
+                surface.GridVisual.ClearHover();
+                surface.GridVisual.SetVisible(false);
+            }
+        }
+
+        DestroyPreview();
+
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetGameplayMode();
+
+        if (!suppressEvent)
+        {
+            // "Exit placement mode" tutorial step — deliberately only on a REAL exit (Escape via
+            // ExitMenuController, or CancelActiveMode from elsewhere), not the suppressEvent=true
+            // calls at the top of each Enter*Mode method that just switch from one tool straight to
+            // another. Same guard OnModeChanged already uses for the same reason.
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("exited_placement_mode");
+            OnModeChanged?.Invoke(mode);
+        }
+    }
+
+    private void UpdateHoverVisual(Vector2Int cell)
+    {
+        if (activeSurface == null)
+            return;
+
+        GridVisual gridVisual = activeSurface.GridVisual;
+        GridData gridData = surfaceGridData[activeSurface];
+
+        gridVisual.ClearHover();
+
+        switch (mode)
+        {
+            case Mode.Placing:
+                {
+                    PotData data = availablePots[selectedIndex];
+
+                    bool canFit =
+                        gridVisual.FootprintInBounds(cell, data.size);
+
+                    bool canPlace =
+                        canFit &&
+                        gridData.CanPlace(ToGridVec3(cell), data.size);
+
+                    gridVisual.SetFootprint(
+                        cell,
+                        data.size,
+                        canPlace
+                            ? GridVisual.CellState.Valid
+                            : GridVisual.CellState.Invalid
+                    );
+
+                    SetPreviewVisible(true);
+                    break;
+                }
+
+            case Mode.Removing:
+                {
+                    PlacementData data =
+                        gridData.GetPlacement(ToGridVec3(cell));
+
+                    if (data != null)
+                    {
+                        Vector2Int origin =
+                            new Vector2Int(data.Origin.x, data.Origin.z);
+
+                        gridVisual.SetFootprint(
+                            origin,
+                            data.Size,
+                            GridVisual.CellState.Invalid
+                        );
+                    }
+
+                    break;
+                }
+
+            case Mode.Watering:
+                {
+                    PlacementData data =
+                        gridData.GetPlacement(ToGridVec3(cell));
+
+                    if (data != null)
+                    {
+                        Vector2Int origin =
+                            new Vector2Int(data.Origin.x, data.Origin.z);
+
+                        // Valid (green) only when there's actually a plant here to water — matches
+                        // the same check QuickWater() itself makes. Empty water pool / already-full
+                        // pot aren't checked here (kept cheap, hover-only) and instead surface via
+                        // WaterPot()'s own Debug.Log messages on click, same as the old button/Q key.
+                        PotContents pc = data.PlacedObject != null
+                            ? data.PlacedObject.GetComponent<PotContents>()
+                            : null;
+
+                        gridVisual.SetFootprint(
+                            origin,
+                            data.Size,
+                            pc != null && pc.HasPlant
+                                ? GridVisual.CellState.Valid
+                                : GridVisual.CellState.Invalid
+                        );
+                    }
+
+                    break;
+                }
+
+            case Mode.Moving:
+                {
+                    if (movingData == null)
+                    {
+                        PlacementData data =
+                            gridData.GetPlacement(ToGridVec3(cell));
+
+                        if (data != null)
+                        {
+                            Vector2Int origin =
+                                new Vector2Int(data.Origin.x, data.Origin.z);
+
+                            gridVisual.SetFootprint(
+                                origin,
+                                data.Size,
+                                GridVisual.CellState.Valid
+                            );
+                        }
+                    }
+                    else
+                    {
+                        bool canFit =
+                            gridVisual.FootprintInBounds(cell, movingData.Size);
+
+                        bool canPlace =
+                            canFit &&
+                            gridData.CanPlace(
+                                ToGridVec3(cell),
+                                movingData.Size
+                            );
+
+                        gridVisual.SetFootprint(
+                            cell,
+                            movingData.Size,
+                            canPlace
+                                ? GridVisual.CellState.Valid
+                                : GridVisual.CellState.Invalid
+                        );
+
+                        SetPreviewVisible(true);
+                    }
+
+                    break;
+                }
+        }
+    }
+
+    private void TryPlace(Vector2Int cell)
+    {
+        if (activeSurface == null)
+        {
+            if (debugMode)
+                Debug.LogWarning("TryPlace: No active surface!");
+            return;
+        }
+
+        PotData data = availablePots[selectedIndex];
+        GridVisual gridVisual = activeSurface.GridVisual;
+        GridData gridData = surfaceGridData[activeSurface];
+        
+        // Safety clamp - ensure cell is within bounds
+        Vector2Int gridDims = activeSurface.GridDimensions;
+        cell.x = Mathf.Clamp(cell.x, 0, gridDims.x - 1);
+        cell.y = Mathf.Clamp(cell.y, 0, gridDims.y - 1);
+
+        if (debugMode)
+            Debug.Log($"TryPlace: Attempting to place pot at cell {cell} on surface '{activeSurface.name}'");
+
+        if (!gridVisual.FootprintInBounds(cell, data.size))
+        {
+            if (debugMode)
+                Debug.LogWarning($"TryPlace: Footprint not in bounds! Cell: {cell}, Size: {data.size}, Grid dimensions: {activeSurface.GridDimensions}");
+            return;
+        }
+
+        Vector3Int key = ToGridVec3(cell);
+
+        if (!gridData.CanPlace(key, data.size))
+        {
+            if (debugMode)
+                Debug.LogWarning($"TryPlace: CanPlace returned false for cell {cell}");
+            return;
+        }
+
+        Vector3 worldPos = CellToWorldCentre(cell, data.size, activeSurface);
+
+        if (debugMode)
+            Debug.Log($"TryPlace: Placing pot at world position {worldPos}");
+
+        GameObject placed =
+            Instantiate(
+                data.potPrefab,
+                worldPos,
+                data.potPrefab.transform.rotation
+            );
+
+        //! --- Insertation
+        PotContents pc = placed.GetComponent<PotContents>();
+        if (pc != null)
+        {
+            pc.GridOrigin = key;        // key is the Vector3Int placement origin
+            pc.GridData = gridData;     // This surface's gridData instance
+            pc.CachePlantReference();
+            if (pc.Plant != null)
+                pc.Plant.SetPotContents(pc);
+        }
+        //!
+
+        gridData.AddPlacement(key, data.size, placed);
+        gridVisual.MarkOccupied(cell, data.size);
+
+        if (debugMode)
+            Debug.Log($"TryPlace: Successfully placed pot '{placed.name}' at {worldPos}");
+
+        PlaySFX(placeSoundClip);
+
+        // Only counts toward the tutorial's "place a pot" task once the tutorial sequence has actually
+        // reached that step — placing a pot early (ahead of the tutorial UI) used to silently bank the
+        // task via ordering alone (see CheckLinkedTaskComplete's comment), so the "Left-click on a sunny
+        // square..." prompt would just get skipped the instant the tutorial caught up. Now an early
+        // placement simply doesn't count yet, same as if it hadn't happened, and the full prompt still
+        // shows when the tutorial gets there. Falls through to the old ordering-only behavior if there's
+        // no TutorialSequenceController in the scene at all.
+        if (tutorialMission != null &&
+            (TutorialSequenceController.Instance == null ||
+             TutorialSequenceController.Instance.IsCurrentLinkedTask(tutorialMission, "place_pot")))
+        {
+            MissionProgressManager.Instance?.CompleteOrderedTask(tutorialMission, "place_pot");
+        }
+
+        int potSizeTaskIndex = selectedIndex + 1; // index 0 is OpenedInventory (completed elsewhere)
+        if (collectionMission != null && potSizeTaskIndex >= 1 && potSizeTaskIndex < collectionMission.tasks.Count)
+            MissionProgressManager.Instance?.CompleteTask(collectionMission, collectionMission.tasks[potSizeTaskIndex]);
+
+        // The old Tutorial_1.Instance.SetGridOnTable() call here only advanced the on-screen
+        // instruction text (not a checklist task) — nothing to repoint it to yet since that
+        // on-screen system hasn't been rebuilt.
+    }
+
+    private void TryRemove(Vector2Int cell)
+    {
+        if (activeSurface == null)
+            return;
+
+        GridData gridData = surfaceGridData[activeSurface];
+        GridVisual gridVisual = activeSurface.GridVisual;
+
+        PlacementData data =
+            gridData.GetPlacement(ToGridVec3(cell));
+
+        if (data == null)
+            return;
+
+        PotContents pc = data.PlacedObject.GetComponent<PotContents>();
+
+        if (pc != null)
+        {
+            // Return whatever plant is currently in this pot to the player's inventory before the
+            // pot itself is destroyed below — same RemovePlant() a by-hand pickup uses, so a
+            // half-grown (or fully-grown, un-harvested) plant isn't just lost when its pot is
+            // removed with this tool. No-ops harmlessly if the pot has no plant.
+            pc.RemovePlant(playerInventory);
+            pc.ClearGridInfo();
+        }
+
+        // Same cleanup AbilityPlacementSystem.TryRemove does for its own Removing mode — needed
+        // here too now that this generic Remove tool can also pick up ability placeables (e.g. a
+        // Waterbell) placed via the hotbar, not just pots. Without this, removing one through THIS
+        // tool would skip whatever cleanup the placeable's own component does (unsubscribing
+        // events, stopping effects, etc.) since only AbilityPlacementSystem's own removal path
+        // used to call it.
+        AbilityPlaceable placeable = data.PlacedObject.GetComponent<AbilityPlaceable>();
+        placeable?.NotifyRemoved();
+
+        Vector2Int origin =
+            new Vector2Int(data.Origin.x, data.Origin.z);
+
+        gridData.RemovePlacement(data.Origin);
+        gridVisual.ClearFootprint(origin, data.Size);
+
+        Destroy(data.PlacedObject);
+
+        PlaySFX(removeSoundClip);
+
+        // "Remove a pot" tutorial step — fires on a completed removal, not just entering Remove mode.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("removed_pot");
+    }
+
+    private void TryWater(Vector2Int cell)
+    {
+        if (activeSurface == null)
+            return;
+
+        GridData gridData = surfaceGridData[activeSurface];
+
+        PlacementData data =
+            gridData.GetPlacement(ToGridVec3(cell));
+
+        if (data == null)
+            return;
+
+        PotContents pc = data.PlacedObject.GetComponent<PotContents>();
+        if (pc == null)
+            return;
+
+        // Delegates to the SAME logic the old temporary pot-menu Water button and the "Q" proximity
+        // quick-water key already use — same transfer amount, same water-pool/full-pot messages,
+        // same mission-task hook. This tool is just a different way of TARGETING that logic (hover a
+        // square instead of standing near the pot), not a reimplementation of watering itself.
+        potInteraction?.WaterPot(pc);
+
+        // "Water a pot" tutorial step — fires on any use of the Water tool against an actual placed
+        // pot (best-effort, matching WaterPot's own void/no-success-flag signature — an empty water
+        // pool or already-full pot still just logs a message rather than reporting failure here).
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("watered_pot_via_tool");
+    }
+
+    private void TryPickupOrDrop(Vector2Int cell)
+    {
+        if (activeSurface == null)
+            return;
+
+        GridData gridData = surfaceGridData[activeSurface];
+        GridVisual gridVisual = activeSurface.GridVisual;
+
+        if (movingData == null)
+        {
+            // Picking up
+            PlacementData data =
+                gridData.GetPlacement(ToGridVec3(cell));
+
+            if (data == null)
+                return;
+
+            movingData = data;
+            movingObject = data.PlacedObject;
+            movingSourceSurface = activeSurface; // remember where we picked it up from
+
+            gridData.RemovePlacement(data.Origin);
+
+            PotContents pot = movingObject.GetComponent<PotContents>();
+            if (pot != null && pot.HasPlant && pot.Plant != null)
+                pot.Plant.SetUIVisible(false);
+
+            movingObject.SetActive(false);
+
+            SpawnPreviewFromObject(movingObject);
+
+            PlaySFX(pickupSoundClip);
+        }
+        else
+        {
+            // Dropping
+            Vector3Int key = ToGridVec3(cell);
+
+            if (!gridData.CanPlace(key, movingData.Size))
+                return;
+
+            movingObject.transform.position =
+                CellToWorldCentre(cell, movingData.Size, activeSurface);
+
+            movingObject.SetActive(true);
+
+            //! --- Insertation
+            PotContents pc = movingObject.GetComponent<PotContents>();
+            if (pc != null)
+            {
+                pc.GridOrigin = key;
+                pc.GridData = gridData; // Update to the new surface's grid data
+                pc.CachePlantReference();
+                if (pc.Plant != null)
+                {
+                    pc.Plant.SetPotContents(pc);
+                    pc.Plant.SetUIVisible(true);
+                }
+            }
+            //!
+
+            gridData.AddPlacement(
+                key,
+                movingData.Size,
+                movingObject
+            );
+
+            movingData = null;
+            movingObject = null;
+            movingSourceSurface = null;
+
+            DestroyPreview();
+
+            PlaySFX(dropSoundClip);
+
+            // "Move a pot" tutorial step — fires on a completed move (pickup + successful drop), not
+            // just entering Move mode, since picking the tool alone doesn't prove anything moved.
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("moved_pot");
+        }
+    }
+
+    private void PutMovingPotBack()
+    {
+        if (movingSourceSurface == null)
+            return;
+
+        GridData gridData = surfaceGridData[movingSourceSurface];
+
+        movingObject.SetActive(true);
+
+        PotContents pot = movingObject.GetComponent<PotContents>();
+        if (pot != null && pot.HasPlant && pot.Plant != null)
+            pot.Plant.SetUIVisible(true);
+
+        gridData.AddPlacement(
+            movingData.Origin,
+            movingData.Size,
+            movingObject
+        );
+
+        DestroyPreview();
+    }
+
+    private void SpawnPreview(PotData data)
+    {
+        if (!showPreviewObject)
+            return;
+
+        GameObject prefab =
+            data.previewPrefab != null
+            ? data.previewPrefab
+            : data.potPrefab;
+
+        previewObject = Instantiate(prefab);
+        previewObject.SetActive(true); // ensure visible immediately; SetPreviewVisible(false) hides it when off-surface
+
+        foreach (Collider c in previewObject.GetComponentsInChildren<Collider>())
+            c.enabled = false;
+    }
+
+    private void SpawnPreviewFromObject(GameObject source)
+    {
+        if (!showPreviewObject)
+            return;
+
+        previewObject = Instantiate(source);
+
+        foreach (Collider c in previewObject.GetComponentsInChildren<Collider>())
+            c.enabled = false;
+
+        previewObject.SetActive(true);
+    }
+
+    private void DestroyPreview()
+    {
+        if (previewObject != null)
+            Destroy(previewObject);
+    }
+
+    private void SetPreviewVisible(bool visible)
+    {
+        if (previewObject != null)
+            previewObject.SetActive(visible);
+    }
+
+    private void CycleSelection(int dir)
+    {
+        selectedIndex += dir;
+
+        if (selectedIndex >= availablePots.Count)
+            selectedIndex = 0;
+
+        if (selectedIndex < 0)
+            selectedIndex = availablePots.Count - 1;
+
+        EnterPlaceMode(selectedIndex);
+
+        // Generic "used the scroll wheel to switch pots" tutorial step — fires on every scroll cycle,
+        // regardless of which pot it lands on. Separate from EnterPlaceMode's own
+        // "selected_smallest_pot" (still fires alongside this for the specific-size-only step, if any
+        // step is still using it), since this one just needs "the player scrolled at all".
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("cycled_pot_selection");
+    }
+
+    private void PlaySFX(AudioClip clip)
+    {
+        if (clip == null || sfxSource == null)
+            return;
+
+        sfxSource.volume = sfxVolume;
+        sfxSource.PlayOneShot(clip);
+    }
+
+    /// <summary>
+/// Determines which GreenhouseSurface the given world position is over.
+/// Returns null if not over any surface.
+/// </summary>
+private GreenhouseSurface GetSurfaceAtPosition(Vector3 worldPos)
+{
+    // Find the closest surface to the mouse position (based on XZ plane)
+    GreenhouseSurface closestSurface = null;
+    float closestYDist = float.MaxValue;
+    float epsilon = 0.001f; // Small tolerance for edge detection
+
+    foreach (var surface in surfaces)
+    {
+        if (surface == null || surface.GridVisual == null)
+            continue;
+
+        Vector3 origin = surface.GridOriginWorld;
+        Vector2Int dims = surface.GridDimensions;
+        float cellSize = surface.CellSize;
+
+        // Calculate the bounds of this surface on the XZ plane WITH TOLERANCE
+        float minX = origin.x - epsilon;
+        float maxX = origin.x + dims.x * cellSize + epsilon;
+        float minZ = origin.z - epsilon;
+        float maxZ = origin.z + dims.y * cellSize + epsilon;
+
+        // Check if the worldPos is within the XZ bounds of this surface
+        if (worldPos.x >= minX && worldPos.x <= maxX &&
+            worldPos.z >= minZ && worldPos.z <= maxZ)
+        {
+            // This position is within the XZ bounds
+            // Check if it's the closest surface vertically
+            float yDist = Mathf.Abs(worldPos.y - origin.y);
+            if (yDist < closestYDist)
+            {
+                closestYDist = yDist;
+                closestSurface = surface;
+            }
+        }
+    }
+
+    return closestSurface;
+    }
+
+    private Vector3 CellToWorldCentre(Vector2Int cell, Vector2Int size, GreenhouseSurface surface)
+    {
+        Vector3 origin = surface.GridOriginWorld;
+        float cs = surface.CellSize;
+
+        return new Vector3(
+            origin.x + (cell.x + size.x * 0.5f) * cs,
+            origin.y,
+            origin.z + (cell.y + size.y * 0.5f) * cs
+        );
+    }
+
+    private static Vector3Int ToGridVec3(Vector2Int c)
+    {
+        return new Vector3Int(c.x, 0, c.y);
+    }
+}

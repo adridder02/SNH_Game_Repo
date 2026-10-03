@@ -1,0 +1,261 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3072371233814078162
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1950963156614744040}
+  - component: {fileID: 5763684855769553033}
+  - component: {fileID: 5428501172620950859}
+  - component: {fileID: 8186667230720398843}
+  - component: {fileID: 9050097535842522815}
+  - component: {fileID: 2098516834699238352}
+  - component: {fileID: -4791954666240061535}
+  - component: {fileID: 6155035638967588191}
+  - component: {fileID: 9023216589586649666}
+  - component: {fileID: -688605731075669828}
+  m_Layer: 0
+  m_Name: SparkmintPlantable
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1950963156614744040
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+  m_LocalPosition: {x: 25.145958, y: 0.31515825, z: -91.65019}
+  m_LocalScale: {x: 0.3901243, y: 0.3901243, z: 0.3901243}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &5763684855769553033
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Mesh: {fileID: 7883149247924170456, guid: 4b59db92079b7b941a74d10a13d89919, type: 3}
+--- !u!23 &5428501172620950859
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 21c122fd818935b46a6bf5ed47fdaf3d, type: 2}
+  - {fileID: 2100000, guid: c728fddcf6eb5554a9c4d2a8f6c8e8a7, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8186667230720398843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2587ee5c9d93c24cb429211f232afba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LightSensor
+  directionalLight: {fileID: 0}
+  maxLightIntensity: 3
+  checkForObstacles: 1
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  rayOriginOffset: 0.5
+  rawIntensity: 0
+  isInShadow: 0
+  normalisedIntensity: 0
+--- !u!114 &9050097535842522815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6b95557e7067b4a8c58044c08c19c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plantSize: 1
+  plantType: 1
+  journalSpecies: {fileID: 11400000, guid: c1da464e3762ebe4483ebae2c08cada8, type: 2}
+  potPlacementOffset: 0
+  potPlacementRotation: {x: 0, y: 0, z: 0}
+  preferredSoil: 1
+  neutralSoil: 0
+  lightThresholdHigh: 0.6
+  lightThresholdLow: 0.25
+  waterThresholdHigh: 8
+  waterThresholdLow: 4
+  waterThresholdOverwater: 9
+  revivedMinScore: 5
+  intermediateMinScore: 2
+  permanentDeathDelay: 30
+  lightSensor: {fileID: 0}
+  revivedVisual: {fileID: 0}
+  intermediateVisual: {fileID: 0}
+  deadVisual: {fileID: 0}
+  debuff:
+    enabled: 1
+    scanInterval: 2
+    amountPerTick: 0.5
+    duration: 5
+    tickInterval: 1
+    transferStolenWaterToSelf: 1
+    mode: 2
+  miasmaLightPenalty: 0
+  miasmaSoilPenalty: 0
+  miasmaWaterDrainMultiplier: 1
+  isMiasmaDebuffActive: 0
+  currentState: 1
+  currentSoil: 1
+  isOnSoil: 0
+  lastTotalScore: 0
+  soilScore: 0
+  lightScore: 0
+  waterScore: 0
+  isPermanentlyDead: 0
+--- !u!114 &2098516834699238352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebc9509558635bd41b4357c73112c826, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useDummyValues: 0
+  dummyState: 1
+  dummyMiasma: 0
+  dummyWater: 0.5
+  useManualHeight: 0
+  manualHeightOffset: 1
+  hoverGap: 1.5
+  fixedWorldHeight: 0.7
+  maxVisibleDistance: 30
+  logVisibilityDebug: 0
+  overheadBarsTemplate: {fileID: 2106392375125345503, guid: 5588ba098b73e084390914cf92d297fb, type: 3}
+  defaultTemplateResourcePath: PlantOverheadBarsTemplate
+  plantState: {fileID: 0}
+--- !u!114 &-4791954666240061535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
+  outlineMaterial: {fileID: 0}
+--- !u!114 &6155035638967588191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a955a02e5f62b6144833ae3db4ca04e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantProgress
+  secondsToGrowFull: 120
+  secondsToDrainFromDead: 60
+  intermediateDrainFraction: 0.35
+  smoothingSeconds: 5
+  plantState: {fileID: 0}
+  progress: 0
+  isComplete: 0
+  smoothedRatePerSecond: 0
+--- !u!114 &9023216589586649666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e406e6b2c1e7784479c80c53a2fb8f67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHarvestYield
+  yieldItem: {fileID: 11400000, guid: f3e3ff68bcc11044f8b737142c05ef1b, type: 2}
+  amountOverride: 0
+--- !u!114 &-688605731075669828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2977ecbdf0d3b94fb1b34e1b1b595ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHealthTint
+  plantState: {fileID: 0}
+  unhealthyTint: {r: 0.03773582, g: 0.037398566, b: 0.03364184, a: 1}
+  urpColorProperty: _BaseColor
+  legacyColorProperty: _Color

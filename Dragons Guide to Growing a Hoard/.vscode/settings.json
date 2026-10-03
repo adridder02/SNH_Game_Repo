@@ -1,7 +1,10 @@
 {
     "files.exclude": {
-        "**/.DS_Store": true,
         "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
         "**/.vs": true,
         "**/.gitmodules": true,
         "**/.vsconfig": true,
@@ -67,5 +70,7 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Dragons Guide to Growing a Hoard.slnx"
+    "dotnet.defaultSolution": "Dragons Guide to Growing a Hoard.slnx",
+    "dotnet.enableWorkspaceBasedDevelopment": false,
+    "hide-files.files": []
 }

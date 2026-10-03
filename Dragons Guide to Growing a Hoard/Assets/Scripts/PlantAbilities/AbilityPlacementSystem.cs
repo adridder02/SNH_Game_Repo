@@ -1,0 +1,298 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+// =============================================================
+// AbilityPlacementSystem.cs
+// -------------------------------------------------------------
+// Attach next to PlacementSystem (same Player/Systems object).
+// Handles hover/place/remove for AbilityKind.Placeable items
+// (Sparkmint Leaf, Waterbell) — deliberately a companion system
+// rather than jamming pot logic and ability logic into one class,
+// but it reuses PlacementSystem's surfaces, InputManager, and —
+// critically — its per-surface GridData, so a placeable can never
+// overlap a pot or another placeable.
+//
+// FLOW:
+//   AbilityInventoryUIController (your ability-item "Place" button)
+//   calls BeginPlacing(itemData). From there this behaves exactly
+//   like PlacementSystem's own Placing mode: hover highlights the
+//   footprint green/red, left-click consumes one from the ability
+//   inventory and spawns/registers it, right-click cancels.
+//
+//   Left in Placing mode after a successful placement (rather than
+//   auto-exiting) so multi-count items like Sparkmint's 10 leaves
+//   can be laid out one click at a time — exits automatically once
+//   the stack hits zero, or on right-click / BeginRemoving / a new
+//   BeginPlacing call.
+// =============================================================
+public class AbilityPlacementSystem : MonoBehaviour
+{
+    [Header("References")]
+    [SerializeField] private PlacementSystem placementSystem;
+    [SerializeField] private PlayerAbilityInventory abilityInventory;
+
+    private enum Mode { None, Placing, Removing }
+    private Mode mode = Mode.None;
+
+    private AbilityItemData pendingItem;
+    private GreenhouseSurface activeSurface;
+    private Vector2Int lastHoveredCell = new Vector2Int(-999, -999);
+    private GameObject previewObject;
+
+    public bool IsActive => mode != Mode.None;
+
+    /// <summary>The item currently being placed (Mode.Placing only), or null otherwise — lets the
+    /// hotbar UI know which slot (if any) to show as "actively selected".</summary>
+    public AbilityItemData CurrentlyPlacing => mode == Mode.Placing ? pendingItem : null;
+
+    /// <summary>Fired whenever placement starts, stops, or switches items — for anything that wants
+    /// to reflect "am I placing right now, and what" without polling every frame (e.g. AbilityHotbarSystem
+    /// re-broadcasting this as its own OnSlotsChanged, so the hotbar UI highlights the active slot).</summary>
+    public event System.Action OnPlacingChanged;
+
+    private void Awake()
+    {
+        if (placementSystem == null)
+            Debug.LogWarning("[AbilityPlacementSystem] placementSystem not assigned — ability placeables can't be placed.", this);
+        if (abilityInventory == null)
+            Debug.LogWarning("[AbilityPlacementSystem] abilityInventory not assigned.", this);
+    }
+
+    // ---------------------------------------------------------------
+    // PUBLIC ENTRY POINTS — called by ability-inventory UI
+    // ---------------------------------------------------------------
+    public void BeginPlacing(AbilityItemData item)
+    {
+        if (item == null || item.kind != AbilityKind.Placeable) return;
+        if (abilityInventory == null || abilityInventory.GetCount(item) <= 0) return;
+
+        placementSystem?.CancelActiveMode();
+        CancelSelf(suppressGridHide: true);
+
+        pendingItem = item;
+        mode = Mode.Placing;
+
+        // Same treatment PlacementSystem's own EnterPlaceMode/EnterRemoveMode/EnterMoveMode give
+        // pot placement — cursor unlocked/visible, camera locked, camera input disabled. This was
+        // missing here entirely, which is why placing a Waterbell etc. via the hotbar didn't lock
+        // the cursor the way placing a pot does.
+        GameInputModeManager.Instance?.SetPlacementMode();
+
+        SetAllGridsVisible(true);
+        SpawnPreview(item);
+        OnPlacingChanged?.Invoke();
+    }
+
+    public void BeginRemoving()
+    {
+        placementSystem?.CancelActiveMode();
+        CancelSelf(suppressGridHide: true);
+
+        mode = Mode.Removing;
+        GameInputModeManager.Instance?.SetPlacementMode();
+        SetAllGridsVisible(true);
+        OnPlacingChanged?.Invoke();
+    }
+
+    /// <summary>Cancels placement/removal mode without placing anything — called on right-click
+    /// (world-space, see Update below), and reused as the "press the same hotbar slot again to
+    /// deselect" toggle in AbilityHotbarSystem.ActivateSlot.</summary>
+    public void Cancel()
+    {
+        CancelSelf(suppressGridHide: false);
+        OnPlacingChanged?.Invoke();
+    }
+
+    // ---------------------------------------------------------------
+    private void Update()
+    {
+        if (mode == Mode.None) return;
+
+        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            Cancel();
+            return;
+        }
+
+        // Escape is now handled centrally by ExitMenuController, which calls Cancel() directly
+        // rather than this polling for it independently — see PlacementSystem's matching comment
+        // for why (a script-execution-order race between multiple independent pollers of the same
+        // keypress within the same frame). Right-click above is untouched — unlike PlacementSystem/
+        // WallPlacementSystem, this one was never repurposed for camera rotation.
+
+        if (placementSystem == null || placementSystem.InputManager == null) return;
+
+        Vector3 mouseWorld = placementSystem.InputManager.GetSelectedMapPosition();
+        GreenhouseSurface hovered = placementSystem.GetSurfaceAtWorldPosition(mouseWorld);
+
+        if (hovered != activeSurface)
+        {
+            activeSurface?.GridVisual.ClearHover();
+            activeSurface = hovered;
+            lastHoveredCell = new Vector2Int(-999, -999);
+        }
+
+        if (activeSurface == null)
+        {
+            SetPreviewVisible(false);
+            return;
+        }
+
+        GridVisual gridVisual = activeSurface.GridVisual;
+        GridData gridData = placementSystem.GetGridData(activeSurface);
+
+        if (!gridVisual.WorldToCell(mouseWorld, out Vector2Int cell))
+        {
+            gridVisual.ClearHover();
+            SetPreviewVisible(false);
+            return;
+        }
+
+        if (cell != lastHoveredCell)
+        {
+            lastHoveredCell = cell;
+            gridVisual.ClearHover();
+
+            if (mode == Mode.Placing && pendingItem != null)
+            {
+                bool canFit = gridVisual.FootprintInBounds(cell, pendingItem.footprint);
+                bool canPlace = canFit && gridData != null && gridData.CanPlace(ToVec3(cell), pendingItem.footprint);
+                gridVisual.SetFootprint(cell, pendingItem.footprint,
+                    canPlace ? GridVisual.CellState.Valid : GridVisual.CellState.Invalid);
+                SetPreviewVisible(true);
+
+                if (previewObject != null)
+                    previewObject.transform.position = gridVisual.GetCellCenter(cell) +
+                        new Vector3((pendingItem.footprint.x - 1) * activeSurface.CellSize * 0.5f, 0f,
+                                    (pendingItem.footprint.y - 1) * activeSurface.CellSize * 0.5f);
+            }
+            else if (mode == Mode.Removing && gridData != null)
+            {
+                PlacementData data = gridData.GetPlacement(ToVec3(cell));
+                if (data != null)
+                {
+                    Vector2Int origin = new Vector2Int(data.Origin.x, data.Origin.z);
+                    gridVisual.SetFootprint(origin, data.Size, GridVisual.CellState.Invalid);
+                }
+            }
+        }
+
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            if (mode == Mode.Placing) TryPlace(cell, gridData, gridVisual);
+            else if (mode == Mode.Removing) TryRemove(cell, gridData, gridVisual);
+        }
+    }
+
+    // ---------------------------------------------------------------
+    private void TryPlace(Vector2Int cell, GridData gridData, GridVisual gridVisual)
+    {
+        if (pendingItem == null || gridData == null) return;
+        if (!gridVisual.FootprintInBounds(cell, pendingItem.footprint)) return;
+
+        Vector3Int origin = ToVec3(cell);
+        if (!gridData.CanPlace(origin, pendingItem.footprint)) return;
+
+        if (abilityInventory == null || !abilityInventory.TryConsume(pendingItem, 1)) return;
+
+        GameObject prefab = pendingItem.placedPrefab;
+        GameObject go = prefab != null
+            ? Instantiate(prefab)
+            : new GameObject(pendingItem.displayName);
+
+        go.transform.position = gridVisual.GetCellCenter(cell) +
+            new Vector3((pendingItem.footprint.x - 1) * activeSurface.CellSize * 0.5f, 0f,
+                        (pendingItem.footprint.y - 1) * activeSurface.CellSize * 0.5f);
+
+        gridData.AddPlacement(origin, pendingItem.footprint, go);
+        gridVisual.MarkOccupied(cell, pendingItem.footprint);
+
+        AbilityPlaceable placeable = go.GetComponent<AbilityPlaceable>();
+        if (placeable != null)
+            placeable.Initialise(pendingItem, origin, pendingItem.footprint, gridData, activeSurface);
+        else
+            Debug.LogWarning($"[AbilityPlacementSystem] '{pendingItem.displayName}'s placedPrefab has no " +
+                              "AbilityPlaceable-derived component — it was placed but does nothing.");
+
+        // Keep placing if there's more of this item; otherwise stop automatically.
+        if (abilityInventory.GetCount(pendingItem) <= 0)
+            Cancel();
+    }
+
+    private void TryRemove(Vector2Int cell, GridData gridData, GridVisual gridVisual)
+    {
+        if (gridData == null) return;
+
+        PlacementData data = gridData.GetPlacement(ToVec3(cell));
+        if (data == null) return;
+
+        AbilityPlaceable placeable = data.PlacedObject != null ? data.PlacedObject.GetComponent<AbilityPlaceable>() : null;
+        placeable?.NotifyRemoved();
+
+        Vector2Int origin = new Vector2Int(data.Origin.x, data.Origin.z);
+        gridData.RemovePlacement(data.Origin);
+        gridVisual.ClearFootprint(origin, data.Size);
+
+        if (data.PlacedObject != null) Destroy(data.PlacedObject);
+    }
+
+    // ---------------------------------------------------------------
+    private void CancelSelf(bool suppressGridHide)
+    {
+        mode = Mode.None;
+        pendingItem = null;
+        DestroyPreview();
+
+        activeSurface?.GridVisual.ClearHover();
+        activeSurface = null;
+        lastHoveredCell = new Vector2Int(-999, -999);
+
+        // Mirrors PlacementSystem.CancelMode — unconditional, same as there. Called both from an
+        // actual full cancel (Cancel() below) and from BeginPlacing/BeginRemoving resetting prior
+        // state before starting a new mode; in the latter case this briefly flips back to Gameplay
+        // before the caller sets Placement mode again a moment later — harmless, PlacementSystem's
+        // own EnterPlaceMode/EnterRemoveMode/EnterMoveMode do the exact same thing.
+        GameInputModeManager.Instance?.SetGameplayMode();
+
+        if (!suppressGridHide) SetAllGridsVisible(false);
+    }
+
+    private void SetAllGridsVisible(bool visible)
+    {
+        if (placementSystem == null) return;
+        foreach (GreenhouseSurface s in placementSystem.Surfaces)
+            s?.GridVisual?.SetVisible(visible);
+    }
+
+    private void SpawnPreview(AbilityItemData item)
+    {
+        DestroyPreview();
+        if (item.placedPrefab == null) return;
+
+        previewObject = Instantiate(item.placedPrefab);
+        foreach (Collider c in previewObject.GetComponentsInChildren<Collider>())
+            c.enabled = false;
+
+        // The preview ghost is never passed through Initialise(), so its GridData/GridOrigin sit at
+        // their defaults (null/zero) forever. Disabling colliders alone wasn't enough - the
+        // AbilityPlaceable-derived script (WaterbellSprinkler, etc.) still runs its own Update() and
+        // was ticking every frame against a null GridData. Disabling the component itself stops that.
+        foreach (AbilityPlaceable p in previewObject.GetComponentsInChildren<AbilityPlaceable>())
+            p.enabled = false;
+
+        previewObject.SetActive(false);
+    }
+
+    private void SetPreviewVisible(bool visible)
+    {
+        if (previewObject != null) previewObject.SetActive(visible);
+    }
+
+    private void DestroyPreview()
+    {
+        if (previewObject != null) Destroy(previewObject);
+        previewObject = null;
+    }
+
+    private static Vector3Int ToVec3(Vector2Int c) => new Vector3Int(c.x, 0, c.y);
+}

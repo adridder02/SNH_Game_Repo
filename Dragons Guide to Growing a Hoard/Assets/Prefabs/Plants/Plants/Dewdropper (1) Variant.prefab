@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &3370898411448808311
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1969194570128585405, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -55.98
+      objectReference: {fileID: 0}
+    - target: {fileID: 1969194570128585405, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -12.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 1969194570128585405, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 14.59
+      objectReference: {fileID: 0}
+    - target: {fileID: 1969194570128585405, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.69075
+      objectReference: {fileID: 0}
+    - target: {fileID: 1969194570128585405, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.063661866
+      objectReference: {fileID: 0}
+    - target: {fileID: 1969194570128585405, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7180751
+      objectReference: {fileID: 0}
+    - target: {fileID: 1969194570128585405, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.056389447
+      objectReference: {fileID: 0}
+    - target: {fileID: 1969194570128585405, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1969194570128585405, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1969194570128585405, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5086658688875511756, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+      propertyPath: m_Name
+      value: Dewdropper (1) Variant
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5086658688875511756, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8663038925441192489}
+  m_SourcePrefab: {fileID: 100100000, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+--- !u!1 &7516691526450252987 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5086658688875511756, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+  m_PrefabInstance: {fileID: 3370898411448808311}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-8663038925441192489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7516691526450252987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2977ecbdf0d3b94fb1b34e1b1b595ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHealthTint
+  plantState: {fileID: 0}
+  unhealthyTint: {r: 0.03773582, g: 0.037398566, b: 0.03364184, a: 1}
+  urpColorProperty: _BaseColor
+  legacyColorProperty: _Color

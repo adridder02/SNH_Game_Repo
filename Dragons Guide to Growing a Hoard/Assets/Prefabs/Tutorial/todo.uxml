@@ -1,0 +1,14 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="tutorial_UI" style="flex-grow: 1;">
+        <ui:GroupBox name="TaskList" style="height: 243px; width: 237px; right: 2px; position: absolute; background-color: rgba(90, 90, 90, 0.72); top: -1px; align-items: flex-start; justify-content: center;">
+            <ui:Label text="Tasks:" name="Tasks" style="background-color: rgba(255, 255, 255, 0.58);"/>
+            <ui:Toggle label="" text="Remove plant from pot." name="Task1"/>
+            <ui:Toggle label="" text="Add pot to inventory" name="Task2"/>
+            <ui:Toggle label="" text="Place Pot on the sunny area " name="Task3"/>
+            <ui:Toggle label="" text="Place Soil into the Pot" name="Task4"/>
+            <ui:Toggle label="" text="Plant the plant in the Pot" name="Task5"/>
+            <ui:Toggle label="" text="Add water to the plant" name="Task6"/>
+        </ui:GroupBox>
+        <ui:Label text="Label" name="Dir" style="height: 88px; width: 250px; -unity-text-align: upper-left; -unity-background-image-tint-color: rgb(191, 191, 191); background-color: rgba(154, 154, 154, 0.39); padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px;"/>
+    </ui:VisualElement>
+</ui:UXML>

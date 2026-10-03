@@ -1,0 +1,131 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &5254749247061589741
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: potSize
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: isStaticPot
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: clayMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 5a8255b1aa1624f449abf894bea440b0, type: 2}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: loamMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cb52f20938f505d47b1dce748faded6f, type: 2}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: sandyMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 95ae844b486b1ed4482d190254225178, type: 2}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: waterMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 3eec692de4cc51941a0bbe7771e9fdbe, type: 2}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: claySoilPrefab
+      value: 
+      objectReference: {fileID: 3815546891322180988, guid: 7edc2f9160beb2944b331ee4e39c40a7, type: 3}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: loamSoilPrefab
+      value: 
+      objectReference: {fileID: 3815546891322180988, guid: 7edc2f9160beb2944b331ee4e39c40a7, type: 3}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: sandySoilPrefab
+      value: 
+      objectReference: {fileID: 3815546891322180988, guid: 7edc2f9160beb2944b331ee4e39c40a7, type: 3}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: waterSoilPrefab
+      value: 
+      objectReference: {fileID: 3815546891322180988, guid: 7edc2f9160beb2944b331ee4e39c40a7, type: 3}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: clayAlgaeMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 76d55fe326a562c43a53ba2a3fa6d440, type: 2}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: loamAlgaeMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 8442d3609c0ba044fae9133b86942d92, type: 2}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: plantSurfaceOffset
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: sandyAlgaeMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: c8a4eb6b3c9b6424a9465b87df2c3b4a, type: 2}
+    - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: waterAlgaeMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 161a4b87cb5195045b3156d6edfdbe84, type: 2}
+    - target: {fileID: 3044046510021815365, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: m_Name
+      value: BigPot Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3.5674095
+      objectReference: {fileID: 0}
+    - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.5674095
+      objectReference: {fileID: 0}
+    - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 6.9318466
+      objectReference: {fileID: 0}
+    - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 99.625
+      objectReference: {fileID: 0}
+    - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -24.241
+      objectReference: {fileID: 0}
+    - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 38.83
+      objectReference: {fileID: 0}
+    - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071067
+      objectReference: {fileID: 0}
+    - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6367785927066917559, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
