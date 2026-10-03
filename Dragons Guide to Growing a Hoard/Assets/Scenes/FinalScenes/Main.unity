@@ -66232,7 +66232,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4474909516082176546, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 2147483647
+      value: 127
       objectReference: {fileID: 0}
     - target: {fileID: -4454924500684923879, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -68165,6 +68165,10 @@ PrefabInstance:
     - target: {fileID: 1934859444766377984, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 1937876482655162735, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_CastShadows
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1937876482655162735, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_RenderingLayerMask
