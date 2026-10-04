@@ -54,7 +54,26 @@ public class playerAnimation : MonoBehaviour
         isInAir = true;
         //Debug.Log("We flying");
     }
-    
+
+    /// <summary>Falling — either walked off a ledge without jumping, or auto-descending after a
+    /// double-space-while-flying. Now plays the real dragon_fall clip via its own "IsFalling" bool,
+    /// rather than borrowing Fly Idle ("IsFlying") the way it did as a placeholder. Explicitly drops
+    /// IsFlying too so the two states can't both be true at once and fight in the Animator (this
+    /// matters for the auto-descend caller, which enters fall() while IsFlying is already true from
+    /// EnterFlyMode()). Kept as its own method rather than PlayerController just calling fly()
+    /// directly so any future changes to what "falling" plays stay a one-line change here.</summary>
+    public void fall()
+    {
+        if (playerAni != null)
+        {
+            if (playerAni.GetBool("IsFlying"))
+                playerAni.SetBool("IsFlying", false);
+            if (!playerAni.GetBool("IsFalling"))
+                playerAni.SetBool("IsFalling", true);
+        }
+        isInAir = true;
+    }
+
     public void notInAir()
     {
         if (playerAni != null)
@@ -66,6 +85,7 @@ public class playerAnimation : MonoBehaviour
             // still set to Bool in the Controller's Parameters tab, change it to Trigger to match.
             playerAni.ResetTrigger("Jump");
             playerAni.SetBool("IsFlying", false);
+            playerAni.SetBool("IsFalling", false); // clear the real fall animation too, not just Fly Idle
             isInAir = false;
         }
     }

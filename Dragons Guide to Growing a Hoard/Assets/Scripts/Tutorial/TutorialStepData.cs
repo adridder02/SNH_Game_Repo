@@ -18,7 +18,15 @@ public enum TutorialPromptType
     /// task completes, before the NEXT step (a real Portable/BottomBar one) is allowed to appear. Use this when you want a
     /// step's bubble to stay hidden until an earlier task is done, rather than popping up the instant the previous step
     /// finishes. message/portablePrompt are ignored for this type.</summary>
-    Gate
+    Gate,
+    /// <summary>A paginated info panel — sidebarImage, sidebarTitle, and message (as the description) —
+    /// with Previous/Next buttons, shown via TutorialSidebarUI. Previous hides itself on the first page
+    /// of a run, Next hides itself on the last (TutorialSequenceController works this out from whether
+    /// there's a step before/after this one, nothing to set per-page). Author a short run of these back
+    /// to back in `steps` for a flip-through intro booklet; going back with Previous doesn't re-fire
+    /// onStepShown/onStepHidden or touch any linked mission/timer — it's just re-displaying an
+    /// already-seen page, not a fresh state change.</summary>
+    Sidebar
 }
 
 [System.Serializable]
@@ -39,10 +47,22 @@ public class TutorialStep
              "Build one of these per Portable step and drag it in here. Leave blank for BottomBar steps.")]
     public TutorialPromptBox portablePrompt;
 
+    [Header("Sidebar only")]
+    [Tooltip("The picture shown on this page. Leave blank for no image.")]
+    public Sprite sidebarImage;
+    [Tooltip("This page's heading. The description below it is the same 'message' field Portable/" +
+             "BottomBar steps use, so Sidebar pages need nothing else beyond this and sidebarImage above.")]
+    public string sidebarTitle;
+
     [Header("Advance")]
     [Tooltip("Clicking the prompt (Portable) or the bar itself (BottomBar) closes this step and moves " +
              "to the next, in addition to any of the options below.")]
     public bool advanceOnClick = true;
+    [Tooltip("Lets the spacebar dismiss/advance this step too, same effect as a click — e.g. a Portable " +
+             "prompt pointing at something you'd rather not make the player click on (the pot menu's " +
+             "health bar, say). Sidebar steps always advance their Next button on spacebar regardless of " +
+             "this flag (see TutorialSequenceController.Update) — this is for every OTHER step type.")]
+    public bool advanceOnSpacebar = false;
     [Tooltip("0 = no auto-advance. Otherwise the step advances on its own after this many seconds, in addition to any click.")]
     public float autoAdvanceAfterSeconds = 0f;
 
@@ -66,4 +86,19 @@ public class TutorialStep
              "TutorialSequenceController.Instance.NotifyExternalTrigger(sameId) when it happens. If this step " +
              "is the one currently showing, it advances immediately, same as a click. Leave blank if unused.")]
     public string externalTriggerId;
+
+    [Header("Side effects (optional)")]
+    [Tooltip("Invoked once, the instant this step becomes the current one (right as its UI is shown — or, " +
+             "for a Gate step, the instant it becomes current even though it shows nothing). Use this to " +
+             "trigger one-off gameplay side effects tied to a specific step appearing — revealing a HUD " +
+             "icon (MainUIController.RevealToolSlot), arming a proximity check (ProximityTutorialTrigger." +
+             "Arm), turning on a DirectionalIndicator target (DirectionalIndicator.ActivateTarget) — " +
+             "without hardcoding every one-off case into TutorialSequenceController itself.")]
+    public UnityEngine.Events.UnityEvent onStepShown;
+
+    [Tooltip("Invoked once, the instant this step advances away — to the next step, however that " +
+             "actually happens (click, timer, mission task, or external trigger). Pairs with onStepShown " +
+             "for effects that need to turn back off once the step is done, e.g. DirectionalIndicator." +
+             "DeactivateTarget once the linked mission task (like water_refill) completes.")]
+    public UnityEngine.Events.UnityEvent onStepHidden;
 }

@@ -114,6 +114,12 @@ public class AbilityPlacementSystem : MonoBehaviour
             return;
         }
 
+        // Escape is now handled centrally by ExitMenuController, which calls Cancel() directly
+        // rather than this polling for it independently — see PlacementSystem's matching comment
+        // for why (a script-execution-order race between multiple independent pollers of the same
+        // keypress within the same frame). Right-click above is untouched — unlike PlacementSystem/
+        // WallPlacementSystem, this one was never repurposed for camera rotation.
+
         if (placementSystem == null || placementSystem.InputManager == null) return;
 
         Vector3 mouseWorld = placementSystem.InputManager.GetSelectedMapPosition();

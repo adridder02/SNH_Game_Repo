@@ -81,6 +81,25 @@ public class HarvestNodeContainer : MonoBehaviour
     [Tooltip("Text shown briefly on screen after harvesting.")]
     public string harvestMessage = "Harvested!";
 
+    [Header("Disintegrate (optional — applies to every node automatically)")]
+    [Tooltip("Leave empty to skip this entirely — nodes are left exactly as they are (their own " +
+             "manually-added DisintegrateEffect, if any, or none). Assign this to auto-add and " +
+             "configure a DisintegrateEffect on every child node that doesn't already have one, using " +
+             "the settings below — no need to add/configure the component by hand on every node prefab. " +
+             "A node that already has its OWN DisintegrateEffect (e.g. a special node using a different " +
+             "material or timing) is left completely alone, not overwritten.")]
+    public Material disintegrateMaterial;
+
+    [Tooltip("Must match your dissolve shader's Dissolve Amount property REFERENCE name (Blackboard → " +
+             "Graph Inspector → Reference), not its display name.")]
+    public string disintegrateDissolveAmountProperty = "_DissolveAmount";
+
+    [Tooltip("Must match your dissolve shader's Base Color texture property REFERENCE name.")]
+    public string disintegrateBaseTextureProperty = "_OriginalTexture";
+
+    [Tooltip("How long the dissolve effect takes to play, in seconds.")]
+    public float disintegrateDuration = 1f;
+
     // ── private ──────────────────────────────────────────────
     private Transform[] nodes;
 
@@ -126,6 +145,30 @@ public class HarvestNodeContainer : MonoBehaviour
         nodes = new Transform[transform.childCount];
         for (int i = 0; i < transform.childCount; i++)
             nodes[i] = transform.GetChild(i);
+
+        EnsureDisintegrateOnNodes();
+    }
+
+    // =========================================================
+    // Auto-adds and configures a DisintegrateEffect on every child node that doesn't already
+    // have one, using disintegrateMaterial/etc above — so those only need setting up ONCE here
+    // on the container instead of by hand on every single node prefab. Re-run automatically
+    // whenever CacheChildren() re-scans (Start(), and anytime nodes are added/removed at
+    // runtime), so newly-spawned nodes get covered too.
+    private void EnsureDisintegrateOnNodes()
+    {
+        if (disintegrateMaterial == null || nodes == null) return;
+
+        foreach (Transform node in nodes)
+        {
+            if (node == null || node.GetComponent<DisintegrateEffect>() != null) continue;
+
+            DisintegrateEffect d = node.gameObject.AddComponent<DisintegrateEffect>();
+            d.dissolveMaterial = disintegrateMaterial;
+            d.dissolveAmountProperty = disintegrateDissolveAmountProperty;
+            d.baseTextureProperty = disintegrateBaseTextureProperty;
+            d.duration = disintegrateDuration;
+        }
     }
 
     // =========================================================
@@ -213,6 +256,15 @@ public class HarvestNodeContainer : MonoBehaviour
         {
             if (node == null || !node.gameObject.activeSelf) continue;
 
+            // Skip a node that's currently mid-dissolve — it's still active() on purpose (so the
+            // DisintegrateEffect can finish playing before it's deactivated), but it's already been
+            // harvested and shouldn't be re-selectable, re-outlined, or re-harvestable in the
+            // meantime. This is the single choke point FindClosestNode() feeds into (outline,
+            // prompt, and the E-key handler in Update() all go through currentNode), so excluding
+            // it here is enough to stop the whole re-interact bug at the source.
+            DisintegrateEffect disintegrate = node.GetComponent<DisintegrateEffect>();
+            if (disintegrate != null && disintegrate.IsPlaying) continue;
+
             float d = Vector3.Distance(player.position, node.position);
             if (d < bestDist)
             {
@@ -268,7 +320,7 @@ public class HarvestNodeContainer : MonoBehaviour
         // Pass the icon, detail image, and name too — plant prefabs are 3D and
         // have no SpriteRenderer, so these getters are the only source the
         // inventory slot / detail panel can display.
-        playerInventory.AddPlantToInventory(plantPrefab, plant.GetPlantIcon(), plant.GetPlantImage(), plant.GetPlantName());
+        playerInventory.AddPlantToInventory(plantPrefab, plant.GetPlantIcon(), plant.GetPlantImage(), plant.GetPlantName(), plant.StartingCondition);
 
         Debug.Log($"[HarvestNodeContainer] Harvested: {node.name}");
         ShowFeedback($"{harvestMessage}  ({node.name})");
@@ -281,7 +333,15 @@ public class HarvestNodeContainer : MonoBehaviour
         // Node is done for now. Swap for a respawn-timer coroutine if these
         // nodes should regrow rather than disappear permanently.
         ClearCurrentOutline();
-        node.gameObject.SetActive(false);
+
+        // Play the disintegrate effect first (if this node has one), THEN hide it — so the item
+        // is already in the player's inventory (AddPlantToInventory ran above) the instant they
+        // press E, and only the visual removal is delayed to let the effect play.
+        DisintegrateEffect disintegrate = node.GetComponent<DisintegrateEffect>();
+        if (disintegrate != null)
+            disintegrate.Play(() => node.gameObject.SetActive(false));
+        else
+            node.gameObject.SetActive(false);
         // NOTE: this used to advance the old on-screen Tutorial instruction text here
         // (Tutorial_1.Instance.OnPickUpPot()) — not a checklist task, nothing to repoint
         // it to yet since that on-screen system hasn't been rebuilt.

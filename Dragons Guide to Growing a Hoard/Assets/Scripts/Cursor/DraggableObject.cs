@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// Attach to a world-space object (with a Collider2D or Collider) that the
@@ -52,7 +53,7 @@ public class DraggableObject : MonoBehaviour
 
     private Vector3 GetMouseWorldPosition()
     {
-        Vector3 mouseScreenPos = Input.mousePosition;
+        Vector3 mouseScreenPos = Mouse.current != null ? (Vector3)Mouse.current.position.ReadValue() : Vector3.zero;
         mouseScreenPos.z = mainCamera.WorldToScreenPoint(transform.position).z;
         return mainCamera.ScreenToWorldPoint(mouseScreenPos);
     }

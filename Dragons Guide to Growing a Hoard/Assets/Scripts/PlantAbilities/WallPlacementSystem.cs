@@ -35,6 +35,11 @@ public class WallPlacementSystem : MonoBehaviour
     private Mode mode = Mode.None;
     public Mode CurrentMode => mode;
 
+    /// <summary>Fires whenever mode changes, for whatever reason (button, keybind, cancel, the
+    /// pot<->wall Tab toggle in PlacementSystem, ...). Added for MainUIController's Floor/Wall
+    /// Placement Mode banner — nothing here previously needed to observe this from outside.</summary>
+    public event System.Action OnModeChanged;
+
     private readonly Dictionary<WallSurface, GridData> surfaceGridData = new Dictionary<WallSurface, GridData>();
     private WallSurface activeSurface;
     private int selectedIndex = 0;
@@ -42,6 +47,15 @@ public class WallPlacementSystem : MonoBehaviour
     private GameObject previewObject;
 
     public bool IsActive => mode != Mode.None;
+
+    /// <summary>Which wall-mushroom index Placing mode would use right now (last selected). Read
+    /// by PlacementSystem's Tab-toggle so switching TO wall placement preserves whatever type was
+    /// last selected instead of always resetting to index 0.</summary>
+    public int SelectedIndex => selectedIndex;
+
+    /// <summary>Read-only view of the wall-mushroom types available to place — used by
+    /// MainUIController's wall-mushroom selector HUD to build its icon list in the same order.</summary>
+    public IReadOnlyList<WallMushroomData> AvailableMushrooms => availableMushrooms;
 
     private void Start()
     {
@@ -61,6 +75,14 @@ public class WallPlacementSystem : MonoBehaviour
 
         foreach (WallSurface s in wallSurfaces) s?.GridVisual?.SetVisible(true);
         SpawnPreview(availableMushrooms[selectedIndex]);
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
+
+        // Tutorial hook — matches a step reading something like "press Tab to enter wall
+        // placement". This is the only way into wall-Placing mode right now (PlacementSystem's
+        // Tab toggle is the sole caller), so firing here covers it regardless of entry point.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("entered_wall_placement_mode");
+
+        OnModeChanged?.Invoke();
     }
 
     public void ToggleRemoveMode()
@@ -71,6 +93,8 @@ public class WallPlacementSystem : MonoBehaviour
         CancelMode();
         mode = Mode.Removing;
         foreach (WallSurface s in wallSurfaces) s?.GridVisual?.SetVisible(true);
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
+        OnModeChanged?.Invoke();
     }
 
     public void CancelMode()
@@ -84,6 +108,8 @@ public class WallPlacementSystem : MonoBehaviour
         DestroyPreview();
         activeSurface = null;
         lastHoveredCell = new Vector2Int(-999, -999);
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetGameplayMode();
+        OnModeChanged?.Invoke();
     }
 
     private void Update()
@@ -91,6 +117,11 @@ public class WallPlacementSystem : MonoBehaviour
         HandleModeToggleKeys();
 
         if (mode == Mode.None || inputManager == null) return;
+
+        // Escape is now handled centrally by ExitMenuController, which calls CancelMode() directly
+        // rather than this polling for it independently — see PlacementSystem's matching comment
+        // for why (a script-execution-order race between multiple independent pollers of the same
+        // keypress within the same frame).
 
         Vector3 mouseWorld = inputManager.GetSelectedWallPosition();
         WallSurface hovered = GetSurfaceAtPosition(mouseWorld);
@@ -129,23 +160,20 @@ public class WallPlacementSystem : MonoBehaviour
             else if (mode == Mode.Removing) TryRemove(cell, gridData, gridVisual);
         }
 
-        if (Mouse.current.rightButton.wasPressedThisFrame)
-            CancelMode();
+        // Right-click no longer cancels the mode — it now holds to rotate the camera instead (see
+        // ThirdPersonCameraController.AllowRotationWhileLockedIfRightClickHeld, set by
+        // GameInputModeManager.SetPlacementMode()).
     }
 
     private void HandleModeToggleKeys()
     {
-        if (Keyboard.current == null) return;
-
-        // Deliberately NOT bound to F (PlacementSystem's pot-place key) — two scripts independently
-        // polling the same key in the same frame race on Unity's script execution order (whichever
-        // Update() runs first could toggle its mode on before the other script's cancellation call
-        // even sees it, or the two could cancel each other out on the same press). A distinct key
-        // sidesteps that entirely; the CancelActiveMode()/CancelMode() calls in ToggleMushroomPlaceMode
-        // above (and the matching wallPlacementSystem?.CancelMode() calls in PlacementSystem) still
-        // handle switching from one grid to the other cleanly.
-        if (Keyboard.current.rKey.wasPressedThisFrame)
-            ToggleMushroomPlaceMode(selectedIndex);
+        // R and the pot-place<->wall-place Tab toggle now both live entirely in PlacementSystem —
+        // see its HandleModeToggleKeys(). Having each script independently poll the SAME key for a
+        // toggle that affects BOTH of them is exactly the F-vs-R race the comment used to warn
+        // about here: whichever script's Update() runs first would act on its own (just-changed)
+        // mode state before the other script even gets a chance to see the original press, and the
+        // two could flip back and forth within the same frame. One script owning the whole toggle
+        // avoids that. Nothing to poll here anymore.
     }
 
     private void UpdateHoverVisual(Vector2Int cell, WallGridVisual gridVisual, GridData gridData)
@@ -195,6 +223,10 @@ public class WallPlacementSystem : MonoBehaviour
 
         gridData.AddPlacement(key, data.size, placed);
         gridVisual.MarkOccupied(cell, data.size);
+
+        // Tutorial hook — matches a step reading something like "left-click to place it",
+        // the wall-placement equivalent of PlacementSystem.TryPlace's own trigger calls.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("placed_wall_mushroom");
     }
 
     private void TryRemove(Vector2Int cell, GridData gridData, WallGridVisual gridVisual)

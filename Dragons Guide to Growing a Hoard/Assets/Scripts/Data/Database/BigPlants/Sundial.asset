@@ -16,8 +16,9 @@ MonoBehaviour:
   displayName: Sundial Cactus
   category: 0
   room: 1
-  tier: 1
-  difficulty: 1
+  tier: 2
+  isCrystal: 0
+  difficulty: 2
   description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
     tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
     quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
@@ -29,9 +30,12 @@ MonoBehaviour:
     inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. '
   journalIcon: {fileID: 21300000, guid: 4e07b70507f3d874687a9b3d0281023d, type: 3}
   journalImage: {fileID: 21300000, guid: 4e07b70507f3d874687a9b3d0281023d, type: 3}
+  deadIcon: {fileID: 0}
   disabledIcon: {fileID: 21300000, guid: d93f7ea1096531a44a3c0ad381248637, type: 3}
   activeIcon: {fileID: 21300000, guid: 4e07b70507f3d874687a9b3d0281023d, type: 3}
   goldIcon: {fileID: 21300000, guid: bd2d9657c04c6684cb73500addb3cffb, type: 3}
   waterRequirement: 1
   lightRequirement: 1
   preferredSoilDisplay: 2
+  requiresRoomUnlock: 0
+  happinessThreshold: 70

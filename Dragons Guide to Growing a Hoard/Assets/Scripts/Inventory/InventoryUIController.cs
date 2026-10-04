@@ -98,28 +98,54 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
     [SerializeField] private Button backButton;
 
     [Header("Plant Detail Panel")]
-    [Tooltip("The detail panel GameObject shown when the player clicks a plant or ability item " +
-             "(in the grid, Available, or Abilities section). Hidden by default — Available is " +
-             "what shows when the inventory first opens.")]
+    [Tooltip("The detail panel GameObject shown when the player clicks a plant (in the grid or " +
+             "Available). Hidden by default — Available is what shows when the inventory first " +
+             "opens. Consumable/placeable stacks now use their OWN separate panel — see " +
+             "consumablePanel below.")]
     [SerializeField] private GameObject plantPanel;
     [Tooltip("Image component on the Plant panel that shows the plant's larger detail image " +
-             "(CollectablePlant.plantImage) — this is intentionally NOT the small slot icon. Also " +
-             "reused to show an ability item's icon when the panel is opened for one of those instead.")]
+             "(CollectablePlant.plantImage) — this is intentionally NOT the small slot icon.")]
     [SerializeField] private Image plantPanelImage;
-    [Tooltip("Text component on the Plant panel that shows the plant's (or ability item's) name.")]
+    [Tooltip("Text component on the Plant panel that shows the plant's name.")]
     [SerializeField] private TMPro.TextMeshProUGUI plantPanelName;
     [Tooltip("Optional close/back button on the Plant panel that returns to the Available view. " +
              "If you don't want a dedicated button, add a Button component to the panel's " +
              "background image instead and assign that here.")]
     [SerializeField] private Button plantPanelCloseButton;
-    [Tooltip("Shown ONLY when the panel is open for an ability item that can have an effect right " +
-             "now: an untargeted Consumable (e.g. Bubble of Holding, Glowcap Spore). Hidden for " +
-             "plants (they're managed via the pot menu's own buttons, not this panel), for " +
-             "Placeables (they need the player to actually place + interact with them in the " +
-             "world, not an instant press-to-use), and for pot-targeted Consumables like Verdant " +
-             "Algae/Pollen Puff/Dewdrop (those only make sense from inside a specific pot's own " +
-             "Abilities panel — PotMenuUIController).")]
-    [SerializeField] private Button plantPanelUseButton;
+    [Tooltip("Jumps to this plant's page in the Journal — closes Inventory, opens Journal (if not " +
+             "already), and navigates straight to it (JournalUIController.ShowSpeciesDetail). Hidden " +
+             "for a plant with no journalSpecies assigned (nothing to jump to). Its onClick is " +
+             "rebound each time ShowPlantDetail runs, since the target species changes per plant.")]
+    [SerializeField] private Button plantPanelJournalButton;
+    [Tooltip("Auto-found in the scene if left empty — needed for the Journal button above.")]
+    [SerializeField] private JournalUIController journalUI;
+
+    [Header("Consumable Detail Panel")]
+    [Tooltip("Separate panel for consumable/placeable stacks, opened by ShowAbilityDetail instead of " +
+             "the Plant panel above. Similar layout, but with a short description and no Journal " +
+             "button (consumables have no journal entry) — and obviously the Consume/Use button, " +
+             "which the Plant panel never shows at all (plants are managed via the pot menu's own " +
+             "buttons, not from here).")]
+    [SerializeField] private GameObject consumablePanel;
+    [SerializeField] private Image consumablePanelImage;
+    [SerializeField] private TMPro.TextMeshProUGUI consumablePanelName;
+    [Tooltip("Shows AbilityItemData.description — a short blurb, not meant to be long.")]
+    [SerializeField] private TMPro.TextMeshProUGUI consumablePanelDescription;
+    [SerializeField] private Button consumablePanelCloseButton;
+    [Tooltip("Shown ONLY when this stack can have an effect right now: an untargeted Consumable " +
+             "(e.g. Bubble of Holding, Glowcap Spore). Hidden for Placeables (they need the player to " +
+             "actually place + interact with them in the world, not an instant press-to-use), and for " +
+             "pot-targeted Consumables like Verdant Algae/Pollen Puff/Dewdrop (those only make sense " +
+             "from inside a specific pot's own Abilities panel — PotMenuUIController).")]
+    [SerializeField] private Button consumablePanelUseButton;
+
+    [Header("Dead Plants")]
+    [Tooltip("FALLBACK ONLY — shown for a permanently-dead plant whose species has no deadIcon of its " +
+             "own set (PlantSpeciesData.deadIcon), or that has no journalSpecies linked at all. Prefer " +
+             "setting deadIcon per-species on the PlantSpeciesData asset instead — read by " +
+             "InventorySlotUI/ShowPlantDetail before this ever gets used.")]
+    [SerializeField] private Sprite deadPlantIcon;
+    public Sprite DeadPlantIcon => deadPlantIcon;
 
     [Header("Filter Bar")]
     [Tooltip("Infinity icon — explicitly shows everything (clears the filter). This is the one that's " +
@@ -143,6 +169,13 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
              "AbilityHotbarSystem's own slots array (index 0 = key '1', etc.) — mismatched order " +
              "means clicking/pressing a slot won't visually match what actually activates.")]
     [SerializeField] private List<HotbarSlotUI> hotbarSlotUIs = new List<HotbarSlotUI>();
+    [Tooltip("The hand-placed hotbar row's shared parent GameObject — hidden (same as MainUIController's " +
+             "HUD hotbar row and PotMenuUIController's ability button) until the player's first " +
+             "HARVEST FROM A POT — a fully-grown plant removed for a Consumable/Placeable ability item " +
+             "(PlayerAbilityInventory.OnFirstAbilityItemHarvested/HasHarvestedFirstAbilityItem), NOT " +
+             "the inventory icon's plant-pickup flag on MainUIController. Parent hotbarSlotUIs under " +
+             "one GameObject in the Editor and assign it here.")]
+    [SerializeField] private GameObject hotbarRoot;
 
     [Header("Layout")]
     [Tooltip("Pixel size of one grid cell. Item visuals are drawn at footprint * cellSizePx.")]
@@ -163,9 +196,19 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
     [Tooltip("Color for the footprint under the cursor when the drop would be invalid.")]
     [SerializeField] private Color invalidDropColor = new Color(1f, 0.3f, 0.3f, 0.55f);
 
+    [Header("Input")]
+    [Tooltip("Assign the SAME Input Actions asset PlayerController uses (drag the identical " +
+             ".inputactions asset here — not a copy). This used to create its own separate " +
+             "`new PlayerControls()` instance, which silently stopped receiving events after " +
+             "switching Active Input Handling to Input System Package (New) only, even though " +
+             "PlayerController's own Inspector-assigned asset instance kept working fine. Rather than " +
+             "chase why two independently-enabled instances of the same actions stopped both firing, " +
+             "this now finds the Inventory action on the SAME shared asset object PlayerController " +
+             "already uses successfully, instead of running a second instance side by side.")]
+    [SerializeField] private InputActionAsset inputActions;
+
     private Canvas rootCanvas;
     private bool isInventoryOpen = false;
-    private PlayerControls playerControls;
     private InputAction inventoryAction;
     private readonly Dictionary<string, InventorySlotUI> slotVisuals = new Dictionary<string, InventorySlotUI>();
 
@@ -200,34 +243,42 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         if (rootCanvas == null)
             Debug.LogError("❌ InventoryUIController must be somewhere under a Canvas!");
 
-        playerControls = new PlayerControls();
+        // Finds the Inventory action on the SAME shared asset PlayerController uses (see
+        // inputActions tooltip above) rather than creating a second independent instance.
+        InputActionMap gameplayMap = inputActions != null ? inputActions.FindActionMap("GamePlay", true) : null;
+        inventoryAction = gameplayMap?.FindAction("Inventory", true);
 
-        // Subscribe directly to just this one action instead of calling
-        // playerControls.GamePlay.SetCallbacks(this). SetCallbacks REPLACES
-        // every callback on the whole map — if another script (e.g. player
-        // movement) also calls SetCallbacks on GamePlay, whichever runs last
-        // silently wins and the other script's bindings (including this one)
-        // stop firing. Subscribing to the action directly avoids that entirely.
-        inventoryAction = playerControls.GamePlay.Inventory;
+        // Subscribing directly to just this one action instead of calling
+        // gameplayMap.SetCallbacks(this) (if such a helper existed here). SetCallbacks REPLACES
+        // every callback on the whole map — if another script (e.g. player movement) also calls
+        // SetCallbacks on GamePlay, whichever runs last silently wins and the other script's
+        // bindings (including this one) stop firing. Subscribing to the action directly avoids
+        // that entirely.
         if (inventoryAction != null)
             inventoryAction.performed += OnInventoryPerformed;
         else
-            Debug.LogError("❌ Inventory action NOT FOUND! Add it to the Input Action Asset (GamePlay map).");
+            Debug.LogError("❌ Inventory action NOT FOUND! Assign the same Input Actions asset " +
+                            "PlayerController uses (must have a GamePlay map with an Inventory action).");
 
         if (playerInventory == null)
-            playerInventory = FindObjectOfType<PlayerInventory>();
+            playerInventory = FindAnyObjectByType<PlayerInventory>();
         if (abilityInventory == null)
-            abilityInventory = FindObjectOfType<PlayerAbilityInventory>();
+            abilityInventory = FindAnyObjectByType<PlayerAbilityInventory>();
         if (hotbarSystem == null)
-            hotbarSystem = FindObjectOfType<AbilityHotbarSystem>();
+            hotbarSystem = FindAnyObjectByType<AbilityHotbarSystem>();
         if (mainUI == null)
-            mainUI = FindObjectOfType<MainUIController>();
+            mainUI = FindAnyObjectByType<MainUIController>();
+        if (journalUI == null)
+            journalUI = FindAnyObjectByType<JournalUIController>();
 
         if (backButton != null)
-            backButton.onClick.AddListener(ToggleInventory);
+            backButton.onClick.AddListener(OnBackButtonClicked);
 
         if (plantPanelCloseButton != null)
             plantPanelCloseButton.onClick.AddListener(HidePlantDetail);
+
+        if (consumablePanelCloseButton != null)
+            consumablePanelCloseButton.onClick.AddListener(HideConsumableDetail);
 
         if (allFilterButton != null) allFilterButton.onClick.AddListener(() => SetFilter(null));
         if (sunnyFilterButton != null) sunnyFilterButton.onClick.AddListener(() => ToggleFilter(PlantType.Sunny));
@@ -245,6 +296,8 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         for (int i = 0; i < hotbarSlotUIs.Count; i++)
             hotbarSlotUIs[i]?.Initialize(this, i);
 
+        RefreshFirstHarvestGatedUI(); // sync initial state — hotbarRoot hidden pre-harvest, visible if already harvested this session
+
         SetInventoryVisible(false);
 
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
@@ -253,7 +306,11 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
 
     void OnEnable()
     {
-        playerControls?.Enable();
+        // NOTE: deliberately NOT (re-)enabling the action or its map here, unlike the old
+        // playerControls.Enable() this replaced. gameplayMap is SHARED with player movement now
+        // (see inputActions tooltip) — PlayerController owns enabling/disabling that map; this
+        // script only manages its own callback subscription, which works regardless of the map's
+        // enabled state (it just won't fire until something enables it).
         if (playerInventory != null)
             playerInventory.OnInventoryChanged += RefreshUI;
         if (abilityInventory != null)
@@ -263,24 +320,29 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             abilityInventory.OnChanged += RefreshUI;
         if (hotbarSystem != null)
             hotbarSystem.OnSlotsChanged += RefreshHotbarUI;
-    }  
+        if (abilityInventory != null)
+            abilityInventory.OnFirstAbilityItemHarvested += OnFirstAbilityItemHarvested;
+    }
 
     void OnDisable()
     {
-        playerControls?.Disable();
         if (playerInventory != null)
             playerInventory.OnInventoryChanged -= RefreshUI;
         if (abilityInventory != null)
             abilityInventory.OnChanged -= RefreshUI;
         if (hotbarSystem != null)
             hotbarSystem.OnSlotsChanged -= RefreshHotbarUI;
+        if (abilityInventory != null)
+            abilityInventory.OnFirstAbilityItemHarvested -= OnFirstAbilityItemHarvested;
     }
 
     void OnDestroy()
     {
         if (inventoryAction != null)
             inventoryAction.performed -= OnInventoryPerformed;
-        playerControls?.Dispose();
+        // NOTE: deliberately NOT calling .Dispose() here — inputActions is a shared asset this
+        // script doesn't own (PlayerController does), so disposing it would break every other
+        // consumer of that same asset, not just this script's own subscription.
     }
 
     void Update()
@@ -303,6 +365,15 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
 
     private void OnInventoryPerformed(InputAction.CallbackContext context)
     {
+        ToggleInventory();
+    }
+
+    /// <summary>The panel's own Back button — distinct from ToggleInventory's other close paths
+    /// (Escape/MenuLayerManager, pressing I again), so this fires a trigger specific to the tutorial
+    /// step that actually says "click the back button".</summary>
+    private void OnBackButtonClicked()
+    {
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("closed_inventory_back_button");
         ToggleInventory();
     }
 
@@ -342,9 +413,10 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         if (inventoryRoot != null)
             inventoryRoot.SetActive(visible);
 
-        // Available is the default view every time the inventory opens (or closes) —
-        // never leave the Plant detail panel showing from a previous session.
+        // Available is the default view every time the inventory opens (or closes) — never leave
+        // either detail panel showing from a previous session.
         HidePlantDetail();
+        HideConsumableDetail();
 
         // Re-apply here too (not just Awake) — EventSystem.current can still be null
         // during this script's own Awake depending on scene script execution order,
@@ -353,28 +425,24 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
     }
 
     // ------------------------------------------------------------
-    // DETAIL PANEL — shown when the player clicks a plant OR a
-    // consumable/placeable stack, wherever it's sitting in the shared
-    // grid/Available. Both are routed here by the same InventorySlotUI.
-    // OnPointerClick (it checks which kind of item it's holding) —
-    // ShowPlantDetail for a plant, ShowAbilityDetail for a stack. Both
-    // share the same panel/image/name fields; only plantPanelUseButton's
-    // visibility differs between the two.
+    // DETAIL PANELS — clicking a plant opens plantPanel (ShowPlantDetail); clicking a consumable/
+    // placeable stack opens the SEPARATE consumablePanel (ShowAbilityDetail) instead. Both are
+    // routed here by the same InventorySlotUI.OnPointerClick (it checks which kind of item it's
+    // holding), but each panel now owns its own state/fields.
     // ------------------------------------------------------------
     private string detailInstanceId = null;
     private AbilityItemData detailAbilityData = null;
 
     /// <summary>
-    /// Populates and shows the detail panel for the clicked plant.
-    /// Clicking the SAME item again (with no dedicated close button) closes
-    /// it back to the default Available/grid view — this is the toggle that
+    /// Populates and shows the Plant detail panel. Clicking the SAME item again (with no dedicated
+    /// close button) closes it back to the default Available/grid view — this is the toggle that
     /// replaces having a separate close button.
     /// </summary>
     public void ShowPlantDetail(InventoryItemInstance instance)
     {
         if (instance == null || plantPanel == null) return;
 
-        if (plantPanel.activeSelf && detailAbilityData == null && detailInstanceId == instance.instanceId)
+        if (plantPanel.activeSelf && detailInstanceId == instance.instanceId)
         {
             HidePlantDetail();
             return;
@@ -385,7 +453,15 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             // displayImage is the larger "info card" image — deliberately distinct
             // from instance.icon, which is only the small slot thumbnail. Fall back
             // to the icon so the panel isn't blank if no detail image was assigned.
-            Sprite detail = instance.displayImage != null ? instance.displayImage : instance.icon;
+            // A permanently-dead plant shows its species' own deadIcon here instead (falling back
+            // to InventoryUIController's generic deadPlantIcon if the species has none set, or has
+            // no journalSpecies linked at all) — same resolution order as InventorySlotUI.
+            Sprite dead = instance.journalSpecies != null && instance.journalSpecies.deadIcon != null
+                ? instance.journalSpecies.deadIcon
+                : deadPlantIcon;
+            Sprite detail = instance.condition.isPermanentlyDead && dead != null
+                ? dead
+                : instance.displayImage != null ? instance.displayImage : instance.icon;
             plantPanelImage.sprite = detail;
             plantPanelImage.enabled = detail != null;
         }
@@ -393,14 +469,25 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         if (plantPanelName != null)
             plantPanelName.text = instance.displayName;
 
-        // Plants are never "used" from this panel — they're managed via the pot menu's own
-        // Choose Plant / Remove / Harvest buttons — so the Use button never shows here.
-        if (plantPanelUseButton != null)
-            plantPanelUseButton.gameObject.SetActive(false);
+        // Jumps to this plant's Journal page — hidden entirely for a plant with no journalSpecies
+        // assigned, since there'd be nowhere to jump to. Rebound each call since the target species
+        // changes per plant.
+        if (plantPanelJournalButton != null)
+        {
+            bool hasJournalEntry = instance.journalSpecies != null;
+            plantPanelJournalButton.gameObject.SetActive(hasJournalEntry);
+            plantPanelJournalButton.onClick.RemoveAllListeners();
+            if (hasJournalEntry)
+                plantPanelJournalButton.onClick.AddListener(() => GoToJournalForPlant(instance.journalSpecies));
+        }
 
         detailInstanceId = instance.instanceId;
-        detailAbilityData = null;
         plantPanel.SetActive(true);
+
+        // "Click an item to see its details" tutorial step — fires on actually opening a detail
+        // panel (not the toggle-closed branch above), same trigger id as ShowAbilityDetail below so
+        // one tutorial step covers either kind of item.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_item_detail");
 
         // Hide the whole Available panel — including its "Available" header text,
         // since that lives on the parent (availablePanelRoot), not on the item
@@ -410,61 +497,102 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
     }
 
     /// <summary>
-    /// Populates and shows the SAME detail panel for the clicked ability item stack. The Use
-    /// button only appears when this item can actually have an effect right now: an untargeted
-    /// Consumable. Placeables (need the player to place + interact with them in the world) and
-    /// pot-targeted Consumables (Verdant Algae, Pollen Puff, Dewdrop — only usable from inside a
-    /// pot's own Abilities panel) never show it. Clicking the same stack again closes the panel,
-    /// same toggle behaviour as ShowPlantDetail.
+    /// Populates and shows the Consumable detail panel — a SEPARATE panel from Plant's, with a
+    /// short description and no Journal button (consumables have no journal entry), plus the
+    /// Consume/Use button (which the Plant panel never shows — plants are managed via the pot
+    /// menu's own buttons). The Use button only appears when this item can actually have an effect
+    /// right now: an untargeted Consumable. Placeables (need the player to place + interact with
+    /// them in the world) and pot-targeted Consumables (Verdant Algae, Pollen Puff, Dewdrop — only
+    /// usable from inside a pot's own Abilities panel) never show it. Clicking the same stack
+    /// again closes the panel, same toggle behaviour as ShowPlantDetail.
     /// </summary>
     public void ShowAbilityDetail(AbilityItemInstance stack)
     {
-        if (stack?.data == null || plantPanel == null) return;
+        if (stack?.data == null || consumablePanel == null) return;
 
-        if (plantPanel.activeSelf && detailAbilityData == stack.data)
+        if (consumablePanel.activeSelf && detailAbilityData == stack.data)
         {
-            HidePlantDetail();
+            HideConsumableDetail();
             return;
         }
 
-        if (plantPanelImage != null)
+        if (consumablePanelImage != null)
         {
-            plantPanelImage.sprite = stack.data.icon;
-            plantPanelImage.enabled = stack.data.icon != null;
+            consumablePanelImage.sprite = stack.data.icon;
+            consumablePanelImage.enabled = stack.data.icon != null;
         }
 
-        if (plantPanelName != null)
-            plantPanelName.text = stack.data.displayName;
+        if (consumablePanelName != null)
+            consumablePanelName.text = stack.data.displayName;
+
+        if (consumablePanelDescription != null)
+            consumablePanelDescription.text = stack.data.description;
 
         bool usableNow = stack.data.kind == AbilityKind.Consumable &&
                           !AbilityConsumableEffects.RequiresPotTarget(stack.data.effectId);
 
-        if (plantPanelUseButton != null)
+        if (consumablePanelUseButton != null)
         {
-            plantPanelUseButton.gameObject.SetActive(usableNow);
-            plantPanelUseButton.onClick.RemoveAllListeners();
+            consumablePanelUseButton.gameObject.SetActive(usableNow);
+            consumablePanelUseButton.onClick.RemoveAllListeners();
             if (usableNow)
-                plantPanelUseButton.onClick.AddListener(() => UseAbility(stack.data));
+                consumablePanelUseButton.onClick.AddListener(() => UseAbility(stack.data));
         }
 
-        detailInstanceId = null;
         detailAbilityData = stack.data;
-        plantPanel.SetActive(true);
+        consumablePanel.SetActive(true);
+
+        // Same trigger as ShowPlantDetail above — either kind of item opening its detail panel
+        // satisfies the same tutorial step.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_item_detail");
 
         if (availablePanelRoot != null) availablePanelRoot.SetActive(false);
     }
 
-    /// <summary>Hides the detail panel, returning the player to the default Available view.</summary>
+    /// <summary>Hides the Plant detail panel, returning the player to the default Available view.</summary>
     public void HidePlantDetail()
     {
         detailInstanceId = null;
-        detailAbilityData = null;
-        if (plantPanelUseButton != null)
-            plantPanelUseButton.gameObject.SetActive(false);
         if (plantPanel != null)
             plantPanel.SetActive(false);
 
         if (availablePanelRoot != null) availablePanelRoot.SetActive(true);
+
+        // "Click it again to close it" tutorial step — fires whether the panel was closed by
+        // re-clicking the same item (the toggle in ShowPlantDetail) or by plantPanelCloseButton,
+        // since both end up here. Same trigger id as HideConsumableDetail below.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("closed_item_detail");
+    }
+
+    /// <summary>Hides the Consumable detail panel, returning the player to the default Available view.</summary>
+    public void HideConsumableDetail()
+    {
+        detailAbilityData = null;
+        if (consumablePanelUseButton != null)
+            consumablePanelUseButton.gameObject.SetActive(false);
+        if (consumablePanel != null)
+            consumablePanel.SetActive(false);
+
+        if (availablePanelRoot != null) availablePanelRoot.SetActive(true);
+
+        // Same trigger as HidePlantDetail above — either kind of item's detail panel closing
+        // satisfies the same tutorial step.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("closed_item_detail");
+    }
+
+    /// <summary>Closes Inventory and jumps straight to this plant's page in the Journal. Opens the
+    /// Journal first if it wasn't already (ToggleJournal always resets to the Plants list page, so
+    /// ShowSpeciesDetail has to run AFTER that, not before, or its detail view would get wiped).</summary>
+    private void GoToJournalForPlant(PlantSpeciesData species)
+    {
+        if (species == null || journalUI == null) return;
+
+        CloseInventory();
+
+        if (!journalUI.IsJournalOpen)
+            journalUI.ToggleJournal();
+
+        journalUI.ShowSpeciesDetail(species);
     }
 
     // ------------------------------------------------------------
@@ -484,6 +612,10 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         showOnlyConsumables = false; // mutually exclusive with the Consumables filter
         RefreshFilterButtonVisuals();
         RefreshUI();
+
+        // Covers all(clear)/Sunny/Dark/Water/Dead — ToggleFilter routes here too. Consumables goes
+        // through ToggleConsumablesFilter below instead, same trigger id either way.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("used_inventory_filter");
     }
 
     private void ToggleConsumablesFilter()
@@ -494,6 +626,8 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
 
         RefreshFilterButtonVisuals();
         RefreshUI();
+
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("used_inventory_filter");
     }
 
     private void RefreshFilterButtonVisuals()
@@ -669,7 +803,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
 
         if (data.kind == AbilityKind.Placeable)
         {
-            AbilityPlacementSystem placementSystem = FindObjectOfType<AbilityPlacementSystem>();
+            AbilityPlacementSystem placementSystem = FindAnyObjectByType<AbilityPlacementSystem>();
             if (placementSystem == null)
             {
                 Debug.LogWarning("[InventoryUIController] No AbilityPlacementSystem in scene.");
@@ -703,6 +837,17 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         if (hotbarSystem == null) return;
         foreach (var slot in hotbarSlotUIs)
             slot?.Refresh(hotbarSystem);
+    }
+
+    // Hidden until the player's first pot harvest (Consumable/Placeable ability item, NOT a plain
+    // plant pickup) — same flag/event MainUIController's HUD hotbar row and PotMenuUIController's
+    // ability button gate themselves off.
+    private void OnFirstAbilityItemHarvested() => RefreshFirstHarvestGatedUI();
+
+    private void RefreshFirstHarvestGatedUI()
+    {
+        if (hotbarRoot != null)
+            hotbarRoot.SetActive(abilityInventory != null && abilityInventory.HasHarvestedFirstAbilityItem);
     }
 
     public void ActivateHotbarSlot(int slotIndex)
@@ -1053,6 +1198,10 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             if (occupant.IsInGrid)
             {
                 playerInventory.MoveToAvailable(occupant);
+
+                // "Long-click and drag a plant to Available to make room" tutorial step — only
+                // fires for an actual grid->Available move, not the no-op below.
+                TutorialSequenceController.Instance?.NotifyExternalTrigger("moved_plant_to_available");
                 return true;
             }
             return true; // already in Available, dropped back onto Available — treat as a no-op success

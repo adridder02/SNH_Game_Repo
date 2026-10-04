@@ -48,12 +48,25 @@ public class PlacementSystem : MonoBehaviour
              "there. Tasks 1/2/3 (Small/Medium/Large pot planted) are completed from here, offset by +1 " +
              "from availablePots' index since task 0 is taken by OpenedInventory.")]
     [SerializeField] private MissionData collectionMission;
+    [Header("Watering")]
+    [Tooltip("Reuses PotInteraction.WaterPot() — the same logic the old temporary pot-menu Water " +
+             "button and the 'Q' quick-water key already use, so this tool behaves identically to " +
+             "those (same transfer amount, same empty-pool/full-pot messages), just targeted by " +
+             "hovering a square like Place/Remove/Move instead of by proximity.")]
+    [SerializeField] private PotInteraction potInteraction;
+
+    [Tooltip("Auto-found in the scene if left empty. Used by the Remove tool so a pot's plant (if any) " +
+             "goes back into the player's inventory instead of being destroyed along with the pot — " +
+             "same PotContents.RemovePlant() call PotInteraction uses for a by-hand pickup.")]
+    [SerializeField] private PlayerInventory playerInventory;
+
     public enum Mode
     {
         None,
         Placing,
         Removing,
-        Moving
+        Moving,
+        Watering
     }
 
     private Mode mode = Mode.None;
@@ -70,6 +83,10 @@ public class PlacementSystem : MonoBehaviour
 
     /// <summary>Which pot index Placing mode would use right now (last cycled-to / selected pot).</summary>
     public int SelectedPotIndex => selectedIndex;
+
+    /// <summary>Read-only view of the pot types available to cycle through in Placing mode — used
+    /// by MainUIController's pot-selector HUD to build its icon list in the same order.</summary>
+    public IReadOnlyList<PotData> AvailablePots => availablePots;
 
     /// <summary>All greenhouse surfaces this system manages. Read by AbilityPlacementSystem so
     /// ability placeables (Sparkmint leaves, Waterbells, ...) hover/place across the same surfaces
@@ -132,6 +149,12 @@ public class PlacementSystem : MonoBehaviour
 
     private void Start()
     {
+        if (potInteraction == null)
+            potInteraction = FindAnyObjectByType<PotInteraction>();
+
+        if (playerInventory == null)
+            playerInventory = FindAnyObjectByType<PlayerInventory>();
+
         if (surfaces == null || surfaces.Count == 0)
         {
             Debug.LogError("PlacementSystem: No GreenhouseSurfaces assigned.");
@@ -160,7 +183,7 @@ public class PlacementSystem : MonoBehaviour
 
         Debug.Log($"PlacementSystem: Initialized with {surfaceGridData.Count} surfaces and {availablePots.Count} pot types.");
 
-        GameInputModeManager.Instance.SetGameplayMode();
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetGameplayMode();
     }
 
     // Keep inspector-adjusted volumes live during Play Mode
@@ -272,12 +295,14 @@ public class PlacementSystem : MonoBehaviour
                 TryRemove(hoveredCell);
             else if (mode == Mode.Moving)
                 TryPickupOrDrop(hoveredCell);
+            else if (mode == Mode.Watering)
+                TryWater(hoveredCell);
         }
 
-        if (Mouse.current.rightButton.wasPressedThisFrame)
-        {
-            CancelMode();
-        }
+        // Right-click no longer cancels the mode (any of the four) — it now holds to rotate the
+        // camera instead, see ThirdPersonCameraController.AllowRotationWhileLockedIfRightClickHeld,
+        // set by GameInputModeManager.SetPlacementMode(). Escape (HandleModeToggleKeys) is the way
+        // out now, uniformly across all four modes.
     }
 
     private void HandleModeToggleKeys()
@@ -288,11 +313,47 @@ public class PlacementSystem : MonoBehaviour
         if (Keyboard.current.fKey.wasPressedThisFrame)
             TogglePlaceMode();
 
-        if (Keyboard.current.xKey.wasPressedThisFrame)
+        if (Keyboard.current.rKey.wasPressedThisFrame)
             ToggleRemoveMode();
 
         if (Keyboard.current.gKey.wasPressedThisFrame)
             ToggleMoveMode();
+
+        if (Keyboard.current.qKey.wasPressedThisFrame)
+            ToggleWaterMode();
+
+        // Tab cycles between pot-Placing and wall-Placing — the SOLE place this is handled, on
+        // purpose. WallPlacementSystem used to independently poll its own key (R, now freed up for
+        // Remove above) for entering its Placing mode; if it ALSO polled Tab itself here, both
+        // scripts would react to the same press in the same frame — whichever Update() runs first
+        // flips its own mode, and the other script's check (now reading that freshly-changed state)
+        // could immediately flip it right back, ping-ponging within one frame. Only PlacementSystem
+        // polls Tab, and it decides which direction to go by checking BOTH systems' current mode.
+        //
+        // NOTE: this is now the ONLY way to enter wall-Placing mode at all — you have to be in pot-
+        // Placing (F) first, then Tab across. There's no standalone "just enter wall placing" key
+        // anymore now that R belongs to pot-Remove.
+        if (Keyboard.current.tabKey.wasPressedThisFrame)
+        {
+            if (mode == Mode.Placing)
+            {
+                CancelMode();
+                if (wallPlacementSystem != null)
+                    wallPlacementSystem.ToggleMushroomPlaceMode(wallPlacementSystem.SelectedIndex);
+            }
+            else if (wallPlacementSystem != null && wallPlacementSystem.CurrentMode == WallPlacementSystem.Mode.Placing)
+            {
+                wallPlacementSystem.CancelMode();
+                EnterPlaceMode(selectedIndex);
+            }
+        }
+
+        // Escape is now handled centrally by ExitMenuController, which calls CancelActiveMode()
+        // directly rather than this polling for it independently — having multiple scripts each
+        // poll the SAME Escape press and act on it within the same frame is a script-execution-
+        // order race: whichever runs first changes state the other reads, so which one "wins" (or
+        // whether the exit menu ALSO opens on the same press) depended on unpredictable ordering.
+        // One authority checking "is a mode active, then cancel it" removes the race entirely.
     }
 
     // ---------------------------------------------------------------
@@ -328,6 +389,14 @@ public class PlacementSystem : MonoBehaviour
             CancelMode();
         else
             EnterMoveMode();
+    }
+
+    public void ToggleWaterMode()
+    {
+        if (mode == Mode.Watering)
+            CancelMode();
+        else
+            EnterWaterMode();
     }
 
     /// <summary>Force-cancels whatever pot tool (Place/Remove/Move) is active, with no side effect if
@@ -366,7 +435,18 @@ public class PlacementSystem : MonoBehaviour
         if (debugMode)
             Debug.Log($"EnterPlaceMode: Entered placing mode with pot index {potIndex}");
 
-        GameInputModeManager.Instance.SetPlacementMode();
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
+
+        // Tutorial hooks — fired here rather than only from the F-key/scroll input handlers, since
+        // EnterPlaceMode is the single funnel every entry point (F key, Tab back from wall placing,
+        // a UI pot-selector button, CycleSelection's scroll-wheel path below) already goes through.
+        // "entered_placement_mode" fires every time (both step and hook match on the SAME event, so
+        // firing it once for the first pot selected as well as every later re-entry is harmless —
+        // NotifyExternalTrigger only acts if that specific step is still the current one).
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("entered_placement_mode");
+
+        if (availablePots[selectedIndex].correspondingPlantSize == PlantSize.Small)
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("selected_smallest_pot");
 
         OnModeChanged?.Invoke(mode);
     }
@@ -385,7 +465,7 @@ public class PlacementSystem : MonoBehaviour
                 surface.GridVisual.SetVisible(true);
         }
 
-        GameInputModeManager.Instance.SetPlacementMode();
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
 
         OnModeChanged?.Invoke(mode);
     }
@@ -404,7 +484,26 @@ public class PlacementSystem : MonoBehaviour
                 surface.GridVisual.SetVisible(true);
         }
 
-        GameInputModeManager.Instance.SetPlacementMode();
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
+
+        OnModeChanged?.Invoke(mode);
+    }
+
+    private void EnterWaterMode()
+    {
+        CancelMode(suppressEvent: true);
+        wallPlacementSystem?.CancelMode();
+
+        mode = Mode.Watering;
+
+        // Show all grids
+        foreach (var surface in surfaces)
+        {
+            if (surface != null)
+                surface.GridVisual.SetVisible(true);
+        }
+
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetPlacementMode();
 
         OnModeChanged?.Invoke(mode);
     }
@@ -432,10 +531,17 @@ public class PlacementSystem : MonoBehaviour
 
         DestroyPreview();
 
-        GameInputModeManager.Instance.SetGameplayMode();
+        if (GameInputModeManager.Instance != null) GameInputModeManager.Instance.SetGameplayMode();
 
         if (!suppressEvent)
+        {
+            // "Exit placement mode" tutorial step — deliberately only on a REAL exit (Escape via
+            // ExitMenuController, or CancelActiveMode from elsewhere), not the suppressEvent=true
+            // calls at the top of each Enter*Mode method that just switch from one tool straight to
+            // another. Same guard OnModeChanged already uses for the same reason.
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("exited_placement_mode");
             OnModeChanged?.Invoke(mode);
+        }
     }
 
     private void UpdateHoverVisual(Vector2Int cell)
@@ -487,6 +593,36 @@ public class PlacementSystem : MonoBehaviour
                             origin,
                             data.Size,
                             GridVisual.CellState.Invalid
+                        );
+                    }
+
+                    break;
+                }
+
+            case Mode.Watering:
+                {
+                    PlacementData data =
+                        gridData.GetPlacement(ToGridVec3(cell));
+
+                    if (data != null)
+                    {
+                        Vector2Int origin =
+                            new Vector2Int(data.Origin.x, data.Origin.z);
+
+                        // Valid (green) only when there's actually a plant here to water — matches
+                        // the same check QuickWater() itself makes. Empty water pool / already-full
+                        // pot aren't checked here (kept cheap, hover-only) and instead surface via
+                        // WaterPot()'s own Debug.Log messages on click, same as the old button/Q key.
+                        PotContents pc = data.PlacedObject != null
+                            ? data.PlacedObject.GetComponent<PotContents>()
+                            : null;
+
+                        gridVisual.SetFootprint(
+                            origin,
+                            data.Size,
+                            pc != null && pc.HasPlant
+                                ? GridVisual.CellState.Valid
+                                : GridVisual.CellState.Invalid
                         );
                     }
 
@@ -609,8 +745,19 @@ public class PlacementSystem : MonoBehaviour
 
         PlaySFX(placeSoundClip);
 
-        if (tutorialMission != null)
+        // Only counts toward the tutorial's "place a pot" task once the tutorial sequence has actually
+        // reached that step — placing a pot early (ahead of the tutorial UI) used to silently bank the
+        // task via ordering alone (see CheckLinkedTaskComplete's comment), so the "Left-click on a sunny
+        // square..." prompt would just get skipped the instant the tutorial caught up. Now an early
+        // placement simply doesn't count yet, same as if it hadn't happened, and the full prompt still
+        // shows when the tutorial gets there. Falls through to the old ordering-only behavior if there's
+        // no TutorialSequenceController in the scene at all.
+        if (tutorialMission != null &&
+            (TutorialSequenceController.Instance == null ||
+             TutorialSequenceController.Instance.IsCurrentLinkedTask(tutorialMission, "place_pot")))
+        {
             MissionProgressManager.Instance?.CompleteOrderedTask(tutorialMission, "place_pot");
+        }
 
         int potSizeTaskIndex = selectedIndex + 1; // index 0 is OpenedInventory (completed elsewhere)
         if (collectionMission != null && potSizeTaskIndex >= 1 && potSizeTaskIndex < collectionMission.tasks.Count)
@@ -638,7 +785,14 @@ public class PlacementSystem : MonoBehaviour
         PotContents pc = data.PlacedObject.GetComponent<PotContents>();
 
         if (pc != null)
+        {
+            // Return whatever plant is currently in this pot to the player's inventory before the
+            // pot itself is destroyed below — same RemovePlant() a by-hand pickup uses, so a
+            // half-grown (or fully-grown, un-harvested) plant isn't just lost when its pot is
+            // removed with this tool. No-ops harmlessly if the pot has no plant.
+            pc.RemovePlant(playerInventory);
             pc.ClearGridInfo();
+        }
 
         // Same cleanup AbilityPlacementSystem.TryRemove does for its own Removing mode — needed
         // here too now that this generic Remove tool can also pick up ability placeables (e.g. a
@@ -658,6 +812,38 @@ public class PlacementSystem : MonoBehaviour
         Destroy(data.PlacedObject);
 
         PlaySFX(removeSoundClip);
+
+        // "Remove a pot" tutorial step — fires on a completed removal, not just entering Remove mode.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("removed_pot");
+    }
+
+    private void TryWater(Vector2Int cell)
+    {
+        if (activeSurface == null)
+            return;
+
+        GridData gridData = surfaceGridData[activeSurface];
+
+        PlacementData data =
+            gridData.GetPlacement(ToGridVec3(cell));
+
+        if (data == null)
+            return;
+
+        PotContents pc = data.PlacedObject.GetComponent<PotContents>();
+        if (pc == null)
+            return;
+
+        // Delegates to the SAME logic the old temporary pot-menu Water button and the "Q" proximity
+        // quick-water key already use — same transfer amount, same water-pool/full-pot messages,
+        // same mission-task hook. This tool is just a different way of TARGETING that logic (hover a
+        // square instead of standing near the pot), not a reimplementation of watering itself.
+        potInteraction?.WaterPot(pc);
+
+        // "Water a pot" tutorial step — fires on any use of the Water tool against an actual placed
+        // pot (best-effort, matching WaterPot's own void/no-success-flag signature — an empty water
+        // pool or already-full pot still just logs a message rather than reporting failure here).
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("watered_pot_via_tool");
     }
 
     private void TryPickupOrDrop(Vector2Int cell)
@@ -734,6 +920,10 @@ public class PlacementSystem : MonoBehaviour
             DestroyPreview();
 
             PlaySFX(dropSoundClip);
+
+            // "Move a pot" tutorial step — fires on a completed move (pickup + successful drop), not
+            // just entering Move mode, since picking the tool alone doesn't prove anything moved.
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("moved_pot");
         }
     }
 
@@ -812,6 +1002,12 @@ public class PlacementSystem : MonoBehaviour
             selectedIndex = availablePots.Count - 1;
 
         EnterPlaceMode(selectedIndex);
+
+        // Generic "used the scroll wheel to switch pots" tutorial step — fires on every scroll cycle,
+        // regardless of which pot it lands on. Separate from EnterPlaceMode's own
+        // "selected_smallest_pot" (still fires alongside this for the specific-size-only step, if any
+        // step is still using it), since this one just needs "the player scrolled at all".
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("cycled_pot_selection");
     }
 
     private void PlaySFX(AudioClip clip)

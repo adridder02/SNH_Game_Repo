@@ -17,7 +17,7 @@ MonoBehaviour:
   category: 1
   room: 0
   tier: 3
-  difficulty: 1
+  difficulty: 3
   description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
     tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
     quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
@@ -29,6 +29,7 @@ MonoBehaviour:
     inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. '
   journalIcon: {fileID: 21300000, guid: ff56b4318c1ff6646b56a2ba15bffa5f, type: 3}
   journalImage: {fileID: 21300000, guid: ff56b4318c1ff6646b56a2ba15bffa5f, type: 3}
+  deadIcon: {fileID: 0}
   disabledIcon: {fileID: 21300000, guid: 6504ead4ee7968945a8e52a5cd5e7e1c, type: 3}
   activeIcon: {fileID: 21300000, guid: ff56b4318c1ff6646b56a2ba15bffa5f, type: 3}
   goldIcon: {fileID: 21300000, guid: 13042d1b705e6e641afff29c8b45d096, type: 3}

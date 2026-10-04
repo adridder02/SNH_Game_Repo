@@ -24,6 +24,10 @@ public class PotMenuUIController : MonoBehaviour
              "Distinct from choosePlantCurrentSoilIcon below — that one lives on the Choose Plant panel. Both " +
              "read the same currentPot.CurrentSoil, they just refresh in different panels.")]
     [SerializeField] private Image mainSoilIcon;
+    [Tooltip("Shows the icon of whichever pot-targeted consumable is CURRENTLY active on this pot " +
+             "(Dewdrop/Pollen Puff/Verdant Algae) — same sprite Inventory shows for that item. Hidden " +
+             "when none are active. See AbilityConsumableEffects.GetActiveConsumableIcon().")]
+    [SerializeField] private Image activeConsumableIcon;
     [SerializeField] private Button soilActionButton;
     [SerializeField] private TextMeshProUGUI soilActionButtonLabel;
     [SerializeField] private Button choosePlantButton;
@@ -178,10 +182,10 @@ public class PotMenuUIController : MonoBehaviour
         abilityContinueButton?.onClick.AddListener(ConfirmAbilitySelection);
         collectPuffballsButton?.onClick.AddListener(OnCollectPuffballsClicked);
 
-        menuCloseButton?.onClick.AddListener(() => ownerInteraction?.CloseMenu());
+        menuCloseButton?.onClick.AddListener(OnMenuCloseButtonClicked);
 
         if (journalManager == null)
-            journalManager = PlantJournalManager.Instance != null ? PlantJournalManager.Instance : FindObjectOfType<PlantJournalManager>();
+            journalManager = PlantJournalManager.Instance != null ? PlantJournalManager.Instance : FindAnyObjectByType<PlantJournalManager>();
         if (journalDatabase == null)
             Debug.LogWarning("[PotMenuUIController] journalDatabase not assigned — locked/unlockable " +
                               "species checks will fail closed (treated as locked). Assign the same " +
@@ -200,6 +204,15 @@ public class PotMenuUIController : MonoBehaviour
             choosePlantScrollRect = choosePlantOptionContainer.GetComponentInParent<ScrollRect>();
 
         if (menuRoot != null) menuRoot.SetActive(false);
+    }
+
+    /// <summary>The actual "exit the pot menu entirely" button — distinct from chooseSoilBackButton/
+    /// choosePlantBackButton/abilityBackButton, which just go back to the main panel within the menu.</summary>
+    private void OnMenuCloseButtonClicked()
+    {
+        // Tutorial hook — fires the moment the player actually exits the pot menu via this button.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("closed_pot_menu");
+        ownerInteraction?.CloseMenu();
     }
 
     void Update()
@@ -224,7 +237,7 @@ public class PotMenuUIController : MonoBehaviour
         if (abilityInventory == null && inventory != null)
             abilityInventory = inventory.GetComponent<PlayerAbilityInventory>();
         if (abilityPlacementSystem == null)
-            abilityPlacementSystem = FindObjectOfType<AbilityPlacementSystem>();
+            abilityPlacementSystem = FindAnyObjectByType<AbilityPlacementSystem>();
 
         if (menuRoot != null) menuRoot.SetActive(true);
 
@@ -330,6 +343,13 @@ public class PotMenuUIController : MonoBehaviour
             mainSoilIcon.enabled = soilSprite != null;
         }
 
+        if (activeConsumableIcon != null)
+        {
+            Sprite consumableSprite = AbilityConsumableEffects.GetActiveConsumableIcon(currentPot);
+            activeConsumableIcon.sprite = consumableSprite;
+            activeConsumableIcon.enabled = consumableSprite != null;
+        }
+
         if (soilActionButtonLabel != null)
             soilActionButtonLabel.text = hasSoil ? "Change Soil" : "Choose Soil";
 
@@ -362,9 +382,17 @@ public class PotMenuUIController : MonoBehaviour
             waterButton.interactable = hasSoil && hasPlant;
 
         // Same idea — no pot-targeted consumable in the player's inventory at all means this
-        // button has nothing to open, so hide it instead of leaving a dead button on-screen.
+        // button has nothing to open, so hide it instead of leaving a dead button on-screen. Also
+        // stays hidden until the player's first POT harvest specifically — a fully-grown plant
+        // removed for a Consumable/Placeable item (PlayerAbilityInventory.
+        // HasHarvestedFirstAbilityItem) — even if HasAnyPotTargetedAbilityStack() would otherwise say
+        // yes. Mirrors the hotbar gating on MainUIController/InventoryUIController, off the same flag
+        // — NOT playerInventory.HasHarvestedFirstPlant, which only tracks plain plant pickups.
         if (useAbilityButton != null)
-            useAbilityButton.gameObject.SetActive(HasAnyPotTargetedAbilityStack());
+        {
+            bool harvestedFirstAbilityItem = abilityInventory != null && abilityInventory.HasHarvestedFirstAbilityItem;
+            useAbilityButton.gameObject.SetActive(harvestedFirstAbilityItem && HasAnyPotTargetedAbilityStack());
+        }
 
         RefreshPuffballButton();
 
@@ -471,6 +499,11 @@ public class PotMenuUIController : MonoBehaviour
     {
         pendingSoil = kind;
         RefreshSoilSelectionHighlight();
+
+        // Tutorial hook — separate from "selected_soil_type" below (ConfirmSoilSelection), which
+        // fires on Confirm. This one fires on the initial icon click, for a step that specifically
+        // asks the player to click a soil option before a later step asks them to confirm it.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("clicked_soil_type_option");
     }
 
     private void RefreshSoilSelectionHighlight()
@@ -504,6 +537,10 @@ public class PotMenuUIController : MonoBehaviour
     private void ConfirmSoilSelection()
     {
         if (pendingSoil == null || currentPot == null) return;
+
+        // Tutorial hook — "Select a soil type" advances on CONFIRM, not the initial click, so it
+        // matches the moment the soil actually gets set on the pot below.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("selected_soil_type");
 
         currentPot.SetSoil(pendingSoil.Value);
         RefreshChoosePlantSoilIcon();
@@ -559,7 +596,8 @@ public class PotMenuUIController : MonoBehaviour
             {
                 if (item?.plantPrefab == null) continue;
 
-                bool fits = currentPot != null && (currentPot.IsStatic || item.size == currentPot.PotSize);
+                bool fits = currentPot != null && (currentPot.IsStatic || item.size == currentPot.PotSize)
+                            && !item.condition.isPermanentlyDead;
                 PlantSpeciesData species = GetSpeciesFor(item);
                 bool locked = !SpecialPlantUnlockGate.IsPlantable(species, journalDatabase, journalManager);
 
@@ -658,11 +696,26 @@ public class PotMenuUIController : MonoBehaviour
 
         if (choosePlantConfirmButton != null)
             choosePlantConfirmButton.interactable = pendingPlant != null;
+
+        // Tutorial hook — separate from "selected_pollen_puff" below (ConfirmPlantSelection), which
+        // fires on Confirm. This one fires on the initial icon click, for a step that specifically
+        // asks the player to click the Pollen Puff option before a later step asks them to confirm it.
+        if (item != null && !string.IsNullOrEmpty(item.displayName) &&
+            item.displayName.Equals("Pollen Puff", System.StringComparison.OrdinalIgnoreCase))
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("clicked_pollen_puff_option");
     }
 
     private void ConfirmPlantSelection()
     {
         if (pendingPlant == null) return;
+
+        // Tutorial hook — "Select the Pollen Puff to plant the plant" advances on CONFIRM, not the
+        // initial click, matched by display name since that's the same name the species asset
+        // already drives everywhere else (Journal, inventory slots, etc.).
+        if (!string.IsNullOrEmpty(pendingPlant.displayName) &&
+            pendingPlant.displayName.Equals("Pollen Puff", System.StringComparison.OrdinalIgnoreCase))
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("selected_pollen_puff");
+
         ChoosePlant(pendingPlant);
         pendingPlant = null;
     }
@@ -671,7 +724,7 @@ public class PotMenuUIController : MonoBehaviour
     {
         if (currentPot == null || item?.plantPrefab == null) return;
 
-        bool success = currentPot.AddPlant(item.plantPrefab);
+        bool success = currentPot.AddPlant(item.plantPrefab, item.condition);
         if (!success) return;
 
         if (currentPot.Plant != null)

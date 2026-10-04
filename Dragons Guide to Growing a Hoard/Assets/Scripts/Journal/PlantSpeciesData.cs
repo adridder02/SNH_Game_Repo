@@ -38,6 +38,13 @@ public class PlantSpeciesData : ScriptableObject
 
     public int tier = 1;
 
+    [Tooltip("Marks this species as its room's Crystal — the Progress page's dedicated crystal row " +
+             "(ProgressPageUIController), separate from tiers 1-3. Independent of tier above (a " +
+             "crystal's tier value is unused/ignored) and independent of requiresRoomUnlock below — " +
+             "that flag is a general 'needs something met before planting' gate other species " +
+             "(including ordinary tier 3 ones) can use too, it doesn't by itself mean 'crystal'.")]
+    public bool isCrystal = false;
+
     [Tooltip("Filled dots shown on the detail page, out of 4.")]
     [Range(0, 4)] public int difficulty = 1;
 
@@ -56,6 +63,13 @@ public class PlantSpeciesData : ScriptableObject
 
     [Tooltip("Larger illustration shown on the detail page. Falls back to journalIcon if left blank.")]
     public Sprite journalImage;
+
+    [Tooltip("Shown INSTEAD OF journalIcon in the Inventory (grid, Available, and the detail panel) " +
+             "once this specific plant has died permanently (PlantState.IsPermanentlyDead). Per-" +
+             "species since different plants should die differently. Falls back to " +
+             "InventoryUIController's deadPlantIcon if left blank — see InventorySlotUI/" +
+             "InventoryUIController for the resolution order.")]
+    public Sprite deadIcon;
 
     [Header("Progression Icons")]
     [Tooltip("Shown on the Progress page while this species is undiscovered.")]

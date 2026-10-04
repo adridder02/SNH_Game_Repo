@@ -91,6 +91,60 @@ public class MiasmaController : MonoBehaviour
     public float mildFogEmissionRate = 60f;
     public float intenseFogEmissionRate = 100f;
 
+    [Tooltip("How much a fog particle's size grows per unit of emission-sphere radius. This is the " +
+             "actual fix for density: the OLD approach kept particle size fixed and only expanded the " +
+             "emission volume, so a big miasma spread the same handful of tiny particles across a much " +
+             "bigger space and looked empty instead of foggy — the opposite of what you want in a large " +
+             "room. Scaling size with radius means fewer, bigger, heavily-overlapping soft particles, " +
+             "which reads as thick fog and stays cheap since particle COUNT doesn't need to grow.")]
+    public float fogSizeGrowthFactor = 0.35f;
+
+    [Tooltip("Upper bound on scaled particle size (see fogSizeGrowthFactor), so particles don't turn " +
+             "into single giant visible blobs/sprites at very large miasma sizes.")]
+    public float fogMaxParticleSize = 20f;
+
+    [Tooltip("Hard cap on simultaneous fog particles (ParticleSystem.MainModule.maxParticles). " +
+             "Density now comes mainly from particle SIZE (fogSizeGrowthFactor), not particle count, " +
+             "so this can stay low without the cloud looking sparse as it spreads.")]
+    public int fogMaxParticles = 300;
+
+
+    [Header("Performance")]
+    [Tooltip("How often (seconds) to run the Physics.OverlapSphere plant-contact check. This used to " +
+             "run every single Update() frame with radius = currentSize, which can reach maxSize (250) " +
+             "— an uncapped 250-unit overlap query 60x/sec is expensive and is very likely the real " +
+             "source of the reported lag, separate from the fog particles. Contact/debuff timing still " +
+             "advances every frame via Time.deltaTime in UpdateIntensity()/ApplyDebuffsToPlants(); only " +
+             "the discovery of which plants are currently inside the miasma is throttled.")]
+    public float plantCheckInterval = 0.25f;
+    private float plantCheckTimer = 0f;
+
+
+    [Header("Sphere Visibility")]
+    [Tooltip("The tint sphere uses Render Face = Back so the inside surface tints the screen while " +
+             "you're inside it. The tradeoff: a convex sphere's back face is still whatever's on the " +
+             "FAR side of it from the camera, so a camera standing outside sees straight through the " +
+             "near (culled) side to the far back face and gets a big flat tinted panel hanging in space " +
+             "— that's the pink wall in your screenshot. Fix: only enable the renderer while the camera " +
+             "is actually inside the sphere.")]
+    [SerializeField] private bool hideSphereWhenCameraOutside = true;
+
+
+    [Header("Fog Emission (glow)")]
+    [Tooltip("Multiplies fogColor (per intensity) to produce the HDR emission color sent to the fog " +
+             "material each frame — push above 1 to actually glow once Bloom is set up. REQUIRES: the " +
+             "fog material's own 'Emission' checkbox must be enabled in the Inspector first (and the " +
+             "shader must support it — the legacy Mobile/Particles shaders don't, use a URP Particles " +
+             "shader instead, e.g. Universal Render Pipeline/Particles/Unlit with Surface Type = " +
+             "Transparent). This script only overrides the emission COLOR at runtime via a " +
+             "MaterialPropertyBlock — it can't turn the feature on for you.")]
+    public float fogEmissionIntensity = 3f;
+
+    [Tooltip("If off, emission color is left alone (whatever's baked into the material). Turn on once " +
+             "the fog material has Emission enabled and you want it to shift with intensity the same " +
+             "way fogColor does.")]
+    public bool driveFogEmissionFromScript = true;
+
 
     [Header("Debug")]
     [SerializeField] private bool showDebugLogs = true;
@@ -103,6 +157,9 @@ public class MiasmaController : MonoBehaviour
 
     private Renderer sphereRenderer;
     private float currentSize = 1f;
+    private Camera mainCamera;
+    private ParticleSystemRenderer fogRenderer;
+    private MaterialPropertyBlock fogPropBlock;
 
 
     // Cached fog particle modules
@@ -160,6 +217,10 @@ public class MiasmaController : MonoBehaviour
 
             sphereRenderer.receiveShadows = false;
         }
+
+
+        // Cache the camera once so we're not doing a Camera.main lookup every frame.
+        mainCamera = Camera.main;
 
 
         SetupFogParticles();
@@ -235,6 +296,27 @@ public class MiasmaController : MonoBehaviour
         // Individual particles remain a consistent size.
         fogMain.startSize = fogParticleSize;
 
+        // Give the system a fixed particle budget rather than whatever the Inspector
+        // default happens to be, so emission rate tuning can't silently blow past it.
+        fogMain.maxParticles = fogMaxParticles;
+
+
+        // Shadows from a dense particle cloud are a common invisible lag source — a few
+        // hundred overlapping semi-transparent quads each casting/receiving shadows adds a
+        // lot of overdraw for very little visual payoff on something that's meant to read
+        // as soft mist. Same treatment sphereRenderer already gets above.
+        //
+        // Cached as a field (not a local) so UpdateFogVisuals() can reuse it every frame to
+        // drive the emission color, instead of calling GetComponent again each frame.
+        fogRenderer = fogParticles.GetComponent<ParticleSystemRenderer>();
+        fogPropBlock = new MaterialPropertyBlock();
+
+        if (fogRenderer != null)
+        {
+            fogRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            fogRenderer.receiveShadows = false;
+        }
+
 
         if (!fogParticles.isPlaying)
             fogParticles.Play();
@@ -245,14 +327,24 @@ public class MiasmaController : MonoBehaviour
     {
         HandleGrowth();
 
-        // Check for plants in miasma.
-        CheckForPlants();
+        // Check for plants in miasma. Throttled — see plantCheckInterval tooltip; an
+        // uncapped OverlapSphere at radius=currentSize every frame is expensive once the
+        // miasma has grown large.
+        plantCheckTimer += Time.deltaTime;
+        if (plantCheckTimer >= plantCheckInterval)
+        {
+            plantCheckTimer = 0f;
+            CheckForPlants();
+        }
 
         // Update intensity based on contact.
         UpdateIntensity();
 
         // Apply debuffs to plants.
         ApplyDebuffsToPlants();
+
+        // Hide the tint sphere when the camera isn't inside it (see hideSphereWhenCameraOutside tooltip).
+        UpdateSphereVisibility();
 
         // Update visual appearance.
         UpdateVisuals();
@@ -576,6 +668,38 @@ public class MiasmaController : MonoBehaviour
     }
 
 
+    void UpdateSphereVisibility()
+    {
+        if (!hideSphereWhenCameraOutside || sphereRenderer == null)
+            return;
+
+        // Camera can change (cutscenes, splitscreen, etc.) — re-grab if the cached one died.
+        if (mainCamera == null)
+            mainCamera = Camera.main;
+
+        if (mainCamera == null)
+            return;
+
+        float camDistance = Vector3.Distance(mainCamera.transform.position, transform.position);
+
+        // BUGFIX: this used to compare camDistance against currentSize directly, on the
+        // assumption that currentSize IS the sphere's world-space radius. That's only true if
+        // the mesh's local bounds have a radius of exactly 1. Unity's built-in sphere primitive
+        // is radius 0.5, so the REAL visible surface sits at roughly half of currentSize — the
+        // gap between "assumed radius" and "actual radius" is small at low currentSize but
+        // grows into a wide band as the miasma gets large, and inside that band the camera is
+        // genuinely outside the rendered mesh while this check still thought it was "inside"
+        // and left the renderer on — reproducing the exact pink-wall bug, but only once the
+        // fog/sphere had grown big enough for the gap to matter. Compute the real world radius
+        // from the renderer's own local bounds instead of assuming.
+        float actualWorldRadius = sphereRenderer.localBounds.extents.x * transform.lossyScale.x;
+
+        // Small safety margin so the renderer switches off slightly before the camera actually
+        // crosses the surface, avoiding a possible one-frame flash right at the boundary.
+        sphereRenderer.enabled = camDistance <= actualWorldRadius * 0.97f;
+    }
+
+
     void UpdateVisuals()
     {
         if (sphereRenderer != null)
@@ -620,23 +744,25 @@ public class MiasmaController : MonoBehaviour
         // =========================================================
         //
         // The particle system's sphere gets larger as the miasma
-        // grows. This creates the expanding gas-cloud effect.
+        // grows, so the fog keeps spreading to cover a growing room.
         //
-        fogShape.radius =
-            currentSize *
-            fogRadiusMultiplier;
+        fogShape.radius = currentSize * fogRadiusMultiplier;
 
 
         // =========================================================
         // PARTICLE SIZE
         // =========================================================
         //
-        // Individual particles stay approximately the same size.
-        // The GAS CLOUD grows by expanding the emission volume,
-        // not by turning individual particles into huge blobs.
+        // REVISED: particles now grow WITH the radius (they used to stay a
+        // fixed size while only the emission volume expanded, which spread
+        // the same handful of particles across an ever-bigger space and
+        // made large miasmas look empty instead of foggy). Fewer, bigger,
+        // overlapping soft particles keep the cloud reading as dense no
+        // matter how large a room it needs to fill, without needing more
+        // particles (so it stays cheap).
         //
-        fogMain.startSize =
-            fogParticleSize;
+        float scaledSize = fogParticleSize + fogShape.radius * fogSizeGrowthFactor;
+        fogMain.startSize = Mathf.Min(scaledSize, fogMaxParticleSize);
 
 
         // =========================================================
@@ -698,6 +824,31 @@ public class MiasmaController : MonoBehaviour
 
         fogEmission.rateOverTime =
             rate;
+
+
+        // =========================================================
+        // EMISSION (glow)
+        // =========================================================
+        //
+        // Uses a MaterialPropertyBlock rather than touching fogRenderer.material directly —
+        // that would silently create a per-instance material copy and break GPU
+        // instancing/batching for the particle system. Requires the fog material's own
+        // "Emission" checkbox to already be enabled in the Inspector (and a shader that
+        // supports it, e.g. Universal Render Pipeline/Particles/Unlit) — this only overrides
+        // the color value each frame, it can't turn the shader feature on.
+        if (driveFogEmissionFromScript && fogRenderer != null && fogPropBlock != null)
+        {
+            Color emissiveColor = new Color(
+                fogColor.r * fogEmissionIntensity,
+                fogColor.g * fogEmissionIntensity,
+                fogColor.b * fogEmissionIntensity,
+                1f // alpha doesn't matter for emission — it isn't blended, it's added light.
+            );
+
+            fogRenderer.GetPropertyBlock(fogPropBlock);
+            fogPropBlock.SetColor("_EmissionColor", emissiveColor);
+            fogRenderer.SetPropertyBlock(fogPropBlock);
+        }
     }
 
 

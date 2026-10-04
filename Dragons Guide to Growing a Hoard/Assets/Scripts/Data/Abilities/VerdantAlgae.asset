@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityItemData
   displayName: Verdant Algae
   description: Clears soil of miasma
-  icon: {fileID: 21300000, guid: 3e05db36bfd743342abdee2b215ee7e3, type: 3}
+  icon: {fileID: 21300000, guid: 169fa68028b24354b8ddd94b685c19cf, type: 3}
   kind: 1
   effectId: 3
+  requiresTreeTarget: 0
   harvestGrantAmount: 1
   maxStack: 0
+  useCooldown: 0.35
   footprint: {x: 1, y: 1}
   placedPrefab: {fileID: 0}
   amountA: 120

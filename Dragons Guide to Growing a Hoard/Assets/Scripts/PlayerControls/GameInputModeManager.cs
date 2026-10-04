@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameInputModeManager : MonoBehaviour
 {
@@ -26,7 +27,10 @@ public class GameInputModeManager : MonoBehaviour
     private void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
         else
         {
             Destroy(gameObject);
@@ -44,11 +48,40 @@ public class GameInputModeManager : MonoBehaviour
 
         if (gameplayMap == null) Debug.LogError("Missing Action Map: GamePlay");
         if (cameraMap == null) Debug.LogError("Missing Action Map: Camera");
+
+        // This object is DontDestroyOnLoad, so Start() below only ever fires once, the very
+        // first time it's created — a later scene reload (Restart from the exit menu, a scene
+        // change generally) doesn't re-run it, but Cursor.lockState/Cursor.visible are global
+        // engine state that ISN'T reset by a scene load either. Net result without this: the
+        // cursor stays stuck at whatever the exit menu last set it to (visible/unlocked) after
+        // Restart, until the player happens to open+close a menu again, which is the only other
+        // place that calls SetGameplayMode(). Re-syncing on every scene load fixes that generally,
+        // not just for the exit menu's Restart button specifically.
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void Start()
     {
         SetGameplayMode();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)
+    {
+        // playerController was pointing at the PREVIOUS scene's player, which got destroyed on
+        // load — re-find it in whatever just loaded rather than keep a dangling reference.
+        playerController = FindAnyObjectByType<PlayerController>();
+
+        // Only auto-lock the cursor into gameplay mode if there's actually a player to control in
+        // this scene. Guards against this firing on a menu-only scene (title screen, etc.) that
+        // might load later and has no PlayerController — locking/hiding the cursor there would
+        // break clicking its own UI buttons.
+        if (playerController != null)
+            SetGameplayMode();
     }
 
     private void Update()
@@ -125,6 +158,7 @@ public class GameInputModeManager : MonoBehaviour
         Cursor.visible = false;
 
         ThirdPersonCameraController.CameraLocked = false;
+        ThirdPersonCameraController.AllowRotationWhileLockedIfRightClickHeld = false;
 
         var camController = FindAnyObjectByType<ThirdPersonCameraController>();
         if (camController != null)
@@ -158,6 +192,7 @@ public class GameInputModeManager : MonoBehaviour
 
         // Explicitly lock camera
         ThirdPersonCameraController.CameraLocked = true;
+        ThirdPersonCameraController.AllowRotationWhileLockedIfRightClickHeld = false;
 
         // Disable camera input component as backup
         var camController = FindAnyObjectByType<ThirdPersonCameraController>();
@@ -188,6 +223,14 @@ public class GameInputModeManager : MonoBehaviour
 
         ThirdPersonCameraController.CameraLocked = true;
 
+        // The one difference from SetMenuUIMode's identical-looking lock above: holding right-click
+        // still lets the player reposition the camera without leaving Placement mode (see the field's
+        // own comment on ThirdPersonCameraController) — a deliberate action instead of the camera
+        // swiveling on every small mouse movement while they're just trying to hold a hover cell
+        // steady. Right-click no longer cancels the mode either (PlacementSystem/WallPlacementSystem
+        // dropped that) — Escape is the only way out now.
+        ThirdPersonCameraController.AllowRotationWhileLockedIfRightClickHeld = true;
+
         var camController = FindAnyObjectByType<ThirdPersonCameraController>();
         if (camController != null)
         {
@@ -196,7 +239,10 @@ public class GameInputModeManager : MonoBehaviour
                 inputAxis.enabled = false;
         }
 
-        // Same as menu UI mode — hide the bottom-bar tip while placement mode's own UI is up.
-        TutorialSequenceController.Instance?.SetMenuOpen(true);
+        // Deliberately NOT hiding the bottom-bar tutorial tip here (unlike SetMenuUIMode above) —
+        // placement mode is exactly when steps like "press F", "scroll to find the smallest pot",
+        // "left-click to place" need to stay visible so the player can actually follow them while
+        // they're in the mode the step is guiding them through. Real menus (Inventory/Journal/Pot
+        // Menu/Exit Menu, via SetMenuUIMode) still hide it, since those genuinely cover the screen.
     }
 }

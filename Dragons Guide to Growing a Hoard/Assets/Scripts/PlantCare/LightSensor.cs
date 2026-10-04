@@ -74,10 +74,10 @@ public class LightSensor : MonoBehaviour
         if (directionalLight != null) return; // Already set — skip search.
 
         // Scan all lights in the scene for the first Directional type.
-        // FindObjectsByType replaces the deprecated FindObjectsOfType.
-        // FindObjectsSortMode.None skips sorting for better performance
-        // since we only need any directional light, not a specific one.
-        Light[] allLights = FindObjectsByType<Light>(FindObjectsSortMode.None);
+        // FindObjectsByType() with no parameters replaces both the deprecated FindObjectsOfType
+        // and the deprecated FindObjectsByType(FindObjectsSortMode) overload — unsorted (fastest)
+        // is the default now, same as FindObjectsSortMode.None used to be.
+        Light[] allLights = FindObjectsByType<Light>();
         foreach (Light l in allLights)
         {
             if (l.type == LightType.Rectangle)

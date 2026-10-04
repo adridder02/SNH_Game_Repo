@@ -16,8 +16,54 @@ public class ThirdPersonCameraController : MonoBehaviour
     [SerializeField] private float mouseSensitivityY = 4.5f;
 
     [Header("Vertical Look Limits")]
-    [SerializeField] private static float minPitchAngle = -30f;
-    [SerializeField] private static float maxPitchAngle = 70f;
+    [Tooltip("Pitch range (degrees) while grounded.")]
+    [SerializeField] private float groundedMinPitch = -40f;
+    [SerializeField] private float groundedMaxPitch = 40f;
+    [Tooltip("Pitch range (degrees) while flying - wider by default so you can look further up/down in the air.")]
+    [SerializeField] private float flyingMinPitch = -70f;
+    [SerializeField] private float flyingMaxPitch = 70f;
+
+    // Current effective range - starts at the grounded values, switched by setCameraZoomLimitOnFly()
+    // below. No longer static (see chat history: a [SerializeField] static field doesn't serialize
+    // per-instance the way it looks like it should, and could leak a runtime value back into Edit
+    // mode across Play sessions with Domain Reload disabled).
+    private float minPitchAngle;
+    private float maxPitchAngle;
+
+    [Header("Framing")]
+    [Tooltip("Vertical offset (world units) added to where the camera orbits/aims, relative to the dragon's own pivot. Raising this aims the camera above the dragon's actual body, which pushes the dragon lower in the frame instead of dead-center.")]
+    [SerializeField] private float groundedTargetOffsetY = 0.5f;
+    [Tooltip("Same idea as above, used while flying - typically higher than the grounded value so the camera sits a bit further up relative to the dragon in the air.")]
+    [SerializeField] private float flyingTargetOffsetY = 1.5f;
+    [Tooltip("How quickly the framing offset eases between the grounded and flying values on takeoff/landing (seconds - lower = snappier).")]
+    [SerializeField] private float targetOffsetLerpSpeed = 4f;
+
+    // Tracks flying vs grounded purely to pick which TargetOffset value to ease toward above -
+    // set from setCameraZoomLimitOnFly() below, the same signal PlayerController already sends
+    // on every takeoff/landing.
+    private bool isFlying = false;
+
+    [Header("Flight Recentering")]
+    [Tooltip("While flying, once movement/look input has stopped for a bit, smoothly eases the camera's pitch back to match the dragon's own current pitch - so it settles level with wherever the dragon is actually pointing, including straight up or down, instead of staying wherever you last looked.")]
+    [SerializeField] private bool recenterVerticalWhileFlying = true;
+    [Tooltip("Same idea as vertical recentering above, but for YAW (horizontal heading) - eases the camera back to face the same direction the dragon is actually flying, once input has stopped. Same trigger timing (recenterDelay) as vertical; uses its own smoothing state so the two axes don't interfere with each other.")]
+    [SerializeField] private bool recenterHorizontalWhileFlying = true;
+    [Tooltip("Seconds of no flight input (mouse look OR movement/ascend/descend keys) before recentering kicks in.")]
+    [SerializeField] private float recenterDelay = 0.8f;
+    [Tooltip("How quickly the camera eases back to centered once recentering starts (seconds - lower = snappier). Shared by both vertical and horizontal recentering.")]
+    [SerializeField] private float recenterSmoothTime = 0.5f;
+    [Tooltip("Flip if recentering pushes the vertical angle the wrong way for your rig - Cinemachine's sign convention for VerticalAxis.Value can go either way depending on setup.")]
+    [SerializeField] private bool invertVerticalRecenterSign = false;
+    [Tooltip("Same as Invert Vertical Recenter Sign above, but for HorizontalAxis.Value - separate flag since the two axes can have independent sign conventions depending on rig setup.")]
+    [SerializeField] private bool invertHorizontalRecenterSign = false;
+    [Tooltip("Added to the computed target pitch before clamping - use this to bias where recentering settles when the dragon is level, e.g. a slightly downward default framing rather than dead-level. Positive/negative direction depends on your rig's sign convention (see Invert above).")]
+    [SerializeField] private float verticalRecenterCenterOffset = 0f;
+    [Tooltip("Which object's rotation to recenter toward - should be whatever GameObject PlayerController actually rotates during flight (confirmed via chat: same object as cam.Follow works). Leave empty to fall back to cam.Follow directly.")]
+    [SerializeField] private Transform recenterReferenceTransform;
+
+    private float timeSinceFlightInput = 0f;
+    private float verticalRecenterVelocity = 0f;
+    private float horizontalRecenterVelocity = 0f;
 
     [Header("Object Transparency (for all other layers)")]
     [SerializeField] private LayerMask transparentMask = ~0;
@@ -35,6 +81,10 @@ public class ThirdPersonCameraController : MonoBehaviour
     [Header("Dragon Hide-on-Collision")]
     [Tooltip("Renderers to hide while the camera is blocked by a solid object (floor, wall, etc.), e.g. body, wings, horns.")]
     [SerializeField] private Renderer[] dragonRenderers;
+    [Tooltip("Also hide the dragon whenever the camera gets closer than this to the dragon itself (regardless of whether it's colliding with anything) - avoids the model filling/clipping through the view in tight spaces.")]
+    [SerializeField] private float dragonHideDistance = 1.2f;
+    [Tooltip("Extra distance the camera must move back out past dragonHideDistance before the dragon reappears. Prevents rapid show/hide flicker while hovering right at the threshold.")]
+    [SerializeField] private float dragonShowDistanceBuffer = 0.3f;
 
     [Header("Performance")]
     [SerializeField] private bool enableDebugLogs = false;
@@ -65,7 +115,35 @@ public class ThirdPersonCameraController : MonoBehaviour
     private CinemachineInputAxisController inputAxis;
     private Vector2 scrollDelta;
 
+    // The actual rendered/output camera (Camera.main by default). Decollider (and anything
+    // else that corrects the final blended camera pose) writes its correction to THIS
+    // transform, not to `cam`'s (the virtual CinemachineCamera's) transform - so anything
+    // that needs the true on-screen camera position (like the dragon-hide distance check)
+    // has to read from here, not from `transform`/`cam.transform`.
+    [Header("Output Camera")]
+    [Tooltip("The actual rendering Camera (usually Camera.main). Used for distance checks that need the real on-screen camera position, since Decollider's wall-pushback correction is applied here but not to this virtual camera's own transform. Leave empty to auto-find Camera.main at Start.")]
+    [SerializeField] private Camera outputCamera;
+
     public static bool CameraLocked = false;
+
+    /// <summary>When true AND CameraLocked is also true, holding the right mouse button
+    /// temporarily re-enables rotation anyway — released, it drops back to fully locked. Set by
+    /// GameInputModeManager.SetPlacementMode() (and cleared by its other Set*Mode methods) so
+    /// Placement mode gets "camera stays put by default, hold right-click to reposition it"
+    /// instead of either fully free (swivels while just trying to aim at a cell) or fully frozen
+    /// (no way to look around without backing out of the mode entirely).</summary>
+    public static bool AllowRotationWhileLockedIfRightClickHeld = false;
+
+    /// <summary>When true, scroll wheel input should NOT zoom the camera — something else (e.g.
+    /// PotInteraction's Interact/Water Plant prompt selection) is consuming it instead this frame.
+    /// Deliberately separate from CameraLocked, which also locks mouse-look rotation — this only
+    /// suppresses zoom, looking around still works normally.</summary>
+    public static bool ScrollSuppressed = false;
+
+    // See Start() / setCameraZoomLimitOnFly() below - lets that static method reach this
+    // instance's (now non-static) pitch-range fields without PlayerController needing to hold
+    // or pass a direct reference.
+    private static ThirdPersonCameraController Instance;
 
     // URP Shader property IDs
     private static readonly int BaseColorProperty = Shader.PropertyToID("_BaseColor");
@@ -78,6 +156,11 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     void Start()
     {
+        // So the static setCameraZoomLimitOnFly() below (called from PlayerController without
+        // holding a direct reference) can still reach this instance's pitch-range fields now that
+        // they're no longer static themselves.
+        Instance = this;
+
         controls = new PlayerControls();
         controls.Enable();
         controls.Camera.MouseZoom.performed += HandleMouseScroll;
@@ -85,6 +168,16 @@ public class ThirdPersonCameraController : MonoBehaviour
         cam = GetComponent<CinemachineCamera>();
         orbital = cam.GetComponent<CinemachineOrbitalFollow>();
         inputAxis = cam.GetComponent<CinemachineInputAxisController>();
+
+        if (outputCamera == null)
+            outputCamera = Camera.main;
+        if (outputCamera == null && enableDebugLogs)
+            Debug.LogWarning("[ThirdPersonCameraController] outputCamera not assigned and Camera.main is null - dragon-hide distance will fall back to this virtual camera's transform, which won't reflect Decollider's wall-pushback correction.");
+
+        // Start grounded - setCameraZoomLimitOnFly(true) switches these to the flying range
+        // whenever PlayerController enters fly mode.
+        minPitchAngle = groundedMinPitch;
+        maxPitchAngle = groundedMaxPitch;
 
         targetZoom = currentZoom = collisionZoom = orbital.Radius;
         ConfigureAxes();
@@ -188,6 +281,26 @@ public class ThirdPersonCameraController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Safety net: restores whatever this component was visually changing (hidden dragon,
+    /// faded renderers) the moment it stops running for ANY reason - toggled off in the
+    /// Inspector, disabled by other code, scene unload, etc. Previously only OnDestroy did
+    /// this cleanup, which doesn't fire on a simple disable - so a renderer hidden right
+    /// before the component got disabled would stay hidden forever with nothing left to
+    /// undo it. Doesn't touch `controls` (Input System) here since those are only ever
+    /// Enable()'d once in Start(), not re-initialized in a matching OnEnable.
+    /// </summary>
+    private void OnDisable()
+    {
+        RestoreAllTransparentRenderers();
+
+        if (dragonHidden)
+        {
+            SetDragonRenderersEnabled(true);
+            dragonHidden = false;
+        }
+    }
+
     private void OnDestroy()
     {
         RestoreAllTransparentRenderers();
@@ -212,7 +325,10 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     void Update()
     {
-        if (CameraLocked)
+        bool rightClickOverride = CameraLocked && AllowRotationWhileLockedIfRightClickHeld &&
+                                   Mouse.current != null && Mouse.current.rightButton.isPressed;
+
+        if (CameraLocked && !rightClickOverride)
         {
             scrollDelta = Vector2.zero;
             if (inputAxis != null) inputAxis.enabled = false;
@@ -239,10 +355,13 @@ public class ThirdPersonCameraController : MonoBehaviour
         // the player actually had the camera, causing snapping/jumping.
         if (scrollDelta.y != 0f)
         {
-            targetZoom = Mathf.Clamp(
-                currentZoom - scrollDelta.y * zoomSpeed,
-                minDistance, maxDistance);
-            scrollDelta = Vector2.zero;
+            if (!ScrollSuppressed)
+            {
+                targetZoom = Mathf.Clamp(
+                    currentZoom - scrollDelta.y * zoomSpeed,
+                    minDistance, maxDistance);
+            }
+            scrollDelta = Vector2.zero; // clear regardless, so a suppressed scroll doesn't leak through and zoom once suppression lifts
         }
 
         currentZoom = Mathf.Lerp(currentZoom, targetZoom, dt * zoomLerpSpeed);
@@ -264,7 +383,15 @@ public class ThirdPersonCameraController : MonoBehaviour
     private void HandleCameraPullAndTransparency(float dt)
     {
         Transform follow = cam.Follow;
-        if (follow == null) return;
+        if (follow == null)
+        {
+            // If this ever fires, cam.Follow is unset/lost, which means camera-pull,
+            // dragon-visibility and transparency ALL silently stop running - including
+            // whatever last set a renderer disabled, with nothing left to undo it.
+            if (enableDebugLogs)
+                Debug.LogWarning("[ThirdPersonCameraController] cam.Follow is null - camera pull/dragon-visibility/transparency are all skipped this frame.");
+            return;
+        }
 
         // Handle camera pull based on trigger collisions
         float desiredRadius = ResolveCollisionWithTrigger(currentZoom);
@@ -276,8 +403,24 @@ public class ThirdPersonCameraController : MonoBehaviour
         collisionZoom = Mathf.Lerp(collisionZoom, desiredRadius, dt * lerpSpeed);
 
         // Hide the dragon while the camera is pinned against something solid
-        // (floor, wall, etc.) so it doesn't clip through the dragon's model.
-        UpdateDragonVisibility();
+        // (floor, wall, etc.), or while it's simply too close to the dragon itself,
+        // so it doesn't clip through / fill the view in tight spaces.
+        UpdateDragonVisibility(follow);
+
+        // Ease the camera's pitch back to match the dragon's own current pitch while flying,
+        // once the player stops actively steering it.
+        HandleFlightRecentering(follow, dt);
+
+        // Keep the dragon framed in the lower-center of the screen rather than dead-center,
+        // with a taller offset while flying so the camera sits a bit higher relative to it in
+        // the air. Runs continuously (not gated on isFlying alone) so it eases smoothly across
+        // the takeoff/landing transition instead of snapping.
+        {
+            float desiredOffsetY = isFlying ? flyingTargetOffsetY : groundedTargetOffsetY;
+            Vector3 targetOffset = orbital.TargetOffset;
+            targetOffset.y = Mathf.Lerp(targetOffset.y, desiredOffsetY, dt * targetOffsetLerpSpeed);
+            orbital.TargetOffset = targetOffset;
+        }
 
         // Handle transparency for all other layers using Raycast
         HandleTransparencyForOtherLayers(dt);
@@ -371,32 +514,125 @@ public class ThirdPersonCameraController : MonoBehaviour
     }
 
     /// <summary>
-    /// Hides the dragon while the camera is actively being blocked by something solid
-    /// (floor, wall, or any other object on the collision-pull layer) - i.e. the exact
-    /// moment the camera would otherwise clip into the dragon because it's pinned
-    /// against a surface. Shows it again as soon as that collision ends. Driven off
-    /// isCollidingWithPullObject rather than raw distance, so it only fires for real
-    /// solid-object blocking, not just "camera happens to be near the dragon".
+    /// While flying, once the player has stopped all flight input (mouse look AND movement/
+    /// ascend/descend keys - see chat history for why movement alone had to gate this too, not
+    /// just mouse stillness) for recenterDelay seconds, smoothly eases the camera's pitch back to
+    /// match the dragon's own current pitch. Measures the actual live camera angle vs. the
+    /// dragon's actual angle and nudges the orbital axis by the DIFFERENCE, rather than assigning
+    /// an absolute number - this sidesteps needing to know Cinemachine's exact convention for what
+    /// VerticalAxis.Value's zero-point means, which turned out not to be a safe assumption for
+    /// this rig. Reads from outputCamera (the real rendered camera) rather than this virtual
+    /// camera's own transform, for the same Decollider-correction reason as the dragon-hide
+    /// distance check uses it.
     /// </summary>
-    private void UpdateDragonVisibility()
+    private void HandleFlightRecentering(Transform follow, float dt)
+    {
+        if (orbital == null || follow == null) return;
+
+        Transform recenterSource = recenterReferenceTransform != null ? recenterReferenceTransform : follow;
+
+        bool lookInputActive = Mouse.current != null && Mouse.current.delta.ReadValue().sqrMagnitude > 0.01f;
+        bool movementInputActive = Keyboard.current != null && (
+            Keyboard.current.wKey.isPressed || Keyboard.current.aKey.isPressed ||
+            Keyboard.current.sKey.isPressed || Keyboard.current.dKey.isPressed ||
+            Keyboard.current.spaceKey.isPressed ||
+            Keyboard.current.leftCtrlKey.isPressed || Keyboard.current.rightCtrlKey.isPressed);
+
+        timeSinceFlightInput = (lookInputActive || movementInputActive) ? 0f : timeSinceFlightInput + dt;
+
+        if (!isFlying || timeSinceFlightInput < recenterDelay)
+            return;
+
+        // Direct absolute assignment, not the error-correction/differential version this had
+        // briefly - that approach re-adds orbital.VerticalAxis.Value + pitchError every single
+        // frame, and if the "current" reading lags by even one frame relative to what was just
+        // set (very possible - Cinemachine's own pipeline runs after this script's Update), the
+        // correction can overshoot and compound frame over frame instead of converging, which is
+        // exactly what pinning at the Range's max looked like. This was never actually confirmed
+        // broken in its simpler form - only horizontal (Center-based) was - so there was no real
+        // reason for vertical to carry this extra complexity/risk in the first place. Horizontal
+        // recentering below uses the same direct-assignment approach for the same reason.
+
+        if (recenterVerticalWhileFlying)
+        {
+            float targetPitch = Mathf.Asin(Mathf.Clamp(recenterSource.forward.y, -1f, 1f)) * Mathf.Rad2Deg;
+            if (invertVerticalRecenterSign) targetPitch = -targetPitch;
+            targetPitch += verticalRecenterCenterOffset;
+            targetPitch = Mathf.Clamp(targetPitch, minPitchAngle, maxPitchAngle);
+
+            orbital.VerticalAxis.Value = Mathf.SmoothDampAngle(
+                orbital.VerticalAxis.Value, targetPitch, ref verticalRecenterVelocity, recenterSmoothTime);
+        }
+
+        if (recenterHorizontalWhileFlying)
+        {
+            // Yaw (heading) from the same reference transform's forward vector, flattened onto
+            // the horizontal plane - atan2(x, z) matches Unity's convention where +Z is 0 degrees.
+            float targetYaw = Mathf.Atan2(recenterSource.forward.x, recenterSource.forward.z) * Mathf.Rad2Deg;
+            if (invertHorizontalRecenterSign) targetYaw = -targetYaw;
+
+            // HorizontalAxis is Wrap=true over its full -180..180 range (see chat history for why
+            // that range specifically matters), and SmoothDampAngle is already wrap-aware - it
+            // takes the shortest path around the circle rather than the long way through 180/-180,
+            // so no extra wrapping logic is needed here.
+            orbital.HorizontalAxis.Value = Mathf.SmoothDampAngle(
+                orbital.HorizontalAxis.Value, targetYaw, ref horizontalRecenterVelocity, recenterSmoothTime);
+        }
+    }
+
+    /// <summary>
+    /// Hides the dragon whenever the camera gets closer than dragonHideDistance to the
+    /// player - e.g. zoomed in tight in a small space. Shows it again once the camera has
+    /// backed out past dragonHideDistance + dragonShowDistanceBuffer, which is added as
+    /// hysteresis so it doesn't flicker while hovering right at the threshold.
+    /// NOTE: this is distance-only for now - the wall/floor-pinned hiding this used to
+    /// also do (via isCollidingWithPullObject) is parked, not removed; see the commented
+    /// block below if you want to bring it back later.
+    /// </summary>
+    private void UpdateDragonVisibility(Transform follow)
     {
         if (dragonRenderers == null || dragonRenderers.Length == 0) return;
 
-        if (!dragonHidden && isCollidingWithPullObject)
+        // Use the actual rendered camera's position, not this virtual camera's own transform -
+        // Decollider's wall-pushback correction moves the real on-screen camera without writing
+        // that correction back to this CinemachineCamera's transform, so measuring from `this`
+        // made the distance check blind to anything closeness caused by wall pushback.
+        Transform distanceSource = outputCamera != null ? outputCamera.transform : transform;
+
+        float distanceToPlayer = follow != null
+            ? Vector3.Distance(distanceSource.position, follow.position)
+            : float.MaxValue;
+
+        bool shouldHide = distanceToPlayer < dragonHideDistance;
+        bool shouldShowAgain = distanceToPlayer > dragonHideDistance + dragonShowDistanceBuffer;
+
+        // Continuous visibility into the live number, independent of whether a hide/show
+        // transition actually fires - without this, a "why doesn't it ever hide" report
+        // gives zero data to look at, since the transition logs below only print on change.
+        if (enableDebugLogs && Time.frameCount % 30 == 0)
+            Debug.Log($"[DragonVisibility] distanceToPlayer={distanceToPlayer:F2} hideDistance={dragonHideDistance:F2} dragonHidden={dragonHidden}");
+
+        // Parked for now - OR this into shouldHide (and gate shouldShowAgain on
+        // !isCollidingWithPullObject, same as before) to bring back hide-while-pinned:
+        // bool shouldHide = isCollidingWithPullObject || distanceToPlayer < dragonHideDistance;
+        // bool shouldShowAgain = !isCollidingWithPullObject &&
+        //     distanceToPlayer > dragonHideDistance + dragonShowDistanceBuffer;
+
+        if (!dragonHidden && shouldHide)
         {
             SetDragonRenderersEnabled(false);
             dragonHidden = true;
 
             if (enableDebugLogs)
-                Debug.Log($"Camera pinned against {currentCollidingObject?.name} - hiding dragon");
+                Debug.Log($"Camera too close to dragon ({distanceToPlayer:F2}m) - hiding dragon");
         }
-        else if (dragonHidden && !isCollidingWithPullObject)
+        else if (dragonHidden && shouldShowAgain)
         {
             SetDragonRenderersEnabled(true);
             dragonHidden = false;
 
             if (enableDebugLogs)
-                Debug.Log("Camera cleared the obstruction - showing dragon");
+                Debug.Log("Camera backed away from dragon - showing dragon");
         }
     }
 
@@ -677,7 +913,13 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     public static void setCameraZoomLimitOnFly(bool zoom)
     {
-        minPitchAngle = zoom ? -70f : -40f;
-        maxPitchAngle = zoom ? 70f : 40f;
+        // Instance can be null for one frame if this somehow fires before Start() has run -
+        // extremely unlikely given the camera initializes well before the player can take off,
+        // but a null-check here costs nothing and avoids a hard NullReferenceException either way.
+        if (Instance == null) return;
+
+        Instance.isFlying = zoom;
+        Instance.minPitchAngle = zoom ? Instance.flyingMinPitch : Instance.groundedMinPitch;
+        Instance.maxPitchAngle = zoom ? Instance.flyingMaxPitch : Instance.groundedMaxPitch;
     }
 }

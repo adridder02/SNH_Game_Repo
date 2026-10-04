@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityItemData
   displayName: Waterbell
   description: waters plants
-  icon: {fileID: 21300000, guid: 917afe6700aef7546a0b0a401c49ce8a, type: 3}
+  icon: {fileID: 21300000, guid: e89fd8d72f386054fb4901e503b7f558, type: 3}
   kind: 2
   effectId: 7
+  requiresTreeTarget: 0
   harvestGrantAmount: 1
   maxStack: 0
+  useCooldown: 0.35
   footprint: {x: 1, y: 1}
   placedPrefab: {fileID: 7443154059041681990, guid: 1585d53afbc80614582b370de8cda904, type: 3}
   amountA: 5

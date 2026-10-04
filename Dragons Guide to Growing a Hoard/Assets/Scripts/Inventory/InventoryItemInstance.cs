@@ -48,6 +48,24 @@ public class InventoryItemInstance : IGridPlaceable
     // (stripping the "(Clone)" suffix Unity appends) if none was supplied.
     public readonly string displayName;
 
+    // Stable identity for "new item" badge tracking (NewItemTracker) — the SAME id
+    // PlantJournalManager uses (species.ResolvedId) whenever this plant has a journal species,
+    // so the Inventory badge and Journal badge for the same plant are guaranteed to agree on
+    // which plant they're both talking about, rather than drifting out of sync from two separate
+    // ID schemes. Falls back to a cleaned prefab name for plants with no journalSpecies assigned,
+    // matching GetDisplayName's own fallback below.
+    public readonly string newItemTypeId;
+
+    // The species this plant belongs to in the Journal, if any — same source as newItemTypeId
+    // above. Used by the Plant detail panel's Journal button (InventoryUIController) to jump
+    // straight to this species' page.
+    public readonly PlantSpeciesData journalSpecies;
+
+    // This plant's saved state — see PlantCondition.cs. Never null (defaults to
+    // PlantCondition.Healthy if the caller didn't pass one). isPermanentlyDead here is what
+    // forces plantType to Dead below, overriding whatever the prefab's own base type was.
+    public readonly PlantCondition condition;
+
     public int gridX = -1;
     public int gridY = -1;
 
@@ -62,7 +80,7 @@ public class InventoryItemInstance : IGridPlaceable
     int IGridPlaceable.GridX { get => gridX; set => gridX = value; }
     int IGridPlaceable.GridY { get => gridY; set => gridY = value; }
 
-    public InventoryItemInstance(GameObject prefab, Sprite icon = null, Sprite displayImage = null, string displayName = null)
+    public InventoryItemInstance(GameObject prefab, Sprite icon = null, Sprite displayImage = null, string displayName = null, PlantCondition condition = null)
     {
         instanceId = Guid.NewGuid().ToString();
         plantPrefab = prefab;
@@ -71,6 +89,7 @@ public class InventoryItemInstance : IGridPlaceable
         this.displayName = !string.IsNullOrEmpty(displayName)
             ? displayName
             : (prefab != null ? prefab.name.Replace("(Clone)", "").Trim() : "Unknown");
+        this.condition = condition ?? PlantCondition.Healthy;
 
         // GetComponentInChildren, not GetComponent: PlantState commonly lives on a child
         // mesh object rather than the prefab root. GetComponent-only would silently miss
@@ -81,7 +100,21 @@ public class InventoryItemInstance : IGridPlaceable
                               "(checked root + children) — defaulting size to Small. This plant won't " +
                               "match any pot correctly until PlantState is added.");
         size = ps != null ? ps.plantSize : PlantSize.Small;
-        plantType = ps != null ? ps.plantType : PlantType.Sunny;
+
+        // A permanently-dead plant always shows/filters as Dead, regardless of what species it
+        // actually is — this is deliberately checked BEFORE falling back to the prefab's own base
+        // plantType, since a dead Sunny plant still needs to end up under the skull filter, not
+        // the sun one.
+        plantType = this.condition.isPermanentlyDead ? PlantType.Dead
+            : ps != null ? ps.plantType
+            : PlantType.Sunny;
+
         footprint = PlantSizeUtility.GetFootprint(size);
+
+        newItemTypeId = (ps != null && ps.journalSpecies != null)
+            ? ps.journalSpecies.ResolvedId
+            : (prefab != null ? prefab.name.Replace("(Clone)", "").Trim() : "Unknown");
+
+        journalSpecies = ps != null ? ps.journalSpecies : null;
     }
 }

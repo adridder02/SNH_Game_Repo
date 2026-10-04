@@ -119,6 +119,11 @@ public class JournalUIController : MonoBehaviour
              "species asset if you don't need a second section for that plant.")]
     [SerializeField] private TMP_Text detailDescriptionSecondary;
 
+    [Tooltip("Shown in place of a description block that isn't unlocked yet (Tier 2/3's gradual " +
+             "unlock — see GetUnlockedDescriptions) instead of leaving it blank, so the layout " +
+             "doesn't collapse to nothing while the player's still working toward unlocking it.")]
+    [SerializeField] private string lockedPlaceholderText = "???";
+
     [Header("Detail Panel — Prev/Next")]
     [Tooltip("Steps to the previous discovered species within the same category row. Disabled at the start of the row.")]
     [SerializeField] private Button previousSpeciesButton;
@@ -147,10 +152,10 @@ public class JournalUIController : MonoBehaviour
     void Awake()
     {
         if (journalManager == null)
-            journalManager = PlantJournalManager.Instance != null ? PlantJournalManager.Instance : FindObjectOfType<PlantJournalManager>();
+            journalManager = PlantJournalManager.Instance != null ? PlantJournalManager.Instance : FindAnyObjectByType<PlantJournalManager>();
 
         if (mainUI == null)
-            mainUI = FindObjectOfType<MainUIController>();
+            mainUI = FindAnyObjectByType<MainUIController>();
 
         if (progressPageController == null && progressPage != null)
             progressPageController = progressPage.GetComponent<ProgressPageUIController>();
@@ -164,9 +169,25 @@ public class JournalUIController : MonoBehaviour
         if (journalBackButton != null)
             journalBackButton.onClick.AddListener(ToggleJournal);
 
-        plantsNavButton?.onClick.AddListener(() => ShowPage(plantsPage, plantsNavButton));
-        progressNavButton?.onClick.AddListener(() => ShowPage(progressPage, progressNavButton));
-        guideNavButton?.onClick.AddListener(() => ShowPage(guidePage, guideNavButton));
+        // Tutorial hooks on the three bookmark tabs — matches steps reading 'Open the "Plants"/
+        // "Progress"/"Guide" bookmark'. Fired from the click listener itself rather than from inside
+        // ShowPage() (which also runs on journal-open auto-reset-to-Plants and the room-shortcut
+        // buttons below), so these only fire on an actual, deliberate tab click.
+        plantsNavButton?.onClick.AddListener(() =>
+        {
+            ShowPage(plantsPage, plantsNavButton);
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_plants_bookmark");
+        });
+        progressNavButton?.onClick.AddListener(() =>
+        {
+            ShowPage(progressPage, progressNavButton);
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_progress_bookmark");
+        });
+        guideNavButton?.onClick.AddListener(() =>
+        {
+            ShowPage(guidePage, guideNavButton);
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_guide_bookmark");
+        });
         settingsNavButton?.onClick.AddListener(() => ShowPage(settingsPage, settingsNavButton));
 
         // Room shortcuts: same as clicking Progress, plus jump straight to that room.
@@ -234,11 +255,19 @@ public class JournalUIController : MonoBehaviour
             ThirdPersonCameraController.CameraLocked = true;
 
             RefreshUI();
+
+            // Tutorial hook — matches a step reading "Press [J] to open your journal".
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("journal_opened");
         }
         else
         {
             MenuLayerManager.NotifyClosed(this);
             GameInputModeManager.Instance?.SetGameplayMode();
+
+            // Tutorial hook — matches a step reading "Press the back button to return to the
+            // game" (this used to be an Escape-based step; both the back button AND Escape route
+            // through here via CloseJournal(), so either one satisfies it).
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("closed_journal_back_button");
         }
     }
     /// <summary>Closes the journal if it's open. Does nothing if already closed. Call this from ExitMenuController on Escape.</summary>
@@ -259,7 +288,26 @@ public class JournalUIController : MonoBehaviour
         // Plants is always where the journal opens back up to, regardless of
         // whichever page it was left on last time.
         if (visible)
+        {
             ShowPage(plantsPage, plantsNavButton);
+            SelectFirstDiscoveredSpecies();
+        }
+    }
+
+    /// <summary>Auto-opens the first discovered species' detail page the instant the journal opens, so
+    /// the Plants page never starts on an empty right-hand page — mirrors GuideUIController's own
+    /// auto-select-first-mission behavior. Checks Sunny, then Dark, then Water, in that order (same
+    /// order PopulateRow draws the rows in); does nothing if nothing's been discovered yet.</summary>
+    private void SelectFirstDiscoveredSpecies()
+    {
+        if (database == null) return;
+
+        List<PlantSpeciesData> candidates = GetNavigableSpecies(PlantType.Sunny);
+        if (candidates.Count == 0) candidates = GetNavigableSpecies(PlantType.Dark);
+        if (candidates.Count == 0) candidates = GetNavigableSpecies(PlantType.Water);
+
+        if (candidates.Count > 0)
+            ShowSpeciesDetail(candidates[0]);
     }
 
     // ------------------------------------------------------------
@@ -389,12 +437,60 @@ public class JournalUIController : MonoBehaviour
 
         if (detailName != null) detailName.text = species.displayName;
         if (detailTier != null) detailTier.text = $"Tier {species.tier}";
-        if (detailDescription != null) detailDescription.text = species.description;
-        if (detailDescriptionSecondary != null) detailDescriptionSecondary.text = species.descriptionSecondary;
+
+        (string firstText, string secondText) = GetUnlockedDescriptions(species);
+        if (detailDescription != null) detailDescription.text = firstText;
+        if (detailDescriptionSecondary != null) detailDescriptionSecondary.text = secondText;
 
         RefreshDifficultyDots(species.difficulty);
         RefreshCareRow(species);
         RefreshSpeciesNavButtons();
+    }
+
+    /// <summary>Gradual description unlock, by tier:
+    ///   - Tier 1 (and crystals — requiresRoomUnlock species aren't part of this at all, so they
+    ///     just get the simplest/no-gating treatment): both blocks unlock immediately on pickup
+    ///     (PlantJournalManager.IsDiscovered).
+    ///   - Tier 2: first block on pickup; second block only once EVERY Tier 1 species has hit its
+    ///     gold/fully-ripened milestone at least once — PlantJournalManager.IsCompleted, via
+    ///     AllOfTierCompleted(1). NOT the same as "picked up" — a Tier 1 plant harvested before it
+    ///     was fully ripened doesn't count here even though it's discovered.
+    ///   - Tier 3: first block only once every Tier 1 AND Tier 2 species has been completed this
+    ///     way ("all the other tiers"); second block only once THIS species itself has been
+    ///     completed (harvested at 100% at least once — the same event that unlocks its own Gold
+    ///     icon on the Progress page).
+    /// A locked block shows lockedPlaceholderText instead of going blank, so the layout doesn't
+    /// collapse to nothing while the player's waiting on it.
+    /// </summary>
+    private (string first, string second) GetUnlockedDescriptions(PlantSpeciesData species)
+    {
+        bool discovered = journalManager != null && journalManager.IsDiscovered(species);
+
+        // Not discovered at all yet — nothing to show regardless of tier (ShowSpeciesDetail is only
+        // reachable for discovered species via JournalSlotUI anyway, but stay defensive).
+        if (!discovered)
+            return (lockedPlaceholderText, lockedPlaceholderText);
+
+        if (species.requiresRoomUnlock || species.tier <= 1)
+            return (species.description, species.descriptionSecondary);
+
+        if (species.tier == 2)
+        {
+            bool secondUnlocked = journalManager != null && journalManager.AllOfTierCompleted(1);
+            return (species.description, secondUnlocked ? species.descriptionSecondary : lockedPlaceholderText);
+        }
+
+        // Tier 3 and anything above.
+        bool firstUnlocked = journalManager != null &&
+            journalManager.AllOfTierCompleted(1) && journalManager.AllOfTierCompleted(2);
+        // "The player has gotten it completed" — this species' own gold/fully-ripened milestone,
+        // same event that unlocks its Gold icon on the Progress page.
+        bool secondUnlockedT3 = journalManager != null && journalManager.IsCompleted(species);
+
+        return (
+            firstUnlocked ? species.description : lockedPlaceholderText,
+            secondUnlockedT3 ? species.descriptionSecondary : lockedPlaceholderText
+        );
     }
 
     // ------------------------------------------------------------

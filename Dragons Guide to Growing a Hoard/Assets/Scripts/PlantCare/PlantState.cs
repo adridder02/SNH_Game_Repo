@@ -83,12 +83,30 @@ public class PlantState : MonoBehaviour
     [Range(0f, 10f)] public float waterThresholdHigh = 6f;
     [Range(0f, 10f)] public float waterThresholdLow = 3f;
 
+    [Tooltip("Overwatering. At or above this level, the plant is waterlogged and the water score " +
+             "drops back to 0 — same as being too dry. Must be higher than waterThresholdHigh for " +
+             "there to be an actual 'ideal' window between them (by default: 6-9). Set this to " +
+             "plantWaterMax or higher on a specific plant to effectively disable overwatering for " +
+             "just that species, if some shouldn't be affected by it.")]
+    [Range(0f, 10f)] public float waterThresholdOverwater = 9f;
+
     // ---------------------------------------------------------------
     // INSPECTOR — Score Boundaries
     // ---------------------------------------------------------------
     [Header("Score Boundaries")]
     [Range(0, 6)] public int revivedMinScore = 5;
     [Range(0, 6)] public int intermediateMinScore = 2;
+
+    // ---------------------------------------------------------------
+    // PERMANENT DEATH
+    // ---------------------------------------------------------------
+    [Header("Permanent Death")]
+    [Tooltip("How long (seconds) this plant has to sit continuously in the LIVE Dead state (the " +
+             "usual, recoverable one CalculateState() computes each frame from soil/light/water) " +
+             "before it dies PERMANENTLY — see IsPermanentlyDead. Resets to 0 any time the plant " +
+             "recovers out of Dead before reaching this, so it has to be continuously dead, not " +
+             "cumulatively.")]
+    public float permanentDeathDelay = 30f;
 
     // ---------------------------------------------------------------
     // REFERENCES
@@ -152,6 +170,8 @@ public class PlantState : MonoBehaviour
     [SerializeField] private int soilScore = 0;
     [SerializeField] private int lightScore = 0;
     [SerializeField] private int waterScore = 0;
+    [SerializeField] private bool isPermanentlyDead = false;
+    private float timeInLiveDeadState = 0f;
 
     // ---------------------------------------------------------------
     // PUBLIC ACCESSORS
@@ -163,6 +183,44 @@ public class PlantState : MonoBehaviour
     public int WaterScore => waterScore;
     public LightSensor LightSensor => lightSensor;
     public float GetWaterDrainMultiplier() => isMiasmaDebuffActive ? miasmaWaterDrainMultiplier : 1f;
+
+    /// <summary>True once this SPECIFIC plant has died permanently — see permanentDeathDelay. Once
+    /// set, CalculateState() always returns Dead regardless of live soil/light/water conditions;
+    /// there is no recovery. Read by InventoryItemInstance (forces PlantType.Dead for filtering)
+    /// and InventorySlotUI (shows the dead icon) once this plant is picked up.</summary>
+    public bool IsPermanentlyDead => isPermanentlyDead;
+
+    /// <summary>Snapshots this plant's current state for carrying across pot removal -> inventory
+    /// -> replanting. Call this BEFORE destroying/detaching the plant (PotContents.RemovePlant).</summary>
+    public PlantCondition CaptureCondition()
+    {
+        return new PlantCondition
+        {
+            isPermanentlyDead = isPermanentlyDead,
+            startingHealth01 = HealthNormalized01,
+        };
+    }
+
+    /// <summary>Restores a previously-captured (or harvest-node-preset) condition onto this plant.
+    /// Call right after instantiating/planting, before the first Update() tick. isPermanentlyDead
+    /// carries over exactly (a plant that died stays dead forever, even replanted in a perfect pot);
+    /// startingHealth01 only seeds the INITIAL displayed score/state — see PlantCondition's own
+    /// comment for why that's cosmetic, not a lasting value.</summary>
+    public void ApplyCondition(PlantCondition condition)
+    {
+        if (condition == null) return;
+
+        isPermanentlyDead = condition.isPermanentlyDead;
+        lastTotalScore = Mathf.RoundToInt(Mathf.Clamp01(condition.startingHealth01) * 6f);
+
+        currentState = isPermanentlyDead ? PlantStateEnum.Dead
+            : lastTotalScore >= revivedMinScore ? PlantStateEnum.Revived
+            : lastTotalScore >= intermediateMinScore ? PlantStateEnum.Intermediate
+            : PlantStateEnum.Dead;
+
+        timeInLiveDeadState = 0f; // fresh start for the permanent-death timer either way
+        UpdateVisuals();
+    }
 
     /// <summary>True while any ability source (Windmill Aster, Verdant Algae, a closed Sparkmint
     /// circuit, ...) is actively warding this plant against miasma. See AddMiasmaImmunitySource.</summary>
@@ -241,6 +299,27 @@ public class PlantState : MonoBehaviour
             UpdateVisuals();
             Debug.Log($"[PlantState] State -> {currentState} ({lastTotalScore}/6)");
         }
+
+        // Permanent death — only tracked while not already permanent, and only while genuinely
+        // Dead right now (not just low): recovering out of Dead before permanentDeathDelay resets
+        // this to 0, so it has to be continuously dead, not accumulated across separate dips.
+        if (!isPermanentlyDead)
+        {
+            if (currentState == PlantStateEnum.Dead)
+            {
+                timeInLiveDeadState += Time.deltaTime;
+                if (timeInLiveDeadState >= permanentDeathDelay)
+                {
+                    isPermanentlyDead = true;
+                    Debug.Log($"[PlantState] {gameObject.name} has died PERMANENTLY after " +
+                              $"{permanentDeathDelay}s in the Dead state.");
+                }
+            }
+            else
+            {
+                timeInLiveDeadState = 0f;
+            }
+        }
     }
 
     // ---------------------------------------------------------------
@@ -293,10 +372,16 @@ public class PlantState : MonoBehaviour
         // circuit) — miasma simply has no effect on this plant right now.
         if (IsMiasmaImmune) return;
 
-        // Accumulate penalties over time (permanent until soil replacement)
+        // Accumulate penalties over time (permanent until soil replacement) — miasmaWaterDrainMultiplier
+        // used to just be OVERWRITTEN with Mathf.Max(1f, waterDrainMultiplier) each tick instead of
+        // accumulating like the other two. Since the Inspector's per-tick values (easy/mild/intense
+        // WaterDrainMultiplier) are small fractions like 0.02-0.05, that Max() always evaluated to a flat
+        // 1f no matter the intensity or how long the plant sat in miasma — the water drain effect (and
+        // MiasmaInfluence01's water-derived third of the overhead bar) could never actually rise above
+        // its "no effect" baseline. Now it climbs the same way light/soil do.
         miasmaLightPenalty = Mathf.Clamp01(miasmaLightPenalty + lightPenalty);
         miasmaSoilPenalty += soilPenalty;
-        miasmaWaterDrainMultiplier = Mathf.Max(1f, waterDrainMultiplier);
+        miasmaWaterDrainMultiplier = Mathf.Max(1f, miasmaWaterDrainMultiplier + waterDrainMultiplier);
         isMiasmaDebuffActive = true;
 
         // Clamp soil penalty to reasonable max
@@ -324,6 +409,11 @@ public class PlantState : MonoBehaviour
     // ---------------------------------------------------------------
     private PlantStateEnum CalculateState()
     {
+        // Locked — a permanently-dead plant never recovers, so skip recalculating from live
+        // conditions entirely.
+        if (isPermanentlyDead)
+            return PlantStateEnum.Dead;
+
         soilScore = CalculateSoilScore();
 
         float lightLevel = lightSensor != null ? lightSensor.NormalisedIntensity : 0f;
@@ -331,7 +421,7 @@ public class PlantState : MonoBehaviour
         lightScore = ScoreValue(adjustedLight, lightThresholdHigh, lightThresholdLow);
 
         float waterLevel = ownerPot != null ? ownerPot.WaterLevel : 0f;
-        waterScore = ScoreValue(waterLevel, waterThresholdHigh, waterThresholdLow);
+        waterScore = ScoreWater(waterLevel);
 
         lastTotalScore = soilScore + lightScore + waterScore;
 
@@ -359,6 +449,16 @@ public class PlantState : MonoBehaviour
         if (value >= high) return 2;
         if (value >= low) return 1;
         return 0;
+    }
+
+    /// <summary>Water specifically gets a CEILING on top of ScoreValue's floor-only shape — too
+    /// little is bad (0), an ideal window is best (2), and now too MUCH is also bad (0) — a proper
+    /// "sweet spot" between waterThresholdLow/High and waterThresholdOverwater, rather than more
+    /// water always being at worst neutral.</summary>
+    private int ScoreWater(float value)
+    {
+        if (value >= waterThresholdOverwater) return 0; // waterlogged
+        return ScoreValue(value, waterThresholdHigh, waterThresholdLow);
     }
 
     private void UpdateVisuals()

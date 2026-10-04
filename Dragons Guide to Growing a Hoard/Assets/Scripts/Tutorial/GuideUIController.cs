@@ -83,7 +83,7 @@ public class GuideUIController : MonoBehaviour
         if (progressManager == null)
             progressManager = MissionProgressManager.Instance != null
                 ? MissionProgressManager.Instance
-                : FindObjectOfType<MissionProgressManager>();
+                : FindAnyObjectByType<MissionProgressManager>();
 
         if (missionButtonTemplate != null)
         {
@@ -139,6 +139,12 @@ public class GuideUIController : MonoBehaviour
             if (old != null) Destroy(old.gameObject);
         spawnedButtons.Clear();
 
+        // Tracks the very first real (non-null) mission/button pair, purely so a fresh page-open with
+        // nothing selected yet can auto-open it below — separate from selectedMission, which this loop
+        // otherwise only ever re-applies the highlight for, never changes.
+        MissionData firstMission = null;
+        GuideMissionButtonUI firstButton = null;
+
         for (int i = 0; i < database.missions.Count; i++)
         {
             MissionData mission = database.missions[i];
@@ -161,8 +167,20 @@ public class GuideUIController : MonoBehaviour
                 selectedButton = button;
             }
 
+            if (firstMission == null)
+            {
+                firstMission = mission;
+                firstButton = button;
+            }
+
             spawnedButtons.Add(button);
         }
+
+        // Auto-open the first mission the moment the page has something to show and nothing's
+        // selected yet — a fresh journal-open, not a progress-triggered refresh (which always has
+        // selectedMission already set by that point, so this never overrides an in-progress read).
+        if (selectedMission == null && firstMission != null)
+            OnMissionButtonClicked(firstMission, firstButton);
     }
 
     // ------------------------------------------------------------

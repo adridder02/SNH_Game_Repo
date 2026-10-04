@@ -28,6 +28,12 @@
 //                          switch to (its useWorldSpacePrompt toggle)
 //                          instead of its own floating, player-following,
 //                          billboarded world-space prompt.
+//   - Secondary HUD visibility — while placing/moving/removing a pot
+//                          (PlacementSystem) or an ability placeable
+//                          (AbilityPlacementSystem), secondaryHudRoot
+//                          hides automatically so only the hotbar and
+//                          tool selector remain visible. See
+//                          RefreshSecondaryHudVisibility().
 //
 // SETUP:
 //   1. Attach to the HUD Canvas GameObject.
@@ -43,7 +49,7 @@
 //      attach PlayerZoneTracker.cs to the player/dragon GameObject
 //      (see that file's header) and assign it to playerZoneTracker.
 //   6. Drag the 4 tool-selector slot buttons into toolSlots (slot 0 =
-//      Place, 1 = Remove, 2 = Move, 3 = still reserved) and assign the
+//      Place, 1 = Remove, 2 = Move, 3 = Water) and assign the
 //      scene's PlacementSystem to placementSystem. Nothing else to
 //      wire up — clicking a slot calls the matching Toggle*Mode() on
 //      PlacementSystem, and the slot's tint follows PlacementSystem's
@@ -82,6 +88,10 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
              "Only used for the water bar — NOT the player's world position (see " +
              "playerZoneTracker below for that).")]
     [SerializeField] private PlayerInventory playerInventory;
+    [Tooltip("Auto-found in the scene if left empty (same GameObject as playerInventory). Used only to " +
+             "gate the hotbar row — see hotbarRoot's tooltip below. The inventory icon gates on " +
+             "playerInventory's plant-pickup flag instead, not this.")]
+    [SerializeField] private PlayerAbilityInventory abilityInventoryForGating;
 
     [Header("Water Bar")]
     [Tooltip("Same ImageFillBar setup/prefab as PotMenuUIController's water bar. Fixed colour, " +
@@ -91,15 +101,32 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [Header("Journal Icon")]
     [SerializeField] private Button journalButton;
     [SerializeField] private JournalUIController journalUI;
+    [Tooltip("Small dot shown on the journal icon while any species has been discovered but its page " +
+             "hasn't been opened yet (NewItemTracker.HasAnyUnseenJournal). Optional.")]
+    [SerializeField] private GameObject journalNewDot;
+    [Tooltip("If on, the journal icon starts hidden and only reveals via RevealJournalIcon below — wire " +
+             "that to the 'Press [J] to open your journal' tutorial step's onStepShown (same one-time-" +
+             "reveal pattern as toolSlotsStartHidden/RevealToolSlot above). Leave off if the icon should " +
+             "just show normally from the start.")]
+    [SerializeField] private bool journalButtonStartsHidden = true;
 
     [Header("Inventory Icon")]
     [SerializeField] private Button inventoryButton;
     [SerializeField] private InventoryUIController inventoryUI;
+    [Tooltip("Small dot shown on the inventory icon while any item type has been acquired but its " +
+             "slot hasn't been clicked yet, in either the grid or Available " +
+             "(NewItemTracker.HasAnyUnseenInventory). Optional.")]
+    [SerializeField] private GameObject inventoryNewDot;
 
     [Header("Miasma Bar")]
     [Tooltip("Fixed-colour bar (useFillGradient = false) showing the current miasma size.")]
     [SerializeField] private ImageFillBar miasmaBar;
     [SerializeField] private MiasmaController miasma;
+    [Tooltip("If on, the miasma bar starts hidden and only reveals via RevealMiasmaBar below — wire " +
+             "that to its own Portable prompt's onStepShown (same one-time-reveal pattern as " +
+             "toolSlotsStartHidden/RevealToolSlot above). Leave off if the bar should just show " +
+             "normally from the start.")]
+    [SerializeField] private bool miasmaBarStartsHidden = true;
 
     [Header("Zone Happiness Bar")]
     [Tooltip("Gradient bar (useFillGradient = true, e.g. red->yellow->green) showing the " +
@@ -109,12 +136,16 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
              "the player is currently overlapping. NOT PlayerInventory (that's UI-space, not a " +
              "world position).")]
     [SerializeField] private PlayerZoneTracker playerZoneTracker;
+    [Tooltip("If on, the zone happiness bar starts hidden and only reveals via RevealZoneHappinessBar " +
+             "below — wire that to its own Portable prompt's onStepShown (same one-time-reveal pattern " +
+             "as toolSlotsStartHidden/RevealToolSlot above). Leave off if the bar should just show " +
+             "normally from the start.")]
+    [SerializeField] private bool zoneHappinessBarStartsHidden = true;
 
     [Header("Tool Selector Slots")]
-    [Tooltip("Slot 0 = Place tool, slot 1 = Remove tool, slot 2 = Move tool. Slot 3 is still " +
-             "reserved/unused. Each slot toggles its tool on PlacementSystem — pressing it while " +
-             "that tool is active turns the tool back off, same as pressing its keybind (F/X/G) " +
-             "would.")]
+    [Tooltip("Slot 0 = Place (F), slot 1 = Remove (R), slot 2 = Move (G), slot 3 = Water (Q). Each " +
+             "slot toggles its tool on PlacementSystem — pressing it while that tool is active turns " +
+             "the tool back off, same as pressing its keybind would.")]
     [SerializeField] private Button[] toolSlots = new Button[4];
     [Tooltip("The scene's PlacementSystem. Required for the tool slots above to do anything.")]
     [SerializeField] private PlacementSystem placementSystem;
@@ -122,6 +153,20 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [SerializeField] private Color toolActiveColor = new Color(1f, 0.85f, 0.4f);
     [Tooltip("Tint applied to a tool slot's button graphic while that tool is NOT active.")]
     [SerializeField] private Color toolInactiveColor = Color.white;
+    [Tooltip("If on, all four tool slots start hidden and only reveal one at a time via RevealToolSlot " +
+             "below — the Place->Move->Water->Remove tutorial walkthrough (wire each step's onStepShown " +
+             "on TutorialStepData to RevealToolSlot with the matching index). Once revealed a slot stays " +
+             "revealed for good. Leave off if you don't want this gating and all four should just show " +
+             "normally from the start.")]
+    [SerializeField] private bool toolSlotsStartHidden = true;
+    [Tooltip("The shared parent/backdrop behind all four tool slot buttons above (background panel, " +
+             "frame, whatever visually groups them) — separate from each individual slot Button. While " +
+             "toolSlotsStartHidden is on, this hides at Awake right alongside the slots themselves, and " +
+             "reveals the first time ANY slot is revealed via RevealToolSlot — unlike the slots, it " +
+             "doesn't need per-slot reveals, since the moment the tutorial starts teaching the first " +
+             "tool the whole selector frame should already be on screen. Optional — leave unassigned if " +
+             "there's no separate backdrop to hide.")]
+    [SerializeField] private GameObject toolSelectorRoot;
 
     [Header("Hotbar")]
     [Tooltip("The persistent hotbar row shown on the main gameplay HUD (as opposed to the preview " +
@@ -131,6 +176,13 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [SerializeField] private List<HotbarSlotUI> hudHotbarSlotUIs = new List<HotbarSlotUI>();
     [Tooltip("Auto-found in the scene if left empty.")]
     [SerializeField] private AbilityHotbarSystem hotbarSystem;
+    [Tooltip("The hotbar row's shared parent GameObject — hidden (same as PotMenuUIController's " +
+             "ability button, and InventoryUIController's own hand-placed hotbar row) until the " +
+             "player's first HARVEST FROM A POT — a fully-grown plant removed for a Consumable/" +
+             "Placeable ability item (PlayerAbilityInventory.OnFirstAbilityItemHarvested/" +
+             "HasHarvestedFirstAbilityItem), NOT the inventory icon's plant-pickup flag below. Parent " +
+             "the hotbar slots (hudHotbarSlotUIs) under one GameObject in the Editor and assign it here.")]
+    [SerializeField] private GameObject hotbarRoot;
 
     [Header("HUD Visibility")]
     [Tooltip("Everything on the HUD that should hide while a menu is open — water bar, miasma bar, " +
@@ -140,12 +192,125 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
              "doesn't need to live under this root.")]
     [SerializeField] private GameObject hudRoot;
 
+    [Tooltip("A SECOND, more selective group living INSIDE hudRoot — everything EXCEPT the hotbar and " +
+             "tool selector slots (water bar, miasma bar, zone bar, journal/inventory icons, etc). " +
+             "Parent those specific elements under their own child GameObject and assign it here; leave " +
+             "hotbar/tool slots as siblings outside it. While placing/moving/removing a pot, or placing/" +
+             "removing an ability placeable (Sparkmint leaf, Waterbell, ...), this hides while hotbar " +
+             "and the tool selector stay visible — see RefreshSecondaryHudVisibility(). Being a child of " +
+             "hudRoot means it's automatically irrelevant whenever hudRoot itself is off (Journal/" +
+             "Inventory open) — no conflict between the two systems.")]
+    [SerializeField] private GameObject secondaryHudRoot;
+
+    [Tooltip("Ability placeables (Sparkmint leaf, Waterbell, ...) — the OTHER placement mode, alongside " +
+             "PlacementSystem's pots. Auto-found in the scene if left empty. Used only to know whether " +
+             "secondaryHudRoot should be hidden right now (see IsActive below).")]
+    [SerializeField] private AbilityPlacementSystem abilityPlacementSystem;
+
+    [Tooltip("Wall placeables (Clovenwick, etc). Auto-found in the scene if left empty. Used for the " +
+             "Floor/Wall Placement Mode banner below.")]
+    [SerializeField] private WallPlacementSystem wallPlacementSystem;
+
+    [Header("Placement Mode Banner")]
+    [Tooltip("Root of the banner shown while PlacementSystem (Floor) or WallPlacementSystem (Wall) is " +
+             "in Placing mode — just an image with text on it. Hidden the rest of the time.")]
+    [SerializeField] private GameObject placementBannerRoot;
+    [SerializeField] private TextMeshProUGUI placementBannerText;
+    [SerializeField] private string floorPlacementBannerText = "Floor Placement Mode";
+    [SerializeField] private string wallPlacementBannerText = "Wall Placement Mode";
+
+    [Header("Placement Mode Sections")]
+    [Tooltip("Shown the rest of the time, hidden while EITHER PlacementSystem (Floor) or " +
+             "WallPlacementSystem (Wall) is in Placing mode — same condition as the banner above.")]
+    [SerializeField] private GameObject nonPlacementSection;
+    [Tooltip("The opposite of nonPlacementSection above — hidden normally, shown while either " +
+             "placement mode is active.")]
+    [SerializeField] private GameObject placementSection;
+    [Tooltip("A SECOND selective-hide group, separate from secondaryHudRoot/nonPlacementSection — for " +
+             "things that should hide specifically during WALL placement mode but stay visible during " +
+             "FLOOR placement mode (the two groups above treat Floor and Wall identically). Shown the " +
+             "rest of the time, hidden only while WallPlacementSystem is in Placing/Removing mode.")]
+    [SerializeField] private GameObject wallOnlySection;
+
+    [Tooltip("The 'press Tab to switch to wall placement' hint icon — shown ONLY while " +
+             "PlacementSystem (Floor) is in Placing mode, and only once the player has actually " +
+             "unlocked wall placement (picked up Clovenwick for the first time — see " +
+             "PlayerInventory.HasUnlockedWallPlacement/OnWallPlacementUnlocked). Hidden the rest of " +
+             "the time, including during Wall placing itself and during Floor placing before " +
+             "Clovenwick's been picked up, so it doesn't hint at a mode the player can't reach yet.")]
+    [SerializeField] private GameObject tabToggleHintIcon;
+
     [Header("Interact Prompt (HUD)")]
     [Tooltip("Fixed screen-space element (e.g. a 'Press E' panel docked on the HUD) — just enabled/" +
              "disabled, no positioning or billboarding. PotInteraction calls SetInteractPromptVisible() " +
              "on this when its own useWorldSpacePrompt toggle is OFF, instead of using its floating " +
              "world-space prompt.")]
     [SerializeField] private GameObject interactPromptHUD;
+
+    [Tooltip("Second fixed screen-space element, positioned directly below interactPromptHUD in the " +
+             "Editor (the 'Quick Water' / 'Water Plant' option) — shown only while the nearby pot " +
+             "actually has a plant. Unlike interactPromptHUD, only PotInteraction ever drives this one " +
+             "(HarvestNodeContainer etc. have no use for it), so it doesn't need the same multi-" +
+             "requester tracking interactPromptHUD has — a plain show/hide is enough.")]
+    [SerializeField] private GameObject waterPromptHUD;
+
+    [Tooltip("The 'E' key icon Image on interactPromptHUD — hidden entirely (not just dimmed) while " +
+             "this prompt isn't the active selection, so only the currently-active option shows a key " +
+             "to press.")]
+    [SerializeField] private Image interactPromptEIcon;
+
+    [Tooltip("Same as interactPromptEIcon, but for waterPromptHUD.")]
+    [SerializeField] private Image waterPromptEIcon;
+
+    [Tooltip("CanvasGroup on interactPromptHUD, used to dim it when the Water prompt below is the " +
+             "active selection instead — see SetActiveHUDPrompt(). Auto-added if missing.")]
+    [SerializeField] private CanvasGroup interactPromptHUDGroup;
+
+    [Tooltip("CanvasGroup on waterPromptHUD, same purpose as interactPromptHUDGroup but for this prompt.")]
+    [SerializeField] private CanvasGroup waterPromptHUDGroup;
+
+    [Tooltip("Opacity applied to whichever of interactPromptHUD/waterPromptHUD is NOT the active " +
+             "selection (scrolled-to) one.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float inactiveHUDPromptOpacity = 0.45f;
+
+    [Tooltip("Small 'scroll to switch' hint icon — shown alongside the two HUD prompts whenever " +
+             "waterPromptHUD is visible (i.e. whenever scrolling would actually do something), hidden " +
+             "the rest of the time. Optional.")]
+    [SerializeField] private GameObject promptScrollHint;
+
+    [Header("Pot Selector (HUD)")]
+    [Tooltip("Root of the pot-type selector — pops up while in PlacementSystem's Placing mode, " +
+             "hidden otherwise. Shows one icon per entry in PlacementSystem.AvailablePots, in the " +
+             "same order as potSelectorIcons below.")]
+    [SerializeField] private GameObject potSelectorRoot;
+
+    [Tooltip("One Image per pot type, in the SAME order as PlacementSystem's availablePots list. The " +
+             "currently-selected pot's icon shows at full opacity; the others dim to " +
+             "inactivePotIconOpacity. Assign as many as there are pot types — extra slots beyond " +
+             "AvailablePots.Count are just left blank/hidden.")]
+    [SerializeField] private List<Image> potSelectorIcons;
+
+    [Tooltip("Opacity applied to every pot icon EXCEPT the currently-selected one.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float inactivePotIconOpacity = 0.35f;
+
+    [Header("Wall Mushroom Selector (HUD)")]
+    [Tooltip("Root of the wall-mushroom selector — pops up while in WallPlacementSystem's Placing " +
+             "mode, hidden otherwise. Shows one icon per entry in WallPlacementSystem.AvailableMushrooms, " +
+             "in the same order as wallMushroomSelectorIcons below. There's currently only ever one " +
+             "wall-mushroom type, so in practice this just shows a single always-active icon while " +
+             "placing — built the same way as the (multi-option) pot selector above for consistency, " +
+             "and so it needs no rework if more wall types are ever added.")]
+    [SerializeField] private GameObject wallMushroomSelectorRoot;
+
+    [Tooltip("One Image per wall-mushroom type, in the SAME order as WallPlacementSystem's " +
+             "availableMushrooms list.")]
+    [SerializeField] private List<Image> wallMushroomSelectorIcons;
+
+    [Tooltip("Opacity applied to every wall-mushroom icon EXCEPT the currently-selected one.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float inactiveWallMushroomIconOpacity = 0.35f;
 
     [Header("Harvest Feedback (HUD)")]
     [Tooltip("Root of the fixed HUD feedback popup (e.g. 'Harvested Sparkmint x1') — replaces the old " +
@@ -188,7 +353,7 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             // FindObjectOfType just grabs whichever instance it happens to find first — if there's
             // more than one PlayerInventory in the scene (e.g. one accidentally left on a UI prefab
             // alongside the real one on the player), which one "wins" is down to luck, not correctness.
-            PlayerInventory[] allInventories = FindObjectsOfType<PlayerInventory>();
+            PlayerInventory[] allInventories = FindObjectsByType<PlayerInventory>();
 
             if (allInventories.Length > 1)
                 Debug.LogWarning($"[MainUIController] Found {allInventories.Length} PlayerInventory " +
@@ -201,16 +366,61 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             playerInventory = allInventories.Length > 0 ? allInventories[0] : null;
         }
 
+        if (abilityInventoryForGating == null && playerInventory != null)
+            abilityInventoryForGating = playerInventory.GetComponent<PlayerAbilityInventory>();
+        if (abilityInventoryForGating == null)
+            abilityInventoryForGating = FindAnyObjectByType<PlayerAbilityInventory>();
+
         if (journalButton != null)
             journalButton.onClick.AddListener(() => journalUI?.ToggleJournal());
 
         if (inventoryButton != null)
             inventoryButton.onClick.AddListener(() => inventoryUI?.ToggleInventory());
 
+        // One-time-reveal gating — same pattern as toolSlotsStartHidden/RevealToolSlot below, just for
+        // three individual elements instead of a group of four. Each stays hidden until its own
+        // Reveal*() method is called (wire those to the matching tutorial step's onStepShown).
+        if (journalButtonStartsHidden && journalButton != null)
+            journalButton.gameObject.SetActive(false);
+        if (miasmaBarStartsHidden && miasmaBar != null)
+            miasmaBar.gameObject.SetActive(false);
+        if (zoneHappinessBarStartsHidden && zoneHappinessBar != null)
+            zoneHappinessBar.gameObject.SetActive(false);
+
+        // Inventory icon stays hidden until the player's picked up a plant at all (any of harvest
+        // node / physical pickup / pulled back out of a pot — PlayerInventory.OnFirstPlantHarvested).
+        // The hotbar row is gated separately, on a pot HARVEST specifically — a fully-grown plant
+        // removed for a Consumable/Placeable ability item (PlayerAbilityInventory.
+        // OnFirstAbilityItemHarvested) — since that's the only way the player ever gets anything to
+        // put ON a hotbar. HasHarvestedFirstPlant/HasHarvestedFirstAbilityItem cover the case where
+        // this UI enables AFTER either already happened this session (the events alone would've been
+        // missed by a listener that wasn't subscribed yet).
+        if (playerInventory != null)
+            playerInventory.OnFirstPlantHarvested += OnFirstPlantHarvested;
+        if (abilityInventoryForGating != null)
+            abilityInventoryForGating.OnFirstAbilityItemHarvested += OnFirstAbilityItemHarvested;
+
+        // tabToggleHintIcon's visibility depends on this too (see RefreshPlacementBanner) — refresh
+        // it the moment wall placement actually unlocks, in case the player is mid-Floor-placing
+        // right when they pick up their first Clovenwick.
+        if (playerInventory != null)
+            playerInventory.OnWallPlacementUnlocked += RefreshPlacementBanner;
+
+        RefreshFirstHarvestGatedUI();
+
         WireToolSlot(0, () => placementSystem.TogglePlaceMode());
         WireToolSlot(1, () => placementSystem.ToggleRemoveMode());
         WireToolSlot(2, () => placementSystem.ToggleMoveMode());
-        // toolSlots[3] intentionally left unwired — still reserved.
+        WireToolSlot(3, () => placementSystem.ToggleWaterMode());
+
+        if (toolSlotsStartHidden)
+        {
+            for (int i = 0; i < toolSlots.Length; i++)
+                if (toolSlots[i] != null) toolSlots[i].gameObject.SetActive(false);
+
+            if (toolSelectorRoot != null)
+                toolSelectorRoot.SetActive(false);
+        }
 
         if (placementSystem != null)
         {
@@ -218,11 +428,28 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             // buttons above, so this one subscription keeps the buttons correctly highlighted
             // (or un-highlighted) regardless of which input triggered the change.
             placementSystem.OnModeChanged += RefreshToolButtonHighlights;
+            placementSystem.OnModeChanged += OnPlacementSystemModeChanged;
             RefreshToolButtonHighlights(placementSystem.CurrentMode); // sync initial state
         }
 
+        if (abilityPlacementSystem == null)
+            abilityPlacementSystem = FindAnyObjectByType<AbilityPlacementSystem>();
+
+        if (abilityPlacementSystem != null)
+            abilityPlacementSystem.OnPlacingChanged += RefreshSecondaryHudVisibility;
+
+        RefreshSecondaryHudVisibility(); // sync initial state
+
+        if (wallPlacementSystem == null)
+            wallPlacementSystem = FindAnyObjectByType<WallPlacementSystem>();
+
+        if (wallPlacementSystem != null)
+            wallPlacementSystem.OnModeChanged += RefreshWallPlacementUI;
+
+        RefreshWallPlacementUI(); // sync initial state
+
         if (hotbarSystem == null)
-            hotbarSystem = FindObjectOfType<AbilityHotbarSystem>();
+            hotbarSystem = FindAnyObjectByType<AbilityHotbarSystem>();
 
         for (int i = 0; i < hudHotbarSlotUIs.Count; i++)
             hudHotbarSlotUIs[i]?.Initialize(this, i);
@@ -235,18 +462,68 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             hotbarSystem.OnSlotsChanged += RefreshHotbarUI;
             RefreshHotbarUI(); // sync initial state — assignments made before this enabled shouldn't show empty
         }
+
+        // NOTE: does NOT subscribe here if NewItemTracker.Instance isn't set yet — see
+        // newItemTrackerSubscribed / Update() below for why that used to permanently miss the dots
+        // whenever NewItemTracker's own Awake() happened to run after this OnEnable.
+        TrySubscribeToNewItemTracker();
     }
 
     private void OnDisable()
     {
         if (hotbarSystem != null)
             hotbarSystem.OnSlotsChanged -= RefreshHotbarUI;
+
+        if (newItemTrackerSubscribed && NewItemTracker.Instance != null)
+        {
+            NewItemTracker.Instance.OnChanged -= RefreshNewItemDots;
+            newItemTrackerSubscribed = false;
+        }
+    }
+
+    // Set once TrySubscribeToNewItemTracker() actually succeeds, so OnDisable only unsubscribes
+    // when there's a real subscription to remove, and Update() below stops retrying once it does.
+    private bool newItemTrackerSubscribed = false;
+
+    /// <summary>Subscribes to NewItemTracker.OnChanged the moment Instance actually becomes
+    /// available. OnEnable() alone isn't reliable for this — if NewItemTracker's own Awake() (a
+    /// separate persistent object, possibly from a different scene/bootstrap order) happens to run
+    /// AFTER this component's OnEnable, Instance was null at that exact moment, the subscription
+    /// got silently skipped, and — since nothing ever retried — the HUD dots would never update for
+    /// the rest of the session no matter what got picked up afterward. Called from OnEnable (the
+    /// common case, ready immediately) and every frame from Update() until it succeeds (the late-
+    /// init case), then never again once subscribed.</summary>
+    private void TrySubscribeToNewItemTracker()
+    {
+        if (newItemTrackerSubscribed || NewItemTracker.Instance == null) return;
+
+        NewItemTracker.Instance.OnChanged += RefreshNewItemDots;
+        newItemTrackerSubscribed = true;
+        RefreshNewItemDots(); // sync state immediately — don't wait for the first real change
     }
 
     private void OnDestroy()
     {
         if (placementSystem != null)
+        {
             placementSystem.OnModeChanged -= RefreshToolButtonHighlights;
+            placementSystem.OnModeChanged -= OnPlacementSystemModeChanged;
+        }
+
+        if (abilityPlacementSystem != null)
+            abilityPlacementSystem.OnPlacingChanged -= RefreshSecondaryHudVisibility;
+
+        if (wallPlacementSystem != null)
+            wallPlacementSystem.OnModeChanged -= RefreshWallPlacementUI;
+
+        if (playerInventory != null)
+        {
+            playerInventory.OnFirstPlantHarvested -= OnFirstPlantHarvested;
+            playerInventory.OnWallPlacementUnlocked -= RefreshPlacementBanner;
+        }
+
+        if (abilityInventoryForGating != null)
+            abilityInventoryForGating.OnFirstAbilityItemHarvested -= OnFirstAbilityItemHarvested;
     }
 
     // ---------------------------------------------------------------
@@ -271,6 +548,27 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     /// assignment — doesn't touch the player's actual item count, so nothing is lost.</summary>
     public void ClearHotbarSlot(int slotIndex) => hotbarSystem?.Clear(slotIndex);
 
+    // ---------------------------------------------------------------
+    // First-harvest gated UI — two separate flags, two separate gates:
+    //   - inventoryButton unlocks on ANY plant pickup (PlayerInventory.HasHarvestedFirstPlant).
+    //   - hotbarRoot unlocks on a POT harvest specifically — a fully-grown plant removed for a
+    //     Consumable/Placeable item (PlayerAbilityInventory.HasHarvestedFirstAbilityItem), since
+    //     that's the only way the player gets anything to actually put on a hotbar.
+    // PotMenuUIController's ability button and InventoryUIController's own hotbar row gate the same
+    // way as hotbarRoot, off the same PlayerAbilityInventory flag.
+    // ---------------------------------------------------------------
+    private void OnFirstPlantHarvested() => RefreshFirstHarvestGatedUI();
+    private void OnFirstAbilityItemHarvested() => RefreshFirstHarvestGatedUI();
+
+    private void RefreshFirstHarvestGatedUI()
+    {
+        if (inventoryButton != null)
+            inventoryButton.gameObject.SetActive(playerInventory != null && playerInventory.HasHarvestedFirstPlant);
+
+        if (hotbarRoot != null)
+            hotbarRoot.SetActive(abilityInventoryForGating != null && abilityInventoryForGating.HasHarvestedFirstAbilityItem);
+    }
+
     /// <summary>Adds a click listener to toolSlots[index] if both the slot and placementSystem exist.</summary>
     private void WireToolSlot(int index, UnityEngine.Events.UnityAction onClick)
     {
@@ -280,12 +578,198 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         toolSlots[index].onClick.AddListener(onClick);
     }
 
+    /// <summary>Reveals one tool-selector slot (0=Place,1=Remove,2=Move,3=Water) without affecting the
+    /// others — cumulative reveal for the placement tutorial walkthrough, see toolSlotsStartHidden's
+    /// tooltip. Wire this from a TutorialStep's onStepShown (TutorialStepData) for whichever step first
+    /// asks the player to use that tool. Safe to call repeatedly, out of order, or on an already-
+    /// revealed slot.</summary>
+    public void RevealToolSlot(int index)
+    {
+        if (index < 0 || index >= toolSlots.Length || toolSlots[index] == null) return;
+        toolSlots[index].gameObject.SetActive(true);
+
+        // The shared backdrop behind the slots reveals on the FIRST call regardless of which index —
+        // once the tutorial is teaching any tool, the whole selector frame should be visible too.
+        if (toolSelectorRoot != null)
+            toolSelectorRoot.SetActive(true);
+    }
+
+    /// <summary>Reveals the journal icon (Button.gameObject) — safe to call repeatedly or if it's
+    /// already visible. Wire this from the "Press [J] to open your journal" tutorial step's
+    /// onStepShown.</summary>
+    public void RevealJournalIcon()
+    {
+        if (journalButton != null) journalButton.gameObject.SetActive(true);
+    }
+
+    /// <summary>Reveals the miasma bar (ImageFillBar.gameObject) — safe to call repeatedly or if it's
+    /// already visible. Wire this from that bar's own tutorial step's onStepShown.</summary>
+    public void RevealMiasmaBar()
+    {
+        if (miasmaBar != null) miasmaBar.gameObject.SetActive(true);
+    }
+
+    /// <summary>Reveals the zone happiness bar (ImageFillBar.gameObject) — safe to call repeatedly or
+    /// if it's already visible. Wire this from that bar's own tutorial step's onStepShown.</summary>
+    public void RevealZoneHappinessBar()
+    {
+        if (zoneHappinessBar != null) zoneHappinessBar.gameObject.SetActive(true);
+    }
+
+    /// <summary>Force-reveals every "starts hidden until the tutorial reaches it" HUD element at once —
+    /// the journal icon, miasma bar, zone happiness bar, and all four tool-selector slots. Called by
+    /// TutorialSequenceController the instant the player enters the main scene (see its
+    /// OnSceneLoadedForTutorial): by that point everything gated behind the pre-gate half of the
+    /// tutorial is supposed to already be unlocked (either legitimately, or fast-forwarded past by the
+    /// early-exit skip), but each element's own per-step onStepShown wiring targeted the TUTORIAL
+    /// scene's MainUIController instance specifically — this fresh instance here in the main scene has
+    /// no memory of that and starts every one of them hidden again regardless. This re-applies all of
+    /// them at once instead of relying on those now-unreachable per-step hooks.</summary>
+    public void RevealAllTutorialGatedUI()
+    {
+        RevealJournalIcon();
+        RevealMiasmaBar();
+        RevealZoneHappinessBar();
+        RevealToolSlot(0);
+        RevealToolSlot(1);
+        RevealToolSlot(2);
+        RevealToolSlot(3);
+
+        // Same problem as the elements above, but the flags behind these two live on PlayerInventory/
+        // PlayerAbilityInventory (HasHarvestedFirstPlant/HasHarvestedFirstAbilityItem) rather than on
+        // this component — if the Player itself doesn't persist into the main scene, those reset to
+        // false too and RefreshFirstHarvestGatedUI (called once in Awake) hides both of these right
+        // alongside everything else. Force them on directly rather than going through that flag check.
+        if (inventoryButton != null) inventoryButton.gameObject.SetActive(true);
+        if (hotbarRoot != null) hotbarRoot.SetActive(true);
+    }
+
     /// <summary>Tints each tool slot to show which tool (if any) is currently active.</summary>
     private void RefreshToolButtonHighlights(PlacementSystem.Mode mode)
     {
         SetToolSlotHighlight(0, mode == PlacementSystem.Mode.Placing);
         SetToolSlotHighlight(1, mode == PlacementSystem.Mode.Removing);
         SetToolSlotHighlight(2, mode == PlacementSystem.Mode.Moving);
+        SetToolSlotHighlight(3, mode == PlacementSystem.Mode.Watering);
+
+        RefreshPotSelector(mode);
+        RefreshPlacementBanner();
+    }
+
+    /// <summary>Shows "Floor Placement Mode" while PlacementSystem is Placing, "Wall Placement
+    /// Mode" while WallPlacementSystem is Placing, and hides the banner otherwise. Called both from
+    /// RefreshToolButtonHighlights (fires on every PlacementSystem.OnModeChanged) and from
+    /// RefreshWallPlacementUI below, since the two systems' events aren't shaped the same (one
+    /// passes a Mode, the other doesn't) — this method takes no parameters and just re-reads both
+    /// systems' current state fresh each time, so either caller can trigger the same result.</summary>
+    private void RefreshPlacementBanner()
+    {
+        bool floorPlacing = placementSystem != null && placementSystem.IsPlacementModeActive;
+        bool wallPlacing = wallPlacementSystem != null && wallPlacementSystem.CurrentMode == WallPlacementSystem.Mode.Placing;
+        bool eitherPlacing = floorPlacing || wallPlacing;
+
+        if (placementBannerRoot != null)
+            placementBannerRoot.SetActive(eitherPlacing);
+
+        if (placementBannerText != null)
+            placementBannerText.text = wallPlacing ? wallPlacementBannerText : floorPlacementBannerText;
+
+        // Same condition as the banner above — see the header tooltips on these two fields.
+        if (nonPlacementSection != null)
+            nonPlacementSection.SetActive(!eitherPlacing);
+        if (placementSection != null)
+            placementSection.SetActive(eitherPlacing);
+
+        // Floor-only, and only once Clovenwick's actually been picked up — see the field's own
+        // tooltip for why. Deliberately re-read fresh each call rather than cached, same as
+        // floorPlacing/wallPlacing above, so OnWallPlacementUnlocked firing mid-Floor-placing
+        // updates this immediately without needing a mode change to trigger the refresh.
+        if (tabToggleHintIcon != null)
+            tabToggleHintIcon.SetActive(floorPlacing && playerInventory != null && playerInventory.HasUnlockedWallPlacement);
+    }
+
+    /// <summary>Everything that needs to react to WallPlacementSystem.OnModeChanged specifically —
+    /// the shared banner (also driven from the floor side, see above), the wall-mushroom selector,
+    /// secondaryHudRoot (also driven from the floor/ability sides — see RefreshSecondaryHudVisibility
+    /// itself, which now checks wallPlacementSystem too), and wallOnlySection below.</summary>
+    private void RefreshWallPlacementUI()
+    {
+        RefreshPlacementBanner();
+        RefreshWallMushroomSelector();
+        RefreshSecondaryHudVisibility();
+        RefreshWallOnlySection();
+    }
+
+    /// <summary>A SECOND selective-hide group, separate from secondaryHudRoot — things that should
+    /// hide specifically during WALL placement mode but stay visible during FLOOR placement mode
+    /// (secondaryHudRoot hides for both). Parent whatever those wall-specific elements are under
+    /// their own GameObject and assign it to wallOnlySection.</summary>
+    private void RefreshWallOnlySection()
+    {
+        if (wallOnlySection == null) return;
+
+        bool wallPlacing = wallPlacementSystem != null && wallPlacementSystem.CurrentMode != WallPlacementSystem.Mode.None;
+        wallOnlySection.SetActive(!wallPlacing);
+    }
+
+    /// <summary>Shows/hides and refreshes the wall-mushroom selector — same shape as
+    /// RefreshPotSelector below, just for WallPlacementSystem instead of PlacementSystem.</summary>
+    private void RefreshWallMushroomSelector()
+    {
+        bool visible = wallPlacementSystem != null && wallPlacementSystem.CurrentMode == WallPlacementSystem.Mode.Placing;
+
+        if (wallMushroomSelectorRoot != null)
+            wallMushroomSelectorRoot.SetActive(visible);
+
+        if (!visible || wallMushroomSelectorIcons == null || wallPlacementSystem == null) return;
+
+        IReadOnlyList<WallMushroomData> mushrooms = wallPlacementSystem.AvailableMushrooms;
+        int activeIndex = wallPlacementSystem.SelectedIndex;
+
+        for (int i = 0; i < wallMushroomSelectorIcons.Count; i++)
+        {
+            Image img = wallMushroomSelectorIcons[i];
+            if (img == null) continue;
+
+            WallMushroomData data = mushrooms != null && i < mushrooms.Count ? mushrooms[i] : null;
+            img.sprite = data != null ? data.icon : null;
+            img.enabled = data != null && data.icon != null;
+
+            Color c = img.color;
+            c.a = i == activeIndex ? 1f : inactiveWallMushroomIconOpacity;
+            img.color = c;
+        }
+    }
+
+    /// <summary>Shows/hides and refreshes the pot-type selector. Called from
+    /// RefreshToolButtonHighlights, which already fires on every PlacementSystem.OnModeChanged —
+    /// including every single scroll-cycle step while in Placing mode (EnterPlaceMode fires the
+    /// event on each call, not just the first), so this stays in sync with scrolling for free.</summary>
+    private void RefreshPotSelector(PlacementSystem.Mode mode)
+    {
+        bool visible = mode == PlacementSystem.Mode.Placing;
+
+        if (potSelectorRoot != null)
+            potSelectorRoot.SetActive(visible);
+
+        if (!visible || potSelectorIcons == null || placementSystem == null) return;
+
+        IReadOnlyList<PotData> pots = placementSystem.AvailablePots;
+        int activeIndex = placementSystem.SelectedPotIndex;
+
+        for (int i = 0; i < potSelectorIcons.Count; i++)
+        {
+            Image img = potSelectorIcons[i];
+            if (img == null) continue;
+
+            PotData data = pots != null && i < pots.Count ? pots[i] : null;
+            img.sprite = data != null ? data.icon : null;
+            img.enabled = data != null && data.icon != null;
+
+            Color c = img.color;
+            c.a = i == activeIndex ? 1f : inactivePotIconOpacity;
+            img.color = c;
+        }
     }
 
     private void SetToolSlotHighlight(int index, bool active)
@@ -300,8 +784,14 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     {
         // Restores the growth-start call that used to live in UI_Script.Start(). See the
         // autoStartMiasmaGrowth tooltip above for why this is here at all.
+        //
+        // NOTE: uses SetGrowing(true) rather than flipSize(). flipSize() is a toggle, so if
+        // MiasmaController.growOnStart is ALSO true, the two Start() calls fire in some
+        // (unpredictable) order and cancel each other out, leaving growth OFF and the miasma
+        // bar frozen. SetGrowing(true) is idempotent — it's safe no matter which Start() runs
+        // first or whether growOnStart is left on.
         if (autoStartMiasmaGrowth && miasma != null)
-            miasma.flipSize();
+            miasma.SetGrowing(true);
     }
 
     private void Update()
@@ -309,6 +799,11 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         RefreshWaterBar();
         RefreshMiasmaBar();
         RefreshZoneHappinessBar();
+
+        // Cheap once-subscribed-stays-off check — see TrySubscribeToNewItemTracker's own comment
+        // for why OnEnable alone can miss this.
+        if (!newItemTrackerSubscribed)
+            TrySubscribeToNewItemTracker();
 
         if (debugLogging) RunDebugLog();
     }
@@ -349,6 +844,41 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
 
         if (hudRoot != null)
             hudRoot.SetActive(_hudHideRequesters.Count == 0);
+    }
+
+    // ---------------------------------------------------------------
+    // Secondary HUD visibility — hides everything except hotbar/tool selector while placing,
+    // moving, or removing a pot (PlacementSystem) or an ability placeable (AbilityPlacementSystem).
+    // ---------------------------------------------------------------
+    // PlacementSystem.OnModeChanged passes its Mode — ignored here, this only cares THAT it
+    // changed, not to what — kept as a separate named method (rather than a lambda) so OnDestroy
+    // can unsubscribe it the same way RefreshToolButtonHighlights already does above.
+    private void OnPlacementSystemModeChanged(PlacementSystem.Mode mode) => RefreshSecondaryHudVisibility();
+
+    private void RefreshSecondaryHudVisibility()
+    {
+        if (secondaryHudRoot == null) return;
+
+        bool placingActive =
+            (placementSystem != null && placementSystem.IsPlacementModeActive) ||
+            (abilityPlacementSystem != null && abilityPlacementSystem.IsActive) ||
+            (wallPlacementSystem != null && wallPlacementSystem.CurrentMode != WallPlacementSystem.Mode.None);
+
+        secondaryHudRoot.SetActive(!placingActive);
+    }
+
+    // ---------------------------------------------------------------
+    // New-item HUD dots — see NewItemTracker.cs. Journal/inventory icon click already opens
+    // their respective panels via journalUI/inventoryUI above; the dots here are purely visual
+    // and don't need their own click handling.
+    // ---------------------------------------------------------------
+    private void RefreshNewItemDots()
+    {
+        if (journalNewDot != null)
+            journalNewDot.SetActive(NewItemTracker.Instance != null && NewItemTracker.Instance.HasAnyUnseenJournal);
+
+        if (inventoryNewDot != null)
+            inventoryNewDot.SetActive(NewItemTracker.Instance != null && NewItemTracker.Instance.HasAnyUnseenInventory);
     }
 
     // ---------------------------------------------------------------
@@ -405,6 +935,58 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
 
         if (interactPromptHUD != null)
             interactPromptHUD.SetActive(_interactPromptRequesters.Count > 0);
+    }
+
+    /// <summary>Shows/hides the Water Plant HUD prompt, and the "scroll to switch" hint alongside
+    /// it — they always share the same visibility condition (there's nothing to scroll BETWEEN
+    /// unless this second prompt exists), so one method covers both. Only PotInteraction calls
+    /// this — see the waterPromptHUD tooltip for why it doesn't need interactPromptHUD's
+    /// requester-tracking.</summary>
+    public void SetWaterPromptVisible(bool visible)
+    {
+        if (waterPromptHUD != null)
+            waterPromptHUD.SetActive(visible);
+
+        if (promptScrollHint != null)
+            promptScrollHint.SetActive(visible);
+    }
+
+    /// <summary>Sets which HUD prompt is the active/highlighted one (full opacity, E icon shown),
+    /// dimming the other to inactiveHUDPromptOpacity AND hiding its E icon entirely. Call whenever
+    /// the selection OR either prompt's visibility changes — safe even if one or both prompts are
+    /// currently hidden.</summary>
+    public void SetActiveHUDPrompt(bool waterIsActive)
+    {
+        EnsureHUDPromptGroups();
+
+        if (interactPromptHUDGroup != null)
+            interactPromptHUDGroup.alpha = waterIsActive ? inactiveHUDPromptOpacity : 1f;
+
+        if (waterPromptHUDGroup != null)
+            waterPromptHUDGroup.alpha = waterIsActive ? 1f : inactiveHUDPromptOpacity;
+
+        if (interactPromptEIcon != null)
+            interactPromptEIcon.enabled = !waterIsActive;
+
+        if (waterPromptEIcon != null)
+            waterPromptEIcon.enabled = waterIsActive;
+    }
+
+    private void EnsureHUDPromptGroups()
+    {
+        if (interactPromptHUD != null && interactPromptHUDGroup == null)
+        {
+            interactPromptHUDGroup = interactPromptHUD.GetComponent<CanvasGroup>();
+            if (interactPromptHUDGroup == null)
+                interactPromptHUDGroup = interactPromptHUD.AddComponent<CanvasGroup>();
+        }
+
+        if (waterPromptHUD != null && waterPromptHUDGroup == null)
+        {
+            waterPromptHUDGroup = waterPromptHUD.GetComponent<CanvasGroup>();
+            if (waterPromptHUDGroup == null)
+                waterPromptHUDGroup = waterPromptHUD.AddComponent<CanvasGroup>();
+        }
     }
 
     // ---------------------------------------------------------------

@@ -36,6 +36,16 @@ public class PlayerWaterSource : MonoBehaviour
     [Tooltip("Layer name used on your water volume's GameObject. Must match exactly.")]
     [SerializeField] private string waterLayerName = "WaterRefill";
 
+    [Header("Sound")]
+    [Tooltip("Looping sound played while the pool is actively refilling (not yet full). Stops the " +
+             "instant it's full, or the player leaves the water — whichever happens first.")]
+    [SerializeField] private AudioClip refillLoopClip;
+    [Tooltip("Optional one-shot played the moment the pool actually reaches full, on top of the loop " +
+             "above stopping. Leave empty to skip it.")]
+    [SerializeField] private AudioClip refillCompleteClip;
+    [Tooltip("Auto-added on this GameObject if left empty.")]
+    [SerializeField] private AudioSource audioSource;
+
     [Header("Mission")]
     [Tooltip("'find_water' completes the moment the player enters the water trigger. 'water_refill' " +
              "completes once the pool is full while still inside it. Leave blank to disable reporting.")]
@@ -47,6 +57,13 @@ public class PlayerWaterSource : MonoBehaviour
     {
         if (playerInventory == null)
             playerInventory = GetComponent<PlayerInventory>();
+
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+        audioSource.loop = true;
 
         waterLayer = LayerMask.NameToLayer(waterLayerName);
         if (waterLayer < 0)
@@ -66,9 +83,53 @@ public class PlayerWaterSource : MonoBehaviour
     {
         if (other.gameObject.layer != waterLayer || playerInventory == null) return;
 
-        playerInventory.refillWaterPool();
+        bool wasFull = playerInventory.getWaterPool() >= playerInventory.getMaxWaterPool();
 
-        if (tutorialMission != null)
+        // Gradual now, rather than instantly maxing the pool every physics tick — see
+        // PlayerInventory.refillWaterPoolOverTime's own comment.
+        playerInventory.refillWaterPool(Time.deltaTime);
+
+        bool isFull = playerInventory.getWaterPool() >= playerInventory.getMaxWaterPool();
+
+        if (!isFull)
+        {
+            // Still actively filling — keep the loop going (PlayOneShotLoop below no-ops if it's
+            // already playing this same clip, so this is safe to call every tick).
+            PlayRefillLoop();
+        }
+        else if (!wasFull)
+        {
+            // Just became full THIS tick — stop the loop and fire the one-shot completion sound.
+            StopRefillLoop();
+            if (refillCompleteClip != null)
+                audioSource.PlayOneShot(refillCompleteClip);
+        }
+
+        if (tutorialMission != null && isFull)
             MissionProgressManager.Instance?.CompleteOrderedTask(tutorialMission, "water_refill");
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer != waterLayer) return;
+
+        // Stop the fill loop the moment the player leaves the water, even mid-refill — it shouldn't
+        // keep playing once they're not actually standing in it anymore.
+        StopRefillLoop();
+    }
+
+    private void PlayRefillLoop()
+    {
+        if (refillLoopClip == null || audioSource == null) return;
+        if (audioSource.isPlaying && audioSource.clip == refillLoopClip) return; // already going — don't restart it every tick
+
+        audioSource.clip = refillLoopClip;
+        audioSource.Play();
+    }
+
+    private void StopRefillLoop()
+    {
+        if (audioSource != null && audioSource.isPlaying)
+            audioSource.Stop();
     }
 }

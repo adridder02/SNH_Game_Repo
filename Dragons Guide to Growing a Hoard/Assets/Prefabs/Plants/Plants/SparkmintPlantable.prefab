@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea6b95557e7067b4a8c58044c08c19c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plantSize: 2
+  plantSize: 1
   plantType: 1
   journalSpecies: {fileID: 11400000, guid: c1da464e3762ebe4483ebae2c08cada8, type: 2}
   potPlacementOffset: 0
@@ -143,8 +143,10 @@ MonoBehaviour:
   lightThresholdLow: 0.25
   waterThresholdHigh: 8
   waterThresholdLow: 4
+  waterThresholdOverwater: 9
   revivedMinScore: 5
   intermediateMinScore: 2
+  permanentDeathDelay: 30
   lightSensor: {fileID: 0}
   revivedVisual: {fileID: 0}
   intermediateVisual: {fileID: 0}
@@ -161,13 +163,14 @@ MonoBehaviour:
   miasmaSoilPenalty: 0
   miasmaWaterDrainMultiplier: 1
   isMiasmaDebuffActive: 0
-  currentState: 2
-  currentSoil: 2
+  currentState: 1
+  currentSoil: 1
   isOnSoil: 0
   lastTotalScore: 0
   soilScore: 0
   lightScore: 0
   waterScore: 0
+  isPermanentlyDead: 0
 --- !u!114 &2098516834699238352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,6 +186,7 @@ MonoBehaviour:
   useDummyValues: 0
   dummyState: 1
   dummyMiasma: 0
+  dummyWater: 0.5
   useManualHeight: 0
   manualHeightOffset: 1
   hoverGap: 1.5
@@ -204,9 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.05
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 0}
 --- !u!114 &6155035638967588191
 MonoBehaviour:
   m_ObjectHideFlags: 0

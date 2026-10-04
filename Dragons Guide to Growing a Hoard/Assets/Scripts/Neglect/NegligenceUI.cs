@@ -95,8 +95,6 @@ public class NegligenceUI : MonoBehaviour
     private GameObject _finishedBanner;
     private RectTransform _panelRT;
 
-    private bool _expanded = false;
-
     private List<ZoneHealth.NegligenceLevel> _zoneLevels
         = new List<ZoneHealth.NegligenceLevel>();
     private ZoneHealth.NegligenceLevel _overallLevel

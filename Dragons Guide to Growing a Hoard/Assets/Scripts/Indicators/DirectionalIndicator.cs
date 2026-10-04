@@ -75,6 +75,41 @@ public class DirectionalIndicator : MonoBehaviour
     private List<IndicatorEntry> entries = new List<IndicatorEntry>();
     private RectTransform canvasRect;
 
+    /// <summary>Auto-set in Awake — lets tutorial/gameplay code reach ActivateTarget/DeactivateTarget
+    /// below without holding its own reference (same pattern as TutorialSequenceController.Instance).</summary>
+    public static DirectionalIndicator Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+    }
+
+    // ---------------------------------------------------------------
+    // Only-sometimes-tracked targets — for a TrackedTarget that shouldn't always show an arrow (e.g.
+    // a tutorial-only pointer at a placement grid or the water source), these toggle ONLY the
+    // target's TrackedTarget.IsTrackingActive flag (see TrackedTarget.cs), never the GameObject's own
+    // active state — that GameObject is usually the real grid/water source itself, so disabling it
+    // would disable the actual object, not just its arrow.
+    // ---------------------------------------------------------------
+    /// <summary>Turns this target's arrow/label on immediately (the object itself is never touched).
+    /// Wire this from a TutorialStep's onStepShown (see TutorialStepData) for a step that should point
+    /// the player somewhere. Safe to call on an already-active target.</summary>
+    public void ActivateTarget(TrackedTarget target)
+    {
+        if (target == null) return;
+        target.IsTrackingActive = true;
+    }
+
+    /// <summary>Turns this target's arrow/label off immediately (the object itself is never touched).
+    /// Wire this from a TutorialStep's onStepHidden to turn a step's indicator back off once that
+    /// step is done (see TutorialStepData). Safe to call on an already-inactive target.</summary>
+    public void DeactivateTarget(TrackedTarget target)
+    {
+        if (target == null) return;
+        target.IsTrackingActive = false;
+    }
+
     // ---------------------------------------------------------------
     private void Start()
     {
@@ -108,7 +143,7 @@ public class DirectionalIndicator : MonoBehaviour
         entries.Clear();
 
         // Find all TrackedTargets in the scene.
-        TrackedTarget[] targets = FindObjectsByType<TrackedTarget>(FindObjectsSortMode.None);
+        TrackedTarget[] targets = FindObjectsByType<TrackedTarget>();
         foreach (TrackedTarget t in targets)
             entries.Add(CreateEntry(t));
 
@@ -165,7 +200,7 @@ public class DirectionalIndicator : MonoBehaviour
         tmp.fontSize = labelFontSize;
         tmp.color = target.indicatorColor;
         tmp.alignment = TextAlignmentOptions.Center;
-        tmp.enableWordWrapping = false;
+        tmp.textWrappingMode = TextWrappingModes.NoWrap; // replaces the deprecated enableWordWrapping = false
 
         // Size the label rect to fit the text with a little padding.
         Vector2 textSize = new Vector2(tmp.preferredWidth + 16f, labelFontSize + 10f);
@@ -200,6 +235,16 @@ public class DirectionalIndicator : MonoBehaviour
             if (e.target == null)
             {
                 // Target was destroyed — hide its UI and skip.
+                SetAlpha(ref e, 0f);
+                entries[i] = e;
+                continue;
+            }
+
+            if (!e.target.IsTrackingActive)
+            {
+                // Tracking turned off for this target (e.g. tutorial step ended) — hide its arrow
+                // and label, but leave the target's own GameObject completely alone.
+                if (e.arrowRect != null) e.arrowRect.gameObject.SetActive(false);
                 SetAlpha(ref e, 0f);
                 entries[i] = e;
                 continue;

@@ -40,9 +40,6 @@ public class HotbarSlotUI : MonoBehaviour, IPointerClickHandler
     [SerializeField] private float depletedAlpha = 0.35f;
     [Tooltip("Alpha applied when no item is assigned to this slot at all.")]
     [SerializeField] private float emptyAlpha = 0.15f;
-    [Tooltip("Tint shown over this slot while it's the one actively selected (currently placing a " +
-             "Placeable). Built automatically at runtime — no Editor setup needed.")]
-    [SerializeField] private Color selectedTint = new Color(1f, 0.85f, 0.4f, 0.4f);
 
     /// <summary>Which AbilityHotbarSystem slot (0-based) this UI element mirrors. Set by the owning
     /// controller's Awake() from its hotbarSlotUIs list order — slot 0 = key '1', etc.</summary>
@@ -51,7 +48,6 @@ public class HotbarSlotUI : MonoBehaviour, IPointerClickHandler
     public RectTransform RectTransform => (RectTransform)transform;
 
     private IHotbarActivator controller;
-    private Image selectedOverlay;
 
     public void Initialize(IHotbarActivator owningController, int slotIndex)
     {
@@ -78,27 +74,18 @@ public class HotbarSlotUI : MonoBehaviour, IPointerClickHandler
         c.a = data == null ? emptyAlpha : (count > 0 ? 1f : depletedAlpha);
         icon.color = c;
 
-        EnsureSelectedOverlay();
-        selectedOverlay.color = hotbarSystem.IsSlotActive(SlotIndex) ? selectedTint : Color.clear;
-    }
-
-    /// <summary>Creates a full-cover tint overlay the first time this slot refreshes — same
-    /// "build it at runtime, no prefab editing needed" approach as the grid's drag-highlight cells.</summary>
-    private void EnsureSelectedOverlay()
-    {
-        if (selectedOverlay != null) return;
-
-        GameObject go = new GameObject("SelectedOverlay", typeof(RectTransform));
-        RectTransform rt = go.GetComponent<RectTransform>();
-        rt.SetParent(transform, false);
-        rt.anchorMin = Vector2.zero;
-        rt.anchorMax = Vector2.one;
-        rt.offsetMin = Vector2.zero;
-        rt.offsetMax = Vector2.zero;
-
-        selectedOverlay = go.AddComponent<Image>();
-        selectedOverlay.raycastTarget = false; // never intercept clicks meant for this slot
-        selectedOverlay.color = Color.clear;
+        // "Active" visual now comes from the Button/Selectable's own Selected sprite (Sprite Swap),
+        // not a manual tint. That state normally only updates on a UI click, though — a slot can
+        // ALSO become active via number keys (1-5), which never touches the EventSystem's
+        // selection on its own. Without this, pressing a key would leave the PREVIOUSLY-clicked
+        // slot still showing its Selected sprite while the newly-active one doesn't. Only forces it
+        // when this slot just became active and isn't already the current selection, so it's not
+        // fighting normal click-driven selection the rest of the time.
+        if (hotbarSystem.IsSlotActive(SlotIndex) && EventSystem.current != null &&
+            EventSystem.current.currentSelectedGameObject != gameObject)
+        {
+            EventSystem.current.SetSelectedGameObject(gameObject);
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)
