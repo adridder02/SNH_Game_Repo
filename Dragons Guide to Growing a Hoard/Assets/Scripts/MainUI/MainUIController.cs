@@ -168,6 +168,23 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
              "there's no separate backdrop to hide.")]
     [SerializeField] private GameObject toolSelectorRoot;
 
+    [Header("Debug")]
+    [Tooltip("DEV CONVENIENCE — check this to skip ALL of the tutorial's start-hidden gating above " +
+             "(journal icon, miasma bar, zone happiness bar, tool slots/selector, inventory icon, " +
+             "hotbar) and just show everything immediately, same as RevealAllTutorialGatedUI(). Use " +
+             "this while working on non-tutorial stuff in the main scene so you're not fighting the " +
+             "tutorial hiding things out from under you. One-way — flip it off and stop/restart Play " +
+             "to go back to normal tutorial-gated behavior. Leave OFF for actual tutorial testing/ship.")]
+    [SerializeField] private bool debugDisableTutorialHiding = false;
+    [Tooltip("PlayerPrefs key to check for 'this scene's tutorial half is already done' — set this to the " +
+             "EXACT SAME string as the main scene's own TutorialSequenceController's 'Completion Flag " +
+             "Key' field (e.g. \"Tutorial_MainHalfCompleted\"). When that flag is already set (a returning " +
+             "player, a save loaded straight into this scene), everything just shows immediately instead " +
+             "of starting hidden and waiting for prompts that already played once and won't play again. " +
+             "Leave blank if this MainUIController instance isn't in the scene that owns that half of the " +
+             "tutorial (e.g. a tutorial-scene-only HUD).")]
+    [SerializeField] private string tutorialCompletedPrefsKey;
+
     [Header("Hotbar")]
     [Tooltip("The persistent hotbar row shown on the main gameplay HUD (as opposed to the preview " +
              "row tucked into the Inventory panel, which InventoryUIController owns separately) — " +
@@ -422,6 +439,19 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
                 toolSelectorRoot.SetActive(false);
         }
 
+        // Runs last, after every hide-at-Awake block above, so it unconditionally wins regardless of
+        // what order those ran in. Reuses RevealAllTutorialGatedUI() rather than duplicating its logic.
+        // Two independent reasons to force everything visible immediately:
+        //   - debugDisableTutorialHiding: dev convenience, see its own tooltip.
+        //   - tutorialCompletedPrefsKey: this scene's tutorial half already finished on a previous visit
+        //     (see TutorialSequenceController's completionFlagKey) — nothing is going to come along and
+        //     reveal these one at a time via onStepShown, because that sequence isn't going to run again.
+        bool tutorialAlreadyCompleted = !string.IsNullOrEmpty(tutorialCompletedPrefsKey) &&
+                                         PlayerPrefs.GetInt(tutorialCompletedPrefsKey, 0) == 1;
+
+        if (debugDisableTutorialHiding || tutorialAlreadyCompleted)
+            RevealAllTutorialGatedUI();
+
         if (placementSystem != null)
         {
             // OnModeChanged fires no matter whether the mode changed via keybind or via one of the
@@ -617,14 +647,12 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     }
 
     /// <summary>Force-reveals every "starts hidden until the tutorial reaches it" HUD element at once —
-    /// the journal icon, miasma bar, zone happiness bar, and all four tool-selector slots. Called by
-    /// TutorialSequenceController the instant the player enters the main scene (see its
-    /// OnSceneLoadedForTutorial): by that point everything gated behind the pre-gate half of the
-    /// tutorial is supposed to already be unlocked (either legitimately, or fast-forwarded past by the
-    /// early-exit skip), but each element's own per-step onStepShown wiring targeted the TUTORIAL
-    /// scene's MainUIController instance specifically — this fresh instance here in the main scene has
-    /// no memory of that and starts every one of them hidden again regardless. This re-applies all of
-    /// them at once instead of relying on those now-unreachable per-step hooks.</summary>
+    /// the journal icon, miasma bar, zone happiness bar, and all four tool-selector slots (plus the
+    /// inventory icon/hotbar below). Called from this component's own Awake() when either
+    /// debugDisableTutorialHiding is on, or tutorialCompletedPrefsKey shows this scene's tutorial half
+    /// already finished on a previous visit — in both cases nothing is going to come along and reveal
+    /// these one at a time via each element's own per-step onStepShown wiring, so this reveals them all
+    /// at once up front instead. Also callable directly by anything else that needs the same effect.</summary>
     public void RevealAllTutorialGatedUI()
     {
         RevealJournalIcon();

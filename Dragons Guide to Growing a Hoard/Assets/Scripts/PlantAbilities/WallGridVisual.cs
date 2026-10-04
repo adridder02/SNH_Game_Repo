@@ -153,15 +153,7 @@ public class WallGridVisual : MonoBehaviour
             : new Vector3(originWorld.x + 0.002f, originWorld.y + vert, originWorld.z + horiz);
     }
 
-    // ---------------------------------------------------------------
-    // `this` (not just gameObject) checked first — Unity's overloaded null check catches a destroyed-
-    // but-still-referenced object (e.g. a WallPlacementSystem instance that outlived this scene via a
-    // stray DontDestroyOnLoad higher up its hierarchy) before touching .gameObject throws.
-    public void SetVisible(bool visible)
-    {
-        if (this == null) return;
-        gameObject.SetActive(visible);
-    }
+    public void SetVisible(bool visible) => gameObject.SetActive(visible);
     public void SetMaterial(Material mat) { if (mat != null) gridMaterial = mat; }
 
     public void SetCellState(int h, int v, CellState state)

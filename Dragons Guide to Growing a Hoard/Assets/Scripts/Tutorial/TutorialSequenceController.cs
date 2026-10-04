@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 // =============================================================
 // TutorialSequenceController.cs
@@ -13,6 +12,27 @@ using UnityEngine.SceneManagement;
 // pointing at a target), BottomBar steps show via
 // TutorialBottomPopupUI (the static strip). Whichever widget isn't
 // the current step's type stays hidden.
+//
+// SCENE-LOCAL, NOT PERSISTENT — deliberately. This used to try to
+// survive the tutorial-scene -> main-scene transition as one single
+// DontDestroyOnLoad'd instance with a scene-load "Gate" step in the
+// middle, so one `steps` list covered both scenes. That caused a long
+// chain of persistence bugs (stale WallGridVisual/WallPlacementSystem
+// references dragged along by sibling DontDestroyOnLoad objects, HUD
+// elements gated against a now-gone tutorial-scene MainUIController
+// instance, etc.) — chasing those down kept costing more than the
+// shared-instance approach was worth.
+//
+// The fix is architectural, not another patch: each scene just gets
+// its OWN TutorialSequenceController, with its OWN `steps` list (see
+// TutorialContent.BuildTutorialSceneSteps / BuildMainSceneSteps),
+// living and dying with that scene like any other scene-local
+// MonoBehaviour. No DontDestroyOnLoad, no scene-load trigger, no
+// "player left early, skip ahead" logic — none of that is needed
+// anymore because there's nothing crossing a scene boundary to wait
+// for. See completionFlagKey below for the one piece of state that
+// DOES need to survive between visits (so the main scene's half
+// doesn't replay every time you go back there).
 //
 // ADVANCING TO THE NEXT STEP happens any combination of:
 //   1. advanceOnClick — the player clicks the outlined target
@@ -36,14 +56,18 @@ using UnityEngine.SceneManagement;
 // with mission tasks).
 //
 // SETUP:
-//   1. Put this on a persistent tutorial-UI object in the scene.
-//   2. Assign promptUI / bottomPopupUI (the two view widgets).
+//   1. Put this on a tutorial-UI object LOCAL TO EACH SCENE that needs
+//      one — it no longer needs to persist, so no special parenting.
+//   2. Assign promptUI / bottomPopupUI (the two view widgets) — each
+//      scene's own copies.
 //   3. Build the `steps` list in the Inspector, in playback order —
 //      set each entry's type, message, and (for Portable) target +
 //      offsets. That's the whole authoring surface; nothing else in
 //      this file needs touching per-step.
 //   4. Leave autoStart on to begin at step 0 on Start(), or drive it
 //      manually (e.g. after a cutscene ends) with BeginSequence().
+//   5. If this scene's half shouldn't replay on a later visit (e.g.
+//      the main scene's journal/miasma intro), set completionFlagKey.
 // =============================================================
 public class TutorialSequenceController : MonoBehaviour
 {
@@ -62,20 +86,16 @@ public class TutorialSequenceController : MonoBehaviour
 
     [SerializeField] private bool autoStart = true;
 
-    [Header("Scene-Transition Gate (optional)")]
-    [Tooltip("Exact scene name that, once loaded, fires sceneLoadTriggerId below via NotifyExternalTrigger " +
-             "— the natural fit for a Gate step sitting between two halves of the tutorial (tutorial scene " +
-             "-> main scene). Leave blank if nothing in this sequence needs this. Note this GameObject " +
-             "needs to survive the tutorial-scene -> main-scene load for a Gate step to wait across that " +
-             "transition at all — see the DontDestroyOnLoad call in Awake below. If your two halves instead " +
-             "use separate UI references per scene (a different promptUI/portablePrompt set once you're in " +
-             "the main scene), leave this whole section blank and drive that Gate step's advance some other " +
-             "way (e.g. the main scene's own bootstrap script calling CompleteCurrentStep or " +
-             "NotifyExternalTrigger once its own UI is ready).")]
-    [SerializeField] private string sceneLoadTriggerSceneName;
-    [Tooltip("The id fired when sceneLoadTriggerSceneName above finishes loading — must match the waiting " +
-             "Gate step's External Trigger Id exactly.")]
-    [SerializeField] private string sceneLoadTriggerId = "entered_main_scene";
+    [Header("Completion Save Flag (optional)")]
+    [Tooltip("PlayerPrefs key written (value 1) the moment THIS scene's sequence finishes. Leave blank for " +
+             "a sequence that's fine replaying every time (e.g. the tutorial scene itself, which the player " +
+             "only ever visits once anyway). Set this on the MAIN scene's tutorial controller — e.g. " +
+             "\"Tutorial_MainHalfCompleted\" — so its journal/miasma/happiness-bar walkthrough only ever " +
+             "plays once, not every time the player returns to the main scene on a later visit/save load. " +
+             "MainUIController has a matching 'Tutorial Completed Prefs Key' field — set both to the exact " +
+             "same string so it knows to just show everything immediately instead of starting hidden and " +
+             "waiting for prompts that will never come.")]
+    [SerializeField] private string completionFlagKey;
 
     [Tooltip("Optional. Only used by the 'Load Hardcoded Tutorial Script' context menu action below — if " +
              "assigned, the six movement-tip BottomBar steps it generates are auto-linked to this mission's " +
@@ -116,30 +136,13 @@ public class TutorialSequenceController : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            // A second instance showed up (e.g. one already persisted from the tutorial scene, and the
-            // main scene's own copy just loaded alongside it) — the persisted one is the one actually
-            // running the sequence, so this newcomer has nothing to do.
+            // Shouldn't normally happen now that this isn't persistent (each scene has exactly one of
+            // these), but still a reasonable guard against two accidentally sitting in the same scene.
             Destroy(gameObject);
             return;
         }
 
         Instance = this;
-
-        // DontDestroyOnLoad silently refuses to persist a non-root GameObject (just logs a warning and
-        // does nothing) — if this object happens to be nested under some parent (a "Managers" object,
-        // a Canvas, whatever your scene's organized under), detach it to root first so it actually
-        // works regardless of where it sits in the hierarchy. true keeps its current world position/
-        // rotation/scale rather than snapping to the parent-less defaults.
-        if (transform.parent != null)
-            transform.SetParent(null, true);
-
-        // Needed for sceneLoadTriggerSceneName below to ever fire — without this, the whole object
-        // (and its subscription to SceneManager.sceneLoaded just below) is destroyed the instant the
-        // tutorial scene unloads, and a Gate step waiting on the main scene loading would wait forever.
-        // Harmless to leave on even if you don't use the scene-transition gate at all.
-        DontDestroyOnLoad(gameObject);
-
-        SceneManager.sceneLoaded += OnSceneLoadedForTutorial;
 
         if (progressManager == null)
             progressManager = MissionProgressManager.Instance != null
@@ -169,7 +172,7 @@ public class TutorialSequenceController : MonoBehaviour
 
     void OnDestroy()
     {
-        SceneManager.sceneLoaded -= OnSceneLoadedForTutorial;
+        if (Instance == this) Instance = null;
 
         if (promptUI != null) promptUI.OnAdvanceRequested -= HandleAdvanceRequested;
         if (bottomPopupUI != null) bottomPopupUI.OnAdvanceRequested -= HandleAdvanceRequested;
@@ -180,69 +183,18 @@ public class TutorialSequenceController : MonoBehaviour
         }
     }
 
-    /// <summary>Fires sceneLoadTriggerId the moment sceneLoadTriggerSceneName finishes loading — the
-    /// mechanism behind the scene-transition Gate step described in the header above. No-op if either
-    /// field is blank, or if the scene that loaded isn't the one being waited on.
-    ///
-    /// Also covers the player leaving the tutorial scene EARLY, before finishing everything the Gate
-    /// step was waiting behind (e.g. they quit out, or whatever lets them reach the main scene doesn't
-    /// actually require the tutorial to be done first). In that case the current step is still
-    /// somewhere BEFORE the Gate, so a plain NotifyExternalTrigger call would do nothing (it only ever
-    /// matches the CURRENT step's own id) and the player would be stuck on a first-half step whose UI
-    /// no longer exists. Detected by searching for the step that actually owns sceneLoadTriggerId — if
-    /// the sequence hasn't reached it yet, every step up to and including it is skipped (auto-marked
-    /// done, same effect as if the player had legitimately finished them) so the second half still
-    /// starts normally.</summary>
-    private void OnSceneLoadedForTutorial(Scene scene, LoadSceneMode mode)
+    void Start()
     {
-        if (string.IsNullOrEmpty(sceneLoadTriggerSceneName) || string.IsNullOrEmpty(sceneLoadTriggerId))
-            return;
-
-        if (scene.name != sceneLoadTriggerSceneName)
-            return;
-
-        // Every HUD element that's gated behind "reveal once the tutorial reaches this point" (journal
-        // icon, miasma/zone bars, tool selector slots — see MainUIController) had its reveal fired
-        // against the TUTORIAL scene's MainUIController instance specifically. That instance is gone
-        // now; the main scene's own fresh copy starts hidden again regardless of how much of the
-        // tutorial was actually finished. Reaching this scene at all means everything up to the gate
-        // counts as done (see the skip-ahead logic below), so force all of it visible right away on
-        // whichever MainUIController just loaded here, rather than relying on those now-unreachable
-        // per-step onStepShown hooks.
-        FindAnyObjectByType<MainUIController>()?.RevealAllTutorialGatedUI();
-
-        int gateIndex = FindStepIndexByExternalTrigger(sceneLoadTriggerId);
-
-        if (gateIndex >= 0 && currentIndex < gateIndex)
+        // Already finished this scene's half on a previous visit (e.g. loading a save straight into the
+        // main scene) — don't replay any prompts or hide any UI behind them. Still fires
+        // OnSequenceComplete so anything listening for "this half is done" sees the same signal either
+        // way, whether that happened just now or a long time ago.
+        if (!string.IsNullOrEmpty(completionFlagKey) && PlayerPrefs.GetInt(completionFlagKey, 0) == 1)
         {
-            // Left early — jump straight past the Gate (and every unfinished step before it) to
-            // whatever comes next, exactly as if the Gate had just advanced normally. Deliberately NOT
-            // going through the public SkipToStep — its bounds guard refuses an index == steps.Count,
-            // which would silently do nothing if the Gate happened to be the very last step; inlining
-            // its two lines here instead lets AdvanceToNextStep's own out-of-range handling (fire
-            // OnSequenceComplete) take over correctly in that case too.
-            currentIndex = gateIndex; // AdvanceToNextStep increments past this to gateIndex + 1
-            AdvanceToNextStep();
+            OnSequenceComplete?.Invoke();
             return;
         }
 
-        // Otherwise the sequence is already sitting on (or past) the Gate — the normal path handles
-        // it: this only actually advances if the CURRENT step's externalTriggerId matches.
-        NotifyExternalTrigger(sceneLoadTriggerId);
-    }
-
-    /// <summary>First step in the list whose External Trigger Id matches, or -1 if none do. Used to
-    /// find "the Gate step" by its own id rather than needing a second, separately-authored index.</summary>
-    private int FindStepIndexByExternalTrigger(string triggerId)
-    {
-        for (int i = 0; i < steps.Count; i++)
-            if (steps[i] != null && steps[i].externalTriggerId == triggerId)
-                return i;
-        return -1;
-    }
-
-    void Start()
-    {
         if (autoStart) BeginSequence();
     }
 
@@ -439,11 +391,11 @@ public class TutorialSequenceController : MonoBehaviour
     // of typing every row by hand. Still need to drag a target
     // Transform onto each Portable entry afterward.
     // ------------------------------------------------------------
-    [ContextMenu("Load Hardcoded Tutorial Script (Plant Basics + Water Plant)")]
-    private void LoadHardcodedTutorialScript()
+    [ContextMenu("Load Hardcoded Script — Tutorial Scene Half (Movement + Plant Basics + Water Plant)")]
+    private void LoadHardcodedTutorialSceneScript()
     {
-        steps = TutorialContent.BuildDefaultSteps(movementMissionForHardcodedScript, harvestMissionForHardcodedScript);
-        Debug.Log($"[TutorialSequenceController] Loaded {steps.Count} hardcoded steps. " +
+        steps = TutorialContent.BuildTutorialSceneSteps(movementMissionForHardcodedScript, harvestMissionForHardcodedScript);
+        Debug.Log($"[TutorialSequenceController] Loaded {steps.Count} hardcoded steps (tutorial-scene half). " +
                   "Now assign each Portable step's target Transform in the Inspector." +
                   (movementMissionForHardcodedScript != null
                       ? " Movement steps are linked to " + movementMissionForHardcodedScript.name + "."
@@ -451,6 +403,17 @@ public class TutorialSequenceController : MonoBehaviour
                   (harvestMissionForHardcodedScript != null
                       ? " Harvest/pot/water steps are linked to " + harvestMissionForHardcodedScript.name + "."
                       : " Harvest Mission wasn't assigned, so those steps are click-only."));
+    }
+
+    [ContextMenu("Load Hardcoded Script — Main Scene Half (Journal Tour + Miasma Intro)")]
+    private void LoadHardcodedMainSceneScript()
+    {
+        steps = TutorialContent.BuildMainSceneSteps();
+        Debug.Log($"[TutorialSequenceController] Loaded {steps.Count} hardcoded steps (main-scene half). " +
+                  "Now assign each Portable step's target Transform in the Inspector. All click-only — " +
+                  "nothing here is linked to a mission task. Remember to set Completion Flag Key above " +
+                  "(e.g. \"Tutorial_MainHalfCompleted\") so this doesn't replay on every later visit, and " +
+                  "set MainUIController's matching 'Tutorial Completed Prefs Key' to the same string.");
     }
 
     // ------------------------------------------------------------
@@ -493,6 +456,13 @@ public class TutorialSequenceController : MonoBehaviour
         if (currentIndex >= steps.Count)
         {
             SyncSidebarCameraLock(null); // release the lock if the sequence ends mid-Sidebar-run
+
+            if (!string.IsNullOrEmpty(completionFlagKey))
+            {
+                PlayerPrefs.SetInt(completionFlagKey, 1);
+                PlayerPrefs.Save();
+            }
+
             OnSequenceComplete?.Invoke();
             return;
         }

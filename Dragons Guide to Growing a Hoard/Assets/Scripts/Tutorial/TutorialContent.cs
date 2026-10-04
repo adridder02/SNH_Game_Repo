@@ -4,37 +4,48 @@ using UnityEngine;
 // =============================================================
 // TutorialContent.cs
 // -------------------------------------------------------------
-// STOPGAP for the time crunch: the entire tutorial script hardcoded
-// as one ordered List<TutorialStep>, instead of typing every row into
-// the Inspector by hand. Covers movement, Plant Basics, Water Plant,
-// the Journal tour (Progress/Plants/Guide bookmarks), and the Miasma
-// greenhouse intro — message text, step type (Portable/BottomBar),
-// and advance behavior are all filled in already.
+// STOPGAP for the time crunch: the tutorial script hardcoded as two
+// separate ordered List<TutorialStep> builders, instead of typing
+// every row into the Inspector by hand — one per scene, matching
+// TutorialSequenceController now being scene-local rather than one
+// instance persisted across the tutorial-scene -> main-scene load
+// (see that file's header for why that split happened).
+//
+//   BuildTutorialSceneSteps() — movement, Plant Basics, Water Plant.
+//     Lives on the tutorial scene's own TutorialSequenceController.
+//   BuildMainSceneSteps()     — the Journal tour (Progress/Plants/
+//     Guide bookmarks) and the Miasma greenhouse intro. Lives on the
+//     MAIN scene's own, separate TutorialSequenceController. Set that
+//     controller's completionFlagKey so this half only ever plays
+//     once (see its tooltip).
+//
+// Message text, step type (Portable/BottomBar), and advance behavior
+// are all filled in already for both.
 //
 // WHAT'S LEFT FOR YOU:
 //   Every Portable step's `portablePrompt` field is left null here —
 //   that's the one thing that can't be hardcoded, since each one is
 //   a fully hand-built prompt object (outline + bubble + text — see
 //   TutorialPromptBox.cs) that only exists once you've built it in
-//   your scene. After loading this (see below), open
-//   TutorialSequenceController's `steps` list in the Inspector and
-//   drag a TutorialPromptBox into `portablePrompt` for each Portable
-//   entry. The comment above each entry in BuildDefaultSteps() says
-//   what it's for. BottomBar entries need nothing.
+//   your scene. After loading one of these (see below), open that
+//   scene's TutorialSequenceController's `steps` list in the
+//   Inspector and drag a TutorialPromptBox into `portablePrompt` for
+//   each Portable entry. The comment above each entry says what it's
+//   for. BottomBar entries need nothing.
 //
 // HOW TO LOAD IT:
-//   Add TutorialSequenceController to your tutorial object, then
-//   right-click the component header in the Inspector (or the gear
-//   icon) and choose "Load Hardcoded Tutorial Script (Plant Basics +
-//   Water Plant)" — that's a [ContextMenu] method on
-//   TutorialSequenceController that just calls BuildDefaultSteps()
-//   below and drops the result into `steps`. You can still hand-edit
-//   anything afterward; this only sets the initial list.
+//   Add TutorialSequenceController to each scene's own tutorial
+//   object, then right-click the component header in the Inspector
+//   (or the gear icon) and choose "Load Hardcoded Script — Tutorial
+//   Scene Half" on the tutorial scene's copy, or "...— Main Scene
+//   Half" on the main scene's copy. Each is a [ContextMenu] method on
+//   TutorialSequenceController that calls the matching builder below
+//   and drops the result into that instance's `steps`. You can still
+//   hand-edit anything afterward; this only sets the initial list.
 //
-// This intentionally does NOT set linkedMission/linkedTaskId — wire
-// those up later once TutorialMissionAssetGenerator's assets exist
-// and you're ready for the "proper" auto-advance-off-mission-
-// progress setup. Every step below advances on click for now.
+// This intentionally does NOT set linkedMission/linkedTaskId on the
+// main-scene half — wire those up later if any of those steps end up
+// needing it. Every step in BuildMainSceneSteps() advances on click.
 // =============================================================
 public static class TutorialContent
 {
@@ -61,6 +72,9 @@ public static class TutorialContent
     private const string TaskFindWater = "find_water";
     private const string TaskWaterRefill = "water_refill";
 
+    /// <summary>TUTORIAL SCENE HALF — movement basics through the end of the Water Plant wrap-up. Lives
+    /// on the tutorial scene's own TutorialSequenceController, which just runs to the end of this list
+    /// and stops; nothing here waits for or triggers a scene transition.</summary>
     /// <param name="movementMission">Optional. If assigned, the first six steps (the movement-basics
     /// bottom-bar tips) are auto-linked to this mission's tasks, so they advance the instant
     /// PlayerController reports the matching action instead of waiting for a click. Pass null to leave
@@ -72,7 +86,7 @@ public static class TutorialContent
     /// water_refill for the auto-advance to actually fire (see CompleteOrderedTask everywhere it's
     /// called). The inventory-tour and soil/pot-interaction steps in between stay click-only — they're
     /// UI walkthrough, not tracked gameplay actions.</param>
-    public static List<TutorialStep> BuildDefaultSteps(MissionData movementMission = null, MissionData harvestMission = null)
+    public static List<TutorialStep> BuildTutorialSceneSteps(MissionData movementMission = null, MissionData harvestMission = null)
     {
         // Captured so we can link them below without hunting for them by index after the fact —
         // reordering/editing anything else in the list won't silently break the linking.
@@ -140,46 +154,6 @@ public static class TutorialContent
             new TutorialStep { type = TutorialPromptType.BottomBar, message = "In order to get this plant happy, you will need to do a few things: the correct soil or water it needs to grow in, the correct amount of water it receives, and the correct sunlight levels." },
             new TutorialStep { type = TutorialPromptType.BottomBar, message = "The bottom bar within the plant menu displays plant progression" },
             new TutorialStep { type = TutorialPromptType.BottomBar, message = "If a plant is happy for a prolonged period, you'll be rewarded with the total completion of the plant" },
-
-            // ---------------------------------------------------
-            // JOURNAL TOUR
-            // ---------------------------------------------------
-            // target: the journal icon (UI) — the book icon in the top-right corner
-            new TutorialStep { type = TutorialPromptType.Portable, message = "Press [J] to open your journal", portablePrompt = null },
-            // target: the "Progress" bookmark tab (UI)
-            new TutorialStep { type = TutorialPromptType.Portable, message = "Open the \"Progress\" bookmark", portablePrompt = null },
-            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Here you will find the progress of each room you have completed" },
-            new TutorialStep { type = TutorialPromptType.BottomBar, message = "There are three types of rooms for you to view: The Main Hall, The East Wing, and The West Wing" },
-            new TutorialStep { type = TutorialPromptType.BottomBar, message = "By exploring these rooms, you can find more plants, which can be viewed here" },
-            // target: the "Plants" bookmark tab (UI)
-            new TutorialStep { type = TutorialPromptType.Portable, message = "Open the \"Plants\" bookmark", portablePrompt = null },
-            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Here you can find your personal collection of plants you have collected" },
-            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Here you can find the tier of the plant, ranging from tier one all the way to tier three" },
-            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Here is the difficulty of the plant. This tells you how needy it is — the needier it is, the harder the plant is to take care of." },
-            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Using your observational skills, select the correct water level, sunlight level, and soil type to know how to take care of the plant" },
-            // target: the "Guide" bookmark tab (UI)
-            new TutorialStep { type = TutorialPromptType.Portable, message = "Open the \"Guide\" bookmark", portablePrompt = null },
-            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Here you can find the tutorial again to review if you so need to" },
-            new TutorialStep { type = TutorialPromptType.BottomBar, message = "On the first page is the guide's title, and on the second are the details of the guide" },
-            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Press your esc button to exit the game when you're ready to leave" },
-            // target: the journal's back button (UI)
-            new TutorialStep { type = TutorialPromptType.Portable, message = "Press the back button and return to the game", portablePrompt = null },
-
-            // ---------------------------------------------------
-            // MIASMA — greenhouse intro
-            // ---------------------------------------------------
-            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Welcome to the greenhouse" },
-            // target: the yellow happiness bar (UI, top-left)
-            new TutorialStep { type = TutorialPromptType.Portable, message = "The yellow bar is your happiness level — it shows the overall plant happiness/health of the given room", portablePrompt = null },
-            // target: the purple Miasma bar (UI, top-left)
-            new TutorialStep { type = TutorialPromptType.Portable, message = "The purple bar on the top left tracks the greenhouse's Miasma", portablePrompt = null },
-            // target: the pink fog inside the greenhouse (world)
-            new TutorialStep { type = TutorialPromptType.Portable, message = "The pink fog within the greenhouse is an indicator of the Miasma within the greenhouse", portablePrompt = null },
-            // target: the tree at the center of the greenhouse (world)
-            new TutorialStep { type = TutorialPromptType.Portable, message = "Miasma is produced by the tree found in the center of the greenhouse", portablePrompt = null },
-            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Miasma is detrimental to plant health and happiness" },
-            new TutorialStep { type = TutorialPromptType.BottomBar, message = "To decrease Miasma, you will need to find and take good care of the plants within the greenhouse" },
-            new TutorialStep { type = TutorialPromptType.BottomBar, message = "You don't want to know what happens when you don't" },
         };
 
         if (movementMission != null)
@@ -222,5 +196,56 @@ public static class TutorialContent
         }
 
         return steps;
+    }
+
+    /// <summary>MAIN SCENE HALF — the Journal tour (Progress/Plants/Guide bookmarks) and the Miasma
+    /// greenhouse intro. Lives on the MAIN scene's own, separate TutorialSequenceController — set that
+    /// controller's completionFlagKey (e.g. "Tutorial_MainHalfCompleted") so this only ever plays once,
+    /// not every time the player returns to the main scene on a later visit/save load. All click-only;
+    /// nothing here is linked to a mission task.</summary>
+    public static List<TutorialStep> BuildMainSceneSteps()
+    {
+        return new List<TutorialStep>
+        {
+            // ---------------------------------------------------
+            // JOURNAL TOUR
+            // ---------------------------------------------------
+            // target: the journal icon (UI) — the book icon in the top-right corner
+            new TutorialStep { type = TutorialPromptType.Portable, message = "Press [J] to open your journal", portablePrompt = null },
+            // target: the "Progress" bookmark tab (UI)
+            new TutorialStep { type = TutorialPromptType.Portable, message = "Open the \"Progress\" bookmark", portablePrompt = null },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Here you will find the progress of each room you have completed" },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "There are three types of rooms for you to view: The Main Hall, The East Wing, and The West Wing" },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "By exploring these rooms, you can find more plants, which can be viewed here" },
+            // target: the "Plants" bookmark tab (UI)
+            new TutorialStep { type = TutorialPromptType.Portable, message = "Open the \"Plants\" bookmark", portablePrompt = null },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Here you can find your personal collection of plants you have collected" },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Here you can find the tier of the plant, ranging from tier one all the way to tier three" },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Here is the difficulty of the plant. This tells you how needy it is — the needier it is, the harder the plant is to take care of." },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Using your observational skills, select the correct water level, sunlight level, and soil type to know how to take care of the plant" },
+            // target: the "Guide" bookmark tab (UI)
+            new TutorialStep { type = TutorialPromptType.Portable, message = "Open the \"Guide\" bookmark", portablePrompt = null },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Here you can find the tutorial again to review if you so need to" },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "On the first page is the guide's title, and on the second are the details of the guide" },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Press your esc button to exit the game when you're ready to leave" },
+            // target: the journal's back button (UI)
+            new TutorialStep { type = TutorialPromptType.Portable, message = "Press the back button and return to the game", portablePrompt = null },
+
+            // ---------------------------------------------------
+            // MIASMA — greenhouse intro
+            // ---------------------------------------------------
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Welcome to the greenhouse" },
+            // target: the yellow happiness bar (UI, top-left)
+            new TutorialStep { type = TutorialPromptType.Portable, message = "The yellow bar is your happiness level — it shows the overall plant happiness/health of the given room", portablePrompt = null },
+            // target: the purple Miasma bar (UI, top-left)
+            new TutorialStep { type = TutorialPromptType.Portable, message = "The purple bar on the top left tracks the greenhouse's Miasma", portablePrompt = null },
+            // target: the pink fog inside the greenhouse (world)
+            new TutorialStep { type = TutorialPromptType.Portable, message = "The pink fog within the greenhouse is an indicator of the Miasma within the greenhouse", portablePrompt = null },
+            // target: the tree at the center of the greenhouse (world)
+            new TutorialStep { type = TutorialPromptType.Portable, message = "Miasma is produced by the tree found in the center of the greenhouse", portablePrompt = null },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Miasma is detrimental to plant health and happiness" },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "To decrease Miasma, you will need to find and take good care of the plants within the greenhouse" },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "You don't want to know what happens when you don't" },
+        };
     }
 }
