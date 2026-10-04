@@ -1752,30 +1752,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 74016818}
     m_Modifications:
-    - target: {fileID: -6719099275926925184, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -4412071017968383322, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5866666021909216657, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: a590e308ddcd34742976b55a94481e3d, type: 2}
-    - target: {fileID: 5866666021909216657, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
-      propertyPath: m_CullingMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5866666021909216657, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
-      propertyPath: m_ApplyRootMotion
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7322170881802557050, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.2044737
@@ -1852,6 +1828,30 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: feed2ab40160a8044a7097cd8cf533e8, type: 2}
+    - target: {fileID: -6719099275926925184, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4412071017968383322, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: a590e308ddcd34742976b55a94481e3d, type: 2}
+    - target: {fileID: 5866666021909216657, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
+      propertyPath: m_CullingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7322170881802557050, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5866666021909216657, guid: a8bfce948522b7d42872562820cccccf, type: 3}
     m_RemovedGameObjects:
@@ -3681,7 +3681,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 74016807}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 697e3af256b31644ab5223414bdc428e, type: 3}
   m_Name: 
@@ -15978,7 +15978,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &458119344
 Transform:
   m_ObjectHideFlags: 0
@@ -16701,8 +16701,8 @@ Transform:
   m_GameObject: {fileID: 465881494}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -316.42, y: -28.29, z: 16.38}
-  m_LocalScale: {x: 2.27, y: 1.9479401, z: 3.7609816}
+  m_LocalPosition: {x: -316.95, y: -27.7, z: 15.5}
+  m_LocalScale: {x: 1.94, y: 1.9479401, z: 3.7609816}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 92721602}
@@ -20342,7 +20342,6 @@ MonoBehaviour:
   playerInventory: {fileID: 74016824}
   abilityInventoryForGating: {fileID: 74016825}
   waterBar: {fileID: 280252697}
-  waterBarStartsHidden: 1
   journalButton: {fileID: 1903572062}
   journalUI: {fileID: 742308971}
   journalNewDot: {fileID: 1418553383}
@@ -20365,9 +20364,8 @@ MonoBehaviour:
   toolActiveColor: {r: 1, g: 0.85, b: 0.4, a: 1}
   toolInactiveColor: {r: 1, g: 1, b: 1, a: 1}
   toolSlotsStartHidden: 1
-  toolSelectorRoot: {fileID: 1264938590}
   debugDisableTutorialHiding: 1
-  tutorialCompletedPrefsKey: 
+  toolSelectorRoot: {fileID: 1264938590}
   hudHotbarSlotUIs:
   - {fileID: 1682522951}
   - {fileID: 334061256}
@@ -39318,7 +39316,7 @@ MonoBehaviour:
   trailSpeed: 1
   fillAxis: 0
   hideIndicatorAtExtremes: 1
-  useFillGradient: 1
+  useFillGradient: 0
   fillColorGradient:
     serializedVersion: 2
     key0: {r: 1, g: 0, b: 0, a: 1}
@@ -79460,7 +79458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.879263, b: 0.41823888, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -81011,7 +81009,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1701788157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89449,8 +89447,8 @@ Transform:
   m_GameObject: {fileID: 1969525294}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -147.87, y: -28.41, z: -841.98}
-  m_LocalScale: {x: 2.0625424, y: 1, z: 1.8940356}
+  m_LocalPosition: {x: -147.5, y: -16.6, z: -839.17}
+  m_LocalScale: {x: 2.0625424, y: 1, z: 2.26}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -96424,7 +96422,7 @@ Transform:
   m_GameObject: {fileID: 1108434111414023163}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 107.71588, y: 2.71, z: -42.32}
+  m_LocalPosition: {x: -81.5, y: 2.71, z: -568.3}
   m_LocalScale: {x: 3.1184788, y: 3.1184788, z: 3.1184788}
   m_ConstrainProportionsScale: 0
   m_Children: []

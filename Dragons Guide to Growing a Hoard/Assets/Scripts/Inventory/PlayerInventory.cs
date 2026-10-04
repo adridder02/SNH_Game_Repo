@@ -275,26 +275,28 @@ public class PlayerInventory : MonoBehaviour
         {
             if (PlantJournalManager.Instance != null)
             {
-                // Checked BEFORE MarkDiscovered so the tutorial hook below only ever fires on the
-                // actual first pickup of this species, not every subsequent one.
-                bool wasAlreadyDiscovered = PlantJournalManager.Instance.IsDiscovered(state.journalSpecies);
-
+                // NOTE: journal discovery (IsDiscovered/MarkDiscovered) is PlayerPrefs-backed and
+                // persists forever, across scenes AND across separate play sessions. The wall-
+                // placement unlock below used to be gated on "not already journal-discovered" too,
+                // but that meant it could only ever fire once in the ENTIRE lifetime of that save —
+                // every later session (including repeated dev testing) would find the species already
+                // discovered and silently skip the whole block, never re-firing the tutorial trigger
+                // or unlocking HasUnlockedWallPlacement even though THIS session's state is fresh.
+                // HasUnlockedWallPlacement is intentionally gated on its own check instead (see below),
+                // since that's the actual per-session flag that needs to go true exactly once per run.
                 PlantJournalManager.Instance.MarkDiscovered(state.journalSpecies);
                 NewItemTracker.Instance?.MarkAcquiredJournal(state.journalSpecies.ResolvedId);
 
-                // Wall-placement tutorial hook — fires exactly once, the very first time Clovenwick
-                // specifically is picked up (harvest node, physical pickup, or pulled back out of a
-                // pot — same as everything else this method handles). Assign clovenwickSpecies in
+                // Wall-placement tutorial hook — fires exactly once PER SESSION, the first time
+                // Clovenwick specifically is picked up (harvest node, physical pickup, or pulled back
+                // out of a pot — same as everything else this method handles), regardless of whether
+                // it was already journal-discovered in a previous session. Assign clovenwickSpecies in
                 // the Inspector to wire this up; a harmless no-op otherwise.
-                if (!wasAlreadyDiscovered && clovenwickSpecies != null && state.journalSpecies == clovenwickSpecies)
+                if (!HasUnlockedWallPlacement && clovenwickSpecies != null && state.journalSpecies == clovenwickSpecies)
                 {
+                    HasUnlockedWallPlacement = true;
                     TutorialSequenceController.Instance?.NotifyExternalTrigger("picked_up_clovenwick");
-
-                    if (!HasUnlockedWallPlacement)
-                    {
-                        HasUnlockedWallPlacement = true;
-                        OnWallPlacementUnlocked?.Invoke();
-                    }
+                    OnWallPlacementUnlocked?.Invoke();
                 }
             }
             else
