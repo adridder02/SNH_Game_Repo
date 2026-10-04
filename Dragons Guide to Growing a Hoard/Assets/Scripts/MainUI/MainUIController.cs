@@ -97,6 +97,11 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [Tooltip("Same ImageFillBar setup/prefab as PotMenuUIController's water bar. Fixed colour, " +
              "useFillGradient left off.")]
     [SerializeField] private ImageFillBar waterBar;
+    [Tooltip("If on, the water bar starts hidden and only reveals via RevealWaterBar below — wire " +
+             "that to the main scene's water tutorial step's onStepShown (same one-time-reveal pattern " +
+             "as miasmaBarStartsHidden/RevealMiasmaBar above). Leave off if the bar should just show " +
+             "normally from the start.")]
+    [SerializeField] private bool waterBarStartsHidden = true;
 
     [Header("Journal Icon")]
     [SerializeField] private Button journalButton;
@@ -170,8 +175,9 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
 
     [Header("Debug")]
     [Tooltip("DEV CONVENIENCE — check this to skip ALL of the tutorial's start-hidden gating above " +
-             "(journal icon, miasma bar, zone happiness bar, tool slots/selector, inventory icon, " +
-             "hotbar) and just show everything immediately, same as RevealAllTutorialGatedUI(). Use " +
+             "(journal icon, miasma bar, zone happiness bar, water bar, tool slots/selector, " +
+             "inventory icon, hotbar) and just show everything immediately, same as " +
+             "RevealAllTutorialGatedUI(). Use " +
              "this while working on non-tutorial stuff in the main scene so you're not fighting the " +
              "tutorial hiding things out from under you. One-way — flip it off and stop/restart Play " +
              "to go back to normal tutorial-gated behavior. Leave OFF for actual tutorial testing/ship.")]
@@ -403,6 +409,8 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             miasmaBar.gameObject.SetActive(false);
         if (zoneHappinessBarStartsHidden && zoneHappinessBar != null)
             zoneHappinessBar.gameObject.SetActive(false);
+        if (waterBarStartsHidden && waterBar != null)
+            waterBar.gameObject.SetActive(false);
 
         // Inventory icon stays hidden until the player's picked up a plant at all (any of harvest
         // node / physical pickup / pulled back out of a pot — PlayerInventory.OnFirstPlantHarvested).
@@ -646,9 +654,17 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         if (zoneHappinessBar != null) zoneHappinessBar.gameObject.SetActive(true);
     }
 
+    /// <summary>Reveals the water bar (ImageFillBar.gameObject) — safe to call repeatedly or if it's
+    /// already visible. Wire this from the main scene's water tutorial step's onStepShown, so it comes
+    /// on right before that step asks the player to water something.</summary>
+    public void RevealWaterBar()
+    {
+        if (waterBar != null) waterBar.gameObject.SetActive(true);
+    }
+
     /// <summary>Force-reveals every "starts hidden until the tutorial reaches it" HUD element at once —
-    /// the journal icon, miasma bar, zone happiness bar, and all four tool-selector slots (plus the
-    /// inventory icon/hotbar below). Called from this component's own Awake() when either
+    /// the journal icon, miasma bar, zone happiness bar, water bar, and all four tool-selector slots
+    /// (plus the inventory icon/hotbar below). Called from this component's own Awake() when either
     /// debugDisableTutorialHiding is on, or tutorialCompletedPrefsKey shows this scene's tutorial half
     /// already finished on a previous visit — in both cases nothing is going to come along and reveal
     /// these one at a time via each element's own per-step onStepShown wiring, so this reveals them all
@@ -658,6 +674,7 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         RevealJournalIcon();
         RevealMiasmaBar();
         RevealZoneHappinessBar();
+        RevealWaterBar();
         RevealToolSlot(0);
         RevealToolSlot(1);
         RevealToolSlot(2);
