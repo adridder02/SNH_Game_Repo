@@ -758,7 +758,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -1429,7 +1429,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -1755,7 +1755,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -2956,7 +2956,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -6466,7 +6466,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -13829,7 +13829,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 189181123}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -14977,7 +14977,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -15762,7 +15762,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -19192,7 +19192,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -23945,7 +23945,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -24670,7 +24670,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -25004,7 +25004,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -27973,7 +27973,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -30713,7 +30713,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -39044,7 +39044,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -39235,7 +39235,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -40633,7 +40633,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -43183,7 +43183,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -49716,7 +49716,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -72460,7 +72460,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -72882,7 +72882,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -74000,7 +74000,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -77747,7 +77747,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -84037,7 +84037,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -85222,7 +85222,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -85627,7 +85627,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -86025,7 +86025,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -87787,7 +87787,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -88648,7 +88648,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -89639,7 +89639,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -90720,6 +90720,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: -6115280188223145779, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 95ae844b486b1ed4482d190254225178, type: 2}
     - target: {fileID: -6103800724791006221, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -91480,6 +91484,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: -3797866689915996471, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: d42d1dee8ab8f5844b1483e80a90a14d, type: 2}
     - target: {fileID: -3778644264426962316, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -93418,7 +93426,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2255325176585812793, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_LightProbeUsage
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2255325176585812793, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_RenderingLayerMask
@@ -94476,6 +94484,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 5735350595151965463, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 95ae844b486b1ed4482d190254225178, type: 2}
     - target: {fileID: 5780305088393177597, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -103932,7 +103944,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -105655,7 +105667,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -106792,7 +106804,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -108574,7 +108586,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -109953,7 +109965,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -110528,7 +110540,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -110658,7 +110670,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -111543,7 +111555,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -111947,7 +111959,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -113180,7 +113192,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -113849,7 +113861,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -114227,7 +114239,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -114750,7 +114762,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -115870,7 +115882,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -118482,7 +118494,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -118620,7 +118632,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -118975,7 +118987,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -127393,7 +127405,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -129619,7 +129631,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.0039215665, g: 0.681322, b: 0.9529412, a: 1}
   m_Intensity: 3
-  m_Range: 50
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}

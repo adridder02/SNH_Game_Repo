@@ -102,7 +102,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 1
     - _GlossyReflections: 1
-    - _Metallic: 0
+    - _Metallic: 0.94
     - _Mode: 3
     - _NoiseStrength: 0.005
     - _NormalStrength: 0.1
@@ -112,7 +112,7 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _RipplesDissolve: 3
-    - _RipplesScale: 4
+    - _RipplesScale: 5.45
     - _RipplesSpeed: 1
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
