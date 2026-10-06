@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 // =============================================================
@@ -27,6 +28,13 @@ using UnityEngine;
 //      roomMiasma is left empty, it auto-pulls from a ZoneHealth on the same GameObject
 //      (ZoneHealth.miasma already points at the right MiasmaController for that room).
 //   3. Assign fogParticles.
+//
+// BLEEDING FOG FROM A SOURCE ROOM (optional): for rooms that spread out from a central room, assign
+// that central room's MiasmaController to "sourceMiasma". This room's fog then also follows the
+// SOURCE's miasma, but DELAYED by delaySeconds and scaled by sourceInfluence — so the fog reads as
+// seeping outward from the center over time. Give each ring of rooms a bigger delay and a smaller
+// influence the further it is from the center (e.g. adjacent: 8s / 0.8, furthest: 20s / 0.5). The room's
+// own miasma still counts too — the fog uses whichever of (own, delayed source) is higher.
 // =============================================================
 public class RoomAmbientFogController : MonoBehaviour
 {
@@ -39,6 +47,15 @@ public class RoomAmbientFogController : MonoBehaviour
              "like at the THICKEST (1.0) end of the curve — this script scales emission rate and " +
              "startColor alpha down from that baseline, all the way to fully stopped at 0.")]
     [SerializeField] private ParticleSystem fogParticles;
+
+    [Header("Bleed from another room (optional)")]
+    [Tooltip("The central/source room's MiasmaController. Leave empty for a room that only reacts to its own miasma.")]
+    [SerializeField] private MiasmaController sourceMiasma;
+    [Tooltip("How many seconds this room's fog lags behind the source room. Bigger for rooms further from the center.")]
+    [Min(0f)] [SerializeField] private float delaySeconds = 8f;
+    [Tooltip("Multiplier on the source's (delayed) fraction. 1 = same level as the source once the delay passes; " +
+             "lower = never gets as thick as the center. Smaller for rooms further from the center.")]
+    [Range(0f, 1f)] [SerializeField] private float sourceInfluence = 0.8f;
 
     [Header("Curve (fraction of this room's MiasmaController.MaxSize)")]
     [Tooltip("At or below this fraction, fog is fully off (0 intensity) — 'none' at low miasma.")]
@@ -63,6 +80,11 @@ public class RoomAmbientFogController : MonoBehaviour
     private float intensityVelocity;
     private bool initialized;
 
+    private struct Sample { public float time; public float fraction; }
+    private readonly Queue<Sample> sourceHistory = new Queue<Sample>();
+    private float delayedSourceFraction;
+    private float nextSampleTime;
+
     private void Awake()
     {
         if (roomMiasma == null)
@@ -84,11 +106,36 @@ public class RoomAmbientFogController : MonoBehaviour
         }
     }
 
+    /// <summary>The source room's miasma fraction as it was delaySeconds ago, times sourceInfluence.
+    /// 0 when no source is assigned.</summary>
+    private float DelayedSourceFraction()
+    {
+        if (sourceMiasma == null || sourceMiasma.MaxSize <= 0f) return 0f;
+
+        float now = Time.time;
+        if (now >= nextSampleTime)
+        {
+            sourceHistory.Enqueue(new Sample { time = now, fraction = sourceMiasma.CurrentSize / sourceMiasma.MaxSize });
+            nextSampleTime = now + 0.1f; // 10 samples/sec is plenty for something this slow
+        }
+
+        // Advance to the newest sample that is at least delaySeconds old.
+        while (sourceHistory.Count > 0 && sourceHistory.Peek().time <= now - delaySeconds)
+            delayedSourceFraction = sourceHistory.Dequeue().fraction;
+
+        // Before the first sample has aged enough, delayedSourceFraction is still 0 — the fog hasn't "arrived" yet.
+        return delayedSourceFraction * sourceInfluence;
+    }
+
     private void Update()
     {
-        if (!initialized || roomMiasma == null || roomMiasma.MaxSize <= 0f) return;
+        if (!initialized) return;
 
-        float fraction = roomMiasma.CurrentSize / roomMiasma.MaxSize;
+        float ownFraction = (roomMiasma != null && roomMiasma.MaxSize > 0f)
+            ? roomMiasma.CurrentSize / roomMiasma.MaxSize
+            : 0f;
+        float fraction = Mathf.Max(ownFraction, DelayedSourceFraction());
+
         float target = Mathf.InverseLerp(lowThreshold, highThreshold, fraction);
 
         smoothedIntensity = Mathf.SmoothDamp(smoothedIntensity, target, ref intensityVelocity, smoothTime);
