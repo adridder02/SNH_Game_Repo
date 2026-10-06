@@ -17,28 +17,59 @@ public class playerAnimation : MonoBehaviour
     }
     
     
+    [Header("Animation-gated movement")]
+    [Tooltip("How quickly (seconds) the Animator's Speed float eases toward idle/walk/run. Movement speed in " +
+             "PlayerController follows the Animator's ACTUAL Speed value, so the dragon only moves at run speed " +
+             "once the run animation has really blended in (instead of speeding up while still showing the walk).")]
+    [SerializeField] private float speedDampTime = 0.12f;
+    [Tooltip("Exact name of the Animator state that plays for a jump (layer 0). PlayerController waits until " +
+             "this state is playing (or animGateTimeout passes) before applying the jump's upward velocity. " +
+             "Leave empty to apply it immediately as before.")]
+    [SerializeField] private string jumpStateName = "";
+    [Tooltip("Exact name of the Animator state that plays for takeoff/flying (layer 0). PlayerController waits " +
+             "until it is playing (or animGateTimeout passes) before lifting off. Leave empty for no wait.")]
+    [SerializeField] private string flyStateName = "";
+
+    private float targetSpeed = 0.5f;
+
+    /// <summary>The Animator's current (eased) Speed value: ~0.5 idle, ~1.5 walk, ~3.5 run. Returns -1 when
+    /// there's no Animator, so callers can fall back to input-based behaviour.</summary>
+    public float CurrentAnimSpeed => playerAni != null ? playerAni.GetFloat("Speed") : -1f;
+
+    public bool IsJumpAnimPlaying => IsStatePlayingOrBlendingIn(jumpStateName);
+    public bool IsFlyAnimPlaying => IsStatePlayingOrBlendingIn(flyStateName);
+
+    private bool IsStatePlayingOrBlendingIn(string stateName)
+    {
+        if (playerAni == null || string.IsNullOrEmpty(stateName)) return true; // nothing to wait for
+        if (playerAni.GetCurrentAnimatorStateInfo(0).IsName(stateName)) return true;
+        return playerAni.IsInTransition(0) && playerAni.GetNextAnimatorStateInfo(0).IsName(stateName);
+    }
+
     public void setIdel()
     {
-        if (playerAni != null && playerAni.GetFloat("Speed") != 0.5f)
-            playerAni.SetFloat("Speed", 0.5f);
+        targetSpeed = 0.5f;
         isStill = true;
-        //Debug.Log("We Still");
     }
-    
+
     public void setWalking()
     {
-        if (playerAni != null && playerAni.GetFloat("Speed") != 1.5f)
-            playerAni.SetFloat("Speed", 1.5f);
+        targetSpeed = 1.5f;
         isStill = false;
     }
-    
+
     public void setRunning()
     {
-        if (playerAni != null && playerAni.GetFloat("Speed") != 3.5f)
-            playerAni.SetFloat("Speed", 3.5f);
+        targetSpeed = 3.5f;
         isStill = false;
     }
-    
+
+    private void ApplySpeed()
+    {
+        if (playerAni == null) return;
+        playerAni.SetFloat("Speed", targetSpeed, speedDampTime, Time.deltaTime);
+    }
+
     public void jump()
     {
         if (playerAni != null)
@@ -49,8 +80,16 @@ public class playerAnimation : MonoBehaviour
     
     public void fly()
     {
-        if (playerAni != null && !playerAni.GetBool("IsFlying"))
-            playerAni.SetBool("IsFlying", true);
+        if (playerAni != null)
+        {
+            // Clear IsFalling too — fall() and fly() are mutually exclusive in the Animator. Without
+            // this, anything that left IsFalling on (a ledge fall just before takeoff, or cancelling an
+            // auto-descend mid-flight) kept the dragon_fall clip playing while actually flying.
+            if (playerAni.GetBool("IsFalling"))
+                playerAni.SetBool("IsFalling", false);
+            if (!playerAni.GetBool("IsFlying"))
+                playerAni.SetBool("IsFlying", true);
+        }
         isInAir = true;
         //Debug.Log("We flying");
     }
@@ -121,6 +160,7 @@ public class playerAnimation : MonoBehaviour
         transform.eulerAngles = rotation;
     }
     void Update(){
+        ApplySpeed();
         tiltNeutral();
     }
 }

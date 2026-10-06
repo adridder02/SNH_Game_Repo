@@ -37,6 +37,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float flySprintMultiplier = 2f;
     [Tooltip("How long (seconds) the takeoff animation is protected from being interrupted by movement/sprint animation changes after double-tapping Space. Should roughly match your takeoff clip's length.")]
     [SerializeField] private float flyTakeoffLockDuration = 0.6f;
+    [Tooltip("If true, WASD still steers/moves the dragon during the takeoff lock (only the Walk/Run animation " +
+             "switching stays locked). Turn off to restore the old behaviour where you can't move at all for " +
+             "the first flyTakeoffLockDuration seconds after launching — that felt unresponsive when you were " +
+             "already walking.")]
+    [SerializeField] private bool allowMoveDuringTakeoff = true;
 
     [Tooltip("Downward speed while auto-descending (double-tapped Space while already flying, or " +
              "FlightBlocked forcing you down). Deliberately separate from flyVerticalSpeed (the " +
@@ -182,12 +187,30 @@ public class PlayerController : MonoBehaviour
          ;
 
     /// <summary>Current speed, boosted by sprintMultiplier while sprinting.</summary>
-    private float CurrentSpeed => speed * (IsSprinting ? sprintMultiplier : 1f);
+    private float CurrentSpeed => speed * AnimMoveFactor(sprintMultiplier);
+
+    [Tooltip("Safety net for animation-gated actions (jump / takeoff): if the expected Animator state hasn't " +
+             "started playing after this many seconds, the action goes ahead anyway so it can never get stuck.")]
+    [SerializeField] private float animGateTimeout = 0.25f;
+    private bool jumpPending;
+    private float jumpPendingTimer;
+
+    /// <summary>Movement multiplier that follows the Animator's ACTUAL eased Speed value instead of the raw
+    /// Shift key: ~0 at the idle pose, 1 at the walk pose, up to `sprintMult` at the run pose. So the
+    /// dragon doesn't start moving before the walk animation is playing, and doesn't speed up to a run
+    /// while still showing the walk. Falls back to the old key-based value with no Animator.</summary>
+    private float AnimMoveFactor(float sprintMult)
+    {
+        float a = playerAnim != null ? playerAnim.CurrentAnimSpeed : -1f;
+        if (a < 0f) return IsSprinting ? sprintMult : 1f;
+        if (a <= 1.5f) return Mathf.InverseLerp(0.5f, 1.5f, a);
+        return Mathf.Lerp(1f, sprintMult, Mathf.InverseLerp(1.5f, 3.5f, a));
+    }
 
     /// <summary>Current flying speed, boosted by flySprintMultiplier while sprinting - kept
     /// separate from CurrentSpeed/sprintMultiplier so flying sprint can be tuned without
     /// affecting ground sprint speed.</summary>
-    private float CurrentFlySpeed => speed * (IsSprinting ? flySprintMultiplier : 1f);
+    private float CurrentFlySpeed => speed * AnimMoveFactor(flySprintMultiplier);
 
     // ──────────────────────────────────────────────
     //  Unity lifecycle
@@ -316,6 +339,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!movementEnabled || locomotionState == LocomotionState.Flying) return;
 
+        jumpPending = false;
         velocity = launchVelocity;
         locomotionState = LocomotionState.Jumping;
         lastSpacePressTime = Time.time;
@@ -431,8 +455,14 @@ public class PlayerController : MonoBehaviour
                     // mind about where to land.
                     autoDescending = false;
                     flyAscendHeld = true;
+                    // fall() dropped IsFlying when the descent began — put the fly animation back
+                    // right away, or the dragon keeps playing dragon_fall (or walks) while flying.
+                    playerAnim?.fly();
                 }
-                else if (Time.time - lastSpacePressTime <= doubleTapWindow)
+                // Ignored during the takeoff lock: a quick extra tap right after launching (tap-tap to
+                // take off, tap again to climb) is within doubleTapWindow of the takeoff itself and
+                // would otherwise be misread as "double-tap while flying" = start descending.
+                else if (flyTakeoffLockTimer <= 0f && Time.time - lastSpacePressTime <= doubleTapWindow)
                 {
                     // Double-tapped Space again while already flying — begin a controlled, gradual
                     // descent (see autoDescendSpeed / UpdateFlyingLocomotion) instead of the usual
@@ -608,6 +638,17 @@ public class PlayerController : MonoBehaviour
         // Flying locomotion
         if (locomotionState == LocomotionState.Flying)
         {
+            // Self-healing sync: IsFlying/IsFalling are only ever set on discrete events (takeoff,
+            // double-tap descend, cancel, FlightBlocked), so rapid inputs could leave the Animator
+            // disagreeing with locomotionState — the dragon_fall clip playing while flying freely, or
+            // (with both bools off) the ground walk/run blend playing in mid-air since the Speed code
+            // below keeps running. Re-assert the right one every frame; both calls are cheap no-ops
+            // when the Animator already matches.
+            if (autoDescending)
+                playerAnim.fall();
+            else
+                playerAnim.fly();
+
             // While the takeoff lock is active, don't touch the Speed parameter at all - let
             // whatever transition/state your Animator Controller set up for takeoff play out on
             // its own, instead of us immediately forcing Walk/Run and racing with it.
@@ -655,12 +696,24 @@ public class PlayerController : MonoBehaviour
     {
         WalkHorizontal();
 
+        // Jump is animation-gated: the Jump trigger fired on the key press, but the upward velocity waits
+        // until the jump animation is actually playing (or animGateTimeout passes).
+        if (jumpPending)
+        {
+            jumpPendingTimer -= Time.deltaTime;
+            if (playerAnim == null || playerAnim.IsJumpAnimPlaying || jumpPendingTimer <= 0f)
+            {
+                velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+                jumpPending = false;
+            }
+        }
+
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
         if (controller.isGrounded)
         {
-            if (locomotionState == LocomotionState.Jumping)
+            if (locomotionState == LocomotionState.Jumping && !jumpPending)
                 locomotionState = LocomotionState.Grounded;
 
             if (velocity.y < 0f)
@@ -681,7 +734,8 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        jumpPending = true;
+        jumpPendingTimer = animGateTimeout;
         playerAnim.jump();
         CompleteMovementTask(TaskJumpSpace);
     }
@@ -689,9 +743,13 @@ public class PlayerController : MonoBehaviour
     // ──────────────────────────────────────────────
     //  Flying locomotion
     // ──────────────────────────────────────────────
+    private float flyLiftWaitTimer;
+
     private void EnterFlyMode()
     {
         locomotionState = LocomotionState.Flying;
+        jumpPending = false;
+        flyLiftWaitTimer = animGateTimeout;
         velocity = Vector3.zero;
         autoDescending = false; // defensive — shouldn't ever be true entering fresh, but don't inherit stale state
         // NOTE: this used to advance the old on-screen Tutorial instruction text here
@@ -701,6 +759,9 @@ public class PlayerController : MonoBehaviour
         flyGroundGraceTimer = flyGroundGracePeriod;
         flyTakeoffLockTimer = flyTakeoffLockDuration;
         Debug.Log("[PlayerController] Fly mode ON");
+        // The first tap fired the "Jump" trigger; if the Animator hasn't consumed it yet it stays queued
+        // and keeps the jump clip (and its exit time) ahead of the fly state — clear it first.
+        playerAnim.setJumpFalse();
         playerAnim.fly();
         CompleteMovementTask(TaskFlyDoubleSpace);
     }
@@ -732,15 +793,25 @@ public class PlayerController : MonoBehaviour
         if (flyTakeoffLockTimer > 0f)
         {
             flyTakeoffLockTimer -= Time.deltaTime;
-            horizontalMove = Vector3.zero;
+            if (!allowMoveDuringTakeoff)
+                horizontalMove = Vector3.zero;
         }
 
         float verticalMove = 0f;
 
         if (flyGroundGraceTimer > 0f)
         {
-            flyGroundGraceTimer -= Time.deltaTime;
-            verticalMove += flyLiftSpeed;
+            // Takeoff is animation-gated too: hold position until the takeoff/fly animation is playing
+            // (or animGateTimeout passes), then lift.
+            if (flyLiftWaitTimer > 0f && playerAnim != null && !playerAnim.IsFlyAnimPlaying)
+            {
+                flyLiftWaitTimer -= Time.deltaTime;
+            }
+            else
+            {
+                flyGroundGraceTimer -= Time.deltaTime;
+                verticalMove += flyLiftSpeed;
+            }
         }
         else
         {
@@ -796,7 +867,10 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            if (controller.isGrounded && intentionalVertical <= 0f)
+            // Uses the debounced groundedTimer (landingConfirmDelay), not the raw single-frame
+            // controller.isGrounded — that can flicker true mid-air (grazing geometry), and with no
+            // Space/Ctrl held it used to kick the player straight out of fly mode in the sky.
+            if (groundedTimer >= landingConfirmDelay && intentionalVertical <= 0f)
             {
                 // Covers both the normal manual landing (fly yourself down) and auto-descending
                 // touching ground — autoDescending is reset inside ExitFlyMode() itself, so this
