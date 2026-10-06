@@ -331,6 +331,46 @@ public class TutorialSequenceController : MonoBehaviour
         return step != null && step.linkedMission == mission && step.linkedTaskId == taskId;
     }
 
+    /// <summary>True while the current step is a Portable prompt that wants everything else locked
+    /// down (see TutorialStep.lockOtherInput) — gameplay/UI entry points that aren't the step's own
+    /// target should refuse to act while this is true. False whenever no sequence is running, the
+    /// current step isn't Portable, or that step explicitly opted out via lockOtherInput. Movement/
+    /// camera are never gated by this — only call sites that choose to check it are affected.</summary>
+    public bool IsInputLocked
+    {
+        get
+        {
+            TutorialStep step = CurrentStep;
+            return step != null && step.type == TutorialPromptType.Portable && step.lockOtherInput;
+        }
+    }
+
+    /// <summary>Call this BEFORE letting a mission-task-driving action actually happen (opening the pot
+    /// menu, watering, harvesting — not just before reporting the task complete afterward). Always true
+    /// when input isn't locked; while it IS locked, only true for the exact mission+task the CURRENT
+    /// step is linked to, so the one thing that step is teaching still works while every other action
+    /// stays blocked. Same idea as IsCurrentLinkedTask, just phrased as a permission check instead of a
+    /// stricter-completion gate.</summary>
+    public bool IsActionAllowedForTask(MissionData mission, string taskId)
+    {
+        if (!IsInputLocked) return true;
+        return IsCurrentLinkedTask(mission, taskId);
+    }
+
+    /// <summary>Same idea as IsActionAllowedForTask, for actions gated by NotifyExternalTrigger's id
+    /// instead of a mission task (e.g. "interacted_with_pot").</summary>
+    public bool IsActionAllowedForTrigger(string triggerId)
+    {
+        if (!IsInputLocked) return true;
+        TutorialStep step = CurrentStep;
+        return step != null && step.externalTriggerId == triggerId;
+    }
+
+    /// <summary>For HUD buttons/icons that aren't tied to any mission task or external trigger at all —
+    /// tool slots, hotbar, journal/inventory icons, exit menu. These have no "this one's the allowed
+    /// exception" case, so they're simply blocked outright whenever input is locked.</summary>
+    public bool IsHudBlocked => IsInputLocked;
+
     /// <summary>Jumps straight to a specific step, e.g. to resume a tutorial mid-way after a save load.</summary>
     public void SkipToStep(int index)
     {
@@ -414,6 +454,25 @@ public class TutorialSequenceController : MonoBehaviour
                   "nothing here is linked to a mission task. Remember to set Completion Flag Key above " +
                   "(e.g. \"Tutorial_MainHalfCompleted\") so this doesn't replay on every later visit, and " +
                   "set MainUIController's matching 'Tutorial Completed Prefs Key' to the same string.");
+    }
+
+    /// <summary>DEV CONVENIENCE — right-click this component's header and pick this to clear the
+    /// Completion Flag Key from PlayerPrefs, so this scene's sequence plays again next time you hit Play
+    /// (and MainUIController, if it shares the same key, goes back to starting its gated UI hidden).
+    /// Only touches the one key set above; does nothing if Completion Flag Key is blank.</summary>
+    [ContextMenu("Reset Completion Flag (replay this scene's tutorial next Play)")]
+    private void ResetCompletionFlag()
+    {
+        if (string.IsNullOrEmpty(completionFlagKey))
+        {
+            Debug.Log("[TutorialSequenceController] Completion Flag Key is blank — nothing to reset.");
+            return;
+        }
+
+        PlayerPrefs.DeleteKey(completionFlagKey);
+        PlayerPrefs.Save();
+        Debug.Log($"[TutorialSequenceController] Cleared PlayerPrefs key '{completionFlagKey}' — " +
+                  "this scene's tutorial will play again on the next Play.");
     }
 
     // ------------------------------------------------------------

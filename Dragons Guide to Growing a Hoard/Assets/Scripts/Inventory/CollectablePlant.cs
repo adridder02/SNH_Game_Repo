@@ -58,6 +58,21 @@ public class CollectablePlant : MonoBehaviour
 
     public PlantCondition StartingCondition => startingCondition;
 
+    /// <summary>Called by HarvestNodeTypeGroup.ConfigureChildren() when this component was just
+    /// auto-added onto a node under a type group, instead of being hand-configured per-node in the
+    /// Inspector. Fills in exactly the same fields the Inspector would — nothing else about this
+    /// component behaves differently afterward.</summary>
+    public void ConfigureFromGroup(GameObject prefab, string name, Sprite icon, Sprite image,
+        MissionData mission, PlantCondition condition)
+    {
+        plantPrefab = prefab;
+        plantName = name;
+        plantIcon = icon;
+        plantImage = image;
+        tutorialMission = mission;
+        startingCondition = condition;
+    }
+
     public GameObject GetPlantPrefab()
     {
         if (plantPrefab == null)

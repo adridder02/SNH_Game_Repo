@@ -395,10 +395,23 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             abilityInventoryForGating = FindAnyObjectByType<PlayerAbilityInventory>();
 
         if (journalButton != null)
-            journalButton.onClick.AddListener(() => journalUI?.ToggleJournal());
+            journalButton.onClick.AddListener(() =>
+            {
+                // Blocked outright while a Portable tutorial prompt wants everything else locked
+                // down (see TutorialStep.lockOtherInput) — this icon isn't tied to any mission task
+                // or external trigger, so there's no "allowed exception" case for it.
+                if (TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsHudBlocked)
+                    return;
+                journalUI?.ToggleJournal();
+            });
 
         if (inventoryButton != null)
-            inventoryButton.onClick.AddListener(() => inventoryUI?.ToggleInventory());
+            inventoryButton.onClick.AddListener(() =>
+            {
+                if (TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsHudBlocked)
+                    return;
+                inventoryUI?.ToggleInventory();
+            });
 
         // One-time-reveal gating — same pattern as toolSlotsStartHidden/RevealToolSlot below, just for
         // three individual elements instead of a group of four. Each stays hidden until its own
@@ -607,13 +620,21 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             hotbarRoot.SetActive(abilityInventoryForGating != null && abilityInventoryForGating.HasHarvestedFirstAbilityItem);
     }
 
-    /// <summary>Adds a click listener to toolSlots[index] if both the slot and placementSystem exist.</summary>
+    /// <summary>Adds a click listener to toolSlots[index] if both the slot and placementSystem exist.
+    /// The listener itself checks TutorialSequenceController.IsHudBlocked before running — tool slots
+    /// aren't tied to any one mission task/trigger, so like the journal/inventory icons they're simply
+    /// blocked outright while a Portable prompt wants everything else locked down.</summary>
     private void WireToolSlot(int index, UnityEngine.Events.UnityAction onClick)
     {
         if (placementSystem == null) return;
         if (index < 0 || index >= toolSlots.Length || toolSlots[index] == null) return;
 
-        toolSlots[index].onClick.AddListener(onClick);
+        toolSlots[index].onClick.AddListener(() =>
+        {
+            if (TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsHudBlocked)
+                return;
+            onClick();
+        });
     }
 
     /// <summary>Reveals one tool-selector slot (0=Place,1=Remove,2=Move,3=Water) without affecting the

@@ -245,7 +245,9 @@ public class PotInteraction : MonoBehaviour
             else if (scroll > 0f) activePromptOption = PromptOption.Interact;
         }
 
-        // E — runs whichever prompt option is currently active
+        // E — runs whichever prompt option is currently active. While a Portable tutorial prompt
+        // wants everything else locked down (TutorialStep.lockOtherInput), only the exact action
+        // THAT step is linked to is allowed through — closing an already-open menu is never blocked.
         if (Keyboard.current.eKey.wasPressedThisFrame)
         {
             if (menuOpen)
@@ -254,10 +256,19 @@ public class PotInteraction : MonoBehaviour
             }
             else if (nearbyPot != null)
             {
-                if (activePromptOption == PromptOption.WaterPlant && waterOptionAvailable)
-                    QuickWater(nearbyPot);
+                bool wantWater = activePromptOption == PromptOption.WaterPlant && waterOptionAvailable;
+                var tutorial = TutorialSequenceController.Instance;
+
+                if (wantWater)
+                {
+                    if (tutorial == null || tutorial.IsActionAllowedForTask(tutorialMission, "water_plant"))
+                        QuickWater(nearbyPot);
+                }
                 else
-                    OpenMenu(nearbyPot);
+                {
+                    if (tutorial == null || tutorial.IsActionAllowedForTrigger("interacted_with_pot"))
+                        OpenMenu(nearbyPot);
+                }
             }
         }
     }

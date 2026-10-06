@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -139,12 +140,34 @@ public class HarvestNodeContainer : MonoBehaviour
     }
 
     // =========================================================
-    // Re-cache if children are added/removed at runtime.
+    // Re-cache if children are added/removed at runtime. A direct child that has a
+    // HarvestNodeTypeGroup on it isn't itself a harvestable node — it's an empty grouping several
+    // nodes of the same plant type under one shared config (see HarvestNodeTypeGroup.cs). Its own
+    // children are configured (auto-adds CollectablePlant where missing) and flattened into the
+    // node list here, so from FindClosestNode()/OnHarvest()'s point of view nothing about how
+    // individual nodes are found or harvested changes — this only affects how they get set up.
     public void CacheChildren()
     {
-        nodes = new Transform[transform.childCount];
+        List<Transform> collected = new List<Transform>();
+
         for (int i = 0; i < transform.childCount; i++)
-            nodes[i] = transform.GetChild(i);
+        {
+            Transform child = transform.GetChild(i);
+            HarvestNodeTypeGroup group = child.GetComponent<HarvestNodeTypeGroup>();
+
+            if (group != null)
+            {
+                group.ConfigureChildren();
+                for (int c = 0; c < child.childCount; c++)
+                    collected.Add(child.GetChild(c));
+            }
+            else
+            {
+                collected.Add(child);
+            }
+        }
+
+        nodes = collected.ToArray();
 
         EnsureDisintegrateOnNodes();
     }
@@ -207,7 +230,15 @@ public class HarvestNodeContainer : MonoBehaviour
         if (UnityEngine.InputSystem.Keyboard.current.eKey.wasPressedThisFrame)
         {
             if (currentNode != null)
-                OnHarvest(currentNode);
+            {
+                // While a Portable tutorial prompt wants everything else locked down
+                // (TutorialStep.lockOtherInput), harvesting only goes through if THIS step is the
+                // one linked to "plant_pickup" — otherwise pressing E here is just another "other
+                // thing" the player shouldn't be able to do yet.
+                var tutorial = TutorialSequenceController.Instance;
+                if (tutorial == null || tutorial.IsActionAllowedForTask(tutorialMission, "plant_pickup"))
+                    OnHarvest(currentNode);
+            }
             else
                 Debug.Log($"[HarvestNodeContainer] E pressed but no node in range. " +
                           $"Checked {(nodes != null ? nodes.Length : 0)} nodes, " +

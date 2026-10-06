@@ -116,6 +116,12 @@ public class ExitMenuController : MonoBehaviour
             return;
         }
 
+        // Blocked outright while a Portable tutorial prompt wants everything else locked down (see
+        // TutorialStep.lockOtherInput) — the exit menu isn't tied to any mission task/trigger, so
+        // there's no "allowed exception" case for it.
+        if (TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsHudBlocked)
+            return;
+
         OpenExitMenu();
     }
 

@@ -87,6 +87,20 @@ public class TutorialStep
              "is the one currently showing, it advances immediately, same as a click. Leave blank if unused.")]
     public string externalTriggerId;
 
+    [Header("Input Lock (Portable only)")]
+    [Tooltip("While this Portable step is showing, block every OTHER HUD button and gated world " +
+             "interaction (tool slots, hotbar, journal/inventory icons, exit menu, pressing [E] on a " +
+             "pot/harvest node, Q to water) so the player can't do anything except whatever THIS step " +
+             "is actually teaching. The one exception is whatever this step's own linkedMission/" +
+             "linkedTaskId or externalTriggerId already points at — e.g. if this step is linked to the " +
+             "'water_plant' task, pressing Q to water still works, but opening the pot menu, switching " +
+             "tools, or opening the journal doesn't, until this step advances. See " +
+             "TutorialSequenceController.IsInputLocked/IsActionAllowedForTask/IsActionAllowedForTrigger " +
+             "— gameplay scripts check those before letting an action happen, not just before reporting " +
+             "it complete. Movement/camera are never affected by this. Turn OFF for a step where you " +
+             "deliberately want other UI still usable underneath (e.g. a passive pointer-only popup).")]
+    public bool lockOtherInput = true;
+
     [Header("Side effects (optional)")]
     [Tooltip("Invoked once, the instant this step becomes the current one (right as its UI is shown — or, " +
              "for a Gate step, the instant it becomes current even though it shows nothing). Use this to " +
