@@ -18,6 +18,34 @@ public class PlayerController : MonoBehaviour
 
     //Finding layers to jump from 
     [SerializeField] private LayerMask groundLayers;
+
+    [Header("Collision Safety")]
+    [Tooltip("Max distance (as a fraction of the CharacterController's radius) the player may travel in ONE " +
+             "physics step. Bigger moves (fast flying, sprint, takeoff lift, frame-rate hitches) are split " +
+             "into several smaller steps so the player can't skip straight through thin walls/floors.")]
+    [Range(0.1f, 1f)] [SerializeField] private float maxStepFractionOfRadius = 0.5f;
+    [Tooltip("Hard cap on how many sub-steps a single Move is split into (performance safety).")]
+    [SerializeField] private int maxMoveSubSteps = 8;
+    [Tooltip("Layers the player is pushed out of if it ever ends up overlapping solid geometry (the " +
+             "'stuck in things' recovery). Triggers are always ignored. Leave as Everything unless you " +
+             "have solid colliders the player is deliberately meant to overlap.")]
+    [SerializeField] private LayerMask depenetrationLayers = ~0;
+    [Tooltip("Turn off to disable the stuck-recovery push-out entirely.")]
+    [SerializeField] private bool depenetrateWhenStuck = true;
+    private readonly Collider[] overlapBuffer = new Collider[16];
+
+    [Header("Thin Object Guard (sweep)")]
+    [Tooltip("Extra safety net for thin solids (table legs, poles, railings) that the CharacterController " +
+             "occasionally slips past. Before each small step, a slightly FATTER capsule is swept along the " +
+             "horizontal direction of travel and the step is stopped/slid along the surface if it would hit " +
+             "something. Effectively thickens every collider by Sweep Padding without editing them.")]
+    [SerializeField] private bool sweepGuard = true;
+    [Tooltip("How much fatter than the CharacterController the sweep capsule is. 0.05-0.15 is typical. " +
+             "Too high and the player can't squeeze through doorways / between furniture.")]
+    [SerializeField] private float sweepPadding = 0.1f;
+    [Tooltip("Layers the sweep treats as solid. Triggers are always ignored.")]
+    [SerializeField] private LayerMask sweepLayers = ~0;
+    private readonly RaycastHit[] sweepHits = new RaycastHit[8];
     [SerializeField] private bool shouldFaceMoveDirection = true;
 
     [Header("Sprint")]
@@ -114,6 +142,10 @@ public class PlayerController : MonoBehaviour
              "animation, which read as firing constantly during ordinary movement.")]
     [SerializeField] private float fallAnimationDelay = 0.15f;
     private float ungroundedTimer = 0f;
+    [Tooltip("After landing from flight, how long (seconds) the walked-off-a-ledge fall animation is blocked, " +
+             "so touchdown doesn't go landing -> falling again.")]
+    [SerializeField] private float postFlightFallGrace = 0.35f;
+    private float postFlightFallSuppress = 0f;
 
     [Tooltip("Mirror of fallAnimationDelay for the OPPOSITE direction. controller.isGrounded can " +
              "also flicker TRUE for a single frame while genuinely still airborne (grazing a bump, a " +
@@ -223,6 +255,106 @@ public class PlayerController : MonoBehaviour
             moveAction = gameplayMap?.FindAction("Move", true);
             flyAction = gameplayMap?.FindAction("Fly", true);
             inventoryAction = gameplayMap?.FindAction("Inventory", true);
+        }
+    }
+
+    // ──────────────────────────────────────────────
+    //  Safe movement (anti-tunnelling + stuck recovery)
+    // ──────────────────────────────────────────────
+    /// <summary>Drop-in replacement for controller.Move: splits big displacements into small steps so
+    /// nothing is skipped through, then pushes the player out of any solid it ended up inside.</summary>
+    private void SafeMove(Vector3 delta)
+    {
+        float maxStep = Mathf.Max(0.02f, controller.radius * maxStepFractionOfRadius);
+        float dist = delta.magnitude;
+        int steps = Mathf.Clamp(Mathf.CeilToInt(dist / maxStep), 1, Mathf.Max(1, maxMoveSubSteps));
+        Vector3 stepDelta = delta / steps;
+
+        for (int i = 0; i < steps; i++)
+            controller.Move(sweepGuard ? GuardStep(stepDelta) : stepDelta);
+
+        if (depenetrateWhenStuck)
+            Depenetrate();
+    }
+
+    /// <summary>Sweeps a padded capsule along the step's horizontal part and shortens/slides it if it would
+    /// run into a wall-like surface (floors/ceilings — mostly-vertical normals — are left to the
+    /// CharacterController so walking up slopes/steps and landing still work normally).</summary>
+    private Vector3 GuardStep(Vector3 step)
+    {
+        Vector3 horiz = new Vector3(step.x, 0f, step.z);
+        float len = horiz.magnitude;
+        if (len < 0.0005f) return step;
+        Vector3 dir = horiz / len;
+
+        float r = controller.radius + sweepPadding;
+        Vector3 centre = transform.TransformPoint(controller.center);
+        float half = Mathf.Max(0f, controller.height * 0.5f - controller.radius);
+        // Raise the bottom sphere above step height so low kerbs/stairs don't register as walls.
+        float lift = Mathf.Min(controller.stepOffset + sweepPadding, half * 2f);
+        Vector3 top = centre + Vector3.up * half;
+        Vector3 bottom = centre - Vector3.up * half + Vector3.up * lift;
+        if (bottom.y > top.y) bottom.y = top.y;
+
+        int n = Physics.CapsuleCastNonAlloc(bottom, top, r, dir, sweepHits, len + 0.02f, sweepLayers,
+            QueryTriggerInteraction.Ignore);
+
+        float best = float.MaxValue;
+        Vector3 bestNormal = Vector3.zero;
+        for (int i = 0; i < n; i++)
+        {
+            RaycastHit h = sweepHits[i];
+            if (h.collider == null || h.collider.transform.IsChildOf(transform)) continue;
+            if (h.distance <= 0f) continue;                    // started inside — let depenetration handle it
+            if (Mathf.Abs(h.normal.y) > 0.7f) continue;       // floor/ceiling-like, not a wall
+            if (h.distance < best) { best = h.distance; bestNormal = h.normal; }
+        }
+
+        if (best == float.MaxValue) return step;
+
+        float allowed = Mathf.Max(0f, best - 0.01f);
+        Vector3 moved = dir * Mathf.Min(allowed, len);
+
+        // Slide the remainder along the surface instead of stopping dead.
+        float remaining = Mathf.Max(0f, len - allowed);
+        Vector3 slide = Vector3.ProjectOnPlane(dir, new Vector3(bestNormal.x, 0f, bestNormal.z).normalized);
+        slide.y = 0f;
+        if (slide.sqrMagnitude > 0.0001f)
+            moved += slide.normalized * remaining * Mathf.Clamp01(slide.magnitude);
+
+        return new Vector3(moved.x, step.y, moved.z);
+    }
+
+    /// <summary>If the controller's capsule overlaps solid, non-trigger geometry (wedged into a wall corner,
+    /// pushed into a collider by a moving object, etc.), nudges it back out along the shortest direction.</summary>
+    private void Depenetrate()
+    {
+        float h = Mathf.Max(controller.height, controller.radius * 2f);
+        Vector3 centre = transform.TransformPoint(controller.center);
+        float half = h * 0.5f - controller.radius;
+        Vector3 p1 = centre + Vector3.up * half;
+        Vector3 p2 = centre - Vector3.up * half;
+        float r = controller.radius;
+
+        int count = Physics.OverlapCapsuleNonAlloc(p1, p2, r, overlapBuffer, depenetrationLayers,
+            QueryTriggerInteraction.Ignore);
+
+        for (int i = 0; i < count; i++)
+        {
+            Collider c = overlapBuffer[i];
+            if (c == null || c.transform.IsChildOf(transform)) continue;
+            // ComputePenetration only supports primitive and CONVEX mesh colliders — a non-convex
+            // MeshCollider/Terrain would just log errors, so those are left to CharacterController.Move itself.
+            if (c is TerrainCollider || (c is MeshCollider mc && !mc.convex)) continue;
+
+            // Cheap, collider-type-agnostic overlap resolve against our capsule's own collider (the
+            // CharacterController itself) — Physics.ComputePenetration works with it as a Collider.
+            if (Physics.ComputePenetration(controller, transform.position, transform.rotation,
+                    c, c.transform.position, c.transform.rotation, out Vector3 dir, out float pushDist))
+            {
+                if (pushDist > 0.001f)
+                    controller.Move(dir * (pushDist + 0.01f));
+            }
         }
     }
 
@@ -470,7 +602,9 @@ public class PlayerController : MonoBehaviour
                     // drops IsFlying itself, so Fly Idle doesn't keep competing with it).
                     autoDescending = true;
                     flyAscendHeld = false;
-                    playerAnim.fall();
+                    // Keeps playing the FLY animation for the glide down — dragon_fall is now reserved for
+                    // genuine falls (walking off a ledge, dropping after a jump).
+                    playerAnim.fly();
                 }
                 else
                 {
@@ -605,7 +739,14 @@ public class PlayerController : MonoBehaviour
                 // completely normal walking (stairs, bumpy terrain), which was triggering this
                 // constantly. Below the threshold, just leave whatever animation was already
                 // playing alone rather than switching to anything.
-                if (ungroundedTimer >= fallAnimationDelay)
+                if (postFlightFallSuppress > 0f)
+                {
+                    // Just landed from flying — don't let a momentary isGrounded flicker on the
+                    // touchdown frames restart the fall animation right after the landing one.
+                    postFlightFallSuppress -= Time.deltaTime;
+                    ungroundedTimer = 0f;
+                }
+                else if (ungroundedTimer >= fallAnimationDelay)
                 {
                     // dragon_fall plays on its own now (playerAnimation.fall() drives "IsFalling"
                     // directly) — no more setIdel() here to fake it via Fly Idle's Speed float.
@@ -644,10 +785,7 @@ public class PlayerController : MonoBehaviour
             // (with both bools off) the ground walk/run blend playing in mid-air since the Speed code
             // below keeps running. Re-assert the right one every frame; both calls are cheap no-ops
             // when the Animator already matches.
-            if (autoDescending)
-                playerAnim.fall();
-            else
-                playerAnim.fly();
+            playerAnim.fly();
 
             // While the takeoff lock is active, don't touch the Speed parameter at all - let
             // whatever transition/state your Animator Controller set up for takeoff play out on
@@ -709,7 +847,7 @@ public class PlayerController : MonoBehaviour
         }
 
         velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
+        SafeMove(velocity * Time.deltaTime);
 
         if (controller.isGrounded)
         {
@@ -763,6 +901,10 @@ public class PlayerController : MonoBehaviour
         // and keeps the jump clip (and its exit time) ahead of the fly state — clear it first.
         playerAnim.setJumpFalse();
         playerAnim.fly();
+        // Force the Animator straight into the fly state instead of waiting for it to finish whatever
+        // walk/run -> jump transition was mid-blend when the second tap landed (that half-finished blend
+        // is what showed as "walking in the air"). Needs flyStateName set on playerAnimation.
+        playerAnim.ForceFlyState();
         CompleteMovementTask(TaskFlyDoubleSpace);
     }
 
@@ -880,7 +1022,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        controller.Move((horizontalMove + Vector3.up * verticalMove) * Time.deltaTime);
+        SafeMove((horizontalMove + Vector3.up * verticalMove) * Time.deltaTime);
 
         if (shouldFaceMoveDirection && horizontalMove.sqrMagnitude > 0.001f)
         {
@@ -910,7 +1052,9 @@ public class PlayerController : MonoBehaviour
     private void ExitFlyMode()
     {
         locomotionState = LocomotionState.Grounded;
-        velocity = Vector3.zero;
+        velocity = new Vector3(0f, -2f, 0f); // small downward stick so the first grounded frames keep isGrounded true
+        postFlightFallSuppress = postFlightFallGrace;
+        ungroundedTimer = 0f;
         flyAscendHeld = false;
         autoDescending = false;
         ThirdPersonCameraController.setCameraZoomLimitOnFly(false);
@@ -937,7 +1081,7 @@ public class PlayerController : MonoBehaviour
         right.Normalize();
 
         Vector3 dir = forward * moveInput.y + right * moveInput.x;
-        controller.Move(dir * CurrentSpeed * Time.deltaTime);
+        SafeMove(dir * CurrentSpeed * Time.deltaTime);
 
         if (shouldFaceMoveDirection && dir.sqrMagnitude > 0.001f)
         {

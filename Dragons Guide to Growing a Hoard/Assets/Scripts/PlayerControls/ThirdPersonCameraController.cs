@@ -74,6 +74,25 @@ public class ThirdPersonCameraController : MonoBehaviour
     [SerializeField] private float collisionPullInSpeed = 20f;
     [SerializeField] private float collisionPullOutSpeed = 15f;
     [SerializeField] private float collisionBuffer = 0.3f;
+
+    [Header("Camera Wall Padding (sphere cast)")]
+    [Tooltip("On top of the trigger box, every frame a sphere is swept from the dragon out to where the camera " +
+             "wants to be. This is what stops the camera slipping through walls at odd angles or during fast " +
+             "turns, which the trigger box alone can miss (it only reacts once already overlapping, and eases in).")]
+    [SerializeField] private bool useSphereCastPadding = true;
+    [Tooltip("Radius of the swept sphere = how much empty space is kept between the camera and any wall. " +
+             "Bigger = more padding. Should be at least as big as the camera's near clip distance.")]
+    [SerializeField] private float cameraPaddingRadius = 0.35f;
+    [Tooltip("Layers that block the camera for the sphere cast. Leave EMPTY (Nothing) to reuse the camera " +
+             "collider's Include Layers instead, so you only configure walls in one place.")]
+    [SerializeField] private LayerMask sphereCastLayers = 0;
+    [Tooltip("The camera may be pulled in as close as this to the dragon when a wall is right behind it " +
+             "(below minDistance, which only applies to scroll zoom). The dragon hides when the camera is " +
+             "closer than Dragon Hide Distance anyway.")]
+    [SerializeField] private float absoluteMinRadius = 0.6f;
+    [Tooltip("When a wall blocks the camera, jump straight to the safe distance instead of easing in " +
+             "(easing is what let the camera pass through walls on quick turns). Pulling back OUT stays smooth.")]
+    [SerializeField] private bool snapPullIn = true;
     
     [Header("Collision Box Settings")]
     [SerializeField] private bool showDebugBox = true;
@@ -395,7 +414,19 @@ public class ThirdPersonCameraController : MonoBehaviour
 
         // Handle camera pull based on trigger collisions
         float desiredRadius = ResolveCollisionWithTrigger(currentZoom);
-        
+        bool sphereBlocked = false;
+        if (useSphereCastPadding)
+        {
+            float castRadius = ResolveSphereCastRadius(follow, currentZoom, out sphereBlocked);
+            if (sphereBlocked) desiredRadius = Mathf.Min(desiredRadius, castRadius);
+        }
+
+        if (snapPullIn && desiredRadius < collisionZoom)
+        {
+            // Never let the camera lag behind a wall — clip-through happens during the easing frames.
+            collisionZoom = desiredRadius;
+        }
+
         float lerpSpeed = desiredRadius < collisionZoom
             ? collisionPullInSpeed
             : collisionPullOutSpeed;
@@ -424,6 +455,45 @@ public class ThirdPersonCameraController : MonoBehaviour
 
         // Handle transparency for all other layers using Raycast
         HandleTransparencyForOtherLayers(dt);
+    }
+
+    /// <summary>
+    /// Sweeps a sphere from the dragon toward where the camera wants to sit and returns the
+    /// largest radius that keeps cameraPaddingRadius of clearance from whatever it hits.
+    /// </summary>
+    private float ResolveSphereCastRadius(Transform follow, float desiredRadius, out bool blocked)
+    {
+        blocked = false;
+
+        LayerMask mask = sphereCastLayers.value != 0 ? sphereCastLayers : GetCameraColliderIncludeMask();
+        if (mask.value == 0) return desiredRadius;
+
+        // Pivot the orbit actually looks at: dragon + vertical framing offset.
+        Vector3 pivot = follow.position + Vector3.up * (orbital != null ? orbital.TargetOffset.y : 0f);
+        Vector3 toCam = transform.position - pivot;
+        if (toCam.sqrMagnitude < 0.0001f) return desiredRadius;
+        Vector3 dir = toCam.normalized;
+
+        // Start the sweep just outside the pivot so a wall right on top of the dragon doesn't start inside the sphere.
+        if (Physics.SphereCast(pivot, cameraPaddingRadius, dir, out RaycastHit hit, desiredRadius,
+                mask, QueryTriggerInteraction.Ignore))
+        {
+            // Ignore the dragon itself and anything attached to it.
+            if (hit.collider.transform == follow || hit.collider.transform.IsChildOf(follow))
+                return desiredRadius;
+
+            blocked = true;
+            return Mathf.Clamp(hit.distance, absoluteMinRadius, desiredRadius);
+        }
+        return desiredRadius;
+    }
+
+    private int GetCameraColliderIncludeMask()
+    {
+        Collider c = GetComponent<Collider>();
+        if (c == null) return 0;
+        // Include Layers empty (0) means "nothing extra", so treat as no mask; otherwise remove excludes.
+        return c.includeLayers.value & ~c.excludeLayers.value;
     }
 
     /// <summary>

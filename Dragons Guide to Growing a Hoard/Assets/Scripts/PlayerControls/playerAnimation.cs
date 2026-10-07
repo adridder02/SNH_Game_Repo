@@ -36,6 +36,19 @@ public class playerAnimation : MonoBehaviour
     /// there's no Animator, so callers can fall back to input-based behaviour.</summary>
     public float CurrentAnimSpeed => playerAni != null ? playerAni.GetFloat("Speed") : -1f;
 
+    [Tooltip("Crossfade time (seconds) used when forcing the fly state on takeoff.")]
+    [SerializeField] private float forceFlyCrossfade = 0.1f;
+
+    /// <summary>Jumps the Animator directly into the fly state (layer 0), bypassing any transition that is
+    /// still mid-blend from walk/run/jump. No-op if flyStateName is empty or the state is already playing.</summary>
+    public void ForceFlyState()
+    {
+        if (playerAni == null || string.IsNullOrEmpty(flyStateName)) return;
+        if (playerAni.GetCurrentAnimatorStateInfo(0).IsName(flyStateName)) return;
+        playerAni.ResetTrigger("Jump");
+        playerAni.CrossFadeInFixedTime(flyStateName, forceFlyCrossfade, 0);
+    }
+
     public bool IsJumpAnimPlaying => IsStatePlayingOrBlendingIn(jumpStateName);
     public bool IsFlyAnimPlaying => IsStatePlayingOrBlendingIn(flyStateName);
 

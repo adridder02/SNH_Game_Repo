@@ -3788,12 +3788,10 @@ GameObject:
   - component: {fileID: 74016818}
   - component: {fileID: 74016817}
   - component: {fileID: 74016816}
-  - component: {fileID: 74016815}
   - component: {fileID: 74016814}
   - component: {fileID: 74016813}
   - component: {fileID: 74016812}
   - component: {fileID: 74016811}
-  - component: {fileID: 74016810}
   - component: {fileID: 74016809}
   - component: {fileID: 74016808}
   - component: {fileID: 74016820}
@@ -3805,6 +3803,7 @@ GameObject:
   - component: {fileID: 74016825}
   - component: {fileID: 74016826}
   - component: {fileID: 74016827}
+  - component: {fileID: 74016828}
   m_Layer: 0
   m_Name: PlayerParent
   m_TagString: Player
@@ -3846,31 +3845,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9999d7c03b2d6444c9f8328b5ba079fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::playerAnimation
-  speedDampTime: 0.12
-  jumpStateName: dragon_jump_up
-  flyStateName: dragon_fly
---- !u!64 &74016810
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 74016807}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 1
-  m_Enabled: 0
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  speedDampTime: 0.3
+  jumpStateName: Jump
+  flyStateName: Fly
+  forceFlyCrossfade: 0.5
 --- !u!114 &74016811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4030,9 +4008,20 @@ MonoBehaviour:
   groundLayers:
     serializedVersion: 2
     m_Bits: 0
+  maxStepFractionOfRadius: 0.5
+  maxMoveSubSteps: 8
+  depenetrationLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  depenetrateWhenStuck: 1
+  sweepGuard: 1
+  sweepPadding: 1
+  sweepLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   shouldFaceMoveDirection: 1
   sprintMultiplier: 3
-  doubleTapWindow: 0.3
+  doubleTapWindow: 0.5
   flyLiftSpeed: 12
   flyGroundGracePeriod: 0.4
   flyVerticalSpeed: 7
@@ -4046,29 +4035,9 @@ MonoBehaviour:
   inputActions: {fileID: -944628639613478452, guid: 96f9bf046802d4545868fdcc2b9f308a, type: 3}
   movementMission: {fileID: 11400000, guid: bc08ac5a41257484bb6bf6139a8d2944, type: 2}
   fallAnimationDelay: 0.05
+  postFlightFallGrace: 0.35
   landingConfirmDelay: 0.05
   animGateTimeout: 0.25
---- !u!65 &74016815
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 74016807}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 32575
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 1
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 3.92, y: 7.18, z: 2.18}
-  m_Center: {x: 0.04, y: 0.74, z: -0.13}
 --- !u!23 &74016816
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4135,8 +4104,8 @@ RectTransform:
   m_GameObject: {fileID: 74016807}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -831.1775}
-  m_LocalScale: {x: 0.41511905, y: 0.33054, z: 2.3026125}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.45, y: 0.35831407, z: 2.4960926}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 32051273}
   m_Father: {fileID: 0}
@@ -4187,7 +4156,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 1.8661499
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -4289,7 +4258,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &74016822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4392,6 +4361,27 @@ MonoBehaviour:
   labelFadeSpeed: 4
   labelFontSize: 18
   labelBackgroundSprite: {fileID: 0}
+--- !u!65 &74016828
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 74016807}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.3274283, y: 8.337762, z: 1.9141246}
+  m_Center: {x: -0.28905314, y: 3.6688805, z: -0.05046951}
 --- !u!1 &74049292 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9158743094094176133, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -8242,7 +8232,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
   looping: 1
-  prewarm: 1
+  prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
@@ -13887,7 +13877,7 @@ Transform:
   m_GameObject: {fileID: 189181123}
   serializedVersion: 2
   m_LocalRotation: {x: -0.0005492293, y: 0.7071066, z: -0.7071066, w: -0.0005492293}
-  m_LocalPosition: {x: -51.7, y: -290, z: -972.4}
+  m_LocalPosition: {x: -51.7, y: -287.4, z: -972.4}
   m_LocalScale: {x: -544.1, y: -544.1, z: -1244.6738}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -18186,7 +18176,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.08819469, y: 7.3461964e-22, z: -6.504301e-23, w: 0.9961033}
-  m_LocalPosition: {x: -205.43176, y: -17.97882, z: -838.8084}
+  m_LocalPosition: {x: -205.44284, y: -17.79461, z: -838.77686}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -31838,7 +31828,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
   looping: 1
-  prewarm: 1
+  prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
@@ -43372,7 +43362,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
   looping: 1
-  prewarm: 1
+  prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
@@ -57022,7 +57012,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
   looping: 1
-  prewarm: 1
+  prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
@@ -70981,7 +70971,7 @@ MonoBehaviour:
   sourceInfluence: 0.8
   lowThreshold: 0.15
   highThreshold: 0.85
-  maxEmissionRate: 20
+  maxEmissionRate: 10
   smoothTime: 2
 --- !u!64 &1231502730
 MeshCollider:
@@ -77045,7 +77035,7 @@ Transform:
   m_GameObject: {fileID: 1393679874}
   serializedVersion: 2
   m_LocalRotation: {x: 0.08819468, y: 7.306786e-22, z: -2.0532942e-23, w: 0.9961033}
-  m_LocalPosition: {x: -322.96176, y: 9.544046, z: -57.17221}
+  m_LocalPosition: {x: -322.97284, y: 9.722633, z: -57.10919}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -77144,6 +77134,13 @@ MonoBehaviour:
   collisionPullInSpeed: 20
   collisionPullOutSpeed: 4
   collisionBuffer: 0.3
+  useSphereCastPadding: 1
+  cameraPaddingRadius: 0.35
+  sphereCastLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  absoluteMinRadius: 0.6
+  snapPullIn: 1
   showDebugBox: 0
   dragonRenderers:
   - {fileID: 2059329388}
@@ -79208,7 +79205,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
   looping: 1
-  prewarm: 1
+  prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
@@ -90580,6 +90577,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: -6628042981357940110, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.2800002
+      objectReference: {fileID: 0}
     - target: {fileID: -6603500416288368519, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -92400,6 +92401,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: -861524089076344249, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 8.546804
+      objectReference: {fileID: 0}
     - target: {fileID: -851114287730531682, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -92412,6 +92417,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 5a8255b1aa1624f449abf894bea440b0, type: 2}
+    - target: {fileID: -820098486223884158, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 8.114349
+      objectReference: {fileID: 0}
     - target: {fileID: -810877944340479306, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -92495,6 +92504,10 @@ PrefabInstance:
     - target: {fileID: -479777780449498286, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: -477857683251426363, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 8.546804
       objectReference: {fileID: 0}
     - target: {fileID: -466564457024391749, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -93240,6 +93253,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 1699583099507771125, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 8.186901
+      objectReference: {fileID: 0}
     - target: {fileID: 1750900774305165698, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -93292,6 +93309,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 1911887774838139940, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 7.5689006
+      objectReference: {fileID: 0}
     - target: {fileID: 1921817305703249840, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -93324,6 +93345,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 18525d91c4884fd40bc01ae82ae3b7ca, type: 2}
+    - target: {fileID: 1985863668693136390, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 7.5688987
+      objectReference: {fileID: 0}
     - target: {fileID: 1998131547146259539, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -93888,6 +93913,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 3558363411398454125, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 7.5689006
+      objectReference: {fileID: 0}
     - target: {fileID: 3559817854460706613, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -94083,6 +94112,10 @@ PrefabInstance:
     - target: {fileID: 4351157010249371259, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 4354536713523572449, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.28
       objectReference: {fileID: 0}
     - target: {fileID: 4356877828898064976, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -94875,6 +94908,10 @@ PrefabInstance:
     - target: {fileID: 6930183603071742827, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 6939279304252687885, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 7.1733966
       objectReference: {fileID: 0}
     - target: {fileID: 6970597119556415872, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -122620,7 +122657,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
   looping: 1
-  prewarm: 1
+  prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
@@ -129897,7 +129934,7 @@ MonoBehaviour:
   sourceInfluence: 0.8
   lowThreshold: 0.15
   highThreshold: 0.85
-  maxEmissionRate: 20
+  maxEmissionRate: 10
   smoothTime: 2
 --- !u!64 &2143670575
 MeshCollider:

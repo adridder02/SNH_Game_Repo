@@ -202,6 +202,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: GreenHouseBase
+    second: {fileID: 2100000, guid: 5d5faca0490ba48469229dbf72436871, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: GreenhouseFloor
     second: {fileID: 2100000, guid: ea4b4e3c1ece2754eb97ffdf139b9ce5, type: 2}
   - first:
