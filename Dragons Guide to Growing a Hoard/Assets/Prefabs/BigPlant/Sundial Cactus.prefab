@@ -136,6 +136,7 @@ MonoBehaviour:
   useDummyValues: 0
   dummyState: 1
   dummyMiasma: 0
+  dummyWater: 0.5
   useManualHeight: 0
   manualHeightOffset: 1
   hoverGap: 1.5
@@ -168,8 +169,10 @@ MonoBehaviour:
   lightThresholdLow: 0.25
   waterThresholdHigh: 1.5
   waterThresholdLow: 0.5
+  waterThresholdOverwater: 9
   revivedMinScore: 5
   intermediateMinScore: 2
+  permanentDeathDelay: 30
   lightSensor: {fileID: 0}
   revivedVisual: {fileID: 0}
   intermediateVisual: {fileID: 0}
@@ -193,6 +196,7 @@ MonoBehaviour:
   soilScore: 0
   lightScore: 0
   waterScore: 0
+  isPermanentlyDead: 0
 --- !u!114 &-2700072728668390068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,9 +209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.04
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 2100000, guid: c78a665dbdd30ef409bb435d796f20f2, type: 2}
 --- !u!114 &6790803248347742446
 MonoBehaviour:
   m_ObjectHideFlags: 0
