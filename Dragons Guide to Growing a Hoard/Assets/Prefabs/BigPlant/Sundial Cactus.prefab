@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: -4223702107849560079}
   - component: {fileID: 8882448461420115572}
   - component: {fileID: -7388433927529106392}
-  - component: {fileID: -8337874846658621877}
+  - component: {fileID: 6104765862733316619}
   m_Layer: 3
   m_Name: Sundial Cactus
   m_TagString: Selectable
@@ -75,7 +75,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6a2d736145192ea42b4a7b22493ecf08, type: 2}
+  - {fileID: 2100000, guid: 33f4f50e42747c344900bd91d943789f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -289,7 +289,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
---- !u!114 &-8337874846658621877
+--- !u!114 &6104765862733316619
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -298,10 +298,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1108434111351597028}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2977ecbdf0d3b94fb1b34e1b1b595ff, type: 3}
+  m_Script: {fileID: 11500000, guid: 0c0b7d4cf5669834aa0c42ba6972ba8b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlantHealthTint
-  plantState: {fileID: 0}
-  unhealthyTint: {r: 0.03773582, g: 0.037398566, b: 0.03364184, a: 1}
-  urpColorProperty: _BaseColor
-  legacyColorProperty: _Color
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHealthVisualDriver
+  animator: {fileID: 0}
+  clipStateName: PlantHealthCycle
+  clipLength: 36
+  materialRenderers: []
+  blendPropertyName: _DeathBlend
+  smoothTime: 1.5

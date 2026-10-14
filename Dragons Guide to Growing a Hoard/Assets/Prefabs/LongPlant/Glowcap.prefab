@@ -17,8 +17,8 @@ GameObject:
   - component: {fileID: -3345069727297567439}
   - component: {fileID: 6869571386960432020}
   - component: {fileID: -8878280970589891650}
-  - component: {fileID: -6396811028193440102}
   - component: {fileID: -4750460871665086151}
+  - component: {fileID: 1913990620875942684}
   m_Layer: 3
   m_Name: Glowcap
   m_TagString: Selectable
@@ -74,7 +74,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4b0613338575c9d4da8e943d882450a2, type: 2}
+  - {fileID: 2100000, guid: 0ade38308660d4b4d8eaa6d2e9d3b51e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -157,6 +157,7 @@ MonoBehaviour:
   useDummyValues: 0
   dummyState: 1
   dummyMiasma: 0
+  dummyWater: 0.5
   useManualHeight: 0
   manualHeightOffset: 1
   hoverGap: 1.5
@@ -189,8 +190,10 @@ MonoBehaviour:
   lightThresholdLow: 0.25
   waterThresholdHigh: 6
   waterThresholdLow: 3
+  waterThresholdOverwater: 9
   revivedMinScore: 5
   intermediateMinScore: 2
+  permanentDeathDelay: 30
   lightSensor: {fileID: 0}
   revivedVisual: {fileID: 0}
   intermediateVisual: {fileID: 0}
@@ -214,6 +217,7 @@ MonoBehaviour:
   soilScore: 0
   lightScore: 0
   waterScore: 0
+  isPermanentlyDead: 0
 --- !u!114 &6869571386960432020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,9 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.05
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 2100000, guid: c78a665dbdd30ef409bb435d796f20f2, type: 2}
 --- !u!114 &-8878280970589891650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,22 +251,6 @@ MonoBehaviour:
   progress: 0
   isComplete: 0
   smoothedRatePerSecond: 0
---- !u!114 &-6396811028193440102
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3147640831792386703}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2977ecbdf0d3b94fb1b34e1b1b595ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlantHealthTint
-  plantState: {fileID: 0}
-  unhealthyTint: {r: 0.03773582, g: 0.037398566, b: 0.03364184, a: 1}
-  urpColorProperty: _BaseColor
-  legacyColorProperty: _Color
 --- !u!114 &-4750460871665086151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -279,3 +265,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlantHarvestYield
   yieldItem: {fileID: 11400000, guid: 916ff57f2a74f7244a8048d45b9e8b56, type: 2}
   amountOverride: 0
+--- !u!114 &1913990620875942684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147640831792386703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c0b7d4cf5669834aa0c42ba6972ba8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHealthVisualDriver
+  animator: {fileID: 0}
+  clipStateName: PlantHealthCycle
+  clipLength: 36
+  materialRenderers: []
+  blendPropertyName: _DeathBlend
+  smoothTime: 1.5

@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: -7067466375878971726}
   - component: {fileID: -8791179076423676491}
   - component: {fileID: -908083796916967827}
+  - component: {fileID: 1636537600150575045}
   m_Layer: 3
   m_Name: Drifter
   m_TagString: Selectable
@@ -73,7 +74,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f9724e375210183488dd3c2bc3798d55, type: 2}
+  - {fileID: 2100000, guid: 6ec3750d01252ef41bbb4cd623680531, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -134,6 +135,7 @@ MonoBehaviour:
   useDummyValues: 0
   dummyState: 1
   dummyMiasma: 0
+  dummyWater: 0.5
   useManualHeight: 0
   manualHeightOffset: 1
   hoverGap: 1.5
@@ -166,8 +168,10 @@ MonoBehaviour:
   lightThresholdLow: 0.25
   waterThresholdHigh: 8
   waterThresholdLow: 6
+  waterThresholdOverwater: 9
   revivedMinScore: 5
   intermediateMinScore: 2
+  permanentDeathDelay: 30
   lightSensor: {fileID: 0}
   revivedVisual: {fileID: 0}
   intermediateVisual: {fileID: 0}
@@ -191,6 +195,7 @@ MonoBehaviour:
   soilScore: 0
   lightScore: 0
   waterScore: 0
+  isPermanentlyDead: 0
 --- !u!114 &483069002037345463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,9 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.05
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 2100000, guid: c78a665dbdd30ef409bb435d796f20f2, type: 2}
 --- !u!114 &-7067466375878971726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,3 +268,21 @@ MonoBehaviour:
   sinkSpeed: 0.6
   sinkDepth: 1.5
   randomFlowerChance: 0
+--- !u!114 &1636537600150575045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2650251699068457546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c0b7d4cf5669834aa0c42ba6972ba8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHealthVisualDriver
+  animator: {fileID: 0}
+  clipStateName: PlantHealthCycle
+  clipLength: 36
+  materialRenderers: []
+  blendPropertyName: _DeathBlend
+  smoothTime: 1.5

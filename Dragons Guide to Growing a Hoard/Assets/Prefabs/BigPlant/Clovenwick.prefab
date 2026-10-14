@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 8236061752540885117}
   - component: {fileID: 873892640486821792}
   - component: {fileID: -2678419577164003961}
+  - component: {fileID: -5934839192404977691}
   m_Layer: 3
   m_Name: Clovenwick
   m_TagString: Selectable
@@ -72,7 +73,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a30d252503bd46c44b6139dbb7561a28, type: 2}
+  - {fileID: 2100000, guid: 621526f77e9390f4ba0e0a81641ba6a2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -133,6 +134,7 @@ MonoBehaviour:
   useDummyValues: 0
   dummyState: 1
   dummyMiasma: 0
+  dummyWater: 0.5
   useManualHeight: 0
   manualHeightOffset: 1
   hoverGap: 1.5
@@ -165,8 +167,10 @@ MonoBehaviour:
   lightThresholdLow: 0
   waterThresholdHigh: 3
   waterThresholdLow: 1
+  waterThresholdOverwater: 9
   revivedMinScore: 5
   intermediateMinScore: 2
+  permanentDeathDelay: 30
   lightSensor: {fileID: 0}
   revivedVisual: {fileID: 0}
   intermediateVisual: {fileID: 0}
@@ -190,6 +194,7 @@ MonoBehaviour:
   soilScore: 0
   lightScore: 0
   waterScore: 0
+  isPermanentlyDead: 0
 --- !u!114 &8236061752540885117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,9 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  outlineWidth: 0.05
-  outlineShader: {fileID: 0}
+  outlineMaterial: {fileID: 2100000, guid: c78a665dbdd30ef409bb435d796f20f2, type: 2}
 --- !u!114 &873892640486821792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,3 +250,21 @@ MonoBehaviour:
   progress: 0
   isComplete: 0
   smoothedRatePerSecond: 0
+--- !u!114 &-5934839192404977691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493835662444555350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c0b7d4cf5669834aa0c42ba6972ba8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHealthVisualDriver
+  animator: {fileID: 0}
+  clipStateName: PlantHealthCycle
+  clipLength: 36
+  materialRenderers: []
+  blendPropertyName: _DeathBlend
+  smoothTime: 1.5

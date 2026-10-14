@@ -25,7 +25,8 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _ALPHATEST_ON
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -41,7 +42,15 @@ Material:
         m_Texture: {fileID: 2800000, guid: 73018de85156b1f4aad43d0cc62136ed, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _EmmisionTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _HealthyTexture:
+        m_Texture: {fileID: 2800000, guid: 32913a8c2aab8a54799c391ccfd6bae1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
         m_Texture: {fileID: 2800000, guid: 32913a8c2aab8a54799c391ccfd6bae1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -59,9 +68,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AlphaClip: 0.5
     - _Death_Blend: 0
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _hasEmmisionTexture: 0
     m_Colors:
     - _EmmissionColor: {r: 0.20754719, g: 0.20754719, b: 0.20754719, a: 1}
   m_BuildTextureStacks: []

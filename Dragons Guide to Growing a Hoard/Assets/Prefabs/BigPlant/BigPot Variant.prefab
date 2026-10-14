@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4134157560933616757, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+      propertyPath: outlineMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: c78a665dbdd30ef409bb435d796f20f2, type: 2}
     - target: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
       propertyPath: potSize
       value: 1
