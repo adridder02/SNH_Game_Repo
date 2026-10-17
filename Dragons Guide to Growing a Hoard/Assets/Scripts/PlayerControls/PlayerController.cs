@@ -467,15 +467,27 @@ public class PlayerController : MonoBehaviour
     /// airborne arc. Does nothing while flying or while movement is disabled, since both of those
     /// states manage `velocity` themselves and would otherwise immediately overwrite this.
     /// </summary>
-    public void ApplyExternalLaunch(Vector3 launchVelocity)
+    public bool IsFlying   => locomotionState == LocomotionState.Flying;
+    public bool IsGrounded => controller != null && controller.isGrounded;
+    /// <summary>True while travelling upward after a jump/launch (used by launchers to avoid re-firing on the way out).</summary>
+    public bool IsRising   => locomotionState == LocomotionState.Jumping && velocity.y > 0.1f;
+
+    /// <returns>true if the launch was applied.</returns>
+    public bool ApplyExternalLaunch(Vector3 launchVelocity)
     {
-        if (!movementEnabled || locomotionState == LocomotionState.Flying) return;
+        if (!movementEnabled) return false;
+
+        // Landing on a launcher while flying: drop out of fly mode first (resets camera zoom, anim and
+        // fly flags) instead of ignoring the launch, then launch as normal.
+        if (locomotionState == LocomotionState.Flying)
+            ExitFlyMode();
 
         jumpPending = false;
         velocity = launchVelocity;
         locomotionState = LocomotionState.Jumping;
         lastSpacePressTime = Time.time;
         playerAnim?.jump();
+        return true;
     }
 
     // ──────────────────────────────────────────────

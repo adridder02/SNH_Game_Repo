@@ -30,23 +30,47 @@ public class SproionshroomLauncher : MonoBehaviour
     public float launchOutwardForce = 2f;
     public float cooldown = 0.5f;
 
+    [Tooltip("While the player is flying, only launch them once they've actually touched down on the " +
+             "mushroom, so flying THROUGH the trigger volume at altitude doesn't bounce them.")]
+    public bool flyingNeedsGroundContact = true;
+
     private float lastLaunchTime = -999f;
 
     private void OnCollisionEnter(Collision collision)
     {
-        TryLaunch(collision.gameObject, collision.GetContact(0).point);
+        TryLaunch(collision.gameObject);
     }
 
+    // Enter handles walking / falling / flying onto the mushroom.
     private void OnTriggerEnter(Collider other)
     {
-        TryLaunch(other.gameObject, other.ClosestPoint(transform.position));
+        TryLaunch(other.gameObject);
     }
 
-    private void TryLaunch(GameObject obj, Vector3 contactPoint)
+    // Stay covers every case where Enter already fired but the launch didn't happen (e.g. the player
+    // was mid-flight, in cooldown, or only touched down after entering the volume), and re-landing
+    // while still overlapping after an earlier launch. OnTriggerEnter alone only fires once per entry.
+    private void OnTriggerStay(Collider other)
+    {
+        TryLaunch(other.gameObject);
+    }
+
+    private void TryLaunch(GameObject obj)
     {
         if (!obj.CompareTag(playerTag)) return;
         if (Time.time - lastLaunchTime < cooldown) return;
-        lastLaunchTime = Time.time;
+
+        PlayerController pc = obj.GetComponentInParent<PlayerController>();
+
+        if (pc != null)
+        {
+            // Don't re-fire while still travelling upward from a previous launch (still overlapping
+            // the trigger on the way out) — wait until they're coming back down.
+            if (pc.IsRising) return;
+
+            // Flying through the trigger at altitude shouldn't launch; touching down on it should.
+            if (flyingNeedsGroundContact && pc.IsFlying && !pc.IsGrounded) return;
+        }
 
         Vector3 outward = (obj.transform.position - transform.position);
         outward.y = 0f;
@@ -57,9 +81,6 @@ public class SproionshroomLauncher : MonoBehaviour
         }
         else
         {
-            // Player landed close to dead-center — fall back to their own facing direction
-            // instead of a fixed world axis, so the kick still feels consistent with their
-            // approach rather than launching them in an arbitrary compass direction.
             Vector3 playerForward = obj.transform.forward;
             playerForward.y = 0f;
             outward = playerForward.sqrMagnitude > 0.01f ? playerForward.normalized : Vector3.forward;
@@ -69,35 +90,38 @@ public class SproionshroomLauncher : MonoBehaviour
 
         CharacterController cc = obj.GetComponent<CharacterController>();
         Rigidbody rb = obj.GetComponent<Rigidbody>();
+        bool launched = false;
 
         if (cc != null)
         {
-            PlayerController pc = obj.GetComponent<PlayerController>();
             if (pc != null)
             {
-                // Compile-time-checked hookup — if this method is ever renamed or removed,
-                // the project fails to build instead of silently doing nothing at runtime.
-                pc.ApplyExternalLaunch(launchVelocity);
+                // Returns false if the player can't be launched right now (movement disabled).
+                // The cooldown is only consumed on a real launch, so a rejected one retries next frame.
+                launched = pc.ApplyExternalLaunch(launchVelocity);
             }
             else
             {
-                // No PlayerController here (different/prototype controller script). Fall back to
-                // SendMessage so this stays decoupled from whatever that script is called — it just
-                // needs its own public "ApplyExternalLaunch(Vector3)" method to receive this.
                 obj.SendMessage("ApplyExternalLaunch", launchVelocity, SendMessageOptions.DontRequireReceiver);
+                launched = true;
             }
         }
         else if (rb != null)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(launchVelocity, ForceMode.VelocityChange);
+            launched = true;
         }
         else
         {
             Debug.LogWarning("[SproionshroomLauncher] Player has neither a CharacterController nor a " +
                               "Rigidbody — can't launch.", this);
+            return;
         }
 
+        if (!launched) return;
+
+        lastLaunchTime = Time.time;
         Debug.Log($"[SproionshroomLauncher] Launched '{obj.name}' with velocity {launchVelocity}.");
     }
 

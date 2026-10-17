@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -4791954666240061535}
   - component: {fileID: 6155035638967588191}
   - component: {fileID: 9023216589586649666}
-  - component: {fileID: -688605731075669828}
+  - component: {fileID: -8405466361495210341}
   m_Layer: 0
   m_Name: SparkmintPlantable
   m_TagString: Untagged
@@ -74,7 +74,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 21c122fd818935b46a6bf5ed47fdaf3d, type: 2}
-  - {fileID: 2100000, guid: c728fddcf6eb5554a9c4d2a8f6c8e8a7, type: 2}
+  - {fileID: 2100000, guid: 404872e2abafc744487ba0cad6e60fb1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab850d2c0a96e7845a1d39459357df86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
-  outlineMaterial: {fileID: 0}
+  outlineMaterial: {fileID: 2100000, guid: c78a665dbdd30ef409bb435d796f20f2, type: 2}
 --- !u!114 &6155035638967588191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,7 +243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlantHarvestYield
   yieldItem: {fileID: 11400000, guid: f3e3ff68bcc11044f8b737142c05ef1b, type: 2}
   amountOverride: 0
---- !u!114 &-688605731075669828
+--- !u!114 &-8405466361495210341
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -252,10 +252,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3072371233814078162}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2977ecbdf0d3b94fb1b34e1b1b595ff, type: 3}
+  m_Script: {fileID: 11500000, guid: 0c0b7d4cf5669834aa0c42ba6972ba8b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlantHealthTint
-  plantState: {fileID: 0}
-  unhealthyTint: {r: 0.03773582, g: 0.037398566, b: 0.03364184, a: 1}
-  urpColorProperty: _BaseColor
-  legacyColorProperty: _Color
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHealthVisualDriver
+  animator: {fileID: 0}
+  clipStateName: PlantHealthCycle
+  clipLength: 36
+  materialRenderers: []
+  blendPropertyName: _DeathBlend
+  smoothTime: 1.5
