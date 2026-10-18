@@ -185,16 +185,16 @@ MonoBehaviour:
   journalSpecies: {fileID: 11400000, guid: e603394f5bd98ae4c8143964100fdd4d, type: 2}
   potPlacementOffset: 0.8
   potPlacementRotation: {x: 90, y: 0, z: 0}
-  preferredSoil: 1
+  preferredSoil: 3
   neutralSoil: 0
-  lightThresholdHigh: 0.6
-  lightThresholdLow: 0.25
-  waterThresholdHigh: 6
-  waterThresholdLow: 3
-  waterThresholdOverwater: 9
+  lightThresholdHigh: 0.45
+  lightThresholdLow: 0.2
+  waterThresholdHigh: 7.5
+  waterThresholdLow: 4.5
+  waterThresholdOverwater: 10
   revivedMinScore: 5
-  intermediateMinScore: 2
-  permanentDeathDelay: 30
+  intermediateMinScore: 3
+  permanentDeathDelay: 120
   lightSensor: {fileID: 0}
   revivedVisual: {fileID: 0}
   intermediateVisual: {fileID: 0}
@@ -280,6 +280,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PotContents
   plantAnchor: {fileID: 0}
   isStaticPot: 0
+  fixedSoil: 0
+  fixedSoilKind: 3
   potData: {fileID: 0}
   potSize: 1
   plantSurfaceOffset: 0
@@ -287,14 +289,17 @@ MonoBehaviour:
   loamSoilPrefab: {fileID: 0}
   sandySoilPrefab: {fileID: 0}
   waterSoilPrefab: {fileID: 0}
+  infectedSoilPrefab: {fileID: 0}
   clayMaterial: {fileID: 0}
   loamMaterial: {fileID: 0}
   sandyMaterial: {fileID: 0}
   waterMaterial: {fileID: 0}
+  infectedMaterial: {fileID: 0}
   clayAlgaeMaterial: {fileID: 0}
   loamAlgaeMaterial: {fileID: 0}
   sandyAlgaeMaterial: {fileID: 0}
   waterAlgaeMaterial: {fileID: 0}
+  infectedAlgaeMaterial: {fileID: 0}
   dryTintColor: {r: 1, g: 1, b: 1, a: 1}
   wetTintColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   plantWaterMax: 10
@@ -305,6 +310,10 @@ MonoBehaviour:
   currentSoil: 1
   hasSoil: 0
   hasPlant: 0
+  guardingNodes: []
+  autoDetectNodeRadius: 0.6
+  removableOnceCleared: 0
+  ownerSurface: {fileID: 0}
   currentPlantPrefab: {fileID: 0}
   GridOrigin: {x: 0, y: 0, z: 0}
 --- !u!114 &4975129066613381195

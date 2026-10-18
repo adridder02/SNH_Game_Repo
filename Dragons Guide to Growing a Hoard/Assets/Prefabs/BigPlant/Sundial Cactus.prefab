@@ -166,13 +166,13 @@ MonoBehaviour:
   preferredSoil: 2
   neutralSoil: 1
   lightThresholdHigh: 1
-  lightThresholdLow: 0.5
-  waterThresholdHigh: 1.5
-  waterThresholdLow: 0.5
-  waterThresholdOverwater: 9
+  lightThresholdLow: 0.6
+  waterThresholdHigh: 2.5
+  waterThresholdLow: 1
+  waterThresholdOverwater: 5
   revivedMinScore: 5
   intermediateMinScore: 2
-  permanentDeathDelay: 30
+  permanentDeathDelay: 180
   lightSensor: {fileID: 0}
   revivedVisual: {fileID: 0}
   intermediateVisual: {fileID: 0}

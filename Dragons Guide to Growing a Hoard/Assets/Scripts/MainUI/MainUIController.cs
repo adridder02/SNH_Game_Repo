@@ -141,6 +141,9 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
              "the player is currently overlapping. NOT PlayerInventory (that's UI-space, not a " +
              "world position).")]
     [SerializeField] private PlayerZoneTracker playerZoneTracker;
+    [Tooltip("Optional text placed below the happiness bar showing the name (ZoneHealth.zoneName) of the " +
+             "room whose happiness is currently displayed. Shown/hidden together with the bar.")]
+    [SerializeField] private TMP_Text zoneNameLabel;
     [Tooltip("If on, the zone happiness bar starts hidden and only reveals via RevealZoneHappinessBar " +
              "below — wire that to its own Portable prompt's onStepShown (same one-time-reveal pattern " +
              "as toolSlotsStartHidden/RevealToolSlot above). Leave off if the bar should just show " +
@@ -420,8 +423,8 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             journalButton.gameObject.SetActive(false);
         if (miasmaBarStartsHidden && miasmaBar != null)
             miasmaBar.gameObject.SetActive(false);
-        if (zoneHappinessBarStartsHidden && zoneHappinessBar != null)
-            zoneHappinessBar.gameObject.SetActive(false);
+        zoneBarRevealed = !zoneHappinessBarStartsHidden;
+        SetZoneBarVisible(false); // shown by RefreshZoneHappinessBar once revealed AND inside a zone
         if (waterBarStartsHidden && waterBar != null)
             waterBar.gameObject.SetActive(false);
 
@@ -672,7 +675,7 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     /// if it's already visible. Wire this from that bar's own tutorial step's onStepShown.</summary>
     public void RevealZoneHappinessBar()
     {
-        if (zoneHappinessBar != null) zoneHappinessBar.gameObject.SetActive(true);
+        zoneBarRevealed = true; // actually shown only while the player is inside a zone
     }
 
     /// <summary>Reveals the water bar (ImageFillBar.gameObject) — safe to call repeatedly or if it's
@@ -1078,17 +1081,28 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     // ---------------------------------------------------------------
     // Zone happiness bar — follows whichever zone the player is in
     // ---------------------------------------------------------------
+    private bool zoneBarRevealed = true;
+
+    private void SetZoneBarVisible(bool visible)
+    {
+        if (zoneHappinessBar != null && zoneHappinessBar.gameObject.activeSelf != visible)
+            zoneHappinessBar.gameObject.SetActive(visible);
+        if (zoneNameLabel != null && zoneNameLabel.gameObject.activeSelf != visible)
+            zoneNameLabel.gameObject.SetActive(visible);
+    }
+
     private void RefreshZoneHappinessBar()
     {
         if (zoneHappinessBar == null || playerZoneTracker == null) return;
 
-        // Only update CurrentZone when the tracker actually reports one — if the player is
-        // briefly outside every zone (e.g. walking/flying through a gap between them), keep
-        // showing the last zone's score instead of the bar snapping to 0 every time.
-        if (playerZoneTracker.CurrentZone != null)
-            CurrentZone = playerZoneTracker.CurrentZone;
+        // Outside every zone (or not yet revealed by the tutorial): hide the bar and its name label.
+        CurrentZone = playerZoneTracker.CurrentZone;
+        SetZoneBarVisible(zoneBarRevealed && CurrentZone != null);
+        if (CurrentZone == null) return;
 
-        if (CurrentZone != null)
-            zoneHappinessBar.SetNormalized(CurrentZone.ZoneHappiness / 100f);
+        zoneHappinessBar.SetNormalized(CurrentZone.ZoneHappiness / 100f);
+
+        if (zoneNameLabel != null && zoneNameLabel.text != CurrentZone.zoneName)
+            zoneNameLabel.text = CurrentZone.zoneName;
     }
 }

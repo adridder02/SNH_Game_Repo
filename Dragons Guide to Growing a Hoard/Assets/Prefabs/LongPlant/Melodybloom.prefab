@@ -184,16 +184,16 @@ MonoBehaviour:
   journalSpecies: {fileID: 11400000, guid: 6b81dee6748f16042a5ec916d3dfb264, type: 2}
   potPlacementOffset: 0
   potPlacementRotation: {x: 0, y: 0, z: 0}
-  preferredSoil: 1
-  neutralSoil: 0
-  lightThresholdHigh: 0.2
+  preferredSoil: 4
+  neutralSoil: 1
+  lightThresholdHigh: 0.3
   lightThresholdLow: 0.1
-  waterThresholdHigh: 6
-  waterThresholdLow: 3
-  waterThresholdOverwater: 9
+  waterThresholdHigh: 5
+  waterThresholdLow: 2.5
+  waterThresholdOverwater: 7
   revivedMinScore: 5
   intermediateMinScore: 2
-  permanentDeathDelay: 30
+  permanentDeathDelay: 180
   lightSensor: {fileID: 0}
   revivedVisual: {fileID: 0}
   intermediateVisual: {fileID: 0}

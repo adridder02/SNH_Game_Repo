@@ -139,14 +139,14 @@ MonoBehaviour:
   potPlacementRotation: {x: 0, y: 0, z: 0}
   preferredSoil: 1
   neutralSoil: 0
-  lightThresholdHigh: 0.6
-  lightThresholdLow: 0.25
-  waterThresholdHigh: 8
-  waterThresholdLow: 4
-  waterThresholdOverwater: 9
+  lightThresholdHigh: 0.9
+  lightThresholdLow: 0.5
+  waterThresholdHigh: 7.5
+  waterThresholdLow: 4.5
+  waterThresholdOverwater: 10
   revivedMinScore: 5
-  intermediateMinScore: 2
-  permanentDeathDelay: 30
+  intermediateMinScore: 3
+  permanentDeathDelay: 120
   lightSensor: {fileID: 0}
   revivedVisual: {fileID: 0}
   intermediateVisual: {fileID: 0}
