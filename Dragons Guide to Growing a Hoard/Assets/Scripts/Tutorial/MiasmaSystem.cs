@@ -64,7 +64,7 @@ public class MiasmaSystem : MonoBehaviour
 
     void Update()
     {
-        timerMiasma += Time.deltaTime;
+        timerMiasma += GameClock.DeltaTime;
         if (timerMiasma >= miasmaTickInterval)
         {
             MiasmaControl();

@@ -65,7 +65,7 @@ public class PollenPuffProducer : MonoBehaviour
         if (progress >= maxPuffballs) return; // full — wait for a collection to free up room
 
         float ratePerSecond = maxPuffballs / Mathf.Max(1f, cycleDurationSeconds);
-        progress = Mathf.Min(maxPuffballs, progress + ratePerSecond * Time.deltaTime);
+        progress = Mathf.Min(maxPuffballs, progress + ratePerSecond * GameClock.DeltaTime);
     }
 
     /// <summary>Collects every ready puffball into the given inventory. Returns how many were collected

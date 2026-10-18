@@ -138,7 +138,7 @@ public class ZoneHealth : MonoBehaviour
 
     private void Update()
     {
-        _evaluationTimer += Time.deltaTime;
+        _evaluationTimer += GameClock.DeltaTime;
         if (_evaluationTimer >= evaluationInterval)
         {
             _evaluationTimer = 0f;

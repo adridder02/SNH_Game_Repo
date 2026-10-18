@@ -17,18 +17,20 @@ MonoBehaviour:
   category: 2
   room: 2
   tier: 2
-  difficulty: 2
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-    eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-    in culpa qui officia deserunt mollit anim id est laborum.
-  descriptionSecondary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-    accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-    inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. '
+  isCrystal: 0
+  difficulty: 3
+  description: "A tall, curling stalk that opens into a wide, trumpet-like bell,
+    with a second smaller bell weeping steadily from its underside into the soil
+    below. \n\nIts bell holds far more than it looks like it should, feeding a slow,
+    steady trickle into the soil around it long after the rain that filled it has
+    passed."
+  descriptionSecondary: ' A single placeable that plugs into up to 3 adjacent pots
+    and keeps topping each one up toward a set water level automatically. Pllant
+    it once among a cluster of thirsty pots and stop worrying about them.'
   journalIcon: {fileID: 21300000, guid: 917afe6700aef7546a0b0a401c49ce8a, type: 3}
   journalImage: {fileID: 21300000, guid: 917afe6700aef7546a0b0a401c49ce8a, type: 3}
+  useAlternateJournalLayout: 0
+  inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}
   disabledIcon: {fileID: 21300000, guid: 0c2171f27595a1142aa3b4aea424545e, type: 3}
   activeIcon: {fileID: 21300000, guid: 917afe6700aef7546a0b0a401c49ce8a, type: 3}

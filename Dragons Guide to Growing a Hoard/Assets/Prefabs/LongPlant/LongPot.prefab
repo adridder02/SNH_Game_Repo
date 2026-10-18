@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: -5215014501554958189}
   - component: {fileID: -3054914333894017595}
   - component: {fileID: 5214072455060738491}
+  - component: {fileID: -8221131208496856499}
+  - component: {fileID: -5769946878620291447}
   m_Layer: 10
   m_Name: LongPot
   m_TagString: Untagged
@@ -129,6 +131,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   plantAnchor: {fileID: 0}
   isStaticPot: 0
+  fixedSoil: 0
+  fixedSoilKind: 3
   potData: {fileID: 11400000, guid: 697b9909e231f8e4eaa08224acc23148, type: 2}
   potSize: 1
   plantSurfaceOffset: 0
@@ -136,14 +140,17 @@ MonoBehaviour:
   loamSoilPrefab: {fileID: 4097820823742219777, guid: 4715b3f750a5e494c98a427c7e02f96e, type: 3}
   sandySoilPrefab: {fileID: 4097820823742219777, guid: 4715b3f750a5e494c98a427c7e02f96e, type: 3}
   waterSoilPrefab: {fileID: 4097820823742219777, guid: 4715b3f750a5e494c98a427c7e02f96e, type: 3}
+  infectedSoilPrefab: {fileID: 0}
   clayMaterial: {fileID: 2100000, guid: 5a8255b1aa1624f449abf894bea440b0, type: 2}
   loamMaterial: {fileID: 2100000, guid: cb52f20938f505d47b1dce748faded6f, type: 2}
   sandyMaterial: {fileID: 2100000, guid: 95ae844b486b1ed4482d190254225178, type: 2}
   waterMaterial: {fileID: 2100000, guid: 3eec692de4cc51941a0bbe7771e9fdbe, type: 2}
+  infectedMaterial: {fileID: 0}
   clayAlgaeMaterial: {fileID: 2100000, guid: 76d55fe326a562c43a53ba2a3fa6d440, type: 2}
   loamAlgaeMaterial: {fileID: 2100000, guid: 8442d3609c0ba044fae9133b86942d92, type: 2}
   sandyAlgaeMaterial: {fileID: 2100000, guid: c8a4eb6b3c9b6424a9465b87df2c3b4a, type: 2}
   waterAlgaeMaterial: {fileID: 2100000, guid: 3eec692de4cc51941a0bbe7771e9fdbe, type: 2}
+  infectedAlgaeMaterial: {fileID: 0}
   dryTintColor: {r: 1, g: 1, b: 1, a: 1}
   wetTintColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   plantWaterMax: 10
@@ -154,6 +161,10 @@ MonoBehaviour:
   currentSoil: 1
   hasSoil: 0
   hasPlant: 0
+  guardingNodes: []
+  autoDetectNodeRadius: 0.6
+  removableOnceCleared: 0
+  ownerSurface: {fileID: 0}
   currentPlantPrefab: {fileID: 0}
   GridOrigin: {x: 0, y: 0, z: 0}
 --- !u!114 &5214072455060738491
@@ -169,3 +180,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
   outlineMaterial: {fileID: 2100000, guid: c78a665dbdd30ef409bb435d796f20f2, type: 2}
+--- !u!114 &-8221131208496856499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 994234851134939008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103949683f77c3741964f94ae3dd020f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantMiasmaFog
+  pot: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+  fogParticles: {fileID: 0}
+  fogPrefab: {fileID: 8938820887107882323, guid: d7262418a2e6691428258b2b228c9985, type: 3}
+  sizeSource: 0
+  fogHeight: 10
+  baseHeightOffset: 5
+  footprintPadding: 0
+  maxEmissionRate: 4
+  scaleEmissionWithArea: 1
+  referenceArea: 1
+  smoothTime: 1.5
+--- !u!114 &-5769946878620291447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 994234851134939008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103949683f77c3741964f94ae3dd020f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantMiasmaFog
+  pot: {fileID: 1630667286921439792, guid: 6bbe5f53dd40f06478d833706df4406f, type: 3}
+  fogParticles: {fileID: 0}
+  fogPrefab: {fileID: 8938820887107882323, guid: d7262418a2e6691428258b2b228c9985, type: 3}
+  sizeSource: 0
+  fogHeight: 10
+  baseHeightOffset: 5
+  footprintPadding: 0
+  maxEmissionRate: 4
+  scaleEmissionWithArea: 1
+  referenceArea: 1
+  smoothTime: 1.5

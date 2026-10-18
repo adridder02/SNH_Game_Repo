@@ -71,6 +71,11 @@ public class PotInteraction : MonoBehaviour
              "exists on it.")]
     [SerializeField] private MissionData tutorialMission;
 
+    [Tooltip("How many units of the player's water it costs to fill a pot with Water soil (choosing the " +
+             "Water soil option in the pot menu). Taken from the same pool watering a plant uses. " +
+             "Switching a pot that is ALREADY Water soil to Water again costs nothing.")]
+    public float waterSoilFillCost = 10f;
+
     [Tooltip("Maximum water the player can hold. Refills automatically.")]
     public float maxWaterPool = 20f;
 
@@ -102,6 +107,10 @@ public class PotInteraction : MonoBehaviour
     [Tooltip("Label text, e.g. 'Interact'. Leave empty to keep whatever's already set on the template's " +
              "Label. Only used when useWorldSpacePrompt is ON.")]
     public string interactPromptLabel = "Interact";
+
+    [Tooltip("Label shown instead of the Interact one while the nearby pot can be picked up (a cleared " +
+             "pre-filled pot — see PotContents.removableOnceCleared). World-space prompt only.")]
+    public string pickUpPotPromptLabel = "Pick Up Pot";
 
     [Header("UI — Water Plant Prompt")]
     [Tooltip("A second prompt shown below the Interact prompt whenever the nearby pot actually has " +
@@ -264,6 +273,11 @@ public class PotInteraction : MonoBehaviour
                     if (tutorial == null || tutorial.IsActionAllowedForTask(tutorialMission, "water_plant"))
                         QuickWater(nearbyPot);
                 }
+                else if (nearbyPot.RemovableOnceCleared)
+                {
+                    // Cleared pre-filled pot: E picks the pot up instead of opening the menu.
+                    PickUpPot(nearbyPot);
+                }
                 else
                 {
                     if (tutorial == null || tutorial.IsActionAllowedForTrigger("interacted_with_pot"))
@@ -296,6 +310,9 @@ public class PotInteraction : MonoBehaviour
             PotContents pot = c.GetComponent<PotContents>()
                            ?? c.GetComponentInParent<PotContents>();
             if (pot == null) continue;
+
+            // Pre-filled pot whose harvest-node plant hasn't been picked yet: not a pot (yet).
+            if (pot.IsLocked) continue;
 
             float d = Vector3.Distance(transform.position, pot.transform.position);
             if (d < bestD) { bestD = d; best = pot; }
@@ -366,6 +383,34 @@ public class PotInteraction : MonoBehaviour
         }
         else
             Debug.Log("[PotInteraction] Pot is already full.");
+    }
+
+    // ---------------------------------------------------------------
+    // Pick up a cleared pre-filled pot (removes it from the world; its surface unlocks once the last
+    // pot on it is gone — see PrefilledSurface).
+    // ---------------------------------------------------------------
+    private void PickUpPot(PotContents pot)
+    {
+        if (pot == null) return;
+        ClearCurrentOutline();
+        pot.PickUpPot(dragonInventory);
+        nearbyPot = null;
+        mainUI?.ShowHarvestFeedback("Picked up pot");
+    }
+
+    /// <summary>Takes waterSoilFillCost units from the player's water pool for filling a pot with Water
+    /// soil. Returns false (and takes nothing) if the player doesn't have enough.</summary>
+    public bool TryPayForWaterSoil()
+    {
+        if (waterSoilFillCost <= 0f) return true;
+        if (dragonInventory == null || dragonInventory.getWaterPool() < waterSoilFillCost)
+        {
+            Debug.Log($"[PotInteraction] Not enough water to fill a pot (need {waterSoilFillCost}, have " +
+                      $"{(dragonInventory != null ? dragonInventory.getWaterPool() : 0f):F1}).");
+            return false;
+        }
+        dragonInventory.reduceWaterPool(waterSoilFillCost);
+        return true;
     }
 
     /// <summary>Public wrapper so PotMenuUIController's Water button can reuse the same logic as the Q key.</summary>
@@ -452,6 +497,13 @@ public class PotInteraction : MonoBehaviour
 
         if (useWorldSpacePrompt)
         {
+            if (promptView != null && promptView.label != null && showInteract)
+            {
+                string wanted = nearbyPot.RemovableOnceCleared ? pickUpPotPromptLabel : interactPromptLabel;
+                if (!string.IsNullOrEmpty(wanted) && promptView.label.text != wanted)
+                    promptView.label.text = wanted;
+            }
+
             if (promptRoot != null)
                 promptRoot.SetActive(showInteract);
             if (waterPromptRoot != null)

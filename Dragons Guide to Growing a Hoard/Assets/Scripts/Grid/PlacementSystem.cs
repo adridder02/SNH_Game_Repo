@@ -297,12 +297,25 @@ public class PlacementSystem : MonoBehaviour
                 TryPickupOrDrop(hoveredCell);
             else if (mode == Mode.Watering)
                 TryWater(hoveredCell);
+
+            // The click may have changed occupancy under the cursor (placed/removed/picked up/dropped),
+            // or switched mode - redraw the highlight next frame even though the cell hasn't changed.
+            ForceHoverRefresh();
         }
 
         // Right-click no longer cancels the mode (any of the four) — it now holds to rotate the
         // camera instead, see ThirdPersonCameraController.AllowRotationWhileLockedIfRightClickHeld,
         // set by GameInputModeManager.SetPlacementMode(). Escape (HandleModeToggleKeys) is the way
         // out now, uniformly across all four modes.
+    }
+
+    // The hover highlight is only redrawn when the hovered CELL changes (lastHoveredCell). Anything that
+    // clears or changes what the highlight should show without the cursor moving - switching tool,
+    // finishing a click action - has to invalidate that cache, or the highlight stays blank until the
+    // cursor leaves the cell and comes back.
+    private void ForceHoverRefresh()
+    {
+        lastHoveredCell = new Vector2Int(-999, -999);
     }
 
     private void HandleModeToggleKeys()
@@ -414,6 +427,7 @@ public class PlacementSystem : MonoBehaviour
 
         selectedIndex = potIndex;
         mode = Mode.Placing;
+        ForceHoverRefresh();
 
         // Show all grids
         foreach (var surface in surfaces)
@@ -457,6 +471,7 @@ public class PlacementSystem : MonoBehaviour
         wallPlacementSystem?.CancelMode();
 
         mode = Mode.Removing;
+        ForceHoverRefresh();
 
         // Show all grids
         foreach (var surface in surfaces)
@@ -476,6 +491,7 @@ public class PlacementSystem : MonoBehaviour
         wallPlacementSystem?.CancelMode();
 
         mode = Mode.Moving;
+        ForceHoverRefresh();
 
         // Show all grids
         foreach (var surface in surfaces)
@@ -495,6 +511,7 @@ public class PlacementSystem : MonoBehaviour
         wallPlacementSystem?.CancelMode();
 
         mode = Mode.Watering;
+        ForceHoverRefresh();
 
         // Show all grids
         foreach (var surface in surfaces)
@@ -514,6 +531,7 @@ public class PlacementSystem : MonoBehaviour
             PutMovingPotBack();
 
         mode = Mode.None;
+        ForceHoverRefresh();
 
         movingData = null;
         movingObject = null;
@@ -689,10 +707,13 @@ public class PlacementSystem : MonoBehaviour
         GridVisual gridVisual = activeSurface.GridVisual;
         GridData gridData = surfaceGridData[activeSurface];
         
-        // Safety clamp - ensure cell is within bounds
+        // Strict bounds check (no clamping): the WHOLE footprint must sit inside the surface's grid.
+        // Clamping the origin here used to be able to turn a cell that was off the grid (e.g. cursor just
+        // past an edge) into a valid-looking one, so a big pot could be placed overhanging the edge.
         Vector2Int gridDims = activeSurface.GridDimensions;
-        cell.x = Mathf.Clamp(cell.x, 0, gridDims.x - 1);
-        cell.y = Mathf.Clamp(cell.y, 0, gridDims.y - 1);
+        if (cell.x < 0 || cell.y < 0 ||
+            cell.x + data.size.x > gridDims.x || cell.y + data.size.y > gridDims.y)
+            return;
 
         if (debugMode)
             Debug.Log($"TryPlace: Attempting to place pot at cell {cell} on surface '{activeSurface.name}'");
@@ -884,6 +905,11 @@ public class PlacementSystem : MonoBehaviour
             // Dropping
             Vector3Int key = ToGridVec3(cell);
 
+            Vector2Int dropDims = activeSurface.GridDimensions;
+            if (cell.x < 0 || cell.y < 0 ||
+                cell.x + movingData.Size.x > dropDims.x || cell.y + movingData.Size.y > dropDims.y)
+                return; // would hang off the edge of the grid
+
             if (!gridData.CanPlace(key, movingData.Size))
                 return;
 
@@ -1033,6 +1059,10 @@ private GreenhouseSurface GetSurfaceAtPosition(Vector3 worldPos)
     foreach (var surface in surfaces)
     {
         if (surface == null || surface.GridVisual == null)
+            continue;
+
+        // Pre-filled surface that still has its original pots on it — not available to the player yet.
+        if (surface.PlacementLocked)
             continue;
 
         Vector3 origin = surface.GridOriginWorld;

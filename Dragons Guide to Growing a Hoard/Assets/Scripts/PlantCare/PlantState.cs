@@ -307,7 +307,7 @@ public class PlantState : MonoBehaviour
         {
             if (currentState == PlantStateEnum.Dead)
             {
-                timeInLiveDeadState += Time.deltaTime;
+                timeInLiveDeadState += GameClock.DeltaTime;
                 if (timeInLiveDeadState >= permanentDeathDelay)
                 {
                     isPermanentlyDead = true;
@@ -477,7 +477,7 @@ public class PlantState : MonoBehaviour
 
         while (true)
         {
-            yield return new WaitForSeconds(Mathf.Max(0.1f, debuff.scanInterval));
+            yield return new WaitForGameSeconds(Mathf.Max(0.1f, debuff.scanInterval));
 
             if (ownerPot == null || ownerPot.GridData == null) yield break;
 
@@ -549,7 +549,7 @@ public class PlantState : MonoBehaviour
                 }
             }
 
-            yield return new WaitForSeconds(tick);
+            yield return new WaitForGameSeconds(tick);
             elapsed += tick;
         }
 

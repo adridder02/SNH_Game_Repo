@@ -21,6 +21,21 @@ public class GreenhouseSurface : MonoBehaviour
     public float CellSize => cellSize;
     public Vector2Int GridDimensions { get; private set; }
 
+    [Header("Pre-filled surface")]
+    [Tooltip("ON = the player can't place anything on this surface (PlacementSystem ignores it). Normally " +
+             "left OFF; a PrefilledSurface component turns this on at Start and off again once every " +
+             "pre-placed pot on the surface has been picked up.")]
+    [SerializeField] private bool placementLocked = false;
+
+    /// <summary>True while the player is not allowed to place on this surface.</summary>
+    public bool PlacementLocked => placementLocked;
+
+    public void SetPlacementLocked(bool locked)
+    {
+        placementLocked = locked;
+        if (locked && GridVisual != null) GridVisual.SetVisible(false);
+    }
+
     // bottom left world position of the grid (y is the surface's y)
     public Vector3 GridOriginWorld { get; private set; }
 

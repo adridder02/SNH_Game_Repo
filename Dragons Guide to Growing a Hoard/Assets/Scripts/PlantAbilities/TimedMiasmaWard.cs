@@ -42,7 +42,7 @@ public class TimedMiasmaWard : MonoBehaviour
 
     private void Update()
     {
-        remaining -= Time.deltaTime;
+        remaining -= GameClock.DeltaTime;
         if (remaining <= 0f) EndWard();
     }
 

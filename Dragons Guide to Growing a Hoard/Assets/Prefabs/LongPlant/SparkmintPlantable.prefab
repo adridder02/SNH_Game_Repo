@@ -152,7 +152,7 @@ MonoBehaviour:
   intermediateVisual: {fileID: 0}
   deadVisual: {fileID: 0}
   debuff:
-    enabled: 1
+    enabled: 0
     scanInterval: 2
     amountPerTick: 0.5
     duration: 5

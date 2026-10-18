@@ -48,7 +48,7 @@ public class WaterbellSprinkler : AbilityPlaceable
 
     private void Update()
     {
-        tickTimer += Time.deltaTime;
+        tickTimer += GameClock.DeltaTime;
         if (tickTimer < tickInterval) return;
         tickTimer = 0f;
 

@@ -118,8 +118,8 @@ public class CollectablePlant : MonoBehaviour
         PlantSpeciesData species = ResolveSpecies();
         if (species != null)
         {
-            if (species.journalImage != null) return species.journalImage;
-            if (species.journalIcon != null) return species.journalIcon;
+            Sprite inv = species.InventoryImage;
+            if (inv != null) return inv;
         }
         return plantImage != null ? plantImage : plantIcon;
     }

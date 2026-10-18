@@ -112,7 +112,7 @@ public class RoomAmbientFogController : MonoBehaviour
     {
         if (sourceMiasma == null || sourceMiasma.MaxSize <= 0f) return 0f;
 
-        float now = Time.time;
+        float now = GameClock.Now;
         if (now >= nextSampleTime)
         {
             sourceHistory.Enqueue(new Sample { time = now, fraction = sourceMiasma.CurrentSize / sourceMiasma.MaxSize });

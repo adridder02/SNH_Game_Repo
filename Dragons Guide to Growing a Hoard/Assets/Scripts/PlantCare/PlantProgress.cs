@@ -106,10 +106,10 @@ public class PlantProgress : MonoBehaviour
         // only a trend sustained across ~smoothingSeconds actually moves it — and therefore
         // actually moves progress.
         float tau = Mathf.Max(0.01f, smoothingSeconds);
-        float alpha = 1f - Mathf.Exp(-Time.deltaTime / tau);
+        float alpha = 1f - Mathf.Exp(-GameClock.DeltaTime / tau);
         smoothedRatePerSecond = Mathf.Lerp(smoothedRatePerSecond, instantRate, alpha);
 
-        progress = Mathf.Clamp01(progress + smoothedRatePerSecond * Time.deltaTime);
+        progress = Mathf.Clamp01(progress + smoothedRatePerSecond * GameClock.DeltaTime);
 
         if (progress >= 1f)
         {

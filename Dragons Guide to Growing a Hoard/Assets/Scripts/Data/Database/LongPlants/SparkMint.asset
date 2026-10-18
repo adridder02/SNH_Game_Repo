@@ -17,18 +17,20 @@ MonoBehaviour:
   category: 0
   room: 1
   tier: 2
-  difficulty: 2
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-    eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-    in culpa qui officia deserunt mollit anim id est laborum.
-  descriptionSecondary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-    accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-    inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. '
+  isCrystal: 0
+  difficulty: 3
+  description: A leggy, violet-tipped relative of common mint, its leaves clustered
+    tight along several thin, braided stems that twist around each other as they
+    grow. Each leaf carries a faint static charge you can feel in the air before
+    you even touch it.
+  descriptionSecondary: "Ten leaves per harvest, placed one at a time on the floor
+    grid. A fully enclosed ring wards every pot inside it from miasma for as long
+    as the leaves last \u2014 each leaf has a lifespan and goes dormant (circuit-breaking,
+    though it stays visible) once it runs out. Replace it to re-seal the ring."
   journalIcon: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   journalImage: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
+  useAlternateJournalLayout: 0
+  inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}
   disabledIcon: {fileID: 21300000, guid: da73aae2586795f40a86cf9056a53d83, type: 3}
   activeIcon: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}

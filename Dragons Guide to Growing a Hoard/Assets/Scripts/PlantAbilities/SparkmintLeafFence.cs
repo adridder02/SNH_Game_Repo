@@ -26,7 +26,7 @@ public class SparkmintLeafFence : AbilityPlaceable
     protected override void OnPlaced()
     {
         float lifespan = Data != null && Data.amountA > 0f ? Data.amountA : 120f;
-        expireAtTime = Time.time + lifespan;
+        expireAtTime = GameClock.Now + lifespan;
         hasExpired = false;
 
         SparkmintCircuitManager.Recalculate(Surface, GridData);
@@ -41,7 +41,7 @@ public class SparkmintLeafFence : AbilityPlaceable
     {
         if (hasExpired) return;
 
-        if (Time.time >= expireAtTime)
+        if (GameClock.Now >= expireAtTime)
         {
             hasExpired = true;
             Debug.Log($"[SparkmintLeafFence] Leaf at {GridOrigin} expired — circuit broken until replaced.");
@@ -58,7 +58,7 @@ public class SparkmintLeafFence : AbilityPlaceable
 
         if (!hasExpired)
         {
-            float remaining = Mathf.Max(0f, expireAtTime - Time.time);
+            float remaining = Mathf.Max(0f, expireAtTime - GameClock.Now);
             float lifespan = Data != null && Data.amountA > 0f ? Data.amountA : 120f;
             float t = lifespan > 0f ? remaining / lifespan : 0f;
 

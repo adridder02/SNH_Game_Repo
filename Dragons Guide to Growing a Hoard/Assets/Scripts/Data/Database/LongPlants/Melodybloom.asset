@@ -17,21 +17,25 @@ MonoBehaviour:
   category: 1
   room: 0
   tier: 1
-  difficulty: 1
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-    eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-    in culpa qui officia deserunt mollit anim id est laborum.
-  descriptionSecondary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-    accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-    inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. '
+  isCrystal: 0
+  difficulty: 2
+  description: "A single hollow stem curling into a shape not unlike a musical clef,
+    humming faintly, ominously, when air passes through its open coil.\n\nIt hums
+    loveliest in neglect, and that's no coincidence \u2014 something about its thriving
+    in poor conditions pulls a little life from whatever\u2019s growing near it."
+  descriptionSecondary: "While planted, it periodically drains a small amount of
+    water from nearby plants' pots \u2014 a minor, constant debuff on its neighbours,
+    scaled down from whatever the tree does on a much larger scale."
   journalIcon: {fileID: 21300000, guid: cb2e73cc4b3d2374facefb3a6163116e, type: 3}
   journalImage: {fileID: 21300000, guid: cb2e73cc4b3d2374facefb3a6163116e, type: 3}
+  useAlternateJournalLayout: 0
+  inventoryImage: {fileID: 0}
+  deadIcon: {fileID: 0}
   disabledIcon: {fileID: 21300000, guid: 143e214e8c0c50d4fb89deb34cf8e52b, type: 3}
   activeIcon: {fileID: 21300000, guid: cb2e73cc4b3d2374facefb3a6163116e, type: 3}
   goldIcon: {fileID: 21300000, guid: 94322fc10d453454b906cf70340cf0ff, type: 3}
   waterRequirement: 1
   lightRequirement: 1
   preferredSoilDisplay: 1
+  requiresRoomUnlock: 0
+  happinessThreshold: 70

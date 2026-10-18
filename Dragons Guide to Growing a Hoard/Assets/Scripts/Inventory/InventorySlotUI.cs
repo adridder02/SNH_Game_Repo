@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using TMPro;
 
 // =============================================================
@@ -44,6 +45,10 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
              "stretch. Tune this in the Editor with Play mode running to match Choose Plant by eye.")]
     [Range(0f, 0.45f)]
     [SerializeField] private float iconPaddingFraction = 0.15f;
+
+    [Header("Multi-select (Shift+click)")]
+    [Tooltip("Tint drawn over this slot while it's part of a Shift+click multi-selection.")]
+    [SerializeField] private Color multiSelectColor = new Color(1f, 0.9f, 0.35f, 0.4f);
 
     [Header("New Item Badge")]
     [Tooltip("Small 'new!' badge shown on this slot until the player clicks it (or clicks a " +
@@ -98,6 +103,8 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         rootCanvas = canvas;
         this.isAvailableSlot = isAvailableSlot;
 
+        FitSlotVisuals();
+
         if (occupant is InventoryItemInstance plant)
         {
             // A permanently-dead plant shows its species' own deadIcon (PlantSpeciesData.deadIcon)
@@ -147,6 +154,64 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         }
 
         RefreshNewBadge();
+    }
+
+    // Multi-cell (e.g. 1x2) slots: the slot itself is resized by InventoryUIController, but a slot prefab
+    // with an AspectRatioFitter or a fixed-size/aspect-locked background keeps a square background and
+    // leaves the icon floating outside it. Make the frame stretch to fill the whole slot instead, and
+    // leave the icon centred inside it (SizeIconWithPadding uses proportional anchors + preserveAspect).
+    private void FitSlotVisuals()
+    {
+        foreach (AspectRatioFitter fitter in GetComponentsInChildren<AspectRatioFitter>(true))
+            fitter.enabled = false;
+
+        Image rootImg = GetComponent<Image>();
+        if (rootImg != null) rootImg.preserveAspect = false;
+
+        foreach (Image img in GetComponentsInChildren<Image>(true))
+        {
+            if (img == null || img == icon || img == rootImg) continue;
+            if (newBadge != null && img.transform.IsChildOf(newBadge.transform)) continue;
+            if (label != null && img.transform.IsChildOf(label.transform)) continue;
+            if (multiOverlay != null && img == multiOverlay) continue;
+
+            string n = img.name.ToLowerInvariant();
+            if (n.Contains("label") || n.Contains("text") || n.Contains("count") || n.Contains("badge") || n.Contains("new"))
+                continue;
+            if (!(n.Contains("background") || n.Contains("back") || n == "bg" || n.Contains("frame") || n.Contains("border")))
+                continue;
+
+            img.preserveAspect = false;
+            RectTransform r = img.rectTransform;
+            r.anchorMin = Vector2.zero;
+            r.anchorMax = Vector2.one;
+            r.offsetMin = r.offsetMax = Vector2.zero;
+        }
+    }
+
+    private Image multiOverlay;
+
+    /// <summary>Shows/hides the Shift+click multi-selection tint on this slot.</summary>
+    public void SetMultiSelected(bool selected)
+    {
+        if (multiOverlay == null)
+        {
+            if (!selected) return;
+            GameObject go = new GameObject("MultiSelectOverlay", typeof(RectTransform));
+            RectTransform r = go.GetComponent<RectTransform>();
+            r.SetParent(transform, false);
+            r.anchorMin = Vector2.zero; r.anchorMax = Vector2.one;
+            r.offsetMin = r.offsetMax = Vector2.zero;
+            multiOverlay = go.AddComponent<Image>();
+            multiOverlay.raycastTarget = false;
+        }
+        multiOverlay.color = multiSelectColor;
+        multiOverlay.gameObject.SetActive(selected);
+        if (selected)
+        {
+            multiOverlay.transform.SetAsLastSibling();
+            if (newBadge != null) newBadge.transform.SetAsLastSibling();
+        }
     }
 
     // Insets the icon's RectTransform by iconPaddingFraction on each side instead of stretching it
@@ -265,6 +330,15 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         NewItemTracker.Instance?.MarkSeenInInventory(GetNewItemTypeId());
 
         if (isAvailableSlot) return; // Available is overflow storage, not a browse/inspect area
+
+        // Shift+click toggles this slot in a multi-selection (drag any selected one to Available to
+        // move them all) instead of opening the detail panel.
+        if (Keyboard.current != null && Keyboard.current.shiftKey.isPressed)
+        {
+            controller.ToggleMultiSelect(this);
+            return;
+        }
+        controller.ClearMultiSelection();
 
         if (Occupant is InventoryItemInstance plant)
             controller.ShowPlantDetail(plant);

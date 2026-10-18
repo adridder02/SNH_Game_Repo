@@ -17,21 +17,24 @@ MonoBehaviour:
   category: 2
   room: 2
   tier: 1
-  difficulty: 1
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-    eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-    in culpa qui officia deserunt mollit anim id est laborum.
-  descriptionSecondary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-    accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-    inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. '
+  isCrystal: 0
+  difficulty: 2
+  description: A branching stem strung with translucent, soap-film orbs of different
+    sizes, each one wobbling and catching the light like it might pop on its own
+    at any moment. Pop one against your own pack rather than a plant and somehow
+    there's simply more room inside than there was a moment ago.
+  descriptionSecondary: ' Consumed on yourself, not a pot.  Expands your inventory
+    grid by one row, with anything already waiting slotted in automatically.'
   journalIcon: {fileID: 21300000, guid: f60f94f9d4ca12545a9ff85d1e2b178c, type: 3}
   journalImage: {fileID: 21300000, guid: f60f94f9d4ca12545a9ff85d1e2b178c, type: 3}
+  useAlternateJournalLayout: 0
+  inventoryImage: {fileID: 0}
+  deadIcon: {fileID: 0}
   disabledIcon: {fileID: 21300000, guid: bc0050810211f8e479044fe961745e18, type: 3}
   activeIcon: {fileID: 21300000, guid: f60f94f9d4ca12545a9ff85d1e2b178c, type: 3}
   goldIcon: {fileID: 21300000, guid: e3be3130a94e4b14782def6e7a1a317e, type: 3}
   waterRequirement: 1
   lightRequirement: 1
   preferredSoilDisplay: 1
+  requiresRoomUnlock: 0
+  happinessThreshold: 70

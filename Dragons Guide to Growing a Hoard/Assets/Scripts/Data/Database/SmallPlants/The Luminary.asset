@@ -17,18 +17,21 @@ MonoBehaviour:
   category: 1
   room: 0
   tier: 3
-  difficulty: 3
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-    eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-    in culpa qui officia deserunt mollit anim id est laborum.
-  descriptionSecondary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-    accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-    inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. '
+  isCrystal: 0
+  difficulty: 4
+  description: 'A radiant, many-pointed star-flower that seems to hold a faint light
+    of its own even deep in shade, its petals glow with the lights of a thousand
+    stars.
+
+
+    Said to hold something of the night''s own heart at its centre,
+    a sliver of captured moonlight that never quite goes out.'
+  descriptionSecondary: Harvesting it yields a Heart item, carried to the World Tree
+    and consumed there to reveal one of its three hidden crystal layers.
   journalIcon: {fileID: 21300000, guid: ff56b4318c1ff6646b56a2ba15bffa5f, type: 3}
   journalImage: {fileID: 21300000, guid: ff56b4318c1ff6646b56a2ba15bffa5f, type: 3}
+  useAlternateJournalLayout: 0
+  inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}
   disabledIcon: {fileID: 21300000, guid: 6504ead4ee7968945a8e52a5cd5e7e1c, type: 3}
   activeIcon: {fileID: 21300000, guid: ff56b4318c1ff6646b56a2ba15bffa5f, type: 3}

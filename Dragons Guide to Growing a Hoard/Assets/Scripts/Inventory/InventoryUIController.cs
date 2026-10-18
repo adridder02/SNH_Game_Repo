@@ -347,11 +347,64 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
 
     void Update()
     {
+        if (isInventoryOpen && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            HandleOutsideClick();
+
         // Escape handling for closing the inventory now lives in ExitMenuController,
         // not here. Two scripts independently polling Escape each frame is a race —
         // Unity doesn't guarantee which Update() runs first, so a single Escape press
         // could close the inventory AND open the Exit menu on the same frame. Having
         // one script own all Escape handling for the whole menu layer avoids that.
+    }
+
+    // ------------------------------------------------------------
+    // SELECTION — click outside to deselect, Shift+click multi-select
+    // ------------------------------------------------------------
+    private readonly HashSet<string> multiSelected = new HashSet<string>();
+
+    private bool DetailOpen =>
+        (plantPanel != null && plantPanel.activeSelf) || (consumablePanel != null && consumablePanel.activeSelf);
+
+    /// <summary>Clicking anywhere that isn't an item slot or the detail panel itself closes the detail
+    /// panel and clears any Shift+click selection.</summary>
+    private void HandleOutsideClick()
+    {
+        if (!DetailOpen && multiSelected.Count == 0) return;
+        if (EventSystem.current == null) return;
+
+        var ped = new PointerEventData(EventSystem.current) { position = Mouse.current.position.ReadValue() };
+        var results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(ped, results);
+
+        foreach (RaycastResult r in results)
+        {
+            GameObject go = r.gameObject;
+            if (go == null) continue;
+            if (go.GetComponentInParent<InventorySlotUI>() != null) return; // the slot handles its own click
+            if (plantPanel != null && go.transform.IsChildOf(plantPanel.transform)) return;
+            if (consumablePanel != null && go.transform.IsChildOf(consumablePanel.transform)) return;
+        }
+
+        if (plantPanel != null && plantPanel.activeSelf) HidePlantDetail();
+        if (consumablePanel != null && consumablePanel.activeSelf) HideConsumableDetail();
+        ClearMultiSelection();
+    }
+
+    public void ToggleMultiSelect(InventorySlotUI slot)
+    {
+        if (slot == null || slot.Occupant == null || !slot.Occupant.IsInGrid) return;
+
+        string id = slot.Occupant.InstanceId;
+        if (!multiSelected.Remove(id)) multiSelected.Add(id);
+        slot.SetMultiSelected(multiSelected.Contains(id));
+    }
+
+    public void ClearMultiSelection()
+    {
+        if (multiSelected.Count == 0) return;
+        foreach (string id in multiSelected)
+            if (slotVisuals.TryGetValue(id, out InventorySlotUI s) && s != null) s.SetMultiSelected(false);
+        multiSelected.Clear();
     }
 
     /// <summary>Whether the inventory is currently open — checked by ExitMenuController before opening the Exit menu.</summary>
@@ -712,6 +765,12 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
                 -(occupant.GridY * cellH + cellGapPx * 0.5f));
         }
 
+        // Re-apply Shift+click selection tint to the freshly built slots; drop anything that's no longer in the grid.
+        multiSelected.RemoveWhere(id => !slotVisuals.TryGetValue(id, out InventorySlotUI s) || s == null
+                                        || s.Occupant == null || !s.Occupant.IsInGrid);
+        foreach (string id in multiSelected)
+            slotVisuals[id].SetMultiSelected(true);
+
         InventorySlotUI availableTemplate = availableSlotTemplate != null ? availableSlotTemplate : gridSlotTemplate;
         var availableItems = ApplyFilter(playerInventory.GetAvailableItems());
         int columns = Mathf.Max(1, availableColumns);
@@ -910,6 +969,15 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
     public void BeginDragHighlight(IGridPlaceable instance)
     {
         draggedInstance = instance;
+
+        // Dragging a plant/stack that isn't part of the Shift+click selection drops that selection.
+        if (instance != null && !multiSelected.Contains(instance.InstanceId))
+            ClearMultiSelection();
+
+        // The detail panel hides the Available panel while open — close it so there's somewhere to drop.
+        if (plantPanel != null && plantPanel.activeSelf) HidePlantDetail();
+        if (consumablePanel != null && consumablePanel.activeSelf) HideConsumableDetail();
+
         EnsureCellOverlays();
         LayoutCellOverlays();
         PaintBaseOverlayState();
@@ -1190,6 +1258,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             int cellX = Mathf.FloorToInt(local.x / cellW);
             int cellY = Mathf.FloorToInt(-local.y / cellH); // gridPanel pivot is top-left, so local.y <= 0 going down
 
+            ClearMultiSelection();
             return playerInventory.TryPlaceInGrid(occupant, cellX, cellY);
         }
 
@@ -1197,7 +1266,19 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         {
             if (occupant.IsInGrid)
             {
-                playerInventory.MoveToAvailable(occupant);
+                // Collect first: every MoveToAvailable triggers a UI refresh that rebuilds slotVisuals.
+                var toMove = new List<IGridPlaceable> { occupant };
+                if (multiSelected.Contains(occupant.InstanceId))
+                {
+                    foreach (string id in multiSelected)
+                        if (id != occupant.InstanceId && slotVisuals.TryGetValue(id, out InventorySlotUI s)
+                            && s != null && s.Occupant != null && s.Occupant.IsInGrid)
+                            toMove.Add(s.Occupant);
+                }
+                multiSelected.Clear();
+
+                foreach (IGridPlaceable item in toMove)
+                    playerInventory.MoveToAvailable(item);
 
                 // "Long-click and drag a plant to Available to make room" tutorial step — only
                 // fires for an actual grid->Available move, not the no-op below.

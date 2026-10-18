@@ -19,17 +19,21 @@ MonoBehaviour:
   tier: 2
   isCrystal: 0
   difficulty: 2
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-    eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-    in culpa qui officia deserunt mollit anim id est laborum.
-  descriptionSecondary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-    accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-    inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. '
+  description: 'A squat, round cactus bristling with thin curling spines, crowned
+    with a single small flower. The spines themselves seem to lean and gather toward
+    whatever light is strongest at the time.
+
+
+    Its needles count the sun rather
+    than drink it, filling in stem by stem as the light grows and falling bare again
+    as it fades.'
+  descriptionSecondary: "Stays in its pot permanently and just reads its own light
+    level, showing 0 to 4 stems depending on how much direct sun it's getting right
+    now \u2014 a living light gauge, nothing more."
   journalIcon: {fileID: 21300000, guid: 4e07b70507f3d874687a9b3d0281023d, type: 3}
   journalImage: {fileID: 21300000, guid: 4e07b70507f3d874687a9b3d0281023d, type: 3}
+  useAlternateJournalLayout: 0
+  inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}
   disabledIcon: {fileID: 21300000, guid: d93f7ea1096531a44a3c0ad381248637, type: 3}
   activeIcon: {fileID: 21300000, guid: 4e07b70507f3d874687a9b3d0281023d, type: 3}

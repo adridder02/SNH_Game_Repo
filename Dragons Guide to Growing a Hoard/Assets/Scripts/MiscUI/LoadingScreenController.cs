@@ -34,7 +34,39 @@ public class LoadingScreenController : MonoBehaviour
              "so the animation actually gets seen rather than flashing for one frame.")]
     [SerializeField] private float minimumDisplayTime = 1.5f;
 
+    [Header("Layering")]
+    [Tooltip("The loading screen's Canvas sort order, forced every time it's shown so it is ALWAYS drawn " +
+             "above every other canvas (tutorial prompts, HUD, menus...). 32767 is Unity's maximum. Any " +
+             "other overlay canvas in the project should use a lower Sort Order than this.")]
+    [SerializeField] private int topSortingOrder = short.MaxValue;
+
     private bool isLoading = false;
+
+    // Puts the loading UI's canvas on top of everything. Screen Space - Overlay canvases are drawn in
+    // Sort Order order, so the highest value wins; a nested canvas additionally needs Override Sorting
+    // or it just inherits its parent's order.
+    private void ForceOnTop()
+    {
+        GameObject target = canvasRoot != null ? canvasRoot : gameObject;
+        Canvas canvas = target.GetComponent<Canvas>();
+        if (canvas == null) canvas = target.GetComponentInParent<Canvas>(true);
+        if (canvas == null) canvas = target.GetComponentInChildren<Canvas>(true);
+        if (canvas == null)
+        {
+            // No canvas of its own at all - add one so it can be sorted above the rest.
+            canvas = target.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            if (target.GetComponent<UnityEngine.UI.GraphicRaycaster>() == null)
+                target.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+        }
+
+        // A Camera-space/World-space canvas always draws beneath Overlay ones, so it can't be "on top".
+        if (canvas.isRootCanvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay)
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+        if (!canvas.isRootCanvas) canvas.overrideSorting = true;
+        canvas.sortingOrder = topSortingOrder;
+    }
 
     private void Awake()
     {
@@ -48,6 +80,8 @@ public class LoadingScreenController : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        ForceOnTop();
 
         if (canvasRoot != null)
             canvasRoot.SetActive(false);
@@ -70,6 +104,8 @@ public class LoadingScreenController : MonoBehaviour
     private IEnumerator LoadSceneRoutine(string sceneName)
     {
         isLoading = true;
+
+        ForceOnTop(); // re-assert every time - another script may have changed canvas orders since Awake
 
         if (canvasRoot != null)
             canvasRoot.SetActive(true); // this is what kicks the Animator/Loading clip into playing

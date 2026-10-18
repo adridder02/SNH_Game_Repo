@@ -163,10 +163,10 @@ MonoBehaviour:
   journalSpecies: {fileID: 11400000, guid: 006bc5c7905cc09439e368abab1bcff4, type: 2}
   potPlacementOffset: 0
   potPlacementRotation: {x: 0, y: 0, z: 0}
-  preferredSoil: 1
-  neutralSoil: 0
-  lightThresholdHigh: 0.6
-  lightThresholdLow: 0.25
+  preferredSoil: 2
+  neutralSoil: 1
+  lightThresholdHigh: 1
+  lightThresholdLow: 0.5
   waterThresholdHigh: 1.5
   waterThresholdLow: 0.5
   waterThresholdOverwater: 9
@@ -178,7 +178,7 @@ MonoBehaviour:
   intermediateVisual: {fileID: 0}
   deadVisual: {fileID: 0}
   debuff:
-    enabled: 1
+    enabled: 0
     scanInterval: 2
     amountPerTick: 0.5
     duration: 5

@@ -119,6 +119,14 @@ public class JournalUIController : MonoBehaviour
              "species asset if you don't need a second section for that plant.")]
     [SerializeField] private TMP_Text detailDescriptionSecondary;
 
+    [Header("Detail Panel - Alternate Layout (optional)")]
+    [Tooltip("Used INSTEAD of the matching default element above when the species has 'Use Alternate Journal " +
+             "Layout' ticked (e.g. the image sitting beside the first paragraph rather than between the two). " +
+             "Leave any of these empty to keep using the default element for that part.")]
+    [SerializeField] private Image detailImageAlt;
+    [SerializeField] private TMP_Text detailDescriptionAlt;
+    [SerializeField] private TMP_Text detailDescriptionSecondaryAlt;
+
     [Tooltip("Shown in place of a description block that isn't unlocked yet (Tier 2/3's gradual " +
              "unlock — see GetUnlockedDescriptions) instead of leaving it blank, so the layout " +
              "doesn't collapse to nothing while the player's still working toward unlocking it.")]
@@ -426,25 +434,40 @@ public class JournalUIController : MonoBehaviour
 
         if (detailPanel != null) detailPanel.SetActive(true);
 
-        if (detailImage != null)
+        bool alt = species.useAlternateJournalLayout;
+        Image imageTarget = PickLayout(detailImage, detailImageAlt, alt);
+        TMP_Text descTarget = PickLayout(detailDescription, detailDescriptionAlt, alt);
+        TMP_Text secondTarget = PickLayout(detailDescriptionSecondary, detailDescriptionSecondaryAlt, alt);
+
+        if (imageTarget != null)
         {
             // journalImage is the larger detail illustration — falls back to the
             // small grid icon so the page isn't blank if none was assigned.
             Sprite img = species.journalImage != null ? species.journalImage : species.journalIcon;
-            detailImage.sprite = img;
-            detailImage.enabled = img != null;
+            imageTarget.sprite = img;
+            imageTarget.enabled = img != null;
         }
 
         if (detailName != null) detailName.text = species.displayName;
         if (detailTier != null) detailTier.text = $"Tier {species.tier}";
 
         (string firstText, string secondText) = GetUnlockedDescriptions(species);
-        if (detailDescription != null) detailDescription.text = firstText;
-        if (detailDescriptionSecondary != null) detailDescriptionSecondary.text = secondText;
+        if (descTarget != null) descTarget.text = firstText;
+        if (secondTarget != null) secondTarget.text = secondText;
 
         RefreshDifficultyDots(species.difficulty);
         RefreshCareRow(species);
         RefreshSpeciesNavButtons();
+    }
+
+    /// <summary>Picks the default or alternate element for one part of the detail page and shows only
+    /// that one. If the alternate isn't assigned (or the default isn't), the other one is used as-is.</summary>
+    private static T PickLayout<T>(T def, T alt, bool useAlt) where T : Component
+    {
+        T chosen = (useAlt && alt != null) ? alt : def;
+        if (def != null) def.gameObject.SetActive(chosen == def);
+        if (alt != null) alt.gameObject.SetActive(chosen == alt);
+        return chosen;
     }
 
     /// <summary>Gradual description unlock, by tier:

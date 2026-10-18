@@ -24,7 +24,7 @@ public class Zone_Miasma : MonoBehaviour
 
     void Update()
     {
-        checkTimer += Time.deltaTime;
+        checkTimer += GameClock.DeltaTime;
 
         if (checkTimer >= checkInterval)
         {

@@ -177,7 +177,7 @@ MonoBehaviour:
   intermediateVisual: {fileID: 0}
   deadVisual: {fileID: 0}
   debuff:
-    enabled: 1
+    enabled: 0
     scanInterval: 2
     amountPerTick: 0.5
     duration: 5
@@ -267,6 +267,7 @@ MonoBehaviour:
   launchUpForce: 12
   launchOutwardForce: 2
   cooldown: 0.5
+  flyingNeedsGroundContact: 1
 --- !u!114 &1500539273978904161
 MonoBehaviour:
   m_ObjectHideFlags: 0

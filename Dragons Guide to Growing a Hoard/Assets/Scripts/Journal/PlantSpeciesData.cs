@@ -64,6 +64,20 @@ public class PlantSpeciesData : ScriptableObject
     [Tooltip("Larger illustration shown on the detail page. Falls back to journalIcon if left blank.")]
     public Sprite journalImage;
 
+    [Tooltip("OFF = the default journal page layout (image between the two paragraphs). ON = the alternate " +
+             "layout (image beside the first paragraph). Which UI objects each layout uses is set up on " +
+             "JournalUIController (the 'Alternate Layout' fields) - if those aren't assigned, this does nothing.")]
+    public bool useAlternateJournalLayout = false;
+
+    [Header("Inventory / Pot Menu")]
+    [Tooltip("Image shown for this plant in the Inventory detail panel and the pot interaction menu " +
+             "(instead of the journal image). Falls back to journalImage, then journalIcon, if left blank. " +
+             "Icons are unaffected.")]
+    public Sprite inventoryImage;
+
+    /// <summary>The image Inventory and the pot menu should show: inventoryImage, else journalImage, else journalIcon.</summary>
+    public Sprite InventoryImage => inventoryImage != null ? inventoryImage : journalImage != null ? journalImage : journalIcon;
+
     [Tooltip("Shown INSTEAD OF journalIcon in the Inventory (grid, Available, and the detail panel) " +
              "once this specific plant has died permanently (PlantState.IsPermanentlyDead). Per-" +
              "species since different plants should die differently. Falls back to " +

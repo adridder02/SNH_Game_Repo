@@ -43,7 +43,7 @@ public class WindmillAsterWard : MonoBehaviour
             return;
         }
 
-        rescanTimer += Time.deltaTime;
+        rescanTimer += GameClock.DeltaTime;
         if (rescanTimer < rescanInterval) return;
         rescanTimer = 0f;
 

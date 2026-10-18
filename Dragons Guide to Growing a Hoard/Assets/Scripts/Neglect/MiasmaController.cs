@@ -330,7 +330,7 @@ public class MiasmaController : MonoBehaviour
         // Check for plants in miasma. Throttled — see plantCheckInterval tooltip; an
         // uncapped OverlapSphere at radius=currentSize every frame is expensive once the
         // miasma has grown large.
-        plantCheckTimer += Time.deltaTime;
+        plantCheckTimer += GameClock.DeltaTime;
         if (plantCheckTimer >= plantCheckInterval)
         {
             plantCheckTimer = 0f;
@@ -364,7 +364,7 @@ public class MiasmaController : MonoBehaviour
         // Frame-rate independent growth.
         ApplySize(
             currentSize +
-            rateOfMiasma * Time.deltaTime
+            rateOfMiasma * GameClock.DeltaTime
         );
     }
 
@@ -441,7 +441,7 @@ public class MiasmaController : MonoBehaviour
                     plantsInMiasma.Add(plant);
 
                     lastDebuffTime[plant] =
-                        Time.time;
+                        GameClock.Now;
 
 
                     if (showDebugLogs)
@@ -494,7 +494,7 @@ public class MiasmaController : MonoBehaviour
         if (plantsInMiasma.Count > 0)
         {
             // Increase contact timer.
-            contactTimer += Time.deltaTime;
+            contactTimer += GameClock.DeltaTime;
 
 
             if (contactTimer >= timeToIncreaseIntensity)
@@ -569,7 +569,7 @@ public class MiasmaController : MonoBehaviour
 
     void ApplyDebuffsToPlants()
     {
-        float currentTime = Time.time;
+        float currentTime = GameClock.Now;
 
 
         foreach (var plant in plantsInMiasma)

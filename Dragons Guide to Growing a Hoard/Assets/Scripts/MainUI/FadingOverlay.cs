@@ -48,7 +48,28 @@ public class FadingOverlay : MonoBehaviour
         if (visible)
             gameObject.SetActive(true); // must be active before the coroutine can run at all
 
+        // A parent can be inactive (e.g. the HUD is hidden while the Exit menu or Inventory is open), which
+        // makes this object inactive IN THE HIERARCHY even though its own flag is on. Coroutines can't run
+        // there, so just snap to the final state - nobody can see it anyway - instead of erroring.
+        if (!gameObject.activeInHierarchy)
+        {
+            activeFade = null;
+            group.alpha = visible ? 1f : 0f;
+            gameObject.SetActive(visible);
+            return;
+        }
+
         activeFade = StartCoroutine(FadeRoutine(visible));
+    }
+
+    // If a fade was cut off because a parent got deactivated mid-fade (Unity kills the coroutine), finish it
+    // instantly when we're shown again so the overlay never gets stuck half-faded.
+    private void OnEnable()
+    {
+        if (group == null || activeFade == null) return;
+        activeFade = null;
+        group.alpha = targetVisible ? 1f : 0f;
+        if (!targetVisible) gameObject.SetActive(false);
     }
 
     private IEnumerator FadeRoutine(bool visible)

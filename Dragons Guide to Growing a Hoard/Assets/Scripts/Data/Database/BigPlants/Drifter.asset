@@ -17,18 +17,22 @@ MonoBehaviour:
   category: 2
   room: 2
   tier: 1
+  isCrystal: 0
   difficulty: 1
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-    eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-    in culpa qui officia deserunt mollit anim id est laborum.
-  descriptionSecondary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-    accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-    inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. '
+  description: 'A broad, round lily pad with a trailing fringe of smaller leaves,
+    some bare and some crowned with a single white, many-petaled flower. The flowered
+    ones look no different in a hurried glance, which is exactly the problem. Most
+    drift harmlessly across open water, steady enough to walk a path across. Flowered
+    specimens show a tendency to sinking with touched.
+
+'
+  descriptionSecondary: Placed on the grid to lay a walkable path over water. Unflowered
+    pads stay buoyant no matter what stands on them; flowered pads sink under the
+    player's weight.
   journalIcon: {fileID: 21300000, guid: 83e490e4e4abf31459a2b4ca94f5c623, type: 3}
   journalImage: {fileID: 21300000, guid: 83e490e4e4abf31459a2b4ca94f5c623, type: 3}
+  useAlternateJournalLayout: 1
+  inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}
   disabledIcon: {fileID: 21300000, guid: e6c26e567b9dd0f4f836a052d1cddb40, type: 3}
   activeIcon: {fileID: 21300000, guid: 83e490e4e4abf31459a2b4ca94f5c623, type: 3}

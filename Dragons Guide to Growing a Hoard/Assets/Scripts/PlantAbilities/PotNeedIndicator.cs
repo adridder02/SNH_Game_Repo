@@ -73,7 +73,7 @@ public class PotNeedIndicator : MonoBehaviour
 
     private void Update()
     {
-        remainingSeconds -= Time.deltaTime;
+        remainingSeconds -= GameClock.DeltaTime;
         if (remainingSeconds <= 0f)
         {
             Destroy(gameObject);

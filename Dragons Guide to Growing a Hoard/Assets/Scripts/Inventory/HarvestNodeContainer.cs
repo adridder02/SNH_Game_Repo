@@ -101,6 +101,16 @@ public class HarvestNodeContainer : MonoBehaviour
     [Tooltip("How long the dissolve effect takes to play, in seconds.")]
     public float disintegrateDuration = 1f;
 
+    // ── harvested-node registry ──────────────────────────────
+    // Lets other systems (PotContents locking) ask "has this node been harvested yet?" the instant E is
+    // pressed, rather than waiting for the dissolve to finish and the node to be deactivated.
+    private static readonly HashSet<Transform> harvestedNodes = new HashSet<Transform>();
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics() { harvestedNodes.Clear(); NodeHarvested = null; }
+    public static bool IsHarvested(Transform node) => node != null && harvestedNodes.Contains(node);
+    /// <summary>Fired right after a node's plant lands in the player's inventory.</summary>
+    public static event System.Action<Transform> NodeHarvested;
+
     // ── private ──────────────────────────────────────────────
     private Transform[] nodes;
 
@@ -364,6 +374,8 @@ public class HarvestNodeContainer : MonoBehaviour
         // Node is done for now. Swap for a respawn-timer coroutine if these
         // nodes should regrow rather than disappear permanently.
         ClearCurrentOutline();
+        harvestedNodes.Add(node);
+        NodeHarvested?.Invoke(node);
 
         // Play the disintegrate effect first (if this node has one), THEN hide it — so the item
         // is already in the player's inventory (AddPlantToInventory ran above) the instant they

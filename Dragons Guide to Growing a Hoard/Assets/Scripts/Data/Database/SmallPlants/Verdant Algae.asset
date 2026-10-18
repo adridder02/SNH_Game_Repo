@@ -17,11 +17,20 @@ MonoBehaviour:
   category: 2
   room: 2
   tier: 1
+  isCrystal: 0
   difficulty: 1
-  description: 
-  descriptionSecondary: 
+  description: A biofluorescent collection of sparkles more smear than shape, that
+    spreads wherever still water lets it settle. It has no real stem or leaf to speak
+    of, just a single, sprawling film. A living film that, pressed into a pot's soil,
+    drinks up the miasma before it ever reaches the roots beneath it.
+  descriptionSecondary: Applied to a pot, it temporarily wards that plant's soil
+    against miasma (and visibly tints the soil while active), reverting once the
+    ward runs out.
   journalIcon: {fileID: 21300000, guid: 3e05db36bfd743342abdee2b215ee7e3, type: 3}
   journalImage: {fileID: 21300000, guid: 3e05db36bfd743342abdee2b215ee7e3, type: 3}
+  useAlternateJournalLayout: 0
+  inventoryImage: {fileID: 0}
+  deadIcon: {fileID: 0}
   disabledIcon: {fileID: 21300000, guid: fa888b3521b16b14a9a184518c92d407, type: 3}
   activeIcon: {fileID: 21300000, guid: 3e05db36bfd743342abdee2b215ee7e3, type: 3}
   goldIcon: {fileID: 21300000, guid: c26ae10cd7aa6d640909347759e0461e, type: 3}

@@ -41,6 +41,17 @@ public class PotMenuUIController : MonoBehaviour
     [SerializeField] private ImageFillBar qualityBar;
     [SerializeField] private ImageFillBar waterLevelBar;
 
+    [Header("Main Panel - Plant Bars (menu counterparts of the overhead bars)")]
+    [Tooltip("Same value as the health bar floating above the pot (PlantState.HealthNormalized01). Hidden " +
+             "while the pot has no plant.")]
+    [SerializeField] private ImageFillBar plantHealthBar;
+    [Tooltip("Same value as the miasma bar above the pot (PlantState.MiasmaInfluence01). Hidden while the pot has no plant.")]
+    [SerializeField] private ImageFillBar plantMiasmaBar;
+    [Tooltip("This POT's water level (WaterLevel / plantWaterMax) - not the player's water pool, which is " +
+             "the Water Level Bar above. Always shown while the pot has soil, unlike the overhead water bar " +
+             "which only appears after Dewdrop.")]
+    [SerializeField] private ImageFillBar potWaterBar;
+
     // ------------------------------------------------------------
     // CHOOSE SOIL PANEL
     // ------------------------------------------------------------
@@ -50,6 +61,7 @@ public class PotMenuUIController : MonoBehaviour
     [SerializeField] private Button loamSoilButton;
     [SerializeField] private Button sandySoilButton;
     [SerializeField] private Button waterSoilButton;
+    [SerializeField] private Button infectedSoilButton;
     [SerializeField] private Button selectSoilButton;
     [SerializeField] private Button chooseSoilBackButton;
 
@@ -132,6 +144,7 @@ public class PotMenuUIController : MonoBehaviour
     [SerializeField] private Sprite loamSoilIcon;
     [SerializeField] private Sprite sandySoilIcon;
     [SerializeField] private Sprite waterSoilIcon;
+    [SerializeField] private Sprite infectedSoilIcon;
 
     // ------------------------------------------------------------
     // Runtime state
@@ -167,6 +180,7 @@ public class PotMenuUIController : MonoBehaviour
         loamSoilButton?.onClick.AddListener(() => SelectSoilOption(SoilKind.Loam));
         sandySoilButton?.onClick.AddListener(() => SelectSoilOption(SoilKind.Sandy));
         waterSoilButton?.onClick.AddListener(() => SelectSoilOption(SoilKind.Water));
+        infectedSoilButton?.onClick.AddListener(() => SelectSoilOption(SoilKind.Infected));
         selectSoilButton?.onClick.AddListener(ConfirmSoilSelection);
         chooseSoilBackButton?.onClick.AddListener(ShowMain);
 
@@ -251,7 +265,10 @@ public class PotMenuUIController : MonoBehaviour
         RefreshMainPanel();
 
         if (!pot.HasPlant)
-            ShowChooseSoil();
+        {
+            if (pot.HasFixedSoil) ShowChoosePlant(); // soil is built in - go straight to planting
+            else ShowChooseSoil();
+        }
         else
             ShowMain();
     }
@@ -323,7 +340,7 @@ public class PotMenuUIController : MonoBehaviour
         if (mainPlantImage != null)
         {
             Sprite sprite = info != null && info.displayImage != null ? info.displayImage
-                : species != null ? (species.journalImage != null ? species.journalImage : species.journalIcon) : null;
+                : species != null ? species.InventoryImage : null;
             mainPlantImage.sprite = sprite;
             mainPlantImage.enabled = sprite != null;
         }
@@ -353,7 +370,12 @@ public class PotMenuUIController : MonoBehaviour
         if (soilActionButtonLabel != null)
             soilActionButtonLabel.text = hasSoil ? "Change Soil" : "Choose Soil";
 
-        if (soilActionButton != null) soilActionButton.interactable = true;
+        if (soilActionButton != null)
+        {
+            soilActionButton.interactable = true;
+            // Fixed-soil pots (e.g. water-room pools) have no soil choice to make.
+            soilActionButton.gameObject.SetActive(currentPot == null || !currentPot.HasFixedSoil);
+        }
 
         // Once the plant's growth progress is Complete, the same button that used to remove
         // the plant back into the inventory now reads "Harvest" instead — see
@@ -431,8 +453,37 @@ public class PotMenuUIController : MonoBehaviour
             RefreshMainPanel();
     }
 
+    private void RefreshPlantBars()
+    {
+        bool hasPlant = currentPot != null && currentPot.HasPlant && currentPot.Plant != null;
+
+        if (plantHealthBar != null)
+        {
+            if (plantHealthBar.gameObject.activeSelf != hasPlant) plantHealthBar.gameObject.SetActive(hasPlant);
+            if (hasPlant)
+                plantHealthBar.SetNormalized(currentPot.Plant.IsPermanentlyDead ? 0f : currentPot.Plant.HealthNormalized01);
+        }
+
+        if (plantMiasmaBar != null)
+        {
+            if (plantMiasmaBar.gameObject.activeSelf != hasPlant) plantMiasmaBar.gameObject.SetActive(hasPlant);
+            if (hasPlant) plantMiasmaBar.SetNormalized(currentPot.Plant.MiasmaInfluence01);
+        }
+
+        if (potWaterBar != null)
+        {
+            bool show = currentPot != null && currentPot.HasSoil;
+            if (potWaterBar.gameObject.activeSelf != show) potWaterBar.gameObject.SetActive(show);
+            if (show)
+                potWaterBar.SetNormalized(currentPot.plantWaterMax > 0f
+                    ? Mathf.Clamp01(currentPot.WaterLevel / currentPot.plantWaterMax) : 0f);
+        }
+    }
+
     private void RefreshMainStatusBars()
     {
+        RefreshPlantBars();
+
         if (qualityBar != null)
             qualityBar.SetNormalized(CurrentPlantProgress != null ? CurrentPlantProgress.Progress01 : 0f);
 
@@ -522,6 +573,7 @@ public class PotMenuUIController : MonoBehaviour
         if (kind == SoilKind.Loam) return loamSoilButton;
         if (kind == SoilKind.Sandy) return sandySoilButton;
         if (kind == SoilKind.Water) return waterSoilButton;
+        if (kind == SoilKind.Infected) return infectedSoilButton;
         return null;
     }
 
@@ -531,12 +583,20 @@ public class PotMenuUIController : MonoBehaviour
         if (kind == SoilKind.Loam) return loamSoilIcon;
         if (kind == SoilKind.Sandy) return sandySoilIcon;
         if (kind == SoilKind.Water) return waterSoilIcon;
+        if (kind == SoilKind.Infected) return infectedSoilIcon;
         return null;
     }
 
     private void ConfirmSoilSelection()
     {
         if (pendingSoil == null || currentPot == null) return;
+
+        // Filling a pot with Water soil costs units from the player's water pool, same pool watering
+        // a plant draws from. Re-selecting Water on a pot that already has it is free.
+        bool needsPayment = pendingSoil.Value == SoilKind.Water
+            && !(currentPot.HasSoil && currentPot.CurrentSoil == SoilKind.Water);
+        if (needsPayment && ownerInteraction != null && !ownerInteraction.TryPayForWaterSoil())
+            return; // not enough water - stay on the soil panel
 
         // Tutorial hook — "Select a soil type" advances on CONFIRM, not the initial click, so it
         // matches the moment the soil actually gets set on the pot below.
@@ -596,8 +656,16 @@ public class PotMenuUIController : MonoBehaviour
             {
                 if (item?.plantPrefab == null) continue;
 
+                // Only plants in the MAIN inventory grid can be planted — anything sitting in Available
+                // (overflow) isn't offered.
+                if (!item.IsInGrid) continue;
+
                 bool fits = currentPot != null && (currentPot.IsStatic || item.size == currentPot.PotSize)
                             && !item.condition.isPermanentlyDead;
+
+                // Only show plants that can actually go in THIS pot (wrong size / dead are hidden,
+                // not greyed out).
+                if (!fits) continue;
                 PlantSpeciesData species = GetSpeciesFor(item);
                 bool locked = !SpecialPlantUnlockGate.IsPlantable(species, journalDatabase, journalManager);
 

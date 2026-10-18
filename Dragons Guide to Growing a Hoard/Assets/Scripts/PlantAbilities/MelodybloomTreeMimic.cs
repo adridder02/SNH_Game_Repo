@@ -28,7 +28,7 @@ public class MelodybloomTreeMimic : MonoBehaviour
 
     private void Update()
     {
-        timer += Time.deltaTime;
+        timer += GameClock.DeltaTime;
         if (timer < tickInterval) return;
         timer = 0f;
 

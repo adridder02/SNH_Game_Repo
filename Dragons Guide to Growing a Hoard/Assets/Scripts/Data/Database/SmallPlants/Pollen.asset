@@ -17,21 +17,26 @@ MonoBehaviour:
   category: 0
   room: 1
   tier: 1
+  isCrystal: 0
   difficulty: 1
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-    eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-    in culpa qui officia deserunt mollit anim id est laborum.
-  descriptionSecondary: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-    accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-    inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. '
+  description: "Three soft, round blooms nod atop a single stalk like little cotton
+    balls, shedding a fine gold dust at the gentlest touch, a breath of wind is enough
+    to set the whole plant drifting. \n\nThe gentlest teacher in the greenhouse.
+    Its pollen doesn't feed or heal anything, it simply tells you, plainly, what
+    a plant is missing before you have to guess."
+  descriptionSecondary: "Dust a puffball over any pot and a coloured marker appears
+    over it.\n\nYellow for light\nBlue for water\nBrown for soil \n\nShowing whichever
+    need is currently lowest, for a short time."
   journalIcon: {fileID: 21300000, guid: 1e953d9ebef0f73428d62adfdb33edd2, type: 3}
   journalImage: {fileID: 21300000, guid: 1e953d9ebef0f73428d62adfdb33edd2, type: 3}
+  useAlternateJournalLayout: 0
+  inventoryImage: {fileID: 0}
+  deadIcon: {fileID: 0}
   disabledIcon: {fileID: 21300000, guid: 83a75e4656a1cf043842be8fe7d0aa7d, type: 3}
   activeIcon: {fileID: 21300000, guid: 1e953d9ebef0f73428d62adfdb33edd2, type: 3}
   goldIcon: {fileID: 21300000, guid: 8141eab061d6dbd4e95b772af646b916, type: 3}
   waterRequirement: 1
   lightRequirement: 1
   preferredSoilDisplay: 1
+  requiresRoomUnlock: 0
+  happinessThreshold: 70

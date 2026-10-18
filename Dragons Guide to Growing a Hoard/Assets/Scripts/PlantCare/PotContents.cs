@@ -31,6 +31,15 @@ public class PotContents : MonoBehaviour
              "system, accepts plants of any size, and is never registered with PlacementSystem.")]
     public bool isStaticPot = false;
 
+    [Tooltip("Variant permanent pot with a built-in soil (e.g. a pool of water you plant into, like the " +
+             "lily-pad pools in the water room). The soil is applied at start, the player never picks or " +
+             "changes it, and the pot behaves as a static pot (any plant size, not on the grid). Tick " +
+             "alongside Is Static Pot or on its own — either way it's treated as static.")]
+    public bool fixedSoil = false;
+
+    [Tooltip("The soil a Fixed Soil pot always has.")]
+    public SoilKind fixedSoilKind = SoilKind.Water;
+
     [Tooltip("Optional: the PotData asset this pot instance was spawned from. When assigned, this becomes " +
              "the single source of truth for potSize (see SyncPotSizeFromData below) — leave it null only " +
              "for pots that were hand-authored directly in the scene without going through PotData.")]
@@ -58,6 +67,9 @@ public class PotContents : MonoBehaviour
     [Tooltip("Prefab spawned inside the pot when Water soil is chosen (e.g. a water-surface mesh).")]
     public GameObject waterSoilPrefab;
 
+    [Tooltip("Prefab spawned inside the pot when Infected soil is chosen.")]
+    public GameObject infectedSoilPrefab;
+
     [Header("Soil Materials")]
     [Tooltip("Material applied to the clay soil prefab's Renderer. Leave null to keep prefab default.")]
     public Material clayMaterial;
@@ -71,6 +83,9 @@ public class PotContents : MonoBehaviour
     [Tooltip("Material applied to the water soil prefab's Renderer. Leave null to keep prefab default.")]
     public Material waterMaterial;
 
+    [Tooltip("Material applied to the infected soil prefab's Renderer. Leave null to keep prefab default.")]
+    public Material infectedMaterial;
+
     [Header("Algae Materials")]
     [Tooltip("Used INSTEAD OF the normal material above, for the matching soil kind, while Verdant " +
              "Algae's ward is currently active on this pot's plant (see SetAlgaeActive, called from " +
@@ -80,6 +95,7 @@ public class PotContents : MonoBehaviour
     public Material loamAlgaeMaterial;
     public Material sandyAlgaeMaterial;
     public Material waterAlgaeMaterial;
+    public Material infectedAlgaeMaterial;
 
     [Header("Soil Water Tint")]
     [Tooltip("Color the soil shows at 0 water (bone dry).")]
@@ -119,7 +135,86 @@ public class PotContents : MonoBehaviour
     public bool HasSoil => hasSoil;
     public bool HasPlant => hasPlant;
     public PlantSize PotSize => potSize;
-    public bool IsStatic => isStaticPot;
+    public bool IsStatic => isStaticPot || fixedSoil;
+    public bool HasFixedSoil => fixedSoil;
+
+    // ---------------------------------------------------------------
+    // PRE-FILLED POTS (scene-authored pots with harvest-node plants)
+    // ---------------------------------------------------------------
+    [Header("Pre-filled Pot (harvest-node plants)")]
+    [Tooltip("The harvest-node plant object(s) sitting in this pot (children of a HarvestNodeContainer). " +
+             "While ANY of them hasn't been harvested yet, this pot is LOCKED: PotInteraction ignores it " +
+             "completely (no prompt, no outline, no menu, no watering). Leave empty to use Auto Detect below.")]
+    [SerializeField] private Transform[] guardingNodes;
+
+    [Tooltip("If Guarding Nodes is empty, find the CollectablePlant harvest nodes within this horizontal " +
+             "distance of the pot's plant anchor at Start and use those. 0 = off (pot is never locked " +
+             "unless you assign Guarding Nodes by hand).")]
+    [SerializeField] private float autoDetectNodeRadius = 0.6f;
+
+    [Tooltip("ON = once the plant is harvested, the player can pick this pot up (E) and it is removed " +
+             "from the world — used for pots on a pre-filled surface so the surface can be cleared. " +
+             "OFF (e.g. a permanent static pot) = it just becomes a normal usable pot once unlocked.")]
+    public bool removableOnceCleared = false;
+
+    [Tooltip("Optional: the PrefilledSurface this pot belongs to. Auto-found from parents if left empty. " +
+             "It is told when this pot is picked up so it can unlock itself once every pot is gone.")]
+    [SerializeField] private PrefilledSurface ownerSurface;
+
+    public bool RemovableOnceCleared => removableOnceCleared;
+
+    /// <summary>True while a harvest-node plant is still in this pot (see Guarding Nodes).</summary>
+    public bool IsLocked
+    {
+        get
+        {
+            ResolveGuards();
+            if (guardingNodes == null) return false;
+            for (int i = 0; i < guardingNodes.Length; i++)
+            {
+                Transform n = guardingNodes[i];
+                if (n != null && n.gameObject.activeInHierarchy && !HarvestNodeContainer.IsHarvested(n))
+                    return true;
+            }
+            return false;
+        }
+    }
+
+    private bool guardsResolved;
+
+    // Done lazily on first IsLocked check (not in Start) so every HarvestNodeContainer has already run
+    // its own Start() — that's where nodes under a HarvestNodeTypeGroup get their CollectablePlant added.
+    private void ResolveGuards()
+    {
+        if (guardsResolved) return;
+        guardsResolved = true;
+
+        if (ownerSurface == null) ownerSurface = GetComponentInParent<PrefilledSurface>();
+
+        if ((guardingNodes == null || guardingNodes.Length == 0) && autoDetectNodeRadius > 0f)
+        {
+            Transform anchor = plantAnchor != null ? plantAnchor : transform;
+            var found = new System.Collections.Generic.List<Transform>();
+            foreach (CollectablePlant cp in FindObjectsByType<CollectablePlant>())
+            {
+                if (cp == null || !cp.gameObject.activeInHierarchy) continue;
+                if (cp.GetComponentInParent<HarvestNodeContainer>() == null) continue;
+                Vector3 d = cp.transform.position - anchor.position;
+                d.y = 0f;
+                if (d.magnitude <= autoDetectNodeRadius) found.Add(cp.transform);
+            }
+            guardingNodes = found.ToArray();
+        }
+    }
+
+    /// <summary>Removes this pot from the world (returning any plant in it to the player first) and
+    /// tells its PrefilledSurface so the surface can unlock once the last pot is gone.</summary>
+    public void PickUpPot(PlayerInventory inventory)
+    {
+        if (hasPlant) RemovePlant(inventory);
+        if (ownerSurface != null) ownerSurface.NotifyPotRemoved(this);
+        gameObject.SetActive(false);
+    }
 
     public PlantState Plant { get; private set; }
 
@@ -161,6 +256,9 @@ public class PotContents : MonoBehaviour
         waterLevel = 0f;
         hasSoil = false;
         hasPlant = false;
+
+        if (fixedSoil)
+            SetSoil(fixedSoilKind);
         
         if(this.currentPlantPrefab){// aslo add tutorial boollean to say this is only for the tutorial
             SetSoil(currentSoil);
@@ -168,7 +266,7 @@ public class PotContents : MonoBehaviour
             PlantState candidate = currentPlantPrefab.GetComponentInChildren<PlantState>();
 
             // Static pots accept any plant size; only enforce size for normal grid pots.
-            if (!isStaticPot && candidate != null && candidate.plantSize != potSize)
+            if (!IsStatic && candidate != null && candidate.plantSize != potSize)
             {
                 Debug.LogWarning(
                     $"[PotContents] Size mismatch — plant is {candidate.plantSize} " +
@@ -268,6 +366,7 @@ public class PotContents : MonoBehaviour
     // ---------------------------------------------------------------
     public void SetSoil(SoilKind kind)
     {
+        if (fixedSoil) kind = fixedSoilKind; // fixed-soil pots can't be changed
         currentSoil = kind;
         hasSoil = true;
 
@@ -306,6 +405,7 @@ public class PotContents : MonoBehaviour
             SoilKind.Loam => loamSoilPrefab,
             SoilKind.Sandy => sandySoilPrefab,
             SoilKind.Water => waterSoilPrefab,
+            SoilKind.Infected => infectedSoilPrefab,
             _ => null
         };
 
@@ -361,6 +461,7 @@ public class PotContents : MonoBehaviour
                 SoilKind.Loam => loamAlgaeMaterial,
                 SoilKind.Sandy => sandyAlgaeMaterial,
                 SoilKind.Water => waterAlgaeMaterial,
+                SoilKind.Infected => infectedAlgaeMaterial,
                 _ => null
             };
             if (algaeMat != null) return algaeMat;
@@ -374,6 +475,7 @@ public class PotContents : MonoBehaviour
             SoilKind.Loam => loamMaterial,
             SoilKind.Sandy => sandyMaterial,
             SoilKind.Water => waterMaterial,
+            SoilKind.Infected => infectedMaterial,
             _ => null
         };
     }
@@ -432,7 +534,7 @@ public class PotContents : MonoBehaviour
         PlantState candidate = prefab.GetComponentInChildren<PlantState>();
 
         // Static pots accept any plant size; only enforce size for normal grid pots.
-        if (!isStaticPot && candidate != null && candidate.plantSize != potSize)
+        if (!IsStatic && candidate != null && candidate.plantSize != potSize)
         {
             Debug.LogWarning(
                 $"[PotContents] Size mismatch — plant is {candidate.plantSize} " +
@@ -524,7 +626,7 @@ public class PotContents : MonoBehaviour
             : null;
 
         Sprite displayImage = info != null && info.displayImage != null ? info.displayImage
-            : species != null ? (species.journalImage != null ? species.journalImage : species.journalIcon)
+            : species != null ? species.InventoryImage
             : null;
 
         string displayName = info != null && !string.IsNullOrEmpty(info.displayName) ? info.displayName
@@ -679,7 +781,7 @@ public class PotContents : MonoBehaviour
         if (Plant != null)
             drain *= Plant.GetWaterDrainMultiplier();
 
-        waterLevel = Mathf.Max(0f, waterLevel - drain * Time.deltaTime);
+        waterLevel = Mathf.Max(0f, waterLevel - drain * GameClock.DeltaTime);
     }
 
     // ---------------------------------------------------------------
