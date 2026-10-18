@@ -55,7 +55,11 @@ public class GameTimeController : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (menuOpen) MenuLayerManager.NotifyClosed(this);
+        if (menuOpen)
+        {
+            MenuLayerManager.NotifyClosed(this);
+            GameInputModeManager.Instance?.SetGameplayMode();
+        }
         // Never leave the world running at a changed speed behind after this scene's controller is gone.
         GameClock.ResetScale();
     }
@@ -70,19 +74,25 @@ public class GameTimeController : MonoBehaviour
     private void Update()
     {
         if (!enableHotkey || Keyboard.current == null || !Keyboard.current.tKey.wasPressedThisFrame) return;
-        if (!menuOpen && !CanOpen()) return;
         ToggleMenu();
     }
 
     private static bool CanOpen()
     {
         var tutorial = TutorialSequenceController.Instance;
-        return tutorial == null || !tutorial.IsInputLocked;
+        if (tutorial != null && tutorial.IsInputLocked) return false;
+
+        // Only from normal gameplay - not while the Journal/Inventory/Pot menu is open or the player is
+        // in a placement mode (opening on top of those would leave the input mode wrong on close).
+        var input = GameInputModeManager.Instance;
+        return input == null || input.CurrentMode == GameInputModeManager.InputMode.Gameplay;
     }
 
     public void ToggleMenu()
     {
-        if (menuOpen) CloseMenu(); else OpenMenu();
+        if (menuOpen) { CloseMenu(); return; }
+        if (!CanOpen()) return;
+        OpenMenu();
     }
 
     public void OpenMenu()
@@ -92,6 +102,12 @@ public class GameTimeController : MonoBehaviour
         menuOpen = true;
         if (menuRoot != null) menuRoot.SetActive(true);
         Apply();
+
+        // Same takeover the Journal/Inventory do: free cursor, camera locked, movement still allowed.
+        GameInputModeManager.Instance?.SetMenuUIMode();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        ThirdPersonCameraController.CameraLocked = true;
     }
 
     public void CloseMenu()
@@ -100,6 +116,7 @@ public class GameTimeController : MonoBehaviour
         menuOpen = false;
         MenuLayerManager.NotifyClosed(this);
         if (menuRoot != null) menuRoot.SetActive(false);
+        GameInputModeManager.Instance?.SetGameplayMode();
     }
 
     public void SpeedUp() { index = Mathf.Min(index + 1, speedSteps.Length - 1); Apply(); }
