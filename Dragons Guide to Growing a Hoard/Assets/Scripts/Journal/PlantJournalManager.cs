@@ -36,6 +36,71 @@ public class PlantJournalManager : MonoBehaviour
     // rather than assumed-implied, in case future content ever discovers a species some other way.
     private readonly HashSet<string> completedIds = new HashSet<string>();
 
+    // ---- Care-row guesses (the journal dropdowns) -------------------------------------------------
+    // Per species: what the player has picked for water / light / soil (-1 = unanswered, otherwise the
+    // enum value), plus whether they pressed "fill in answers", which locks the dropdowns to the truth.
+    private const string GuessKey = "PlantJournal_Guesses";
+    private readonly Dictionary<string, CareGuess> guesses = new Dictionary<string, CareGuess>();
+
+    [Serializable]
+    public class CareGuess
+    {
+        public string id;
+        public int water = -1, light = -1, soil = -1;
+        public bool locked;
+    }
+
+    public CareGuess GetGuess(PlantSpeciesData species)
+    {
+        if (species == null) return null;
+        if (!guesses.TryGetValue(species.ResolvedId, out CareGuess g))
+        {
+            g = new CareGuess { id = species.ResolvedId };
+            guesses[g.id] = g;
+        }
+        return g;
+    }
+
+    /// <summary>Stores one dropdown pick. Ignored once the species is locked.</summary>
+    public void SetGuess(PlantSpeciesData species, int water, int light, int soil)
+    {
+        CareGuess g = GetGuess(species);
+        if (g == null || g.locked) return;
+        g.water = water; g.light = light; g.soil = soil;
+        SaveGuesses();
+    }
+
+    /// <summary>Fills in the correct answers and locks the dropdowns for this species.</summary>
+    public void RevealAnswers(PlantSpeciesData species)
+    {
+        CareGuess g = GetGuess(species);
+        if (g == null) return;
+        g.water = (int)species.waterRequirement;
+        g.light = (int)species.lightRequirement;
+        g.soil = (int)species.preferredSoilDisplay;
+        g.locked = true;
+        SaveGuesses();
+    }
+
+    private void SaveGuesses()
+    {
+        PlayerPrefs.SetString(GuessKey, JsonUtility.ToJson(new GuessSave { entries = guesses.Values.ToList() }));
+        PlayerPrefs.Save();
+    }
+
+    private void LoadGuesses()
+    {
+        guesses.Clear();
+        if (!PlayerPrefs.HasKey(GuessKey)) return;
+        GuessSave data = JsonUtility.FromJson<GuessSave>(PlayerPrefs.GetString(GuessKey));
+        if (data?.entries == null) return;
+        foreach (CareGuess g in data.entries)
+            if (g != null && !string.IsNullOrEmpty(g.id)) guesses[g.id] = g;
+    }
+
+    [Serializable]
+    private class GuessSave { public List<CareGuess> entries; }
+
     /// <summary>Fired whenever a new species is discovered or completed (or state is loaded), so JournalUIController / ProgressPageUIController can redraw.</summary>
     public event Action OnJournalChanged;
 
@@ -51,6 +116,7 @@ public class PlantJournalManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         Load();
+        LoadGuesses();
     }
 
     public bool IsDiscovered(PlantSpeciesData species)
@@ -168,6 +234,8 @@ public class PlantJournalManager : MonoBehaviour
         discoveredIds.Clear();
         completedIds.Clear();
         PlayerPrefs.DeleteKey(SaveKey);
+        guesses.Clear();
+        PlayerPrefs.DeleteKey(GuessKey);
         OnJournalChanged?.Invoke();
         Debug.Log("[PlantJournalManager] Journal progress reset.");
     }

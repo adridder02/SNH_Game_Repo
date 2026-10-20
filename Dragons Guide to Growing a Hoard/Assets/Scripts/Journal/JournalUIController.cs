@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -145,10 +146,20 @@ public class JournalUIController : MonoBehaviour
     [SerializeField] private Sprite dotFilledSprite;
     [SerializeField] private Sprite dotEmptySprite;
 
-    [Header("Care Row (display only)")]
+    [Header("Care Row (player fills these in)")]
+    [Tooltip("Each dropdown starts on '?' and offers every value. Picks are saved per species.")]
     [SerializeField] private TMP_Dropdown waterDropdown;
     [SerializeField] private TMP_Dropdown lightDropdown;
     [SerializeField] private TMP_Dropdown soilDropdown;
+    [Tooltip("Optional. Fills in the correct answers for the open species and locks the dropdowns.")]
+    [SerializeField] private Button fillAnswersButton;
+    [Tooltip("Optional. Shown (e.g. a padlock icon) while the open species' answers are locked.")]
+    [SerializeField] private GameObject answersLockedIndicator;
+    [Tooltip("Text for the unanswered first option.")]
+    [SerializeField] private string unansweredLabel = "?";
+
+    private static readonly SoilKind[] SoilChoices = { SoilKind.Clay, SoilKind.Loam, SoilKind.Sandy, SoilKind.Water };
+    private bool refreshingCare;
 
     private RectTransform slotTemplateRect;
     private readonly Dictionary<RectTransform, List<JournalSlotUI>> spawnedSlots = new Dictionary<RectTransform, List<JournalSlotUI>>();
@@ -176,6 +187,14 @@ public class JournalUIController : MonoBehaviour
 
         if (journalBackButton != null)
             journalBackButton.onClick.AddListener(ToggleJournal);
+
+        SetupCareDropdown(waterDropdown, new List<string> { "Low", "Medium", "High" });
+        SetupCareDropdown(lightDropdown, new List<string> { "Low", "Medium", "High" });
+        SetupCareDropdown(soilDropdown, SoilChoices.Select(k => k.ToString()).ToList());
+        waterDropdown?.onValueChanged.AddListener(_ => OnCareDropdownChanged());
+        lightDropdown?.onValueChanged.AddListener(_ => OnCareDropdownChanged());
+        soilDropdown?.onValueChanged.AddListener(_ => OnCareDropdownChanged());
+        fillAnswersButton?.onClick.AddListener(OnFillAnswersClicked);
 
         // Tutorial hooks on the three bookmark tabs — matches steps reading 'Open the "Plants"/
         // "Progress"/"Guide" bookmark'. Fired from the click listener itself rather than from inside
@@ -573,20 +592,56 @@ public class JournalUIController : MonoBehaviour
         }
     }
 
-    private void RefreshCareRow(PlantSpeciesData species)
-    {
-        SetDropdownValue(waterDropdown, species.waterRequirement.ToString());
-        SetDropdownValue(lightDropdown, species.lightRequirement.ToString());
-        SetDropdownValue(soilDropdown, species.preferredSoilDisplay.ToString());
-    }
-
-    private static void SetDropdownValue(TMP_Dropdown dropdown, string value)
+    private void SetupCareDropdown(TMP_Dropdown dropdown, List<string> options)
     {
         if (dropdown == null) return;
+        var all = new List<string> { unansweredLabel };
+        all.AddRange(options);
         dropdown.ClearOptions();
-        dropdown.AddOptions(new List<string> { value });
-        dropdown.value = 0;
+        dropdown.AddOptions(all);
+    }
+
+    private void RefreshCareRow(PlantSpeciesData species)
+    {
+        refreshingCare = true;
+        PlantJournalManager.CareGuess g = journalManager != null ? journalManager.GetGuess(species) : null;
+        bool locked = g != null && g.locked;
+
+        // Dropdown index 0 is the "?" option, so a stored value v maps to v + 1 (soil maps through SoilChoices).
+        ApplyCare(waterDropdown, g != null && g.water >= 0 ? g.water + 1 : 0, locked);
+        ApplyCare(lightDropdown, g != null && g.light >= 0 ? g.light + 1 : 0, locked);
+        int soilIdx = g != null && g.soil >= 0 ? System.Array.IndexOf(SoilChoices, (SoilKind)g.soil) + 1 : 0;
+        ApplyCare(soilDropdown, Mathf.Max(0, soilIdx), locked);
+
+        if (fillAnswersButton != null) fillAnswersButton.interactable = !locked;
+        if (answersLockedIndicator != null) answersLockedIndicator.SetActive(locked);
+        refreshingCare = false;
+    }
+
+    private static void ApplyCare(TMP_Dropdown dropdown, int index, bool locked)
+    {
+        if (dropdown == null) return;
+        dropdown.SetValueWithoutNotify(index);
         dropdown.RefreshShownValue();
-        dropdown.interactable = false;
+        dropdown.interactable = !locked;
+    }
+
+    private void OnCareDropdownChanged()
+    {
+        if (refreshingCare || selectedSpecies == null || journalManager == null) return;
+
+        int water = waterDropdown != null ? waterDropdown.value - 1 : -1;
+        int light = lightDropdown != null ? lightDropdown.value - 1 : -1;
+        int soil = -1;
+        if (soilDropdown != null && soilDropdown.value > 0)
+            soil = (int)SoilChoices[soilDropdown.value - 1];
+        journalManager.SetGuess(selectedSpecies, water, light, soil);
+    }
+
+    private void OnFillAnswersClicked()
+    {
+        if (selectedSpecies == null || journalManager == null) return;
+        journalManager.RevealAnswers(selectedSpecies);
+        RefreshCareRow(selectedSpecies);
     }
 }
