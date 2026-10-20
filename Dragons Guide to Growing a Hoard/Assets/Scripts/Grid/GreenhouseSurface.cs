@@ -36,6 +36,15 @@ public class GreenhouseSurface : MonoBehaviour
         if (locked && GridVisual != null) GridVisual.SetVisible(false);
     }
 
+    [Header("Water surface")]
+    [Tooltip("OFF (default) = normal surface: pots are placed as usual. ON = placing a pot here only places its " +
+             "SOIL, set to Water and locked (no Change Soil button) - like a pool you plant into. Pot size/" +
+             "footprint, planting, picking up and moving all work as normal.")]
+    [SerializeField] private bool waterSurface = false;
+
+    /// <summary>True if pots placed on this surface become water-soil-only (the pot body is hidden).</summary>
+    public bool WaterSurface => waterSurface;
+
     // bottom left world position of the grid (y is the surface's y)
     public Vector3 GridOriginWorld { get; private set; }
 

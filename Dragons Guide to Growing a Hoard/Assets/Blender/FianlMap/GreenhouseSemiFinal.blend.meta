@@ -37,6 +37,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Black.001
+    second: {fileID: 2100000, guid: 272e9fe1d16d23d45a44dacf6599e218, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Blue
     second: {fileID: 2100000, guid: bfb4ec398d164bb4f9a397905be80992, type: 2}
   - first:
@@ -152,6 +157,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Door.001
+    second: {fileID: 2100000, guid: ce5d1c3df9343ae4c9b9eac43db3f14e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: DoorKnob
     second: {fileID: 2100000, guid: e980aad89ce2448489d87bfc6ebb6a29, type: 2}
   - first:
@@ -237,6 +247,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: LightPurple.001
+    second: {fileID: 2100000, guid: 9d0cd875a6dc4a642897c3d69787989a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Loam
     second: {fileID: 2100000, guid: 5b34c74281a2a3c4b8e2c5fe465e6fbd, type: 2}
   - first:
@@ -277,6 +292,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: MidBlue.001
+    second: {fileID: 2100000, guid: 7a100594bb040774ab72a30b95ed1ef2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: OffWhite
     second: {fileID: 2100000, guid: 15d7b210036f5d54ab1c1f39355a6843, type: 2}
   - first:
@@ -304,6 +324,16 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: Orange
     second: {fileID: 2100000, guid: 84ebb231a77c0484f983ae1d5cb77f5b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Orange.001
+    second: {fileID: 2100000, guid: 4089e02dd9f916e4cb1fb1503bb7fcac, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Orange.002
+    second: {fileID: 2100000, guid: 524b38c19e4b5e344b95866ee991e150, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -349,6 +379,16 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: Red
     second: {fileID: 2100000, guid: b02fd71a08ab237408452d1e875f4976, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: RoofDeco
+    second: {fileID: 2100000, guid: d6abdc218e3cb5647bbf89c10d877345, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: RoofPanels
+    second: {fileID: 2100000, guid: f2d2520f82759ba4aa7140a493bbae5a, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule

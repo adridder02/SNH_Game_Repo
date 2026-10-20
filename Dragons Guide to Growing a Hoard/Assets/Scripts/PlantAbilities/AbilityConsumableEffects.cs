@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 // =============================================================
@@ -102,6 +103,25 @@ public static class AbilityConsumableEffects
     /// active, or if the active one's source AbilityItemData wasn't captured (shouldn't happen for
     /// anything applied through TryApply above, but a pot could theoretically have one of these
     /// components added some other way).</summary>
+    /// <summary>ALL active pot-targeted consumable icons (Water, Pollen, Miasma Ward order) - used by the pot
+    /// menu to show several in a row. Empty if none are active.</summary>
+    public static List<Sprite> GetActiveConsumableIcons(PotContents pot)
+    {
+        var icons = new List<Sprite>();
+        if (pot == null) return icons;
+
+        PotWaterGizmo water = pot.GetComponent<PotWaterGizmo>();
+        if (water != null && water.sourceData != null && water.sourceData.icon != null) icons.Add(water.sourceData.icon);
+
+        PotNeedIndicator pollen = pot.GetComponentInChildren<PotNeedIndicator>();
+        if (pollen != null && pollen.sourceData != null && pollen.sourceData.icon != null) icons.Add(pollen.sourceData.icon);
+
+        TimedMiasmaWard ward = pot.Plant != null ? pot.Plant.GetComponentInChildren<TimedMiasmaWard>() : null;
+        if (ward != null && ward.sourceData != null && ward.sourceData.icon != null) icons.Add(ward.sourceData.icon);
+
+        return icons;
+    }
+
     public static Sprite GetActiveConsumableIcon(PotContents pot)
     {
         if (pot == null) return null;

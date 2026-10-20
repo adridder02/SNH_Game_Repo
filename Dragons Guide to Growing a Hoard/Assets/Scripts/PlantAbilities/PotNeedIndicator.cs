@@ -28,6 +28,16 @@ public class PotNeedIndicator : MonoBehaviour
     /// SAME sprite Inventory shows for it) in PotMenuUIController's active-consumable indicator.</summary>
     public AbilityItemData sourceData;
 
+    /// <summary>Colour of the plant's currently-lowest need (brown = soil, yellow = light, blue = water).
+    /// Read by the overhead bars and the pot menu to show the same hint.</summary>
+    public Color CurrentColor { get; private set; } = Color.white;
+
+    /// <summary>The active indicator on this pot, or null if no Pollen Puff is active.</summary>
+    public static PotNeedIndicator GetActive(PotContents pot)
+    {
+        return pot != null ? pot.GetComponentInChildren<PotNeedIndicator>() : null;
+    }
+
     public static PotNeedIndicator AttachTo(PotContents pot, float duration, GameObject markerPrefab, AbilityItemData data = null)
     {
         if (pot == null || pot.Plant == null) return null;
@@ -67,6 +77,7 @@ public class PotNeedIndicator : MonoBehaviour
         if (light < lowest) { lowest = light; colour = LightColor; }
         if (water < lowest) { colour = WaterColor; }
 
+        CurrentColor = colour;
         Renderer rend = GetComponent<Renderer>();
         if (rend != null) rend.material.color = colour;
     }

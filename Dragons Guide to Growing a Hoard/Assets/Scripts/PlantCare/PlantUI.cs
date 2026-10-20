@@ -242,6 +242,21 @@ public class PlantUI : MonoBehaviour
         barsInstance.miasmaBar.SetNormalized(miasmaNormalized);
 
         RefreshWaterBar();
+        RefreshPollenNeedImage();
+    }
+
+    // Shown only while a Pollen Puff's PotNeedIndicator is active on this plant's pot; tinted with its colour.
+    private void RefreshPollenNeedImage()
+    {
+        if (barsInstance == null || barsInstance.pollenNeedImage == null) return;
+
+        PotContents pot = useDummyValues || plantState == null ? null : plantState.GetComponentInParent<PotContents>();
+        PotNeedIndicator indicator = PotNeedIndicator.GetActive(pot);
+        bool show = indicator != null;
+
+        if (barsInstance.pollenNeedImage.gameObject.activeSelf != show)
+            barsInstance.pollenNeedImage.gameObject.SetActive(show);
+        if (show) barsInstance.pollenNeedImage.color = indicator.CurrentColor;
     }
 
     // =========================================================

@@ -28,6 +28,15 @@ public class PotMenuUIController : MonoBehaviour
              "(Dewdrop/Pollen Puff/Verdant Algae) — same sprite Inventory shows for that item. Hidden " +
              "when none are active. See AbilityConsumableEffects.GetActiveConsumableIcon().")]
     [SerializeField] private Image activeConsumableIcon;
+    [Tooltip("Gap (UI units) between the active-consumable icons when several are active on one pot. The first " +
+             "icon stays where activeConsumableIcon is; the rest are copies lined up to its LEFT. Ignored if " +
+             "the icon's parent has a Layout Group (that lays them out instead).")]
+    [SerializeField] private float consumableIconSpacing = 8f;
+    private readonly List<Image> extraConsumableIcons = new List<Image>();
+    [Tooltip("OPTIONAL image tinted with the plant's lowest need (brown = soil, yellow = light, blue = water) " +
+             "while a Pollen Puff is active on this pot - the menu counterpart of the overhead bars' image. " +
+             "Hidden otherwise. Use a white/greyscale sprite so the tint shows true.")]
+    [SerializeField] private Image pollenNeedImage;
     [SerializeField] private Button soilActionButton;
     [SerializeField] private TextMeshProUGUI soilActionButtonLabel;
     [SerializeField] private Button choosePlantButton;
@@ -213,6 +222,8 @@ public class PotMenuUIController : MonoBehaviour
         // in the empty-inventory case where previously nothing hid it.
         if (choosePlantOptionTemplate != null)
             choosePlantOptionTemplate.gameObject.SetActive(false);
+        if (abilityOptionTemplate != null)
+            abilityOptionTemplate.gameObject.SetActive(false);
 
         if (choosePlantScrollRect == null && choosePlantOptionContainer != null)
             choosePlantScrollRect = choosePlantOptionContainer.GetComponentInParent<ScrollRect>();
@@ -360,12 +371,8 @@ public class PotMenuUIController : MonoBehaviour
             mainSoilIcon.enabled = soilSprite != null;
         }
 
-        if (activeConsumableIcon != null)
-        {
-            Sprite consumableSprite = AbilityConsumableEffects.GetActiveConsumableIcon(currentPot);
-            activeConsumableIcon.sprite = consumableSprite;
-            activeConsumableIcon.enabled = consumableSprite != null;
-        }
+        RefreshConsumableIcons();
+        RefreshPollenNeedImage();
 
         if (soilActionButtonLabel != null)
             soilActionButtonLabel.text = hasSoil ? "Change Soil" : "Choose Soil";
@@ -472,7 +479,9 @@ public class PotMenuUIController : MonoBehaviour
 
         if (potWaterBar != null)
         {
-            bool show = currentPot != null && currentPot.HasSoil;
+            // Same rule as the overhead bar (PlantUI.RefreshWaterBar): only while a Dewdrop's PotWaterGizmo
+            // is active on this pot.
+            bool show = currentPot != null && currentPot.HasSoil && currentPot.GetComponent<PotWaterGizmo>() != null;
             if (potWaterBar.gameObject.activeSelf != show) potWaterBar.gameObject.SetActive(show);
             if (show)
                 potWaterBar.SetNormalized(currentPot.plantWaterMax > 0f
@@ -480,9 +489,59 @@ public class PotMenuUIController : MonoBehaviour
         }
     }
 
+    private void RefreshPollenNeedImage()
+    {
+        if (pollenNeedImage == null) return;
+        PotNeedIndicator indicator = PotNeedIndicator.GetActive(currentPot);
+        bool show = indicator != null;
+        if (pollenNeedImage.gameObject.activeSelf != show) pollenNeedImage.gameObject.SetActive(show);
+        if (show) pollenNeedImage.color = indicator.CurrentColor;
+    }
+
+    private void RefreshConsumableIcons()
+    {
+        if (activeConsumableIcon == null) return;
+
+        List<Sprite> icons = AbilityConsumableEffects.GetActiveConsumableIcons(currentPot);
+
+        activeConsumableIcon.sprite = icons.Count > 0 ? icons[0] : null;
+        activeConsumableIcon.enabled = icons.Count > 0;
+
+        RectTransform baseRT = activeConsumableIcon.rectTransform;
+        bool parentLayouts = baseRT.parent != null && baseRT.parent.GetComponent<LayoutGroup>() != null;
+
+        for (int i = 1; i < icons.Count; i++)
+        {
+            if (extraConsumableIcons.Count < i)
+            {
+                Image copy = Instantiate(activeConsumableIcon, activeConsumableIcon.transform.parent);
+                copy.name = $"{activeConsumableIcon.name}_{i}";
+                extraConsumableIcons.Add(copy);
+            }
+
+            Image img = extraConsumableIcons[i - 1];
+            img.sprite = icons[i];
+            img.enabled = true;
+            img.gameObject.SetActive(true);
+
+            if (!parentLayouts)
+            {
+                RectTransform rt = img.rectTransform;
+                rt.anchorMin = baseRT.anchorMin; rt.anchorMax = baseRT.anchorMax; rt.pivot = baseRT.pivot;
+                rt.sizeDelta = baseRT.sizeDelta;
+                rt.anchoredPosition = baseRT.anchoredPosition - new Vector2((baseRT.rect.width + consumableIconSpacing) * i, 0f);
+            }
+        }
+
+        for (int i = Mathf.Max(1, icons.Count); i <= extraConsumableIcons.Count; i++)
+            if (extraConsumableIcons[i - 1] != null) extraConsumableIcons[i - 1].gameObject.SetActive(false);
+    }
+
     private void RefreshMainStatusBars()
     {
         RefreshPlantBars();
+        RefreshPollenNeedImage();
+        RefreshConsumableIcons(); // live: an effect can expire / another can be applied while the menu is open
 
         if (qualityBar != null)
             qualityBar.SetNormalized(CurrentPlantProgress != null ? CurrentPlantProgress.Progress01 : 0f);
@@ -817,6 +876,11 @@ public class PotMenuUIController : MonoBehaviour
         pendingAbility = null;
         if (abilityContinueButton != null)
             abilityContinueButton.interactable = false;
+
+        // The template is only a design-time reference - never show it itself (it was appearing as a
+        // stray slot when the panel had no items).
+        if (abilityOptionTemplate != null)
+            abilityOptionTemplate.gameObject.SetActive(false);
 
         if (abilityOptionContainer != null)
         {

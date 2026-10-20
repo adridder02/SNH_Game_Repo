@@ -46,4 +46,9 @@ public class PlantOverheadBarsView : MonoBehaviour
              "has been used on it) and hides it entirely otherwise. Leave unassigned if a given template " +
              "doesn't want a water readout — PlantUI checks for null before touching it.")]
     public ImageFillBar waterBar;
+
+    [Tooltip("OPTIONAL image tinted with the plant's lowest need (brown = soil, yellow = light, blue = " +
+             "water). Only shown while a Pollen Puff is active on the pot (PotNeedIndicator); hidden " +
+             "otherwise. Use a white/greyscale sprite so the tint shows true.")]
+    public UnityEngine.UI.Image pollenNeedImage;
 }

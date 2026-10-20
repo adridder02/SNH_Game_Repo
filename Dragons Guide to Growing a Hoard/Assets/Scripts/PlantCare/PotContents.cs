@@ -136,7 +136,47 @@ public class PotContents : MonoBehaviour
     public bool HasPlant => hasPlant;
     public PlantSize PotSize => potSize;
     public bool IsStatic => isStaticPot || fixedSoil;
-    public bool HasFixedSoil => fixedSoil;
+    public bool HasFixedSoil => fixedSoil || waterSurfaceMode;
+
+    // Set by PlacementSystem when this pot sits on a GreenhouseSurface with Water Surface ticked: only the
+    // soil is shown (pot body hidden), it's always Water, and the soil can't be changed. Unlike fixedSoil
+    // this does NOT make the pot static - plant size must still match the pot, and it's still on the grid.
+    private bool waterSurfaceMode;
+    private readonly System.Collections.Generic.List<Renderer> hiddenPotRenderers = new System.Collections.Generic.List<Renderer>();
+
+    public bool WaterSurfaceMode => waterSurfaceMode;
+
+    public void SetWaterSurfaceMode(bool on)
+    {
+        if (waterSurfaceMode == on) return;
+        waterSurfaceMode = on;
+
+        if (on)
+        {
+            SetSoil(SoilKind.Water);
+            HidePotBody();
+        }
+        else
+        {
+            foreach (Renderer r in hiddenPotRenderers) if (r != null) r.enabled = true;
+            hiddenPotRenderers.Clear();
+        }
+    }
+
+    // Hides the pot's own meshes but keeps the soil visual, the plant and anything attached to them.
+    private void HidePotBody()
+    {
+        hiddenPotRenderers.Clear();
+        foreach (Renderer r in GetComponentsInChildren<Renderer>(true))
+        {
+            if (r == null || !r.enabled) continue;
+            if (r is ParticleSystemRenderer || r is TrailRenderer || r is LineRenderer) continue;
+            if (currentSoilObject != null && r.transform.IsChildOf(currentSoilObject.transform)) continue;
+            if (r.GetComponentInParent<PlantState>() != null) continue;
+            r.enabled = false;
+            hiddenPotRenderers.Add(r);
+        }
+    }
 
     // ---------------------------------------------------------------
     // PRE-FILLED POTS (scene-authored pots with harvest-node plants)
@@ -367,6 +407,7 @@ public class PotContents : MonoBehaviour
     public void SetSoil(SoilKind kind)
     {
         if (fixedSoil) kind = fixedSoilKind; // fixed-soil pots can't be changed
+        else if (waterSurfaceMode) kind = SoilKind.Water;
         currentSoil = kind;
         hasSoil = true;
 

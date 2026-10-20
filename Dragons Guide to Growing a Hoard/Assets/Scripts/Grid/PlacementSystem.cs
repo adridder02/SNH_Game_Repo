@@ -750,6 +750,7 @@ public class PlacementSystem : MonoBehaviour
         PotContents pc = placed.GetComponent<PotContents>();
         if (pc != null)
         {
+            pc.SetWaterSurfaceMode(activeSurface.WaterSurface); // water surface: soil only, always Water
             pc.GridOrigin = key;        // key is the Vector3Int placement origin
             pc.GridData = gridData;     // This surface's gridData instance
             pc.CachePlantReference();
@@ -922,6 +923,7 @@ public class PlacementSystem : MonoBehaviour
             PotContents pc = movingObject.GetComponent<PotContents>();
             if (pc != null)
             {
+                pc.SetWaterSurfaceMode(activeSurface.WaterSurface);
                 pc.GridOrigin = key;
                 pc.GridData = gridData; // Update to the new surface's grid data
                 pc.CachePlantReference();
