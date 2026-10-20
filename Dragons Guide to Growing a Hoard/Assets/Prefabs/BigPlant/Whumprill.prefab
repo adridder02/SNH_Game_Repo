@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: -7496506593189826510}
   - component: {fileID: -6202665067771359288}
   - component: {fileID: 1500539273978904161}
+  - component: {fileID: 6182124171412157904}
   m_Layer: 3
   m_Name: Whumprill
   m_TagString: Selectable
@@ -265,6 +266,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SproionshroomLauncher
   playerTag: Player
   launchUpForce: 12
+  smallLaunchUpForce: 5
+  growth: {fileID: 0}
+  launchCollider: {fileID: 0}
   launchOutwardForce: 2
   cooldown: 0.5
   flyingNeedsGroundContact: 1
@@ -286,3 +290,43 @@ MonoBehaviour:
   materialRenderers: []
   blendPropertyName: _DeathBlend
   smoothTime: 1.5
+--- !u!114 &6182124171412157904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844357348191295120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 330ad3f6ae6ec7c428d237021a05472c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantGrowthSize
+  progress: {fileID: 0}
+  scaleTarget: {fileID: 0}
+  smallScale: 0.4
+  growthCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  scaleSmoothing: 4

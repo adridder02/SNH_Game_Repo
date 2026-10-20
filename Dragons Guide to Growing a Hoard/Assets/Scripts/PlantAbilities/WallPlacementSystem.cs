@@ -220,6 +220,7 @@ public class WallPlacementSystem : MonoBehaviour
         ClovenwickWallMount mount = placed.GetComponent<ClovenwickWallMount>();
         if (mount == null) mount = placed.AddComponent<ClovenwickWallMount>();
         mount.maxWeight = data.maxSupportedWeightKg > 12f ? ClovenwickWallMount.WeightClass.Medium : ClovenwickWallMount.WeightClass.Small;
+        mount.fullWeightKg = data.maxSupportedWeightKg;
 
         gridData.AddPlacement(key, data.size, placed);
         gridVisual.MarkOccupied(cell, data.size);

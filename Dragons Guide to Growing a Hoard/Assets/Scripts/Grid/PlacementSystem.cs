@@ -119,6 +119,7 @@ public class PlacementSystem : MonoBehaviour
     private Vector2Int lastHoveredCell = new Vector2Int(-999, -999);
 
     private GameObject previewObject;
+    private int rotationSteps;   // quarter-turns (E) applied to the pot being placed / moved; odd = footprint x/y swapped
     private Quaternion previewBaseRotation = Quaternion.identity; // the preview's own rotation before aligning to a surface
 
     private PlacementData movingData;
@@ -217,6 +218,15 @@ public class PlacementSystem : MonoBehaviour
                 CycleSelection(-1);
         }
 
+        // E rotates the pot being placed (or held, in Move mode) by 90 degrees. Odd turns swap the footprint's
+        // width/height, so a 1x2 pot becomes 2x1.
+        if ((mode == Mode.Placing || (mode == Mode.Moving && movingData != null)) &&
+            Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            rotationSteps = (rotationSteps + 1) & 3;
+            ForceHoverRefresh();
+        }
+
         Vector3 mouseWorld = inputManager.GetSelectedMapPosition();
 
         // Determine which surface the mouse is over
@@ -276,17 +286,17 @@ public class PlacementSystem : MonoBehaviour
 
         if (previewObject != null)
         {
-            Vector2Int size =
+            Vector2Int size = RotatedSize(
                 mode == Mode.Moving && movingData != null
                 ? movingData.Size
-                : availablePots[selectedIndex].size;
+                : availablePots[selectedIndex].size, rotationSteps);
 
             previewObject.transform.position =
                 CellToWorldCentre(hoveredCell, size, activeSurface);
 
             float fromYaw = (mode == Mode.Moving && movingSourceSurface != null) ? movingSourceSurface.Yaw : 0f;
             previewObject.transform.rotation =
-                Quaternion.Euler(0f, activeSurface.Yaw - fromYaw, 0f) * previewBaseRotation;
+                Quaternion.Euler(0f, activeSurface.Yaw - fromYaw + 90f * rotationSteps, 0f) * previewBaseRotation;
         }
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
@@ -558,6 +568,7 @@ public class PlacementSystem : MonoBehaviour
 
         if (!suppressEvent)
         {
+            rotationSteps = 0;
             // "Exit placement mode" tutorial step — deliberately only on a REAL exit (Escape via
             // ExitMenuController, or CancelActiveMode from elsewhere), not the suppressEvent=true
             // calls at the top of each Enter*Mode method that just switch from one tool straight to
@@ -582,17 +593,18 @@ public class PlacementSystem : MonoBehaviour
             case Mode.Placing:
                 {
                     PotData data = availablePots[selectedIndex];
+                    Vector2Int size = RotatedSize(data.size, rotationSteps);
 
                     bool canFit =
-                        gridVisual.FootprintInBounds(cell, data.size);
+                        gridVisual.FootprintInBounds(cell, size);
 
                     bool canPlace =
                         canFit &&
-                        gridData.CanPlace(ToGridVec3(cell), data.size);
+                        gridData.CanPlace(ToGridVec3(cell), size);
 
                     gridVisual.SetFootprint(
                         cell,
-                        data.size,
+                        size,
                         canPlace
                             ? GridVisual.CellState.Valid
                             : GridVisual.CellState.Invalid
@@ -673,19 +685,20 @@ public class PlacementSystem : MonoBehaviour
                     }
                     else
                     {
+                        Vector2Int mSize = RotatedSize(movingData.Size, rotationSteps);
                         bool canFit =
-                            gridVisual.FootprintInBounds(cell, movingData.Size);
+                            gridVisual.FootprintInBounds(cell, mSize);
 
                         bool canPlace =
                             canFit &&
                             gridData.CanPlace(
                                 ToGridVec3(cell),
-                                movingData.Size
+                                mSize
                             );
 
                         gridVisual.SetFootprint(
                             cell,
-                            movingData.Size,
+                            mSize,
                             canPlace
                                 ? GridVisual.CellState.Valid
                                 : GridVisual.CellState.Invalid
@@ -709,6 +722,7 @@ public class PlacementSystem : MonoBehaviour
         }
 
         PotData data = availablePots[selectedIndex];
+        Vector2Int size = RotatedSize(data.size, rotationSteps);
         GridVisual gridVisual = activeSurface.GridVisual;
         GridData gridData = surfaceGridData[activeSurface];
         
@@ -717,29 +731,29 @@ public class PlacementSystem : MonoBehaviour
         // past an edge) into a valid-looking one, so a big pot could be placed overhanging the edge.
         Vector2Int gridDims = activeSurface.GridDimensions;
         if (cell.x < 0 || cell.y < 0 ||
-            cell.x + data.size.x > gridDims.x || cell.y + data.size.y > gridDims.y)
+            cell.x + size.x > gridDims.x || cell.y + size.y > gridDims.y)
             return;
 
         if (debugMode)
             Debug.Log($"TryPlace: Attempting to place pot at cell {cell} on surface '{activeSurface.name}'");
 
-        if (!gridVisual.FootprintInBounds(cell, data.size))
+        if (!gridVisual.FootprintInBounds(cell, size))
         {
             if (debugMode)
-                Debug.LogWarning($"TryPlace: Footprint not in bounds! Cell: {cell}, Size: {data.size}, Grid dimensions: {activeSurface.GridDimensions}");
+                Debug.LogWarning($"TryPlace: Footprint not in bounds! Cell: {cell}, Size: {size}, Grid dimensions: {activeSurface.GridDimensions}");
             return;
         }
 
         Vector3Int key = ToGridVec3(cell);
 
-        if (!gridData.CanPlace(key, data.size))
+        if (!gridData.CanPlace(key, size))
         {
             if (debugMode)
                 Debug.LogWarning($"TryPlace: CanPlace returned false for cell {cell}");
             return;
         }
 
-        Vector3 worldPos = CellToWorldCentre(cell, data.size, activeSurface);
+        Vector3 worldPos = CellToWorldCentre(cell, size, activeSurface);
 
         if (debugMode)
             Debug.Log($"TryPlace: Placing pot at world position {worldPos}");
@@ -748,7 +762,7 @@ public class PlacementSystem : MonoBehaviour
             Instantiate(
                 data.potPrefab,
                 worldPos,
-                Quaternion.Euler(0f, activeSurface.Yaw, 0f) * data.potPrefab.transform.rotation
+                Quaternion.Euler(0f, activeSurface.Yaw + 90f * rotationSteps, 0f) * data.potPrefab.transform.rotation
             );
 
         //! --- Insertation
@@ -764,8 +778,8 @@ public class PlacementSystem : MonoBehaviour
         }
         //!
 
-        gridData.AddPlacement(key, data.size, placed);
-        gridVisual.MarkOccupied(cell, data.size);
+        gridData.AddPlacement(key, size, placed);
+        gridVisual.MarkOccupied(cell, size);
 
         if (debugMode)
             Debug.Log($"TryPlace: Successfully placed pot '{placed.name}' at {worldPos}");
@@ -893,6 +907,7 @@ public class PlacementSystem : MonoBehaviour
             movingData = data;
             movingObject = data.PlacedObject;
             movingSourceSurface = activeSurface; // remember where we picked it up from
+            rotationSteps = 0;
 
             gridData.RemovePlacement(data.Origin);
 
@@ -909,22 +924,23 @@ public class PlacementSystem : MonoBehaviour
         else
         {
             // Dropping
+            Vector2Int dropSize = RotatedSize(movingData.Size, rotationSteps);
             Vector3Int key = ToGridVec3(cell);
 
             Vector2Int dropDims = activeSurface.GridDimensions;
             if (cell.x < 0 || cell.y < 0 ||
-                cell.x + movingData.Size.x > dropDims.x || cell.y + movingData.Size.y > dropDims.y)
+                cell.x + dropSize.x > dropDims.x || cell.y + dropSize.y > dropDims.y)
                 return; // would hang off the edge of the grid
 
-            if (!gridData.CanPlace(key, movingData.Size))
+            if (!gridData.CanPlace(key, dropSize))
                 return;
 
             movingObject.transform.position =
-                CellToWorldCentre(cell, movingData.Size, activeSurface);
+                CellToWorldCentre(cell, dropSize, activeSurface);
 
             // Re-align to the destination surface's rotation (relative to the one it was picked up from).
             float fromYaw = movingSourceSurface != null ? movingSourceSurface.Yaw : activeSurface.Yaw;
-            movingObject.transform.rotation = Quaternion.Euler(0f, activeSurface.Yaw - fromYaw, 0f) * movingObject.transform.rotation;
+            movingObject.transform.rotation = Quaternion.Euler(0f, activeSurface.Yaw - fromYaw + 90f * rotationSteps, 0f) * movingObject.transform.rotation;
 
             movingObject.SetActive(true);
 
@@ -946,7 +962,7 @@ public class PlacementSystem : MonoBehaviour
 
             gridData.AddPlacement(
                 key,
-                movingData.Size,
+                dropSize,
                 movingObject
             );
 
@@ -1124,6 +1140,11 @@ private GreenhouseSurface GetSurfaceAtPosition(Vector3 worldPos)
         // Surface-aware (rotated grids). The water-surface soil offset is applied to the soil visual only
         // (PotContents.SetWaterSurfaceMode) - the pot/plant/preview stay at the normal surface height.
         return surface.CellToWorld(cell.x + size.x * 0.5f, cell.y + size.y * 0.5f);
+    }
+
+    private static Vector2Int RotatedSize(Vector2Int size, int steps)
+    {
+        return (steps & 1) == 0 ? size : new Vector2Int(size.y, size.x);
     }
 
     private static Vector3Int ToGridVec3(Vector2Int c)

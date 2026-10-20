@@ -27,13 +27,39 @@ public class GreenhouseSurface : MonoBehaviour
              "pre-placed pot on the surface has been picked up.")]
     [SerializeField] private bool placementLocked = false;
 
-    /// <summary>True while the player is not allowed to place on this surface.</summary>
-    public bool PlacementLocked => placementLocked;
+    // GridClutter objects currently sitting on this grid. Any uncleared one locks the grid.
+    private readonly System.Collections.Generic.HashSet<GridClutter> clutter = new System.Collections.Generic.HashSet<GridClutter>();
+
+    /// <summary>True while the player is not allowed to place on this surface (manually locked, or any
+    /// GridClutter is still on it).</summary>
+    public bool PlacementLocked => placementLocked || clutter.Count > 0;
 
     public void SetPlacementLocked(bool locked)
     {
         placementLocked = locked;
-        if (locked && GridVisual != null) GridVisual.SetVisible(false);
+        RefreshLockVisual();
+    }
+
+    public void RegisterClutter(GridClutter c)
+    {
+        if (c == null) return;
+        clutter.Add(c);
+        RefreshLockVisual();
+    }
+
+    public void UnregisterClutter(GridClutter c)
+    {
+        if (clutter.Remove(c))
+        {
+            RefreshLockVisual();
+            if (clutter.Count == 0) Debug.Log($"[GreenhouseSurface] '{name}' is clear - open for placement.", this);
+        }
+    }
+
+    // Locked grids draw faint, unlocked normally.
+    private void RefreshLockVisual()
+    {
+        if (GridVisual != null) GridVisual.SetDimmed(PlacementLocked);
     }
 
     [Header("Water surface")]
@@ -156,6 +182,7 @@ public class GreenhouseSurface : MonoBehaviour
             GridVisual.SetMaterial(gridMaterial);
         }
 
+        GridVisual.SetDimmed(PlacementLocked);
         GridVisual.SetVisible(false); // hidden until placement mode starts
     }
 

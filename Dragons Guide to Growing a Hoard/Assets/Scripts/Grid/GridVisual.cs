@@ -22,6 +22,8 @@ public class GridVisual : MonoBehaviour
     private Vector2Int dimensions;
     private float cellSize;
     private Vector3 originWorld;
+    private static readonly Color ColorGridLocked = new Color(0.75f, 0.75f, 0.85f, 0.18f);
+    private bool dimmed;
     private Vector3 axisRight = Vector3.right;
     private Vector3 axisForward = Vector3.forward;
     private float yaw;
@@ -144,7 +146,7 @@ public class GridVisual : MonoBehaviour
         GL.PushMatrix();
         GL.MultMatrix(Matrix4x4.identity);
         GL.Begin(GL.LINES);
-        GL.Color(ColorGrid);
+        GL.Color(dimmed ? ColorGridLocked : ColorGrid);
 
         Vector3 lift = Vector3.up * 0.002f;
 
@@ -177,6 +179,15 @@ public class GridVisual : MonoBehaviour
     public void SetVisible(bool visible)
     {
         gameObject.SetActive(visible);
+    }
+
+    /// <summary>Locked surface: faint grid lines and no cell fills, so it reads as unavailable.</summary>
+    public void SetDimmed(bool value)
+    {
+        dimmed = value;
+        if (cellQuads == null) return;
+        foreach (GameObject q in cellQuads)
+            if (q != null) q.GetComponent<MeshRenderer>().enabled = !value;
     }
 
     public void SetMaterial(Material mat)

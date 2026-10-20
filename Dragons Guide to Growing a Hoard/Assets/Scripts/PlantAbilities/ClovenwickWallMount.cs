@@ -26,6 +26,29 @@ public class ClovenwickWallMount : MonoBehaviour
     public WeightClass maxWeight = WeightClass.Small;
     public GameObject mountedMushroomPrefab;
 
+    [Header("Weight capacity (grows with the plant)")]
+    [Tooltip("Weight it can hold when FULLY GROWN. WallPlacementSystem overwrites this from the wall mushroom's " +
+             "Max Supported Weight Kg when placed.")]
+    public float fullWeightKg = 15f;
+    [Tooltip("Weight it can hold at the smallest size, blending up to Full Weight Kg as it grows (needs a " +
+             "PlantGrowthSize on this plant; without one it always holds Full Weight Kg).")]
+    public float smallWeightKg = 5f;
+    [Tooltip("Auto-found on this object or a parent if left empty.")]
+    [SerializeField] private PlantGrowthSize growth;
+
+    /// <summary>How much weight this mushroom can currently hold - bigger mushroom, more weight.</summary>
+    public float MaxSupportedWeightKg
+    {
+        get
+        {
+            if (growth == null) growth = GetComponentInParent<PlantGrowthSize>();
+            return Mathf.Lerp(smallWeightKg, fullWeightKg, growth != null ? growth.ShownGrowth01 : 1f);
+        }
+    }
+
+    /// <summary>True if something of this weight can safely stand on it right now.</summary>
+    public bool CanSupport(float weightKg) => weightKg <= MaxSupportedWeightKg;
+
     private void OnDrawGizmos()
     {
         Gizmos.color = maxWeight == WeightClass.Medium

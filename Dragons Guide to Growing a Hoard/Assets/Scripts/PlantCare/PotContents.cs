@@ -40,6 +40,13 @@ public class PotContents : MonoBehaviour
     [Tooltip("The soil a Fixed Soil pot always has.")]
     public SoilKind fixedSoilKind = SoilKind.Water;
 
+    [Tooltip("The pot starts with this soil already in it (e.g. a permanent pot that comes pre-filled). Unlike " +
+             "Fixed Soil the player CAN still change it afterwards. Ignored if Fixed Soil is ticked.")]
+    public bool startWithSoil = false;
+
+    [Tooltip("The soil used when Start With Soil is ticked.")]
+    public SoilKind startingSoil = SoilKind.Loam;
+
     [Tooltip("Optional: the PotData asset this pot instance was spawned from. When assigned, this becomes " +
              "the single source of truth for potSize (see SyncPotSizeFromData below) — leave it null only " +
              "for pots that were hand-authored directly in the scene without going through PotData.")]
@@ -141,6 +148,7 @@ public class PotContents : MonoBehaviour
     // Set by PlacementSystem when this pot sits on a GreenhouseSurface with Water Surface ticked: only the
     // soil is shown (pot body hidden), it's always Water, and the soil can't be changed. Unlike fixedSoil
     // this does NOT make the pot static - plant size must still match the pot, and it's still on the grid.
+    private bool initialising; // true while Awake applies a built-in/starting soil
     private bool waterSurfaceMode;
     private readonly System.Collections.Generic.List<Renderer> hiddenPotRenderers = new System.Collections.Generic.List<Renderer>();
 
@@ -205,11 +213,8 @@ public class PotContents : MonoBehaviour
              "OFF (e.g. a permanent static pot) = it just becomes a normal usable pot once unlocked.")]
     public bool removableOnceCleared = false;
 
-    [Tooltip("Optional: the PrefilledSurface this pot belongs to. Auto-found from parents if left empty. " +
-             "It is told when this pot is picked up so it can unlock itself once every pot is gone.")]
-    [SerializeField] private PrefilledSurface ownerSurface;
-
     public bool RemovableOnceCleared => removableOnceCleared;
+
 
     /// <summary>True while a harvest-node plant is still in this pot (see Guarding Nodes).</summary>
     public bool IsLocked
@@ -237,8 +242,6 @@ public class PotContents : MonoBehaviour
         if (guardsResolved) return;
         guardsResolved = true;
 
-        if (ownerSurface == null) ownerSurface = GetComponentInParent<PrefilledSurface>();
-
         if ((guardingNodes == null || guardingNodes.Length == 0) && autoDetectNodeRadius > 0f)
         {
             Transform anchor = plantAnchor != null ? plantAnchor : transform;
@@ -256,11 +259,10 @@ public class PotContents : MonoBehaviour
     }
 
     /// <summary>Removes this pot from the world (returning any plant in it to the player first) and
-    /// tells its PrefilledSurface so the surface can unlock once the last pot is gone.</summary>
+    /// deactivates it - a GridClutter on the pot then releases its grid.</summary>
     public void PickUpPot(PlayerInventory inventory)
     {
         if (hasPlant) RemovePlant(inventory);
-        if (ownerSurface != null) ownerSurface.NotifyPotRemoved(this);
         gameObject.SetActive(false);
     }
 
@@ -305,8 +307,13 @@ public class PotContents : MonoBehaviour
         hasSoil = false;
         hasPlant = false;
 
+        // Setting soil here is initial setup, not the player doing the tutorial's "add soil" step.
+        initialising = true;
         if (fixedSoil)
             SetSoil(fixedSoilKind);
+        else if (startWithSoil)
+            SetSoil(startingSoil);
+        initialising = false;
         
         if(this.currentPlantPrefab){// aslo add tutorial boollean to say this is only for the tutorial
             SetSoil(currentSoil);
@@ -478,7 +485,7 @@ public class PotContents : MonoBehaviour
             currentSoilObject.transform.position += Vector3.up * soilHeightOffset; // water surface: soil sits in the water
         currentSoilObject.name = $"SoilVisual_{kind}";
 
-        if (ApplySoilMaterial() && tutorialMission != null && tutorialMission.tasks.Count > 2)
+        if (ApplySoilMaterial() && !initialising && tutorialMission != null && tutorialMission.tasks.Count > 2)
             MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[2]); // AddedSoil
     }
 

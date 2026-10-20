@@ -457,7 +457,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // ──────────────────────────────────────────────
-    //  Public API (used by external launchers, e.g. SproionshroomLauncher)
+    //  Public API (used by external launchers, e.g. WhumprilLauncher)
     // ──────────────────────────────────────────────
     /// <summary>
     /// Called by external objects (launch pads, bounce plants, etc.) that want to override the
@@ -697,12 +697,12 @@ public class PlayerController : MonoBehaviour
     {
         GameObject otherObj = collision.gameObject;
 
-        // Objects that apply their own external launch (e.g. SproionshroomLauncher) manage the
+        // Objects that apply their own external launch (e.g. WhumprilLauncher) manage the
         // player's velocity/state themselves via ApplyExternalLaunch(). Skip the normal auto-jump
         // here so this handler doesn't race it and stomp the launch velocity back down to a regular
         // jump height on the same frame (script execution order between two GameObjects reacting to
         // the same collision isn't guaranteed).
-        if (otherObj.GetComponent<SproionshroomLauncher>() != null) return;
+        if (otherObj.GetComponent<WhumprilLauncher>() != null) return;
 
         if (locomotionState == LocomotionState.Grounded && ((groundLayers.value & (1 << otherObj.layer)) != 0))
         {

@@ -145,6 +145,7 @@ public class PotInteraction : MonoBehaviour
     // for "whatever's outlined right now."
     private OutlineEffect currentOutline;
     private OutlineEffect potOutline;
+    private GridClutter nearbyClutter;   // clearable clutter on a locked prefilled grid
 
     // Interact prompt UI
     private GameObject promptRoot;
@@ -218,14 +219,25 @@ public class PotInteraction : MonoBehaviour
         // Scan for nearest pot
         PotContents found = FindNearestPot();
 
+        // Clearable clutter (props on a locked prefilled grid): whichever of pot/clutter is nearer wins.
+        float clutterDist = float.MaxValue;
+        GridClutter foundClutter = menuOpen ? nearbyClutter : FindNearestClutter(out clutterDist);
+        if (!menuOpen && foundClutter != null && found != null)
+        {
+            if (Vector3.Distance(transform.position, found.transform.position) <= clutterDist) foundClutter = null;
+            else found = null;
+        }
+
         // If the pot under focus changes, close any open menu
-        if (found != nearbyPot)
+        if (found != nearbyPot || foundClutter != nearbyClutter)
         {
             if (menuOpen) CloseMenu();
 
             ClearCurrentOutline();
             nearbyPot = found;
+            nearbyClutter = foundClutter;
             ApplyOutlineFor(nearbyPot);
+            if (nearbyClutter != null) nearbyClutter.SetOutline(true);
 
             // Always default back to Interact for a newly-focused pot, rather than carrying over
             // whatever was selected for the previous one.
@@ -257,11 +269,17 @@ public class PotInteraction : MonoBehaviour
         // E — runs whichever prompt option is currently active. While a Portable tutorial prompt
         // wants everything else locked down (TutorialStep.lockOtherInput), only the exact action
         // THAT step is linked to is allowed through — closing an already-open menu is never blocked.
-        if (Keyboard.current.eKey.wasPressedThisFrame)
+        // E rotates pots while in placement mode, so it must not also trigger interactions.
+        bool inPlacement = FindAnyObjectByType<PlacementSystem>() is PlacementSystem ps && ps.IsPlacementModeActive;
+        if (!inPlacement && Keyboard.current.eKey.wasPressedThisFrame)
         {
             if (menuOpen)
             {
                 CloseMenu();
+            }
+            else if (nearbyClutter != null && nearbyPot == null)
+            {
+                ClearClutter(nearbyClutter);
             }
             else if (nearbyPot != null)
             {
@@ -347,6 +365,8 @@ public class PotInteraction : MonoBehaviour
 
     private void ClearCurrentOutline()
     {
+        if (nearbyClutter != null) nearbyClutter.SetOutline(false);
+
         if (currentOutline != null) currentOutline.SetOutline(false);
         currentOutline = null;
 
@@ -394,6 +414,30 @@ public class PotInteraction : MonoBehaviour
     // Pick up a cleared pre-filled pot (removes it from the world; its surface unlocks once the last
     // pot on it is gone — see PrefilledSurface).
     // ---------------------------------------------------------------
+    private GridClutter FindNearestClutter(out float distance)
+    {
+        distance = float.MaxValue;
+        GridClutter best = null;
+
+        foreach (Collider c in Physics.OverlapSphere(transform.position, interactRange))
+        {
+            GridClutter cl = c.GetComponentInParent<GridClutter>();
+            if (cl == null || !cl.isActiveAndEnabled || !cl.CanBeClearedByPlayer) continue;
+
+            float d = Vector3.Distance(transform.position, c.ClosestPoint(transform.position));
+            if (d < distance) { distance = d; best = cl; }
+        }
+        return best;
+    }
+
+    private void ClearClutter(GridClutter clutter)
+    {
+        if (clutter == null) return;
+        clutter.Clear();
+        nearbyClutter = null;
+        mainUI?.ShowHarvestFeedback("Cleared");
+    }
+
     private void PickUpPot(PotContents pot)
     {
         if (pot == null) return;
@@ -492,8 +536,8 @@ public class PotInteraction : MonoBehaviour
     {
         if (!showInteractPrompt) return;
 
-        bool showInteract = nearbyPot != null && !menuOpen;
-        bool showWater = showInteract && nearbyPot.HasPlant;
+        bool showInteract = (nearbyPot != null || nearbyClutter != null) && !menuOpen;
+        bool showWater = showInteract && nearbyPot != null && nearbyPot.HasPlant;
 
         // If the Water Plant option just became unavailable (pot changed, plant removed, ...) while
         // it was the active selection, fall back to Interact so E always does something sensible.
@@ -504,7 +548,8 @@ public class PotInteraction : MonoBehaviour
         {
             if (promptView != null && promptView.label != null && showInteract)
             {
-                string wanted = nearbyPot.RemovableOnceCleared ? pickUpPotPromptLabel : interactPromptLabel;
+                string wanted = nearbyPot == null ? nearbyClutter.promptLabel
+                              : nearbyPot.RemovableOnceCleared ? pickUpPotPromptLabel : interactPromptLabel;
                 if (!string.IsNullOrEmpty(wanted) && promptView.label.text != wanted)
                     promptView.label.text = wanted;
             }
