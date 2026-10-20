@@ -11,8 +11,8 @@ public class GridVisual : MonoBehaviour
     // * Colours
     private static readonly Color ColorIdle = new Color(1f, 1f, 1f, 0.08f);
     private static readonly Color ColorGrid = new Color(1f, 1f, 1f, 0.6f);
-    private static readonly Color ColorValid = new Color(0.2f, 0.9f, 0.3f, 0.55f);
-    private static readonly Color ColorInvalid = new Color(0.95f, 0.2f, 0.2f, 0.55f);
+    private static readonly Color ColorValid = new Color(0.2f, 0.9f, 0.3f, 0.3f);
+    private static readonly Color ColorInvalid = new Color(0.95f, 0.2f, 0.2f, 0.3f);
     private static readonly Color ColorOccupied = new Color(0.5f, 0.5f, 0.55f, 0.4f);
 
     public enum CellState { Idle, Valid, Invalid, Occupied }
@@ -22,6 +22,9 @@ public class GridVisual : MonoBehaviour
     private Vector2Int dimensions;
     private float cellSize;
     private Vector3 originWorld;
+    private Vector3 axisRight = Vector3.right;
+    private Vector3 axisForward = Vector3.forward;
+    private float yaw;
     private CellState[] cellStates;
 
     // one quad GameObject per cell for colour highlighting
@@ -38,6 +41,15 @@ public class GridVisual : MonoBehaviour
 
     public void Initialise(Vector2Int dims, float size, Vector3 origin)
     {
+        Initialise(dims, size, origin, Vector3.right, Vector3.forward);
+    }
+
+    /// <summary>right/forward are the grid's X/Z axes in world space (a rotated surface passes its own).</summary>
+    public void Initialise(Vector2Int dims, float size, Vector3 origin, Vector3 right, Vector3 forward)
+    {
+        axisRight = right;
+        axisForward = forward;
+        yaw = Mathf.Atan2(-right.z, right.x) * Mathf.Rad2Deg;
         dimensions = dims;
         cellSize = size;
         originWorld = origin;
@@ -82,7 +94,9 @@ public class GridVisual : MonoBehaviour
         m.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
         m.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         m.SetInt("_ZWrite", 0);
-        m.renderQueue = 3000;
+        // Just BEFORE the standard transparent queue (3000) so the placement preview/ghost (pushed to 3100 by
+        // PlacementSystem) always draws on top of the highlight instead of being washed out by it.
+        m.renderQueue = 2990;
         return m;
     }
 
@@ -108,13 +122,10 @@ public class GridVisual : MonoBehaviour
                 Destroy(go.GetComponent<Collider>());
 
                 // position should be centre of this cell, flat on XZ plane
-                Vector3 cellCentre = originWorld + new Vector3(
-                    x * cellSize + cellSize * 0.5f,
-                    0f,
-                    z * cellSize + cellSize * 0.5f);
+                Vector3 cellCentre = CellPoint(x + 0.5f, z + 0.5f);
 
                 go.transform.position = cellCentre;
-                go.transform.rotation = Quaternion.Euler(90f, 0f, 0f); // face up
+                go.transform.rotation = Quaternion.Euler(0f, yaw, 0f) * Quaternion.Euler(90f, 0f, 0f); // face up, aligned to the grid
                 go.transform.localScale = new Vector3(quadSize, quadSize, 1f);
 
                 go.GetComponent<MeshRenderer>().sharedMaterial = matIdle;
@@ -135,28 +146,30 @@ public class GridVisual : MonoBehaviour
         GL.Begin(GL.LINES);
         GL.Color(ColorGrid);
 
-        float totalW = dimensions.x * cellSize;
-        float totalD = dimensions.y * cellSize;
-        float y = originWorld.y + 0.002f;
+        Vector3 lift = Vector3.up * 0.002f;
 
-        // vertical lines
+        // lines along the grid's Z axis
         for (int x = 0; x <= dimensions.x; x++)
         {
-            float lx = originWorld.x + x * cellSize;
-            GL.Vertex3(lx, y, originWorld.z);
-            GL.Vertex3(lx, y, originWorld.z + totalD);
+            GL.Vertex(CellPoint(x, 0f) + lift);
+            GL.Vertex(CellPoint(x, dimensions.y) + lift);
         }
 
-        // horizontal lines
+        // lines along the grid's X axis
         for (int z = 0; z <= dimensions.y; z++)
         {
-            float lz = originWorld.z + z * cellSize;
-            GL.Vertex3(originWorld.x, y, lz);
-            GL.Vertex3(originWorld.x + totalW, y, lz);
+            GL.Vertex(CellPoint(0f, z) + lift);
+            GL.Vertex(CellPoint(dimensions.x, z) + lift);
         }
 
         GL.End();
         GL.PopMatrix();
+    }
+
+    // World position (at grid height) of a point given in cell units from the grid origin.
+    private Vector3 CellPoint(float cx, float cz)
+    {
+        return originWorld + axisRight * (cx * cellSize) + axisForward * (cz * cellSize);
     }
 
     // * Public API 
@@ -213,8 +226,9 @@ public class GridVisual : MonoBehaviour
     {
         float epsilon = 0.001f; // Small tolerance for edge cases
         
-        float lx = worldPos.x - originWorld.x;
-        float lz = worldPos.z - originWorld.z;
+        Vector3 d = worldPos - originWorld;
+        float lx = Vector3.Dot(d, axisRight);
+        float lz = Vector3.Dot(d, axisForward);
         
         // Add epsilon to help with floating point precision at edges
         int cx = Mathf.FloorToInt((lx + epsilon) / cellSize);
@@ -238,10 +252,7 @@ public class GridVisual : MonoBehaviour
             cell = new Vector2Int(cx, cz);
             
             // Check if this clamped position is actually close to the mouse
-            Vector3 cellCenter = originWorld + new Vector3(
-                cx * cellSize + cellSize * 0.5f,
-                0f,
-                cz * cellSize + cellSize * 0.5f);
+            Vector3 cellCenter = CellPoint(cx + 0.5f, cz + 0.5f);
             
             float distance = Vector3.Distance(
                 new Vector3(worldPos.x, 0, worldPos.z),
@@ -303,10 +314,7 @@ public class GridVisual : MonoBehaviour
         if (!InBounds(cell.x, cell.y))
             return Vector3.zero;
         
-        return originWorld + new Vector3(
-            cell.x * cellSize + cellSize * 0.5f,
-            0f,
-            cell.y * cellSize + cellSize * 0.5f);
+        return CellPoint(cell.x + 0.5f, cell.y + 0.5f);
     }
     private Material StateToMat(CellState s) => s switch
     {

@@ -119,6 +119,7 @@ public class PlacementSystem : MonoBehaviour
     private Vector2Int lastHoveredCell = new Vector2Int(-999, -999);
 
     private GameObject previewObject;
+    private Quaternion previewBaseRotation = Quaternion.identity; // the preview's own rotation before aligning to a surface
 
     private PlacementData movingData;
     private GameObject movingObject;
@@ -282,6 +283,10 @@ public class PlacementSystem : MonoBehaviour
 
             previewObject.transform.position =
                 CellToWorldCentre(hoveredCell, size, activeSurface);
+
+            float fromYaw = (mode == Mode.Moving && movingSourceSurface != null) ? movingSourceSurface.Yaw : 0f;
+            previewObject.transform.rotation =
+                Quaternion.Euler(0f, activeSurface.Yaw - fromYaw, 0f) * previewBaseRotation;
         }
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
@@ -743,14 +748,14 @@ public class PlacementSystem : MonoBehaviour
             Instantiate(
                 data.potPrefab,
                 worldPos,
-                data.potPrefab.transform.rotation
+                Quaternion.Euler(0f, activeSurface.Yaw, 0f) * data.potPrefab.transform.rotation
             );
 
         //! --- Insertation
         PotContents pc = placed.GetComponent<PotContents>();
         if (pc != null)
         {
-            pc.SetWaterSurfaceMode(activeSurface.WaterSurface); // water surface: soil only, always Water
+            pc.SetWaterSurfaceMode(activeSurface.WaterSurface, activeSurface.SoilHeightOffset); // water surface: soil only, always Water
             pc.GridOrigin = key;        // key is the Vector3Int placement origin
             pc.GridData = gridData;     // This surface's gridData instance
             pc.CachePlantReference();
@@ -917,13 +922,17 @@ public class PlacementSystem : MonoBehaviour
             movingObject.transform.position =
                 CellToWorldCentre(cell, movingData.Size, activeSurface);
 
+            // Re-align to the destination surface's rotation (relative to the one it was picked up from).
+            float fromYaw = movingSourceSurface != null ? movingSourceSurface.Yaw : activeSurface.Yaw;
+            movingObject.transform.rotation = Quaternion.Euler(0f, activeSurface.Yaw - fromYaw, 0f) * movingObject.transform.rotation;
+
             movingObject.SetActive(true);
 
             //! --- Insertation
             PotContents pc = movingObject.GetComponent<PotContents>();
             if (pc != null)
             {
-                pc.SetWaterSurfaceMode(activeSurface.WaterSurface);
+                pc.SetWaterSurfaceMode(activeSurface.WaterSurface, activeSurface.SoilHeightOffset);
                 pc.GridOrigin = key;
                 pc.GridData = gridData; // Update to the new surface's grid data
                 pc.CachePlantReference();
@@ -988,6 +997,8 @@ public class PlacementSystem : MonoBehaviour
             : data.potPrefab;
 
         previewObject = Instantiate(prefab);
+        previewBaseRotation = previewObject.transform.rotation;
+        PushPreviewAboveHighlight();
         previewObject.SetActive(true); // ensure visible immediately; SetPreviewVisible(false) hides it when off-surface
 
         foreach (Collider c in previewObject.GetComponentsInChildren<Collider>())
@@ -1000,11 +1011,28 @@ public class PlacementSystem : MonoBehaviour
             return;
 
         previewObject = Instantiate(source);
+        previewBaseRotation = previewObject.transform.rotation;
+        PushPreviewAboveHighlight();
 
         foreach (Collider c in previewObject.GetComponentsInChildren<Collider>())
             c.enabled = false;
 
         previewObject.SetActive(true);
+    }
+
+    // The grid highlight quads render at queue 2990; push every preview material above that (3100) so the ghost
+    // is never covered/washed out by the green/red cell highlight beneath it.
+    private void PushPreviewAboveHighlight()
+    {
+        if (previewObject == null) return;
+        foreach (Renderer r in previewObject.GetComponentsInChildren<Renderer>(true))
+        {
+            if (r is ParticleSystemRenderer) continue;
+            Material[] mats = r.materials; // instances - never touches the pot prefab's shared materials
+            for (int i = 0; i < mats.Length; i++)
+                if (mats[i] != null) mats[i].renderQueue = 3100;
+            r.materials = mats;
+        }
     }
 
     private void DestroyPreview()
@@ -1069,17 +1097,13 @@ private GreenhouseSurface GetSurfaceAtPosition(Vector3 worldPos)
 
         Vector3 origin = surface.GridOriginWorld;
         Vector2Int dims = surface.GridDimensions;
-        float cellSize = surface.CellSize;
 
-        // Calculate the bounds of this surface on the XZ plane WITH TOLERANCE
-        float minX = origin.x - epsilon;
-        float maxX = origin.x + dims.x * cellSize + epsilon;
-        float minZ = origin.z - epsilon;
-        float maxZ = origin.z + dims.y * cellSize + epsilon;
+        // Work in the surface's own (possibly rotated) grid space, in CELL units, WITH TOLERANCE.
+        Vector2 g = surface.WorldToGridCells(worldPos);
+        float tol = epsilon / Mathf.Max(0.0001f, surface.CellSize);
 
-        // Check if the worldPos is within the XZ bounds of this surface
-        if (worldPos.x >= minX && worldPos.x <= maxX &&
-            worldPos.z >= minZ && worldPos.z <= maxZ)
+        if (g.x >= -tol && g.x <= dims.x + tol &&
+            g.y >= -tol && g.y <= dims.y + tol)
         {
             // This position is within the XZ bounds
             // Check if it's the closest surface vertically
@@ -1097,14 +1121,9 @@ private GreenhouseSurface GetSurfaceAtPosition(Vector3 worldPos)
 
     private Vector3 CellToWorldCentre(Vector2Int cell, Vector2Int size, GreenhouseSurface surface)
     {
-        Vector3 origin = surface.GridOriginWorld;
-        float cs = surface.CellSize;
-
-        return new Vector3(
-            origin.x + (cell.x + size.x * 0.5f) * cs,
-            origin.y,
-            origin.z + (cell.y + size.y * 0.5f) * cs
-        );
+        // Surface-aware (rotated grids). The water-surface soil offset is applied to the soil visual only
+        // (PotContents.SetWaterSurfaceMode) - the pot/plant/preview stay at the normal surface height.
+        return surface.CellToWorld(cell.x + size.x * 0.5f, cell.y + size.y * 0.5f);
     }
 
     private static Vector3Int ToGridVec3(Vector2Int c)

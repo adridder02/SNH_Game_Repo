@@ -408,7 +408,12 @@ public class PotMenuUIController : MonoBehaviour
         }
 
         if (waterButton != null)
+        {
+            // Water soil is permanently saturated - watering it is meaningless, so hide the button entirely.
+            bool waterSoil = hasSoil && currentPot != null && currentPot.CurrentSoil == SoilKind.Water;
+            if (waterButton.gameObject.activeSelf == waterSoil) waterButton.gameObject.SetActive(!waterSoil);
             waterButton.interactable = hasSoil && hasPlant;
+        }
 
         // Same idea — no pot-targeted consumable in the player's inventory at all means this
         // button has nothing to open, so hide it instead of leaving a dead button on-screen. Also

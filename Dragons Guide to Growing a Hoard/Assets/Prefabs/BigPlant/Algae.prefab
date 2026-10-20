@@ -170,7 +170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea6b95557e7067b4a8c58044c08c19c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plantSize: 0
+  plantSize: 2
   plantType: 2
   journalSpecies: {fileID: 11400000, guid: 28b2263d7c6345140a1c60d037e89800, type: 2}
   potPlacementOffset: 1

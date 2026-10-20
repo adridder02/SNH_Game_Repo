@@ -44,6 +44,23 @@ public class OutlineEffect : MonoBehaviour
 
     public bool IsOutlined => isOutlined;
 
+    /// <summary>Gets (or adds) an OutlineEffect on <paramref name="target"/> that uses <paramref name="material"/>.
+    /// Added while inactive so Awake sees the material - used to outline objects spawned at runtime (e.g. the soil
+    /// visual of a water-surface pot).</summary>
+    public static OutlineEffect GetOrAdd(GameObject target, Material material)
+    {
+        if (target == null) return null;
+        OutlineEffect fx = target.GetComponent<OutlineEffect>();
+        if (fx != null) return fx;
+
+        bool wasActive = target.activeSelf;
+        target.SetActive(false);
+        fx = target.AddComponent<OutlineEffect>();
+        fx.outlineMaterial = material;
+        target.SetActive(wasActive);
+        return fx;
+    }
+
     private void Awake()
     {
         renderers = GetComponentsInChildren<Renderer>();

@@ -146,20 +146,28 @@ public class PotContents : MonoBehaviour
 
     public bool WaterSurfaceMode => waterSurfaceMode;
 
-    public void SetWaterSurfaceMode(bool on)
+    /// <summary>The spawned soil visual (null if no soil yet).</summary>
+    public GameObject SoilVisual => currentSoilObject;
+
+    // How far the soil VISUAL is moved up/down (world units) - water-surface pots sit IN the water.
+    private float soilHeightOffset;
+
+    public void SetWaterSurfaceMode(bool on, float soilOffset = 0f)
     {
-        if (waterSurfaceMode == on) return;
+        if (waterSurfaceMode == on && Mathf.Approximately(soilHeightOffset, on ? soilOffset : 0f)) return;
         waterSurfaceMode = on;
+        soilHeightOffset = on ? soilOffset : 0f;
 
         if (on)
         {
-            SetSoil(SoilKind.Water);
+            SetSoil(SoilKind.Water);   // (re)spawns the soil visual with the offset applied
             HidePotBody();
         }
         else
         {
             foreach (Renderer r in hiddenPotRenderers) if (r != null) r.enabled = true;
             hiddenPotRenderers.Clear();
+            if (hasSoil) SpawnSoilPrefab(currentSoil); // back to the normal soil height
         }
     }
 
@@ -466,6 +474,8 @@ public class PotContents : MonoBehaviour
         // Reset to local zero while keeping world scale intact
         currentSoilObject.transform.localPosition = Vector3.zero;
         currentSoilObject.transform.localRotation = Quaternion.identity;
+        if (soilHeightOffset != 0f)
+            currentSoilObject.transform.position += Vector3.up * soilHeightOffset; // water surface: soil sits in the water
         currentSoilObject.name = $"SoilVisual_{kind}";
 
         if (ApplySoilMaterial() && tutorialMission != null && tutorialMission.tasks.Count > 2)

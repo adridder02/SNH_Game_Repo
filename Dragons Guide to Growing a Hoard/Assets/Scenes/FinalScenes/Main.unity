@@ -2396,6 +2396,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 74016818}
     m_Modifications:
+    - target: {fileID: -9166542269769922854, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -9155095867613012042, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -9036122917662899679, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -8699795678739313069, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.4
@@ -2452,26 +2468,546 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -8566880519300354999, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -8564739416398835156, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -8484085870017509354, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -8342980142391755379, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -8045730868542202455, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -7896409822783956088, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -7570282236916632945, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -7482199140926609235, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -6662924901893070812, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -6563034434524802148, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -6476380188172037305, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -6434047092386438535, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -6425784218905623490, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -6252696953996470268, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -5973680012079556967, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -5770370733344091148, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -5548315324758346158, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -5433848606822266054, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -5145048705523945054, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4913921467516327257, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4869838840647250921, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4702222872272604620, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4604572052179564242, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4500226909802064394, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4430323143360299999, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4389249031344282815, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -4244916430471034539, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: -4154515191532665168, guid: a8bfce948522b7d42872562820cccccf, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a00ff4f8fec52ec43a185207b8f4e842, type: 2}
+    - target: {fileID: -4149213439509644120, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -3930565674023575438, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -3743922287943613152, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -3607409800622511634, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -3368744034683991708, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -3353714968008582948, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -3161304929660780716, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -2805347617782568424, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -2703393808195325043, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -2645803110103397770, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -2555311245772789851, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -2504256771581892759, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -2107680660533226575, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -1697509552293867669, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -1515914613856381903, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -1511239585214691379, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -1483395919140965194, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -1460419997411825037, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -1298083870551915099, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -1181196521307583350, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: -1181196521307583350, guid: a8bfce948522b7d42872562820cccccf, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -1018069467973631664, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -1016727008892472733, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -931563376738145737, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -666030491347306930, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -540039185407766593, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -436864349420781040, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -343811546415361432, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -193972489913297718, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -144254890714562414, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -13749640269639992, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 25744631095181378, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 41454512968476061, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 486245638786663928, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 501640429879001783, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 583828013892136504, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a8bfce948522b7d42872562820cccccf, type: 3}
       propertyPath: m_Name
       value: DragonUpdated4 1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1072683720748980561, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1080957057546105339, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1379445825395180826, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1382505780147226361, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1404014639301787893, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1542296287064325602, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1853792793747926980, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2055634903111724804, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2092863991223938411, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2132772884944848668, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151602629794550210, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 2321523695958950486, guid: a8bfce948522b7d42872562820cccccf, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 99957c5a10773304e928a4e54542ba74, type: 2}
+    - target: {fileID: 2718198116697482139, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2806868002773574764, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3085933622695309546, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3096249721699231065, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3422771073375146224, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3478487439943030199, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3549724183445097933, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3556570630487778994, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3595664927642665245, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3610066352992230796, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3635919600810334566, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3912707571773014273, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4070647927786574094, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4370194129664761894, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4509931060462196623, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4517278905705845388, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4533727073429316081, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4789463489221367272, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4871027933336091385, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885844194785505299, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4946932327224716363, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5263404108580100622, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5292317575308675187, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5458099642299298253, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5481256324819618924, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574513558774807354, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5808678682736063205, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 5813465510448953335, guid: a8bfce948522b7d42872562820cccccf, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: feed2ab40160a8044a7097cd8cf533e8, type: 2}
+    - target: {fileID: 5883151083045005748, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023754299931249694, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6236476769846118822, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6256931143266275150, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6504898790709540902, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6544845448643930132, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6598272105704843512, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6657560127643677590, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6672123786470775849, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6711923108042865862, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6767994223201664314, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6986628635337106857, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7015156796013129707, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7527176787074462806, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7581353613143249193, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600979475818315404, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7752764148870325191, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7775891985168187834, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7873938175304344641, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8296696165561785490, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8304835916916774533, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8458820408505907865, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8837855370551503935, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8943770368988794662, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8949493655046447840, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8958284294498813281, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8982373042287806614, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 9039333217544360225, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 9130400975611737921, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: -6719099275926925184, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -4269,7 +4805,8 @@ GameObject:
   - component: {fileID: 53616214}
   - component: {fileID: 53616213}
   - component: {fileID: 53616212}
-  m_Layer: 0
+  - component: {fileID: 53616215}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4308,6 +4845,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &53616213
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4364,6 +4902,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 53616210}
+  m_Mesh: {fileID: -8405887749978403550, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &53616215
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 53616210}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -8405887749978403550, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &55145361
 GameObject:
@@ -6235,7 +6795,7 @@ GameObject:
   - component: {fileID: 74016827}
   - component: {fileID: 74016828}
   - component: {fileID: 74016829}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: PlayerParent
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -7322,7 +7882,8 @@ GameObject:
   - component: {fileID: 83248130}
   - component: {fileID: 83248129}
   - component: {fileID: 83248128}
-  m_Layer: 0
+  - component: {fileID: 83248131}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7361,6 +7922,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &83248129
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -7417,6 +7979,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 83248126}
+  m_Mesh: {fileID: -4256823935588431637, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &83248131
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83248126}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -4256823935588431637, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &83588513 stripped
 GameObject:
@@ -10770,7 +11354,8 @@ GameObject:
   - component: {fileID: 122068082}
   - component: {fileID: 122068081}
   - component: {fileID: 122068083}
-  m_Layer: 0
+  - component: {fileID: 122068084}
+  m_Layer: 15
   m_Name: WallPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10865,6 +11450,28 @@ MonoBehaviour:
   facing: 1
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
+--- !u!64 &122068084
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122068079}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5426175226656091337, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &122470182
 GameObject:
   m_ObjectHideFlags: 0
@@ -23329,7 +23936,8 @@ GameObject:
   - component: {fileID: 215864961}
   - component: {fileID: 215864960}
   - component: {fileID: 215864959}
-  m_Layer: 0
+  - component: {fileID: 215864962}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23368,6 +23976,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &215864960
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -23424,6 +24033,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 215864957}
+  m_Mesh: {fileID: 3277740251641582855, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &215864962
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 215864957}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 3277740251641582855, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!64 &216256874
 MeshCollider:
@@ -26860,7 +27491,8 @@ GameObject:
   - component: {fileID: 261089472}
   - component: {fileID: 261089471}
   - component: {fileID: 261089473}
-  m_Layer: 0
+  - component: {fileID: 261089474}
+  m_Layer: 15
   m_Name: WallPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26955,6 +27587,28 @@ MonoBehaviour:
   facing: 1
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
+--- !u!64 &261089474
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 261089469}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -3284535915102669434, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &262395353
 GameObject:
   m_ObjectHideFlags: 0
@@ -26967,7 +27621,8 @@ GameObject:
   - component: {fileID: 262395357}
   - component: {fileID: 262395356}
   - component: {fileID: 262395355}
-  m_Layer: 0
+  - component: {fileID: 262395358}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27006,6 +27661,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &262395356
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -27062,6 +27718,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 262395353}
+  m_Mesh: {fileID: -8028678848203576543, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &262395358
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 262395353}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -8028678848203576543, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &262665488
 GameObject:
@@ -29111,7 +29789,8 @@ GameObject:
   - component: {fileID: 309932702}
   - component: {fileID: 309932701}
   - component: {fileID: 309932700}
-  m_Layer: 0
+  - component: {fileID: 309932703}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29150,6 +29829,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &309932701
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -29206,6 +29886,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 309932698}
+  m_Mesh: {fileID: 766542857991797613, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &309932703
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 309932698}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 766542857991797613, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &310506466
 GameObject:
@@ -30917,7 +31619,8 @@ GameObject:
   - component: {fileID: 323582707}
   - component: {fileID: 323582706}
   - component: {fileID: 323582705}
-  m_Layer: 0
+  - component: {fileID: 323582708}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30956,6 +31659,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &323582706
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -31012,6 +31716,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 323582703}
+  m_Mesh: {fileID: 833456466321238894, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &323582708
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 323582703}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 833456466321238894, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!64 &326368848
 MeshCollider:
@@ -35147,7 +35873,8 @@ GameObject:
   - component: {fileID: 394878832}
   - component: {fileID: 394878831}
   - component: {fileID: 394878833}
-  m_Layer: 0
+  - component: {fileID: 394878834}
+  m_Layer: 15
   m_Name: WallPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35242,6 +35969,28 @@ MonoBehaviour:
   facing: 1
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
+--- !u!64 &394878834
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394878829}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2139487728993378266, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &394997237
 GameObject:
   m_ObjectHideFlags: 0
@@ -36398,7 +37147,8 @@ GameObject:
   - component: {fileID: 409879456}
   - component: {fileID: 409879455}
   - component: {fileID: 409879454}
-  m_Layer: 0
+  - component: {fileID: 409879457}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36437,6 +37187,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &409879455
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -36493,6 +37244,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 409879452}
+  m_Mesh: {fileID: -7046999167305755090, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &409879457
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409879452}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -7046999167305755090, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!64 &409927182
 MeshCollider:
@@ -39630,6 +40403,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!64 &465881497
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -46014,17 +46788,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0.00021362305, y: -0}
   m_SizeDelta: {x: -45.493805, y: -24.881012}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &546926256 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2945061841048151708, guid: 5588ba098b73e084390914cf92d297fb, type: 3}
-  m_PrefabInstance: {fileID: 6616727830521836187}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &547048230 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2532525142836321865, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -60438,7 +61201,8 @@ GameObject:
   - component: {fileID: 682877545}
   - component: {fileID: 682877544}
   - component: {fileID: 682877543}
-  m_Layer: 0
+  - component: {fileID: 682877546}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60477,6 +61241,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &682877544
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -60533,6 +61298,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 682877541}
+  m_Mesh: {fileID: 4933936142055847923, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &682877546
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682877541}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 2048
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4933936142055847923, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!64 &684675703
 MeshCollider:
@@ -63044,7 +63831,8 @@ GameObject:
   - component: {fileID: 715320755}
   - component: {fileID: 715320754}
   - component: {fileID: 715320753}
-  m_Layer: 0
+  - component: {fileID: 715320756}
+  m_Layer: 6
   m_Name: WaterPlacment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63083,6 +63871,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 1
+  waterSoilHeightOffset: -2
 --- !u!23 &715320754
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -63139,6 +63928,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 715320751}
+  m_Mesh: {fileID: -6316480509761323500, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &715320756
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 715320751}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 2048
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -6316480509761323500, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!64 &716161499
 MeshCollider:
@@ -63857,7 +64668,8 @@ GameObject:
   - component: {fileID: 737675116}
   - component: {fileID: 737675115}
   - component: {fileID: 737675114}
-  m_Layer: 0
+  - component: {fileID: 737675117}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63896,6 +64708,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &737675115
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -63952,6 +64765,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 737675112}
+  m_Mesh: {fileID: 3106462635039920591, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &737675117
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 737675112}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 3106462635039920591, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &737930933
 GameObject:
@@ -69126,17 +69961,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -3631296372703618822, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
---- !u!114 &828364765 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5336577020063006378, guid: 5588ba098b73e084390914cf92d297fb, type: 3}
-  m_PrefabInstance: {fileID: 6616727830521836187}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94ed5dde3b4f0fe4b90c8c8508fe4283, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ImageFillBar
 --- !u!64 &829325973
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -69774,7 +70598,8 @@ GameObject:
   - component: {fileID: 832554744}
   - component: {fileID: 832554743}
   - component: {fileID: 832554745}
-  m_Layer: 0
+  - component: {fileID: 832554746}
+  m_Layer: 15
   m_Name: WallPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69869,6 +70694,28 @@ MonoBehaviour:
   facing: 1
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
+--- !u!64 &832554746
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832554741}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6489095152911240382, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -76207,7 +77054,8 @@ GameObject:
   - component: {fileID: 857739418}
   - component: {fileID: 857739417}
   - component: {fileID: 857739419}
-  m_Layer: 0
+  - component: {fileID: 857739420}
+  m_Layer: 15
   m_Name: WallPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76302,6 +77150,28 @@ MonoBehaviour:
   facing: 1
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
+--- !u!64 &857739420
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 857739415}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -6708738169859635524, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &857812163
 GameObject:
   m_ObjectHideFlags: 0
@@ -80589,7 +81459,8 @@ GameObject:
   - component: {fileID: 904741542}
   - component: {fileID: 904741541}
   - component: {fileID: 904741540}
-  m_Layer: 0
+  - component: {fileID: 904741543}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -80628,6 +81499,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &904741541
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -80684,6 +81556,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 904741538}
+  m_Mesh: {fileID: 3194143551164133705, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &904741543
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904741538}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 3194143551164133705, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &906822153
 GameObject:
@@ -84265,7 +85159,8 @@ GameObject:
   - component: {fileID: 962856950}
   - component: {fileID: 962856949}
   - component: {fileID: 962856948}
-  m_Layer: 0
+  - component: {fileID: 962856951}
+  m_Layer: 6
   m_Name: WaterPlacment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84304,6 +85199,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 1
+  waterSoilHeightOffset: -2
 --- !u!23 &962856949
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -84360,6 +85256,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 962856946}
+  m_Mesh: {fileID: 4907578581998909915, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &962856951
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962856946}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 2048
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4907578581998909915, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!64 &965446545
 MeshCollider:
@@ -90190,7 +91108,8 @@ GameObject:
   - component: {fileID: 1035900030}
   - component: {fileID: 1035900029}
   - component: {fileID: 1035900031}
-  m_Layer: 0
+  - component: {fileID: 1035900032}
+  m_Layer: 15
   m_Name: WallPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90285,6 +91204,28 @@ MonoBehaviour:
   facing: 1
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
+--- !u!64 &1035900032
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1035900027}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 1096871537226489247, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &1036859391 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2017846551987811393, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
@@ -98082,7 +99023,8 @@ GameObject:
   - component: {fileID: 1069781332}
   - component: {fileID: 1069781331}
   - component: {fileID: 1069781330}
-  m_Layer: 0
+  - component: {fileID: 1069781333}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98121,6 +99063,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &1069781331
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -98177,6 +99120,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1069781328}
+  m_Mesh: {fileID: -3692178540958338182, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &1069781333
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069781328}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -3692178540958338182, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!64 &1070648342
 MeshCollider:
@@ -100278,7 +101243,8 @@ GameObject:
   - component: {fileID: 1101475464}
   - component: {fileID: 1101475463}
   - component: {fileID: 1101475462}
-  m_Layer: 0
+  - component: {fileID: 1101475465}
+  m_Layer: 6
   m_Name: WaterPlacment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100317,6 +101283,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 1
+  waterSoilHeightOffset: -2
 --- !u!23 &1101475463
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -100373,6 +101340,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1101475460}
+  m_Mesh: {fileID: 3690492289536391287, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &1101475465
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1101475460}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 2048
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 3690492289536391287, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &1103025276 stripped
 GameObject:
@@ -102589,7 +103578,8 @@ GameObject:
   - component: {fileID: 1129789957}
   - component: {fileID: 1129789956}
   - component: {fileID: 1129789955}
-  m_Layer: 0
+  - component: {fileID: 1129789958}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102628,6 +103618,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &1129789956
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -102684,6 +103675,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1129789953}
+  m_Mesh: {fileID: 4291006935218419049, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &1129789958
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1129789953}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4291006935218419049, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &1131593684 stripped
 GameObject:
@@ -118046,7 +119059,8 @@ GameObject:
   - component: {fileID: 1302659965}
   - component: {fileID: 1302659964}
   - component: {fileID: 1302659963}
-  m_Layer: 0
+  - component: {fileID: 1302659966}
+  m_Layer: 6
   m_Name: WaterPlacment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118085,6 +119099,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 1
+  waterSoilHeightOffset: -2
 --- !u!23 &1302659964
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -118141,6 +119156,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1302659961}
+  m_Mesh: {fileID: -8481301903363185973, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &1302659966
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1302659961}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 2048
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -8481301903363185973, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &1304194749
 GameObject:
@@ -118614,7 +119651,8 @@ GameObject:
   - component: {fileID: 1313862092}
   - component: {fileID: 1313862091}
   - component: {fileID: 1313862090}
-  m_Layer: 0
+  - component: {fileID: 1313862093}
+  m_Layer: 6
   m_Name: WaterPlacment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118653,6 +119691,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 1
+  waterSoilHeightOffset: -2
 --- !u!23 &1313862091
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -118709,6 +119748,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1313862088}
+  m_Mesh: {fileID: -4186311225133618856, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &1313862093
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313862088}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 2048
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -4186311225133618856, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!64 &1314446932
 MeshCollider:
@@ -121359,7 +122420,8 @@ GameObject:
   - component: {fileID: 1342471905}
   - component: {fileID: 1342471904}
   - component: {fileID: 1342471903}
-  m_Layer: 0
+  - component: {fileID: 1342471906}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121398,6 +122460,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &1342471904
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -121454,6 +122517,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1342471901}
+  m_Mesh: {fileID: 2984266470124323462, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &1342471906
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342471901}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 2984266470124323462, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &1343239147 stripped
 GameObject:
@@ -137168,6 +138253,7 @@ GameObject:
   - component: {fileID: 1491466969}
   - component: {fileID: 1491466968}
   - component: {fileID: 1491466967}
+  - component: {fileID: 1491466970}
   m_Layer: 0
   m_Name: WaterPlacment
   m_TagString: Untagged
@@ -137207,6 +138293,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 1
+  waterSoilHeightOffset: -2
 --- !u!23 &1491466968
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -137263,6 +138350,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1491466965}
+  m_Mesh: {fileID: -1550775913447490414, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &1491466970
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491466965}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 2048
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -1550775913447490414, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &1492053789
 GameObject:
@@ -138630,7 +139739,8 @@ GameObject:
   - component: {fileID: 1516886497}
   - component: {fileID: 1516886498}
   - component: {fileID: 1516886499}
-  m_Layer: 0
+  - component: {fileID: 1516886500}
+  m_Layer: 15
   m_Name: WallPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -138757,6 +139867,28 @@ MonoBehaviour:
   indicatorColor: {r: 1, g: 1, b: 1, a: 1}
   trackOffset: {x: 0, y: 0, z: 0}
   startTrackingActive: 0
+--- !u!64 &1516886500
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1516886493}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 7707472075177252234, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &1517331081
 GameObject:
   m_ObjectHideFlags: 0
@@ -145063,7 +146195,8 @@ GameObject:
   - component: {fileID: 1599894058}
   - component: {fileID: 1599894057}
   - component: {fileID: 1599894056}
-  m_Layer: 0
+  - component: {fileID: 1599894059}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -145102,6 +146235,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &1599894057
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -145158,6 +146292,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1599894054}
+  m_Mesh: {fileID: -66386291545189398, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &1599894059
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1599894054}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -66386291545189398, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!64 &1600019355
 MeshCollider:
@@ -145781,7 +146937,8 @@ GameObject:
   - component: {fileID: 1606436738}
   - component: {fileID: 1606436737}
   - component: {fileID: 1606436736}
-  m_Layer: 0
+  - component: {fileID: 1606436739}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -145820,6 +146977,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &1606436737
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -145876,6 +147034,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1606436734}
+  m_Mesh: {fileID: -325688148407855518, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &1606436739
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1606436734}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -325688148407855518, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!114 &1606951252
 MonoBehaviour:
@@ -161765,7 +162945,8 @@ GameObject:
   - component: {fileID: 1614641710}
   - component: {fileID: 1614641709}
   - component: {fileID: 1614641708}
-  m_Layer: 0
+  - component: {fileID: 1614641711}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161804,6 +162985,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &1614641709
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -161860,6 +163042,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1614641706}
+  m_Mesh: {fileID: 9089649911085765619, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &1614641711
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1614641706}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 9089649911085765619, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &1616151446 stripped
 GameObject:
@@ -169292,7 +170496,8 @@ GameObject:
   - component: {fileID: 1739819305}
   - component: {fileID: 1739819304}
   - component: {fileID: 1739819306}
-  m_Layer: 0
+  - component: {fileID: 1739819307}
+  m_Layer: 15
   m_Name: WallPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169387,6 +170592,28 @@ MonoBehaviour:
   facing: 1
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
+--- !u!64 &1739819307
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739819302}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -4390166921431769480, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!64 &1742065687
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -170028,7 +171255,8 @@ GameObject:
   - component: {fileID: 1749746534}
   - component: {fileID: 1749746533}
   - component: {fileID: 1749746532}
-  m_Layer: 0
+  - component: {fileID: 1749746535}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -170067,6 +171295,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &1749746533
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -170123,6 +171352,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1749746530}
+  m_Mesh: {fileID: -667079142450912084, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &1749746535
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1749746530}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -667079142450912084, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!64 &1750411487
 MeshCollider:
@@ -177864,7 +179115,8 @@ GameObject:
   - component: {fileID: 1778310835}
   - component: {fileID: 1778310834}
   - component: {fileID: 1778310833}
-  m_Layer: 0
+  - component: {fileID: 1778310836}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177903,6 +179155,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &1778310834
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -177959,6 +179212,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1778310831}
+  m_Mesh: {fileID: 2723682055365635731, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &1778310836
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1778310831}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: 2723682055365635731, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!64 &1781930365
 MeshCollider:
@@ -186326,7 +187601,8 @@ GameObject:
   - component: {fileID: 1884766459}
   - component: {fileID: 1884766458}
   - component: {fileID: 1884766457}
-  m_Layer: 0
+  - component: {fileID: 1884766460}
+  m_Layer: 6
   m_Name: WaterPlacment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -186365,6 +187641,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 1
+  waterSoilHeightOffset: -2
 --- !u!23 &1884766458
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -186421,6 +187698,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1884766455}
+  m_Mesh: {fileID: -4537932071952818870, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &1884766460
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884766455}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 2048
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -4537932071952818870, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!64 &1885187169
 MeshCollider:
@@ -187437,7 +188736,8 @@ GameObject:
   - component: {fileID: 1895129242}
   - component: {fileID: 1895129241}
   - component: {fileID: 1895129240}
-  m_Layer: 0
+  - component: {fileID: 1895129243}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -187476,6 +188776,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &1895129241
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -187532,6 +188833,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1895129238}
+  m_Mesh: {fileID: -6988590027352459868, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &1895129243
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1895129238}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -6988590027352459868, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &1900557523 stripped
 GameObject:
@@ -194368,7 +195691,8 @@ GameObject:
   - component: {fileID: 2007251910}
   - component: {fileID: 2007251909}
   - component: {fileID: 2007251911}
-  m_Layer: 0
+  - component: {fileID: 2007251912}
+  m_Layer: 15
   m_Name: WallPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194463,6 +195787,28 @@ MonoBehaviour:
   facing: 1
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
+--- !u!64 &2007251912
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007251907}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -4553766563120031583, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &2007568440
 GameObject:
   m_ObjectHideFlags: 0
@@ -195144,7 +196490,8 @@ GameObject:
   - component: {fileID: 2018220238}
   - component: {fileID: 2018220237}
   - component: {fileID: 2018220239}
-  m_Layer: 0
+  - component: {fileID: 2018220240}
+  m_Layer: 15
   m_Name: WallPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195239,6 +196586,28 @@ MonoBehaviour:
   facing: 1
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
+--- !u!64 &2018220240
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018220235}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6910946457951245493, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &2019533672
 GameObject:
   m_ObjectHideFlags: 0
@@ -195399,7 +196768,8 @@ GameObject:
   - component: {fileID: 2019683501}
   - component: {fileID: 2019683500}
   - component: {fileID: 2019683499}
-  m_Layer: 0
+  - component: {fileID: 2019683502}
+  m_Layer: 6
   m_Name: FloorPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195438,6 +196808,7 @@ MonoBehaviour:
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
   placementLocked: 0
   waterSurface: 0
+  waterSoilHeightOffset: 0
 --- !u!23 &2019683500
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -195494,6 +196865,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2019683497}
+  m_Mesh: {fileID: -8430570828947145530, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!64 &2019683502
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2019683497}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
   m_Mesh: {fileID: -8430570828947145530, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &2023406671
 GameObject:
@@ -206351,7 +207744,8 @@ GameObject:
   - component: {fileID: 2093469803}
   - component: {fileID: 2093469802}
   - component: {fileID: 2093469804}
-  m_Layer: 0
+  - component: {fileID: 2093469805}
+  m_Layer: 15
   m_Name: WallPlacement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -206446,6 +207840,28 @@ MonoBehaviour:
   facing: 1
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
+--- !u!64 &2093469805
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2093469800}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7858853321178166024, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
 --- !u!1 &2094075728
 GameObject:
   m_ObjectHideFlags: 0
@@ -210804,14 +212220,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1094209399}
     m_Modifications:
-    - target: {fileID: 2106392375125345503, guid: 5588ba098b73e084390914cf92d297fb, type: 3}
-      propertyPath: waterBar
-      value: 
-      objectReference: {fileID: 828364765}
-    - target: {fileID: 2106392375125345503, guid: 5588ba098b73e084390914cf92d297fb, type: 3}
-      propertyPath: pollenNeedImage
-      value: 
-      objectReference: {fileID: 546926256}
     - target: {fileID: 3812166483520552981, guid: 5588ba098b73e084390914cf92d297fb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

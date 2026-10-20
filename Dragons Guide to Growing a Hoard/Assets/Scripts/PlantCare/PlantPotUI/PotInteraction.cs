@@ -328,9 +328,14 @@ public class PotInteraction : MonoBehaviour
     {
         if (pot == null) return;
 
-        // Always highlight the pot itself
-        potOutline = pot.GetComponent<OutlineEffect>();
-        potOutline?.SetOutline(true);
+        // Always highlight the pot itself - EXCEPT on water surfaces, where the pot body is hidden and the
+        // soil is what the player sees, so the soil visual is outlined instead (normal pots never are).
+        OutlineEffect potFx = pot.GetComponent<OutlineEffect>();
+        if (pot.WaterSurfaceMode && pot.SoilVisual != null && potFx != null)
+            potOutline = OutlineEffect.GetOrAdd(pot.SoilVisual, potFx.outlineMaterial);
+        else
+            potOutline = potFx;
+        if (potOutline != null) potOutline.SetOutline(true);
 
         // Only highlight the plant if one is actually present
         if (pot.HasPlant && pot.Plant != null)
@@ -342,10 +347,10 @@ public class PotInteraction : MonoBehaviour
 
     private void ClearCurrentOutline()
     {
-        currentOutline?.SetOutline(false);
+        if (currentOutline != null) currentOutline.SetOutline(false);
         currentOutline = null;
 
-        potOutline?.SetOutline(false);
+        if (potOutline != null) potOutline.SetOutline(false);
         potOutline = null;
     }
 

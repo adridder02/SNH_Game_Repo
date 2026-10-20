@@ -596,7 +596,7 @@ MonoBehaviour:
   healthBar: {fileID: 3293376249861152167}
   miasmaBar: {fileID: 737693060844866957}
   waterBar: {fileID: 5336577020063006378}
-  pollenNeedImage: {fileID: 0}
+  pollenNeedImage: {fileID: 2945061841048151708}
 --- !u!1 &4750628533974677719
 GameObject:
   m_ObjectHideFlags: 0
