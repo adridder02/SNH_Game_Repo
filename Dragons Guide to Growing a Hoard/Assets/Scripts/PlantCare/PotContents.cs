@@ -60,6 +60,10 @@ public class PotContents : MonoBehaviour
     [Tooltip("Extra upward nudge applied after surface-snapping. Increase if the plant still clips; decrease if it floats above the soil.")]
     public float plantSurfaceOffset = 0f;
 
+    [Tooltip("Vertical nudge (world units, +up) for where the SOIL visual sits in this pot. Handy for permanent pots " +
+             "whose soil needs to sit higher or lower than the anchor. Stacks with the water-surface soil offset.")]
+    public Vector3 soilOffset = Vector3.zero;
+
     // ---------------------------------------------------------------
     [Header("Soil Prefabs")]
     [Tooltip("Prefab spawned inside the pot when Clay soil is chosen.")]
@@ -483,6 +487,8 @@ public class PotContents : MonoBehaviour
         currentSoilObject.transform.localRotation = Quaternion.identity;
         if (soilHeightOffset != 0f)
             currentSoilObject.transform.position += Vector3.up * soilHeightOffset; // water surface: soil sits in the water
+        if (soilOffset != Vector3.zero)
+            currentSoilObject.transform.localPosition += soilOffset; // per-pot manual nudge (anchor-local)
         currentSoilObject.name = $"SoilVisual_{kind}";
 
         if (ApplySoilMaterial() && !initialising && tutorialMission != null && tutorialMission.tasks.Count > 2)

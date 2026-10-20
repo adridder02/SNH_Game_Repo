@@ -119,7 +119,7 @@ public class PlacementSystem : MonoBehaviour
     private Vector2Int lastHoveredCell = new Vector2Int(-999, -999);
 
     private GameObject previewObject;
-    private int rotationSteps;   // quarter-turns (E) applied to the pot being placed / moved; odd = footprint x/y swapped
+    private int rotationSteps;   // quarter-turns (F) applied to the pot being placed / moved; odd = footprint x/y swapped
     private Quaternion previewBaseRotation = Quaternion.identity; // the preview's own rotation before aligning to a surface
 
     private PlacementData movingData;
@@ -216,15 +216,6 @@ public class PlacementSystem : MonoBehaviour
                 CycleSelection(1);
             else if (scroll < 0f)
                 CycleSelection(-1);
-        }
-
-        // E rotates the pot being placed (or held, in Move mode) by 90 degrees. Odd turns swap the footprint's
-        // width/height, so a 1x2 pot becomes 2x1.
-        if ((mode == Mode.Placing || (mode == Mode.Moving && movingData != null)) &&
-            Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
-        {
-            rotationSteps = (rotationSteps + 1) & 3;
-            ForceHoverRefresh();
         }
 
         Vector3 mouseWorld = inputManager.GetSelectedMapPosition();
@@ -338,8 +329,18 @@ public class PlacementSystem : MonoBehaviour
         if (Keyboard.current == null)
             return;
 
+        // F: while placing (or holding a pot in Move mode) it rotates the pot 90 degrees; odd turns swap
+        // the footprint's width/height. Otherwise it enters Placing mode as before (Escape exits).
         if (Keyboard.current.fKey.wasPressedThisFrame)
-            TogglePlaceMode();
+        {
+            if (mode == Mode.Placing || (mode == Mode.Moving && movingData != null))
+            {
+                rotationSteps = (rotationSteps + 1) & 3;
+                ForceHoverRefresh();
+            }
+            else
+                TogglePlaceMode();
+        }
 
         if (Keyboard.current.rKey.wasPressedThisFrame)
             ToggleRemoveMode();

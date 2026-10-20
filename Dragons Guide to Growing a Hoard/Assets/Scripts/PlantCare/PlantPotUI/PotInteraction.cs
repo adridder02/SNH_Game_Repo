@@ -269,9 +269,7 @@ public class PotInteraction : MonoBehaviour
         // E — runs whichever prompt option is currently active. While a Portable tutorial prompt
         // wants everything else locked down (TutorialStep.lockOtherInput), only the exact action
         // THAT step is linked to is allowed through — closing an already-open menu is never blocked.
-        // E rotates pots while in placement mode, so it must not also trigger interactions.
-        bool inPlacement = FindAnyObjectByType<PlacementSystem>() is PlacementSystem ps && ps.IsPlacementModeActive;
-        if (!inPlacement && Keyboard.current.eKey.wasPressedThisFrame)
+        if (Keyboard.current.eKey.wasPressedThisFrame)
         {
             if (menuOpen)
             {
