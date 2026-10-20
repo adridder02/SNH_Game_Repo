@@ -30,7 +30,7 @@ MonoBehaviour:
     against miasma. Move it to shade or let night fall and the ward drops the instant
     the sun does.
   journalIcon: {fileID: 21300000, guid: b121a2c4ffb7d8b4fb10b2052f829672, type: 3}
-  journalImage: {fileID: 21300000, guid: b121a2c4ffb7d8b4fb10b2052f829672, type: 3}
+  journalImage: {fileID: 21300000, guid: b9917d80c391acf44a4fc4f53472c0d5, type: 3}
   useAlternateJournalLayout: 0
   inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}

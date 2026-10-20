@@ -25,10 +25,10 @@ MonoBehaviour:
     Its pollen doesn't feed or heal anything, it simply tells you, plainly, what
     a plant is missing before you have to guess."
   descriptionSecondary: "Dust a puffball over any pot and a coloured marker appears
-    over it.\n\nYellow for light\nBlue for water\nBrown for soil \n\nShowing whichever
-    need is currently lowest, for a short time."
+    over it showing whichever need is currently lowest, for a short time.\n\nYellow
+    for light\nBlue for water\nBrown for soil \n"
   journalIcon: {fileID: 21300000, guid: 1e953d9ebef0f73428d62adfdb33edd2, type: 3}
-  journalImage: {fileID: 21300000, guid: 1e953d9ebef0f73428d62adfdb33edd2, type: 3}
+  journalImage: {fileID: 21300000, guid: 34f60dcf8005e0a4f80cded19b3b7f69, type: 3}
   useAlternateJournalLayout: 0
   inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}

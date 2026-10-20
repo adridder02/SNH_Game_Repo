@@ -27,7 +27,7 @@ MonoBehaviour:
     used on. Its a lasting gauge rather than a one-time effect, so you can check
     a plant's thirst at a glance from then on.
   journalIcon: {fileID: 21300000, guid: 7ffaabf8cb7d08c42a15e3d8c386e7b6, type: 3}
-  journalImage: {fileID: 21300000, guid: 7ffaabf8cb7d08c42a15e3d8c386e7b6, type: 3}
+  journalImage: {fileID: 21300000, guid: 01f968f0d7891e94e9d19f1e237a69c6, type: 3}
   useAlternateJournalLayout: 0
   inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}

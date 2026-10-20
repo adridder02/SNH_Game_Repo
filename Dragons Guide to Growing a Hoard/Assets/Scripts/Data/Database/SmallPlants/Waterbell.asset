@@ -28,7 +28,7 @@ MonoBehaviour:
     and keeps topping each one up toward a set water level automatically. Pllant
     it once among a cluster of thirsty pots and stop worrying about them.'
   journalIcon: {fileID: 21300000, guid: 917afe6700aef7546a0b0a401c49ce8a, type: 3}
-  journalImage: {fileID: 21300000, guid: 917afe6700aef7546a0b0a401c49ce8a, type: 3}
+  journalImage: {fileID: 21300000, guid: b4de76f04903b1c4bad7bc18bfc6ece9, type: 3}
   useAlternateJournalLayout: 0
   inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}

@@ -25,8 +25,8 @@ MonoBehaviour:
   descriptionSecondary: 'Harvesting it yields a Heart item, carried to the World
     Tree and consumed there to reveal one of its three hidden crystal layers. '
   journalIcon: {fileID: 21300000, guid: 9ac4dfddaf006f84aa65fd65418bea2e, type: 3}
-  journalImage: {fileID: 21300000, guid: 9ac4dfddaf006f84aa65fd65418bea2e, type: 3}
-  useAlternateJournalLayout: 0
+  journalImage: {fileID: 21300000, guid: b87e50c7f743454488fd695de51d1a8a, type: 3}
+  useAlternateJournalLayout: 1
   inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}
   disabledIcon: {fileID: 21300000, guid: 73aaf3b8bf7bc904fbf7b30aa9937ede, type: 3}

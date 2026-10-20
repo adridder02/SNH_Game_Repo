@@ -28,7 +28,7 @@ MonoBehaviour:
     as the leaves last \u2014 each leaf has a lifespan and goes dormant (circuit-breaking,
     though it stays visible) once it runs out. Replace it to re-seal the ring."
   journalIcon: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
-  journalImage: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
+  journalImage: {fileID: 21300000, guid: 7d4b22b45918cad4183c96d48c78f8db, type: 3}
   useAlternateJournalLayout: 0
   inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}

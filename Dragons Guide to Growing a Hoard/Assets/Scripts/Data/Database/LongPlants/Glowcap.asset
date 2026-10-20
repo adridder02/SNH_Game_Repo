@@ -28,7 +28,7 @@ MonoBehaviour:
   descriptionSecondary: Consumed on yourself to give you a flashlight. Its a short
     self-buff, not a persistent light source.
   journalIcon: {fileID: 21300000, guid: caa4a470026dbeb4ab7b33be0df45f05, type: 3}
-  journalImage: {fileID: 21300000, guid: caa4a470026dbeb4ab7b33be0df45f05, type: 3}
+  journalImage: {fileID: 21300000, guid: 9a9a4e71642e5b0448f9acd8d2c0812b, type: 3}
   useAlternateJournalLayout: 0
   inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}

@@ -31,7 +31,7 @@ MonoBehaviour:
     level, showing 0 to 4 stems depending on how much direct sun it's getting right
     now \u2014 a living light gauge, nothing more."
   journalIcon: {fileID: 21300000, guid: 4e07b70507f3d874687a9b3d0281023d, type: 3}
-  journalImage: {fileID: 21300000, guid: 4e07b70507f3d874687a9b3d0281023d, type: 3}
+  journalImage: {fileID: 21300000, guid: ff807b72b4222b04992f72c758389467, type: 3}
   useAlternateJournalLayout: 0
   inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}

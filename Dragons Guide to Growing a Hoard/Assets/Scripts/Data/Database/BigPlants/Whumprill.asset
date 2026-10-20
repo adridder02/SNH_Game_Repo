@@ -28,7 +28,7 @@ MonoBehaviour:
 
 '
   journalIcon: {fileID: 21300000, guid: 63075b5292634b343b1aaab79c1e20d2, type: 3}
-  journalImage: {fileID: 21300000, guid: 63075b5292634b343b1aaab79c1e20d2, type: 3}
+  journalImage: {fileID: 21300000, guid: b58ba64f2cf6b1c44a8e224df2ae5be7, type: 3}
   useAlternateJournalLayout: 0
   inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}

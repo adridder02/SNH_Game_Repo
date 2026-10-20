@@ -27,7 +27,7 @@ MonoBehaviour:
     against miasma (and visibly tints the soil while active), reverting once the
     ward runs out.
   journalIcon: {fileID: 21300000, guid: 3e05db36bfd743342abdee2b215ee7e3, type: 3}
-  journalImage: {fileID: 21300000, guid: 3e05db36bfd743342abdee2b215ee7e3, type: 3}
+  journalImage: {fileID: 21300000, guid: de70d18fcd35c7948b854e725cdf6f32, type: 3}
   useAlternateJournalLayout: 0
   inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}

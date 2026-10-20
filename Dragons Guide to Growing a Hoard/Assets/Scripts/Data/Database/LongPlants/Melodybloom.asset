@@ -27,7 +27,7 @@ MonoBehaviour:
     water from nearby plants' pots \u2014 a minor, constant debuff on its neighbours,
     scaled down from whatever the tree does on a much larger scale."
   journalIcon: {fileID: 21300000, guid: cb2e73cc4b3d2374facefb3a6163116e, type: 3}
-  journalImage: {fileID: 21300000, guid: cb2e73cc4b3d2374facefb3a6163116e, type: 3}
+  journalImage: {fileID: 21300000, guid: bb5fd2deea794744cafd3d776f5830aa, type: 3}
   useAlternateJournalLayout: 0
   inventoryImage: {fileID: 0}
   deadIcon: {fileID: 0}
