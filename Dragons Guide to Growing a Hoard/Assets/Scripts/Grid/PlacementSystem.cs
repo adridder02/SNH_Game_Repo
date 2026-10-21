@@ -16,6 +16,11 @@ public class PlacementSystem : MonoBehaviour
     [Header("Pot Types")]
     [SerializeField] private List<PotData> availablePots;
 
+    [Tooltip("Leave EMPTY in normal scenes (every pot above is usable). In a restricted scene such as the tutorial, " +
+             "list the only pot sizes allowed (e.g. Small); every other pot is removed from the list at start, so it " +
+             "can't be selected or scrolled to, and its icon disappears from the pot selector HUD.")]
+    [SerializeField] private List<PlantSize> onlyAllowSizes = new List<PlantSize>();
+
     [Header("Preview")]
     [SerializeField] private bool showPreviewObject = true;
 
@@ -151,6 +156,12 @@ public class PlacementSystem : MonoBehaviour
 
     private void Start()
     {
+        if (onlyAllowSizes != null && onlyAllowSizes.Count > 0 && availablePots != null)
+        {
+            availablePots = availablePots.FindAll(p => p != null && onlyAllowSizes.Contains(p.correspondingPlantSize));
+            selectedIndex = 0;
+        }
+
         if (potInteraction == null)
             potInteraction = FindAnyObjectByType<PotInteraction>();
 

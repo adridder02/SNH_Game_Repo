@@ -834,6 +834,7 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             PotData data = pots != null && i < pots.Count ? pots[i] : null;
             img.sprite = data != null ? data.icon : null;
             img.enabled = data != null && data.icon != null;
+            img.gameObject.SetActive(data != null); // slots beyond the available pots (e.g. restricted tutorial) vanish entirely
 
             Color c = img.color;
             c.a = i == activeIndex ? 1f : inactivePotIconOpacity;
