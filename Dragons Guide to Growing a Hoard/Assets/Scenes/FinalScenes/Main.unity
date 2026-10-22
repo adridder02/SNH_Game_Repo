@@ -39493,7 +39493,7 @@ Transform:
   m_GameObject: {fileID: 433457706}
   serializedVersion: 2
   m_LocalRotation: {x: -0.05638952, y: 0.69075006, z: -0.06366194, w: 0.71807504}
-  m_LocalPosition: {x: 132.2731, y: 2.62, z: 17.28}
+  m_LocalPosition: {x: 132.2731, y: 2.29, z: 17.28}
   m_LocalScale: {x: 5.50672, y: 5.50672, z: 5.50672}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -90294,6 +90294,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 436aed676e7c07e40b5b5dc610152462, type: 2}
   - {fileID: 11400000, guid: 697b9909e231f8e4eaa08224acc23148, type: 2}
   - {fileID: 11400000, guid: 250dc76ea43d8a44698faca40d5ef1c1, type: 2}
+  onlyAllowSizes: 
   showPreviewObject: 1
   debugMode: 0
   placeSoundClip: {fileID: 8300000, guid: db4804d240a6c0b44a30f637241afaa4, type: 3}
