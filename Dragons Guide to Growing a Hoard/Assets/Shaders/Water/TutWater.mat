@@ -38,22 +38,26 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _FoamOffset: 1
-    - _Gloss: 0.6
-    - _Metallic: 0.1
-    - _NoiseStrength: 0.05
-    - _NormalStrength: 0.7
+    - _FoamOffset: 5
+    - _Gloss: 2
+    - _Metallic: 0
+    - _NoiseStrength: 0.005
+    - _NormalStrength: 0.1
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _RipplesDissolve: 3
-    - _RipplesScale: 24
-    - _RipplesSpeed: 1.12
-    - _Transparency: 5.05
+    - _RipplesDissolve: 5
+    - _RipplesScale: 15
+    - _RipplesSpeed: 0.5
+    - _Transparency: 6
+    - _WaveAmplitude: 5
+    - _WaveLifeTime: 2
+    - _WaveRadius: 2.5
+    - _WaveSpeed: 5
     m_Colors:
-    - _BaseColor: {r: 0, g: 0.1323749, b: 0.21383637, a: 1}
-    - _FoamColor: {r: 2, g: 0.006114706, b: 0, a: 1}
-    - _NormalSpeed: {r: 0.4, g: 0.4, b: 0, a: 0}
-    - _RippleColor: {r: 0.09750392, g: 0.5693285, b: 1.0691822, a: 1}
+    - _BaseColor: {r: 0.1098039, g: 0.6375796, b: 1, a: 1}
+    - _FoamColor: {r: 5.136609, g: 0, b: 0, a: 1}
+    - _NormalSpeed: {r: 0.05, g: -0.05, b: 0, a: 0}
+    - _RippleColor: {r: 0.5019608, g: 1.7568628, b: 1.6313726, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &6857130375947835971
