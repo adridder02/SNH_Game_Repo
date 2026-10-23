@@ -19,7 +19,12 @@ public static class PlantEvents
     public static event Action<AbilityItemData, PlantSpeciesData> ConsumableUsed;
 
     public static void RaisePlanted(PlantSpeciesData s) => Planted?.Invoke(s);
-    public static void RaiseCompleted(PlantSpeciesData s) => Completed?.Invoke(s);
+    public static void RaiseCompleted(PlantSpeciesData s)
+    {
+        if (s != null) TutorialTargets.SetText("plant_name", s.displayName); // used by the {Plant Name} tutorial placeholder
+        Completed?.Invoke(s);
+        TutorialSequenceController.RaiseStartTrigger("first_plant_completed");
+    }
     public static void RaiseHarvested(PlantSpeciesData s) => Harvested?.Invoke(s);
     public static void RaiseConsumableUsed(AbilityItemData d, PlantSpeciesData s) => ConsumableUsed?.Invoke(d, s);
 }

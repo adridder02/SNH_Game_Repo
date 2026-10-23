@@ -86,6 +86,83 @@ public class TutorialSequenceController : MonoBehaviour
 
     [SerializeField] private bool autoStart = true;
 
+    [Header("Triggered module (optional)")]
+    [Tooltip("Leave blank for a normal scene sequence. Set (e.g. 'first_hotbar_item' or 'first_plant_completed') to make " +
+             "this a self-contained MODULE: a second controller in the scene that sits idle until that start trigger " +
+             "fires, then plays its steps once. If another sequence is mid-play it waits its turn. Combine with " +
+             "Completion Flag Key so it only ever plays once. Point its promptUI / bottomPopupUI at the same widgets " +
+             "as the main controller. Start triggers raised by the game: first_hotbar_item, first_plant_completed.")]
+    [SerializeField] private string startTriggerId;
+
+    private static readonly List<TutorialSequenceController> all = new List<TutorialSequenceController>();
+    private bool IsModule => !string.IsNullOrEmpty(startTriggerId);
+    private bool moduleStarted;
+    private bool modulePendingStart;
+    private TutorialSequenceController moduleReturnTo;
+
+    private bool IsRunning => currentIndex >= 0 && currentIndex < steps.Count;
+
+    // ---- "Already true" conditions -------------------------------------------------------------
+    // A step waiting on an external trigger (e.g. inventory_opened) normally advances when that action HAPPENS. If
+    // the player already did it before the step appeared (inventory already open, hotbar already filled...), the
+    // event never fires again and the step would hang. Gameplay scripts register a "is this already true?" check
+    // per trigger id; the running sequence polls it for the current step and advances if it's already satisfied.
+    private static readonly Dictionary<string, Func<bool>> conditions = new Dictionary<string, Func<bool>>();
+
+    public static void RegisterCondition(string triggerId, Func<bool> isAlreadyTrue)
+    {
+        if (!string.IsNullOrEmpty(triggerId) && isAlreadyTrue != null) conditions[triggerId] = isAlreadyTrue;
+    }
+
+    public static void UnregisterCondition(string triggerId, Func<bool> isAlreadyTrue)
+    {
+        if (!string.IsNullOrEmpty(triggerId) && conditions.TryGetValue(triggerId, out Func<bool> cur) && cur == isAlreadyTrue)
+            conditions.Remove(triggerId);
+    }
+
+    private void CheckAlreadySatisfied()
+    {
+        TutorialStep step = CurrentStep;
+        if (step == null || string.IsNullOrEmpty(step.externalTriggerId)) return;
+        if (conditions.TryGetValue(step.externalTriggerId, out Func<bool> f) && f != null && f())
+            NotifyExternalTrigger(step.externalTriggerId);
+    }
+
+    /// <summary>Raises a module start trigger (see Start Trigger Id). Called by gameplay code at the moment of the event.</summary>
+    public static void RaiseStartTrigger(string id)
+    {
+        if (string.IsNullOrEmpty(id)) return;
+        foreach (TutorialSequenceController c in new List<TutorialSequenceController>(all))
+            if (c != null) c.TryTriggerStart(id);
+    }
+
+    private void TryTriggerStart(string id)
+    {
+        if (!IsModule || startTriggerId != id || moduleStarted) return;
+        if (!string.IsNullOrEmpty(completionFlagKey) && PlayerPrefs.GetInt(completionFlagKey, 0) == 1) { moduleStarted = true; return; }
+
+        foreach (TutorialSequenceController c in all)
+            if (c != null && c != this && c.IsRunning) { modulePendingStart = true; return; }
+
+        StartModule();
+    }
+
+    private void StartModule()
+    {
+        moduleStarted = true;
+        modulePendingStart = false;
+        if (!string.IsNullOrEmpty(completionFlagKey)) { PlayerPrefs.SetInt(StartedKey, 1); PlayerPrefs.Save(); }
+        moduleReturnTo = Instance;
+        Instance = this;
+        BeginSequence();
+    }
+
+    private static void StartPendingModules()
+    {
+        foreach (TutorialSequenceController c in new List<TutorialSequenceController>(all))
+            if (c != null && c.modulePendingStart && !c.moduleStarted) { c.StartModule(); return; }
+    }
+
     [Header("Completion Save Flag (optional)")]
     [Tooltip("PlayerPrefs key written (value 1) the moment THIS scene's sequence finishes. Leave blank for " +
              "a sequence that's fine replaying every time (e.g. the tutorial scene itself, which the player " +
@@ -134,15 +211,22 @@ public class TutorialSequenceController : MonoBehaviour
 
     void Awake()
     {
-        if (Instance != null && Instance != this)
+        all.Add(this);
+
+        if (IsModule)
+        {
+            // Modules never claim Instance until they actually start (see StartModule).
+        }
+        else if (Instance != null && Instance != this)
         {
             // Shouldn't normally happen now that this isn't persistent (each scene has exactly one of
             // these), but still a reasonable guard against two accidentally sitting in the same scene.
+            all.Remove(this);
             Destroy(gameObject);
             return;
         }
 
-        Instance = this;
+        if (!IsModule) Instance = this;
 
         if (progressManager == null)
             progressManager = MissionProgressManager.Instance != null
@@ -172,7 +256,8 @@ public class TutorialSequenceController : MonoBehaviour
 
     void OnDestroy()
     {
-        if (Instance == this) Instance = null;
+        all.Remove(this);
+        if (Instance == this) Instance = IsModule ? moduleReturnTo : null;
 
         if (promptUI != null) promptUI.OnAdvanceRequested -= HandleAdvanceRequested;
         if (bottomPopupUI != null) bottomPopupUI.OnAdvanceRequested -= HandleAdvanceRequested;
@@ -195,12 +280,27 @@ public class TutorialSequenceController : MonoBehaviour
             return;
         }
 
-        if (autoStart) BeginSequence();
+        if (autoStart && !IsModule) BeginSequence();
+
+        // A module that started on a previous visit but never finished (player quit mid-way) picks up again.
+        if (IsModule && !string.IsNullOrEmpty(completionFlagKey) && PlayerPrefs.GetInt(StartedKey, 0) == 1)
+            StartCoroutine(ResumeModuleNextFrame());
+    }
+
+    private string StartedKey => completionFlagKey + "_Started";
+
+    private IEnumerator ResumeModuleNextFrame()
+    {
+        yield return null; // let the scene's main controller begin first, so this queues behind it instead of overlapping
+        TryTriggerStart(startTriggerId);
     }
 
     void Update()
     {
         if (currentIndex < 0 || currentIndex >= steps.Count) return; // sequence not running
+
+        CheckAlreadySatisfied();
+        if (currentIndex < 0 || currentIndex >= steps.Count) return; // that may have finished the sequence
         if (Keyboard.current == null || !Keyboard.current.spaceKey.wasPressedThisFrame) return;
 
         TutorialStep step = CurrentStep;
@@ -509,6 +609,20 @@ public class TutorialSequenceController : MonoBehaviour
     /// Completion Flag Key from PlayerPrefs, so this scene's sequence plays again next time you hit Play
     /// (and MainUIController, if it shares the same key, goes back to starting its gated UI hidden).
     /// Only touches the one key set above; does nothing if Completion Flag Key is blank.</summary>
+    [ContextMenu("Load Hardcoded Script — Module: Consumable Hotbar (start trigger first_hotbar_item)")]
+    private void LoadConsumableModule()
+    {
+        steps = TutorialContent.BuildConsumableModuleSteps();
+        if (string.IsNullOrEmpty(startTriggerId)) Debug.Log("[TutorialSequenceController] Set Start Trigger Id to 'first_hotbar_item' and a Completion Flag Key (e.g. Tutorial_ConsumableModuleDone).");
+    }
+
+    [ContextMenu("Load Hardcoded Script — Module: Passive Abilities (start trigger first_plant_completed)")]
+    private void LoadPassiveModule()
+    {
+        steps = TutorialContent.BuildPassiveModuleSteps();
+        if (string.IsNullOrEmpty(startTriggerId)) Debug.Log("[TutorialSequenceController] Set Start Trigger Id to 'first_plant_completed' and a Completion Flag Key (e.g. Tutorial_PassiveModuleDone).");
+    }
+
     [ContextMenu("Reset Completion Flag (replay this scene's tutorial next Play)")]
     private void ResetCompletionFlag()
     {
@@ -527,7 +641,11 @@ public class TutorialSequenceController : MonoBehaviour
     // ------------------------------------------------------------
     // INTERNAL
     // ------------------------------------------------------------
-    private void HandleAdvanceRequested() => AdvanceToNextStep();
+    private void HandleAdvanceRequested()
+    {
+        if (!IsRunning) return; // an idle module shares the same prompt widgets - never react to their clicks
+        AdvanceToNextStep();
+    }
 
     /// <summary>Fires on every mission progress change, not just ones relevant to the current step — cheap
     /// enough to just re-check the current step's link each time rather than filtering by mission/task first.</summary>
@@ -572,6 +690,9 @@ public class TutorialSequenceController : MonoBehaviour
             }
 
             OnSequenceComplete?.Invoke();
+
+            if (IsModule && Instance == this) Instance = moduleReturnTo;
+            StartPendingModules();
             return;
         }
 
@@ -582,6 +703,9 @@ public class TutorialSequenceController : MonoBehaviour
             AdvanceToNextStep();
             return;
         }
+
+        if (!string.IsNullOrEmpty(step.message) && step.message.Contains("{Plant Name}"))
+            step.message = step.message.Replace("{Plant Name}", TutorialTargets.GetText("plant_name", "the plant"));
 
         SyncSidebarCameraLock(step.type);
 

@@ -26,6 +26,12 @@ public static class TutorialTargets
         targets[key] = rect;
     }
 
+    // Plain text values (e.g. "plant_name"), substituted into tutorial messages as {Plant Name}.
+    private static readonly Dictionary<string, string> texts = new Dictionary<string, string>();
+    public static void SetText(string key, string value) { if (!string.IsNullOrEmpty(key)) texts[key] = value; }
+    public static string GetText(string key, string fallback = "") =>
+        !string.IsNullOrEmpty(key) && texts.TryGetValue(key, out string v) && !string.IsNullOrEmpty(v) ? v : fallback;
+
     public static void Clear(string key)
     {
         if (!string.IsNullOrEmpty(key)) targets.Remove(key);

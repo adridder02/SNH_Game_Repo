@@ -304,8 +304,12 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         UnityEngine.Cursor.visible = false;
     }
 
+    private System.Func<bool> condInventoryOpen;
+
     void OnEnable()
     {
+        condInventoryOpen = () => isInventoryOpen;
+        TutorialSequenceController.RegisterCondition("inventory_opened", condInventoryOpen);
         // NOTE: deliberately NOT (re-)enabling the action or its map here, unlike the old
         // playerControls.Enable() this replaced. gameplayMap is SHARED with player movement now
         // (see inputActions tooltip) — PlayerController owns enabling/disabling that map; this
@@ -328,6 +332,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
 
     void OnDisable()
     {
+        TutorialSequenceController.UnregisterCondition("inventory_opened", condInventoryOpen);
         if (playerInventory != null)
             playerInventory.OnInventoryChanged -= RefreshUI;
         if (abilityInventory != null)

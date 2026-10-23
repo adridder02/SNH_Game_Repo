@@ -81,6 +81,7 @@ public class PlayerAbilityInventory : MonoBehaviour
         {
             HasHarvestedFirstHotbarItem = true;
             OnFirstHotbarItemHarvested?.Invoke();
+            TutorialSequenceController.RaiseStartTrigger("first_hotbar_item");
         }
 
         if (!HasHarvestedFirstAbilityItem)

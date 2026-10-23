@@ -198,6 +198,37 @@ public static class TutorialContent
         return steps;
     }
 
+    /// <summary>MODULE — consumable + hotbar walkthrough. Put on its own TutorialSequenceController in the MAIN scene with
+    /// Start Trigger Id "first_hotbar_item" (fires the first time the player receives an item that can go on the hotbar).
+    /// For the "click the consumable" prompts, set the prompt box's Follow Target Key to "inventory_consumable".</summary>
+    public static List<TutorialStep> BuildConsumableModuleSteps()
+    {
+        return new List<TutorialStep>
+        {
+            new TutorialStep { type = TutorialPromptType.Portable, message = "Press [I] to open your inventory", externalTriggerId = "inventory_opened", advanceOnClick = false },
+            new TutorialStep { type = TutorialPromptType.Portable, message = "This is a consumable, there are three types. Some are for you to use on yourself, some can be placed on the grid and others can be used on plants from the pot menu." },
+            new TutorialStep { type = TutorialPromptType.Portable, message = "You can click on the consumable to open its panel and click on the Use button" },
+            new TutorialStep { type = TutorialPromptType.Portable, message = "You can also long-click on the consumable and drag it into your hotbar for easy use in-game", externalTriggerId = "assigned_to_hotbar", advanceOnClick = false },
+            new TutorialStep { type = TutorialPromptType.Portable, message = "Press the back button to return to the game", externalTriggerId = "closed_inventory_back_button", advanceOnClick = false, allowBackButtons = true },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "The hotbar is accessible on the main UI either by clicking on an item or using 1, 2, 3, 4 and 5 on your keyboard." },
+        };
+    }
+
+    /// <summary>MODULE — passive abilities walkthrough. Own TutorialSequenceController in the MAIN scene with Start Trigger
+    /// Id "first_plant_completed". {Plant Name} is replaced with the plant that just completed. For the "click the plant"
+    /// prompt set Follow Target Key to "journal_plant".</summary>
+    public static List<TutorialStep> BuildPassiveModuleSteps()
+    {
+        return new List<TutorialStep>
+        {
+            new TutorialStep { type = TutorialPromptType.Portable, message = "Some plants have passive abilities and can't be used directly. Press [J] to open your journal", externalTriggerId = "journal_opened", advanceOnClick = false },
+            new TutorialStep { type = TutorialPromptType.Portable, message = "Open the Plants bookmark", externalTriggerId = "opened_plants_bookmark", advanceOnClick = false },
+            new TutorialStep { type = TutorialPromptType.Portable, message = "Click on the {Plant Name}", externalTriggerId = "opened_plant_detail", advanceOnClick = false },
+            new TutorialStep { type = TutorialPromptType.BottomBar, message = "Once you've completed a plant for the first time, the Journal will tell you what its abilities are" },
+            new TutorialStep { type = TutorialPromptType.Portable, message = "Press the back button to return to the game", externalTriggerId = "closed_journal_back_button", advanceOnClick = false, allowBackButtons = true },
+        };
+    }
+
     /// <summary>MAIN SCENE HALF — the Journal tour (Progress/Plants/Guide bookmarks) and the Miasma
     /// greenhouse intro. Lives on the MAIN scene's own, separate TutorialSequenceController — set that
     /// controller's completionFlagKey (e.g. "Tutorial_MainHalfCompleted") so this only ever plays once,

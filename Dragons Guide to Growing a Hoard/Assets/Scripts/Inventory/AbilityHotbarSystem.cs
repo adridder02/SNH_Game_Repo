@@ -81,8 +81,20 @@ public class AbilityHotbarSystem : MonoBehaviour
             Debug.LogWarning("[AbilityHotbarSystem] No PlayerAbilityInventory found — hotbar can't check stack counts.", this);
     }
 
+    private System.Func<bool> condAnyAssigned;
+
+    /// <summary>True if at least one hotbar slot has an item assigned.</summary>
+    public bool HasAnyAssigned()
+    {
+        for (int i = 0; i < slots.Length; i++)
+            if (slots[i].assigned != null) return true;
+        return false;
+    }
+
     private void OnEnable()
     {
+        condAnyAssigned = HasAnyAssigned;
+        TutorialSequenceController.RegisterCondition("assigned_to_hotbar", condAnyAssigned);
         if (abilityInventory != null)
             abilityInventory.OnChanged += AutoClearDepletedSlots;
         if (abilityPlacementSystem != null)
@@ -91,6 +103,7 @@ public class AbilityHotbarSystem : MonoBehaviour
 
     private void OnDisable()
     {
+        TutorialSequenceController.UnregisterCondition("assigned_to_hotbar", condAnyAssigned);
         if (abilityInventory != null)
             abilityInventory.OnChanged -= AutoClearDepletedSlots;
         if (abilityPlacementSystem != null)

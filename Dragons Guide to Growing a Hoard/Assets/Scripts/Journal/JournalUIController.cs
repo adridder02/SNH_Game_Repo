@@ -243,8 +243,17 @@ public class JournalUIController : MonoBehaviour
         progressPageController?.GoToRoom(room);
     }
 
+    private System.Func<bool> condJournalOpen, condPlantsPage, condPlantDetail;
+
     void OnEnable()
     {
+        condJournalOpen = () => isJournalOpen;
+        condPlantsPage = () => isJournalOpen && plantsPage != null && plantsPage.activeInHierarchy;
+        condPlantDetail = () => isJournalOpen && detailPanel != null && detailPanel.activeInHierarchy;
+        TutorialSequenceController.RegisterCondition("journal_opened", condJournalOpen);
+        TutorialSequenceController.RegisterCondition("opened_plants_bookmark", condPlantsPage);
+        TutorialSequenceController.RegisterCondition("opened_plant_detail", condPlantDetail);
+
         if (journalManager != null)
             journalManager.OnJournalChanged += RefreshUI;
 
@@ -253,6 +262,10 @@ public class JournalUIController : MonoBehaviour
 
     void OnDisable()
     {
+        TutorialSequenceController.UnregisterCondition("journal_opened", condJournalOpen);
+        TutorialSequenceController.UnregisterCondition("opened_plants_bookmark", condPlantsPage);
+        TutorialSequenceController.UnregisterCondition("opened_plant_detail", condPlantDetail);
+
         if (journalManager != null)
             journalManager.OnJournalChanged -= RefreshUI;
     }
@@ -466,6 +479,7 @@ public class JournalUIController : MonoBehaviour
     {
         if (species == null) return;
         selectedSpecies = species;
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_plant_detail");
 
         if (detailPanel != null) detailPanel.SetActive(true);
 
