@@ -181,6 +181,11 @@ public class GameInputModeManager : MonoBehaviour
     /// </summary>
     public void SetMenuUIMode()
     {
+        // Opening any menu while in a placement mode (pots, wall mushrooms, ability items) exits that mode first.
+        // Each Cancel hands control back via SetGameplayMode(), then the menu mode below takes over.
+        if (CurrentMode == InputMode.Placement)
+            CancelPlacementModes();
+
         CurrentMode = InputMode.MenuUI;
         altOverrideActive = false;
 
@@ -211,6 +216,17 @@ public class GameInputModeManager : MonoBehaviour
 
         // A menu just covered the screen — hide the bottom-bar tutorial tip so it doesn't sit behind it.
         TutorialSequenceController.Instance?.SetMenuOpen(true);
+    }
+
+    private void CancelPlacementModes()
+    {
+        FindAnyObjectByType<PlacementSystem>()?.CancelActiveMode();
+
+        WallPlacementSystem wall = FindAnyObjectByType<WallPlacementSystem>();
+        if (wall != null && wall.CurrentMode != WallPlacementSystem.Mode.None) wall.CancelMode();
+
+        AbilityPlacementSystem ability = FindAnyObjectByType<AbilityPlacementSystem>();
+        if (ability != null && ability.IsActive) ability.Cancel();
     }
 
     public void SetPlacementMode()
