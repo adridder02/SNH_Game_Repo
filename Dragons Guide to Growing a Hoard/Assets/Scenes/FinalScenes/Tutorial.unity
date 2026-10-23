@@ -67987,6 +67987,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68008,6 +68009,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68029,6 +68031,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68050,6 +68053,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68071,6 +68075,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68092,6 +68097,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68113,6 +68119,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -68158,6 +68165,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68179,6 +68187,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68200,6 +68209,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68221,6 +68231,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68244,6 +68255,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68266,6 +68278,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68287,6 +68300,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68308,6 +68322,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -68365,6 +68380,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -68410,6 +68426,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68431,6 +68448,7 @@ MonoBehaviour:
     allowEscape: 1
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68452,6 +68470,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68473,6 +68492,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 16
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68494,6 +68514,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 32
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68515,6 +68536,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 16
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68536,6 +68558,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 48
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68557,6 +68580,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 4
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -68591,6 +68615,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68612,6 +68637,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68634,6 +68660,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -68667,6 +68694,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -68700,6 +68728,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -68735,6 +68764,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68757,6 +68787,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68779,6 +68810,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68803,6 +68835,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68824,6 +68857,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -68881,6 +68915,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -68914,6 +68949,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -68971,6 +69007,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -69004,6 +69041,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -69025,27 +69063,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
-    onStepShown:
-      m_PersistentCalls:
-        m_Calls: []
-    onStepHidden:
-      m_PersistentCalls:
-        m_Calls: []
-  - type: 0
-    message: Reset to 1x
-    portablePrompt: {fileID: 1228329608}
-    sidebarImage: {fileID: 0}
-    sidebarTitle: 
-    advanceOnClick: 0
-    advanceOnSpacebar: 0
-    autoAdvanceAfterSeconds: 0
-    linkedMission: {fileID: 0}
-    linkedTaskId: 
-    externalTriggerId: reset_time_speed
-    lockOtherInput: 1
-    allowEscape: 0
-    allowBackButtons: 0
-    lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -69067,6 +69085,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -69088,6 +69107,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -69109,6 +69129,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -69154,6 +69175,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -69175,6 +69197,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 2
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -69196,6 +69219,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 2
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -69217,6 +69241,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -69238,6 +69263,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 8
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -69259,6 +69285,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 16
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -69280,6 +69307,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 32
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -69302,6 +69330,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -69327,6 +69356,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -69348,6 +69378,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -69381,6 +69412,7 @@ MonoBehaviour:
     allowEscape: 0
     allowBackButtons: 0
     lockMovement: 0
+    allowedPotMenu: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -83869,7 +83901,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6114584855986704682, guid: d3d4fcda6f4511544bd3c67564928e98, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -5669442667899213236, guid: d3d4fcda6f4511544bd3c67564928e98, type: 3}
       propertyPath: m_IsActive

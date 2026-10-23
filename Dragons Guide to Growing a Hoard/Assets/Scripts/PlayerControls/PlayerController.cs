@@ -420,6 +420,24 @@ public class PlayerController : MonoBehaviour
     // ──────────────────────────────────────────────
     //  Public API (used by GameInputModeManager)
     // ──────────────────────────────────────────────
+    private bool menuInputBlocked;
+
+    /// <summary>True while a menu is open: WASD, jump and flight input are ignored (gravity/physics still run, so
+    /// the dragon doesn't freeze mid-air). Set by GameInputModeManager.</summary>
+    public void SetMenuInputBlocked(bool blocked)
+    {
+        menuInputBlocked = blocked;
+        if (blocked)
+        {
+            moveInput = Vector2.zero;
+            flyAscendHeld = false;
+        }
+        else if (moveAction != null)
+        {
+            moveInput = moveAction.ReadValue<Vector2>(); // pick up keys still held when the menu closes
+        }
+    }
+
     public void SetMovementEnabled(bool value)
     {
         movementEnabled = value;
@@ -511,7 +529,7 @@ public class PlayerController : MonoBehaviour
     // ──────────────────────────────────────────────
     public void OnMove(InputAction.CallbackContext context)
     {
-        moveInput = context.ReadValue<Vector2>();
+        moveInput = menuInputBlocked ? Vector2.zero : context.ReadValue<Vector2>();
 
         if (moveInput.sqrMagnitude > 0.01f)
             CompleteMovementTask(TaskMoveWasd);
@@ -537,7 +555,7 @@ public class PlayerController : MonoBehaviour
     // ──────────────────────────────────────────────
     private void OnSpacePressed(InputAction.CallbackContext ctx)
     {
-        if (!movementEnabled) return;
+        if (!movementEnabled || menuInputBlocked) return;
 
         // A menu (Inventory/Journal/Pot Menu/etc.) deliberately leaves movement enabled while it's
         // open, so Space still jumps by default even with one up. But when the tutorial itself is
@@ -641,7 +659,8 @@ public class PlayerController : MonoBehaviour
         if (!movementEnabled) return;
 
         // Tutorial step with Lock Movement ticked: ignore WASD (jump is blocked in OnJump-equivalent below).
-        if (TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsMovementLocked)
+        if (menuInputBlocked ||
+            (TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsMovementLocked))
             moveInput = Vector2.zero;
 
         switch (locomotionState)
@@ -974,7 +993,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            bool ctrlHeld = Keyboard.current != null &&
+            bool ctrlHeld = !menuInputBlocked && Keyboard.current != null &&
                 (Keyboard.current.leftCtrlKey.isPressed || Keyboard.current.rightCtrlKey.isPressed);
 
             // Tracks only what the player explicitly asked for (Space/Ctrl + idle drift), kept

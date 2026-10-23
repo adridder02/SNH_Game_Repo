@@ -196,11 +196,11 @@ public class PotMenuUIController : MonoBehaviour
         choosePlantConfirmButton?.onClick.AddListener(ConfirmPlantSelection);
         choosePlantBackButton?.onClick.AddListener(BackToMain);
 
-        soilActionButton?.onClick.AddListener(ShowChooseSoil);
+        soilActionButton?.onClick.AddListener(() => { if (!PotAllowed(PotMenuAction.ChangeSoilButton, "clicked_soil_type_option", "selected_soil_type")) return; ShowChooseSoil(); });
         choosePlantButton?.onClick.AddListener(OnPlantActionButtonClicked);
         waterButton?.onClick.AddListener(OnWaterButtonClicked);
 
-        useAbilityButton?.onClick.AddListener(ShowAbilities);
+        useAbilityButton?.onClick.AddListener(() => { if (!PotAllowed(PotMenuAction.AbilitiesButton, "opened_abilities_panel")) return; ShowAbilities(); });
         abilityBackButton?.onClick.AddListener(BackToMain);
         abilityContinueButton?.onClick.AddListener(ConfirmAbilitySelection);
         collectPuffballsButton?.onClick.AddListener(OnCollectPuffballsClicked);
@@ -466,6 +466,7 @@ public class PotMenuUIController : MonoBehaviour
 
     private void OnCollectPuffballsClicked()
     {
+        if (!PotAllowed(PotMenuAction.CollectButton)) return;
         PollenPuffProducer producer = CurrentPuffProducer;
         if (producer == null) return;
 
@@ -584,8 +585,15 @@ public class PotMenuUIController : MonoBehaviour
             choosePlantButtonLabel.text = !hasPlant ? "Choose Plant" : isHarvestable ? "Harvest" : "Remove Plant";
     }
 
+    // Tutorial lock: pot-menu controls are blocked while a Portable step locks input, unless the step ticked the
+    // matching Allowed Pot Menu box or is waiting on that control's own trigger.
+    private static bool PotAllowed(PotMenuAction action, params string[] triggerIds) =>
+        TutorialSequenceController.Instance == null ||
+        TutorialSequenceController.Instance.IsPotActionAllowed(action, triggerIds);
+
     private void OnPlantActionButtonClicked()
     {
+        if (!PotAllowed(PotMenuAction.PlantButton, "opened_choose_plant_panel", "clicked_pollen_puff_option", "selected_pollen_puff", "planted_plant")) return;
         if (currentPot == null) return;
 
         if (currentPot.HasPlant)
@@ -611,6 +619,7 @@ public class PotMenuUIController : MonoBehaviour
 
     private void OnWaterButtonClicked()
     {
+        if (!PotAllowed(PotMenuAction.WaterButton)) return;
         if (currentPot == null) return;
         ownerInteraction?.WaterPot(currentPot);
         RefreshMainStatusBars();
@@ -621,6 +630,7 @@ public class PotMenuUIController : MonoBehaviour
     // ------------------------------------------------------------
     private void SelectSoilOption(SoilKind kind)
     {
+        if (!PotAllowed(PotMenuAction.ChoiceOptions, "clicked_soil_type_option", "selected_soil_type")) return;
         pendingSoil = kind;
         RefreshSoilSelectionHighlight();
 
@@ -662,6 +672,7 @@ public class PotMenuUIController : MonoBehaviour
 
     private void ConfirmSoilSelection()
     {
+        if (!PotAllowed(PotMenuAction.ConfirmButtons, "selected_soil_type")) return;
         if (pendingSoil == null || currentPot == null) return;
 
         // Filling a pot with Water soil costs units from the player's water pool, same pool watering
@@ -831,6 +842,7 @@ public class PotMenuUIController : MonoBehaviour
 
     private void SelectPlantOption(InventoryItemInstance item, Button optionButton)
     {
+        if (!PotAllowed(PotMenuAction.ChoiceOptions, "clicked_pollen_puff_option", "selected_pollen_puff")) return;
         pendingPlant = item;
         if (EventSystem.current != null)
             EventSystem.current.SetSelectedGameObject(optionButton != null ? optionButton.gameObject : null);
@@ -848,6 +860,7 @@ public class PotMenuUIController : MonoBehaviour
 
     private void ConfirmPlantSelection()
     {
+        if (!PotAllowed(PotMenuAction.ConfirmButtons, "selected_pollen_puff", "planted_plant")) return;
         if (pendingPlant == null) return;
 
         // Tutorial hook — "Select the Pollen Puff to plant the plant" advances on CONFIRM, not the
@@ -989,6 +1002,7 @@ public class PotMenuUIController : MonoBehaviour
     /// change their mind before spending an item, and matches the Choose Plant flow's shape.</summary>
     private void SelectAbilityOption(AbilityItemInstance stack, Button optionButton)
     {
+        if (!PotAllowed(PotMenuAction.ChoiceOptions, "selected_consumable")) return;
         if (stack?.data == null) return;
 
         pendingAbility = stack;
@@ -1005,6 +1019,7 @@ public class PotMenuUIController : MonoBehaviour
     /// on click, before the Continue step existed).</summary>
     private void ConfirmAbilitySelection()
     {
+        if (!PotAllowed(PotMenuAction.ConfirmButtons, "confirmed_ability")) return;
         if (pendingAbility?.data == null || abilityInventory == null) return;
         AbilityItemData data = pendingAbility.data;
         TutorialSequenceController.Instance?.NotifyExternalTrigger("confirmed_ability");
@@ -1036,8 +1051,7 @@ public class PotMenuUIController : MonoBehaviour
         {
             abilityInventory.TryConsume(data, 1);
             pendingAbility = null;
-            RefreshAbilitiesPanel();
-            RefreshMainPanel();
+            ShowMain(); // like the soil / plant Confirm: close the panel and return to the main pot menu
         }
         else
         {

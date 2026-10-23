@@ -39,6 +39,14 @@ public class PlayerAbilityInventory : MonoBehaviour
     /// only reaches listeners that were already subscribed at the moment it fired.</summary>
     public bool HasHarvestedFirstAbilityItem { get; private set; }
 
+    /// <summary>Fires once, the first time the player receives an item that can actually go on the hotbar
+    /// (AbilityHotbarSystem.CanAssign). Items that only work from a pot's menu (e.g. the Pollen Puff) don't
+    /// count, so the hotbar stays hidden until there's something usable to put on it.</summary>
+    public event Action OnFirstHotbarItemHarvested;
+
+    /// <summary>True once OnFirstHotbarItemHarvested has fired.</summary>
+    public bool HasHarvestedFirstHotbarItem { get; private set; }
+
     public IReadOnlyList<AbilityItemInstance> Stacks => stacks;
 
     // ---------------------------------------------------------------
@@ -68,6 +76,12 @@ public class PlayerAbilityInventory : MonoBehaviour
 
         Debug.Log($"[PlayerAbilityInventory] +{amount} {data.displayName} (now {existing.count}).");
         OnChanged?.Invoke();
+
+        if (!HasHarvestedFirstHotbarItem && AbilityHotbarSystem.CanAssign(data))
+        {
+            HasHarvestedFirstHotbarItem = true;
+            OnFirstHotbarItemHarvested?.Invoke();
+        }
 
         if (!HasHarvestedFirstAbilityItem)
         {

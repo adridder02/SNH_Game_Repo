@@ -152,7 +152,10 @@ public class GameInputModeManager : MonoBehaviour
         cameraMap?.Enable();
 
         if (playerController != null)
+        {
             playerController.SetMovementEnabled(true);
+            playerController.SetMenuInputBlocked(false);
+        }
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -185,7 +188,10 @@ public class GameInputModeManager : MonoBehaviour
         cameraMap?.Disable();
 
         if (playerController != null)
+        {
             playerController.SetMovementEnabled(true);
+            playerController.SetMenuInputBlocked(true); // no WASD / jump / flying while a menu is open
+        }
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -216,7 +222,10 @@ public class GameInputModeManager : MonoBehaviour
         cameraMap?.Disable();
 
         if (playerController != null)
+        {
             playerController.SetMovementEnabled(true);
+            playerController.SetMenuInputBlocked(false); // placement mode still lets the player walk around
+        }
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;

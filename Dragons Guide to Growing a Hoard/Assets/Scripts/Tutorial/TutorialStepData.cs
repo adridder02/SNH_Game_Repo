@@ -29,6 +29,20 @@ public enum TutorialPromptType
     Sidebar
 }
 
+/// <summary>Pot-menu controls a Portable step can leave usable while it's locking input. See TutorialStep.allowedPotMenu.</summary>
+[System.Flags]
+public enum PotMenuAction
+{
+    None = 0,
+    ChangeSoilButton = 1 << 0,
+    PlantButton = 1 << 1,      // Choose Plant / Harvest / Remove Plant
+    WaterButton = 1 << 2,
+    AbilitiesButton = 1 << 3,
+    ChoiceOptions = 1 << 4,    // clicking a soil / plant / consumable option icon
+    ConfirmButtons = 1 << 5,   // the Confirm / Select buttons on those panels
+    CollectButton = 1 << 6
+}
+
 [System.Serializable]
 public class TutorialStep
 {
@@ -112,6 +126,10 @@ public class TutorialStep
     public bool allowBackButtons = false;
     [Tooltip("Freezes the player (WASD/jump) while this step shows. Camera is unaffected. Off by default.")]
     public bool lockMovement = false;
+    [Tooltip("Pot menu controls that still work while this Portable step locks input. Everything else in the pot " +
+             "menu is blocked. Controls whose own trigger this step waits on (e.g. opened_abilities_panel -> the " +
+             "Plant Abilities button) are allowed automatically.")]
+    public PotMenuAction allowedPotMenu = PotMenuAction.None;
 
     [Header("Side effects (optional)")]
     [Tooltip("Invoked once, the instant this step becomes the current one (right as its UI is shown — or, " +

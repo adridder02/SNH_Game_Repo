@@ -373,6 +373,17 @@ public class TutorialSequenceController : MonoBehaviour
         }
     }
 
+    /// <summary>Pot menu gate. True when input isn't locked, when the current step ticked this action in Allowed Pot
+    /// Menu, or when the step is waiting on one of this control's own trigger ids.</summary>
+    public bool IsPotActionAllowed(PotMenuAction action, params string[] ownTriggerIds)
+    {
+        if (!IsInputLocked) return true;
+        TutorialStep step = CurrentStep;
+        if (step == null) return true;
+        if ((step.allowedPotMenu & action) != 0) return true;
+        return ownTriggerIds != null && System.Array.IndexOf(ownTriggerIds, step.externalTriggerId) >= 0;
+    }
+
     /// <summary>True while the current step has Lock Movement ticked. PlayerController zeroes movement/jump.</summary>
     public bool IsMovementLocked
     {

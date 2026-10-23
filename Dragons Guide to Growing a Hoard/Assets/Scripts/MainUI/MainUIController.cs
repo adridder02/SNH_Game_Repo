@@ -440,6 +440,8 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             playerInventory.OnFirstPlantHarvested += OnFirstPlantHarvested;
         if (abilityInventoryForGating != null)
             abilityInventoryForGating.OnFirstAbilityItemHarvested += OnFirstAbilityItemHarvested;
+        if (abilityInventoryForGating != null)
+            abilityInventoryForGating.OnFirstHotbarItemHarvested += OnFirstAbilityItemHarvested;
 
         // tabToggleHintIcon's visibility depends on this too (see RefreshPlacementBanner) — refresh
         // it the moment wall placement actually unlocks, in case the player is mid-Floor-placing
@@ -578,6 +580,8 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
 
         if (abilityInventoryForGating != null)
             abilityInventoryForGating.OnFirstAbilityItemHarvested -= OnFirstAbilityItemHarvested;
+        if (abilityInventoryForGating != null)
+            abilityInventoryForGating.OnFirstHotbarItemHarvested -= OnFirstAbilityItemHarvested;
     }
 
     // ---------------------------------------------------------------
@@ -620,7 +624,7 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             inventoryButton.gameObject.SetActive(playerInventory != null && playerInventory.HasHarvestedFirstPlant);
 
         if (hotbarRoot != null)
-            hotbarRoot.SetActive(abilityInventoryForGating != null && abilityInventoryForGating.HasHarvestedFirstAbilityItem);
+            hotbarRoot.SetActive(abilityInventoryForGating != null && abilityInventoryForGating.HasHarvestedFirstHotbarItem);
     }
 
     /// <summary>Adds a click listener to toolSlots[index] if both the slot and placementSystem exist.
@@ -711,7 +715,8 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         // false too and RefreshFirstHarvestGatedUI (called once in Awake) hides both of these right
         // alongside everything else. Force them on directly rather than going through that flag check.
         if (inventoryButton != null) inventoryButton.gameObject.SetActive(true);
-        if (hotbarRoot != null) hotbarRoot.SetActive(true);
+        // (The hotbar is deliberately NOT forced on here - it only appears once the player first receives an
+        // item that can actually go on it. See PlayerAbilityInventory.HasHarvestedFirstHotbarItem.)
     }
 
     /// <summary>Tints each tool slot to show which tool (if any) is currently active.</summary>

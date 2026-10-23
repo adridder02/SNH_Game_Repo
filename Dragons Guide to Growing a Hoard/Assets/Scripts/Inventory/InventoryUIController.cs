@@ -322,6 +322,8 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             hotbarSystem.OnSlotsChanged += RefreshHotbarUI;
         if (abilityInventory != null)
             abilityInventory.OnFirstAbilityItemHarvested += OnFirstAbilityItemHarvested;
+        if (abilityInventory != null)
+            abilityInventory.OnFirstHotbarItemHarvested += OnFirstAbilityItemHarvested;
     }
 
     void OnDisable()
@@ -334,6 +336,8 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             hotbarSystem.OnSlotsChanged -= RefreshHotbarUI;
         if (abilityInventory != null)
             abilityInventory.OnFirstAbilityItemHarvested -= OnFirstAbilityItemHarvested;
+        if (abilityInventory != null)
+            abilityInventory.OnFirstHotbarItemHarvested -= OnFirstAbilityItemHarvested;
     }
 
     void OnDestroy()
@@ -921,7 +925,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
     private void RefreshFirstHarvestGatedUI()
     {
         if (hotbarRoot != null)
-            hotbarRoot.SetActive(abilityInventory != null && abilityInventory.HasHarvestedFirstAbilityItem);
+            hotbarRoot.SetActive(abilityInventory != null && abilityInventory.HasHarvestedFirstHotbarItem);
     }
 
     public void ActivateHotbarSlot(int slotIndex)
