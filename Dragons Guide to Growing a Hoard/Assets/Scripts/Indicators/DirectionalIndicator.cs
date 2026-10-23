@@ -6,10 +6,11 @@
 // automatically and creates a UI arrow + name label for each one.
 //
 // BEHAVIOUR:
-//   Off-screen  → arrow icon clamped to the screen edge, rotated
-//                 to point toward the target.
-//   On-screen   → arrow hides; name label fades in as the player
-//                 looks more directly at the target (dot product).
+//   Always       → a big, pulsing, outlined MARKER ICON sits on the target with its name and distance, drawn
+//                  on the overlay canvas so walls / scenery never hide it.
+//   Off-screen   → the marker is pinned to the screen edge with an arrow pointing the way.
+//   On-screen    → the marker sits on the target (bobbing + pulsing); no arrow.
+//   (Set Always Show Label off to get the old "label only fades in when you look at it" behaviour.)
 //
 // SETUP:
 //   1. Attach this to your Player (or a UI manager GameObject).
@@ -43,6 +44,27 @@ public class DirectionalIndicator : MonoBehaviour
     [Tooltip("How many pixels from the screen edge the arrow is clamped to.")]
     public float edgePadding = 48f;
 
+    [Header("Marker Icon (the thing that sticks out)")]
+    [Tooltip("Icon drawn on / over the target - e.g. a bold exclamation mark, diamond or pin. Per-target override: " +
+             "TrackedTarget.iconOverride. Falls back to the arrow sprite if empty.")]
+    public Sprite markerSprite;
+    [Tooltip("Size of the marker icon in pixels.")]
+    public float markerSize = 72f;
+    [Tooltip("Outline colour drawn around the marker and label so they read against any background.")]
+    public Color markerOutlineColor = new Color(0f, 0f, 0f, 0.9f);
+    [Tooltip("How much the marker pulses in size (0.15 = +/-15%).")]
+    public float pulseAmount = 0.15f;
+    [Tooltip("Pulses per second.")]
+    public float pulseSpeed = 2.5f;
+    [Tooltip("Pixels the marker bobs up and down while on screen.")]
+    public float bobPixels = 8f;
+    [Tooltip("Show the distance to the target under its name.")]
+    public bool showDistance = true;
+    [Tooltip("Format for the distance; {0} is metres.")]
+    public string distanceFormat = "{0:0} m";
+    [Tooltip("Keep the name label visible all the time. Off = old behaviour (fades in only when you look at it).")]
+    public bool alwaysShowLabel = true;
+
     [Header("Name Label")]
     [Tooltip("Dot product threshold above which the name label starts fading in. " +
              "1.0 = only when looking dead-on; 0.9 = within ~25 degrees.")]
@@ -66,6 +88,8 @@ public class DirectionalIndicator : MonoBehaviour
         public TrackedTarget target;
         public RectTransform arrowRect;
         public Image arrowImage;
+        public RectTransform markerRect;
+        public Image markerImage;
         public RectTransform labelRect;
         public TextMeshProUGUI labelText;
         public Image labelBackground;
@@ -74,6 +98,7 @@ public class DirectionalIndicator : MonoBehaviour
 
     private List<IndicatorEntry> entries = new List<IndicatorEntry>();
     private RectTransform canvasRect;
+    private Transform distanceOrigin;
 
     /// <summary>Auto-set in Awake — lets tutorial/gameplay code reach ActivateTarget/DeactivateTarget
     /// below without holding its own reference (same pattern as TutorialSequenceController.Instance).</summary>
@@ -125,6 +150,8 @@ public class DirectionalIndicator : MonoBehaviour
         }
 
         canvasRect = canvas.GetComponent<RectTransform>();
+        PlayerController pc = FindAnyObjectByType<PlayerController>();
+        distanceOrigin = pc != null ? pc.transform : (playerCamera != null ? playerCamera.transform : null);
         RefreshTargets();
     }
 
@@ -138,6 +165,7 @@ public class DirectionalIndicator : MonoBehaviour
         foreach (IndicatorEntry e in entries)
         {
             if (e.arrowRect != null) Destroy(e.arrowRect.gameObject);
+            if (e.markerRect != null) Destroy(e.markerRect.gameObject);
             if (e.labelRect != null) Destroy(e.labelRect.gameObject);
         }
         entries.Clear();
@@ -167,6 +195,23 @@ public class DirectionalIndicator : MonoBehaviour
         Image arrowImage = arrowGO.GetComponent<Image>();
         if (arrowSprite != null) arrowImage.sprite = arrowSprite;
         arrowImage.color = target.indicatorColor;
+
+        // ------ Marker icon ------
+        GameObject markerGO = new GameObject($"Marker_{target.displayName}", typeof(RectTransform), typeof(Image));
+        markerGO.transform.SetParent(canvas.transform, false);
+        RectTransform markerRect = markerGO.GetComponent<RectTransform>();
+        markerRect.anchorMin = markerRect.anchorMax = new Vector2(0.5f, 0.5f);
+        markerRect.pivot = new Vector2(0.5f, 0.5f);
+        markerRect.sizeDelta = new Vector2(markerSize, markerSize) * Mathf.Max(0.1f, target.markerScale);
+        Image markerImage = markerGO.GetComponent<Image>();
+        Sprite icon = target.iconOverride != null ? target.iconOverride : (markerSprite != null ? markerSprite : arrowSprite);
+        if (icon != null) markerImage.sprite = icon;
+        markerImage.preserveAspect = true;
+        markerImage.raycastTarget = false;
+        markerImage.color = target.indicatorColor;
+        Outline markerOutline = markerGO.AddComponent<Outline>();
+        markerOutline.effectColor = markerOutlineColor;
+        markerOutline.effectDistance = new Vector2(3f, -3f);
 
         // ------ Label background (optional) ------
         GameObject labelGO = new GameObject($"Label_{target.displayName}", typeof(RectTransform));
@@ -202,15 +247,24 @@ public class DirectionalIndicator : MonoBehaviour
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.textWrappingMode = TextWrappingModes.NoWrap; // replaces the deprecated enableWordWrapping = false
 
-        // Size the label rect to fit the text with a little padding.
-        Vector2 textSize = new Vector2(tmp.preferredWidth + 16f, labelFontSize + 10f);
-        labelRect.sizeDelta = textSize;
+        tmp.fontStyle = FontStyles.Bold;
+        tmp.outlineWidth = 0.2f;
+        tmp.outlineColor = markerOutlineColor;
+        tmp.raycastTarget = false;
+
+        // Size the label rect to fit the name (and a distance line) with a little padding.
+        float width = Mathf.Max(tmp.preferredWidth, labelFontSize * 4f) + 24f;
+        float height = (showDistance ? labelFontSize * 2.1f : labelFontSize * 1.1f) + 12f;
+        labelRect.sizeDelta = new Vector2(width, height);
+        tmp.alignment = TextAlignmentOptions.Center;
 
         return new IndicatorEntry
         {
             target = target,
             arrowRect = arrowRect,
             arrowImage = arrowImage,
+            markerRect = markerRect,
+            markerImage = markerImage,
             labelRect = labelRect,
             labelText = tmp,
             labelBackground = labelBG,
@@ -226,25 +280,22 @@ public class DirectionalIndicator : MonoBehaviour
     {
         if (playerCamera == null || canvasRect == null) return;
 
-        Vector2 halfScreen = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+        Vector2 canvasSize = canvasRect.rect.size;
+        float canvasScale = canvas.scaleFactor > 0f ? canvas.scaleFactor : 1f;
+        Vector2 half = canvasSize * 0.5f;
+        float pad = edgePadding / canvasScale + markerSize * 0.5f;
         Vector3 camForward = playerCamera.transform.forward;
+        float t = Time.unscaledTime;
 
         for (int i = 0; i < entries.Count; i++)
         {
             IndicatorEntry e = entries[i];
-            if (e.target == null)
+            if (e.target == null || !e.target.IsTrackingActive)
             {
-                // Target was destroyed — hide its UI and skip.
-                SetAlpha(ref e, 0f);
-                entries[i] = e;
-                continue;
-            }
-
-            if (!e.target.IsTrackingActive)
-            {
-                // Tracking turned off for this target (e.g. tutorial step ended) — hide its arrow
-                // and label, but leave the target's own GameObject completely alone.
+                // Destroyed, or tracking turned off (e.g. tutorial step ended) - hide everything but leave the
+                // target's own GameObject completely alone.
                 if (e.arrowRect != null) e.arrowRect.gameObject.SetActive(false);
+                if (e.markerRect != null) e.markerRect.gameObject.SetActive(false);
                 SetAlpha(ref e, 0f);
                 entries[i] = e;
                 continue;
@@ -252,64 +303,83 @@ public class DirectionalIndicator : MonoBehaviour
 
             Vector3 worldPos = e.target.WorldPosition;
             Vector3 viewportPos = playerCamera.WorldToViewportPoint(worldPos);
-
-            // Is the target in front of the camera?
             bool inFront = viewportPos.z > 0f;
-
-            // Is it visible on screen?
             bool onScreen = inFront
                 && viewportPos.x >= 0f && viewportPos.x <= 1f
                 && viewportPos.y >= 0f && viewportPos.y <= 1f;
 
+            float pulse = 1f + Mathf.Sin(t * pulseSpeed * Mathf.PI * 2f) * pulseAmount;
+            float baseScale = Mathf.Max(0.1f, e.target.markerScale);
+
+            Vector2 markerPos;
             if (onScreen)
             {
-                // Hide the arrow; show label based on how directly we're facing the target.
                 e.arrowRect.gameObject.SetActive(false);
 
-                Vector3 dirToTarget = (worldPos - playerCamera.transform.position).normalized;
-                float dot = Vector3.Dot(camForward, dirToTarget);
-
-                float targetAlpha = Mathf.InverseLerp(facingThreshold, 1f, dot);
-                e.currentAlpha = Mathf.MoveTowards(e.currentAlpha, targetAlpha, labelFadeSpeed * Time.deltaTime);
-
-                // Position the label at the target's screen position.
-                Vector2 screenPos = new Vector2(
-                    (viewportPos.x - 0.5f) * canvasRect.sizeDelta.x,
-                    (viewportPos.y - 0.5f) * canvasRect.sizeDelta.y);
-
-                e.labelRect.anchoredPosition = screenPos + Vector2.up * (arrowSize * 0.5f + 4f);
+                Vector2 p = new Vector2((viewportPos.x - 0.5f) * canvasSize.x, (viewportPos.y - 0.5f) * canvasSize.y);
+                // keep the whole marker visible even when the target is right at the screen edge
+                p.x = Mathf.Clamp(p.x, -half.x + pad, half.x - pad);
+                p.y = Mathf.Clamp(p.y, -half.y + pad, half.y - pad);
+                p.y += Mathf.Sin(t * 3f) * bobPixels;
+                markerPos = p;
+                e.markerRect.localRotation = Quaternion.identity;
             }
             else
             {
-                // Off-screen: show the arrow clamped to the screen edge, hide the label.
+                Vector2 dir = new Vector2(viewportPos.x - 0.5f, viewportPos.y - 0.5f);
+                if (!inFront) dir = -dir;
+                if (dir == Vector2.zero) dir = Vector2.up;
+                dir.Normalize();
+
+                float scaleX = Mathf.Abs(dir.x) > 0.001f ? (half.x - pad) / Mathf.Abs(dir.x) : float.MaxValue;
+                float scaleY = Mathf.Abs(dir.y) > 0.001f ? (half.y - pad) / Mathf.Abs(dir.y) : float.MaxValue;
+                markerPos = dir * Mathf.Min(scaleX, scaleY);
+
+                // arrow sits just outside the marker, pointing the way
                 e.arrowRect.gameObject.SetActive(true);
-                e.currentAlpha = Mathf.MoveTowards(e.currentAlpha, 0f, labelFadeSpeed * Time.deltaTime);
-
-                // Convert viewport to a direction from screen centre, handle behind-camera case.
-                Vector2 screenDir = new Vector2(viewportPos.x - 0.5f, viewportPos.y - 0.5f);
-                if (!inFront) screenDir = -screenDir;
-
-                if (screenDir == Vector2.zero) screenDir = Vector2.up;
-                screenDir.Normalize();
-
-                // Clamp to screen edge with padding.
-                float halfW = halfScreen.x - edgePadding;
-                float halfH = halfScreen.y - edgePadding;
-
-                float scaleX = Mathf.Abs(screenDir.x) > 0.001f ? halfW / Mathf.Abs(screenDir.x) : float.MaxValue;
-                float scaleY = Mathf.Abs(screenDir.y) > 0.001f ? halfH / Mathf.Abs(screenDir.y) : float.MaxValue;
-                float scale = Mathf.Min(scaleX, scaleY);
-
-                // anchoredPosition is in canvas space, not screen space — divide by canvas scale.
-                float canvasScale = canvas.scaleFactor > 0f ? canvas.scaleFactor : 1f;
-                e.arrowRect.anchoredPosition = screenDir * scale / canvasScale;
-
-                // Rotate arrow to point toward the target.
-                float angle = Mathf.Atan2(screenDir.y, screenDir.x) * Mathf.Rad2Deg - 90f;
+                e.arrowRect.anchoredPosition = markerPos + dir * (markerSize * baseScale * 0.5f + arrowSize * 0.6f);
+                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
                 e.arrowRect.localRotation = Quaternion.Euler(0f, 0f, angle);
+                e.arrowRect.localScale = Vector3.one * pulse;
             }
 
-            // Apply alpha to both label text and optional background.
+            e.markerRect.gameObject.SetActive(true);
+            e.markerRect.anchoredPosition = markerPos;
+            e.markerRect.localScale = Vector3.one * pulse;
+
+            // Label: always on (or fades in when faced, if Always Show Label is off). Sits below the marker.
+            float targetAlpha = 1f;
+            if (!alwaysShowLabel)
+            {
+                if (onScreen)
+                {
+                    Vector3 dirToTarget = (worldPos - playerCamera.transform.position).normalized;
+                    targetAlpha = Mathf.InverseLerp(facingThreshold, 1f, Vector3.Dot(camForward, dirToTarget));
+                }
+                else targetAlpha = 0f;
+            }
+            e.currentAlpha = Mathf.MoveTowards(e.currentAlpha, targetAlpha, labelFadeSpeed * Time.deltaTime);
+
+            if (e.labelRect != null)
+            {
+                float below = markerSize * baseScale * 0.5f + e.labelRect.sizeDelta.y * 0.5f + 4f;
+                Vector2 labelPos = markerPos + Vector2.down * below;
+                // keep the label on screen
+                labelPos.x = Mathf.Clamp(labelPos.x, -half.x + e.labelRect.sizeDelta.x * 0.5f, half.x - e.labelRect.sizeDelta.x * 0.5f);
+                labelPos.y = Mathf.Clamp(labelPos.y, -half.y + e.labelRect.sizeDelta.y * 0.5f, half.y - e.labelRect.sizeDelta.y * 0.5f);
+                e.labelRect.anchoredPosition = labelPos;
+            }
+
+            if (e.labelText != null)
+            {
+                if (showDistance && distanceOrigin != null)
+                {
+                    float d = Vector3.Distance(distanceOrigin.position, worldPos);
+                    e.labelText.text = e.target.displayName + "\n" + string.Format(distanceFormat, d);
+                }
+                else e.labelText.text = e.target.displayName;
+            }
+
             ApplyAlpha(ref e);
             entries[i] = e;
         }
@@ -339,6 +409,7 @@ public class DirectionalIndicator : MonoBehaviour
             c.a = e.currentAlpha * 0.55f;
             e.labelBackground.color = c;
         }
+
     }
 
     private void OnDestroy()
@@ -347,6 +418,7 @@ public class DirectionalIndicator : MonoBehaviour
         foreach (IndicatorEntry e in entries)
         {
             if (e.arrowRect != null) Destroy(e.arrowRect.gameObject);
+            if (e.markerRect != null) Destroy(e.markerRect.gameObject);
             if (e.labelRect != null) Destroy(e.labelRect.gameObject);
         }
     }

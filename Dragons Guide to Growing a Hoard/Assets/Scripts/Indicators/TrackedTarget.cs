@@ -17,6 +17,13 @@ public class TrackedTarget : MonoBehaviour
     [Tooltip("Color of this target's arrow and label.")]
     public Color indicatorColor = Color.white;
 
+    [Tooltip("Optional. Overrides the marker icon for this target only (e.g. a water drop for the water source). " +
+             "Leave empty to use DirectionalIndicator's default marker sprite.")]
+    public Sprite iconOverride;
+
+    [Tooltip("Scales this target's marker icon (1 = the indicator's Marker Size).")]
+    public float markerScale = 1f;
+
     [Tooltip("Optional world-space offset so the arrow points to e.g. the top of a tall plant " +
              "rather than its pivot at the base.")]
     public Vector3 trackOffset = Vector3.zero;

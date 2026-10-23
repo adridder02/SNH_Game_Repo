@@ -249,6 +249,14 @@ public class PotMenuUIController : MonoBehaviour
 
     void Update()
     {
+        // If a "Press [E] to interact with the pot" step becomes current while the player is ALREADY inside the
+        // pot menu (e.g. the plant finished growing while they were in it), count it as done - they can't open
+        // a menu they're already in.
+        TutorialSequenceController tutorial = TutorialSequenceController.Instance;
+        if (tutorial != null && IsOpen && tutorial.CurrentStep != null &&
+            tutorial.CurrentStep.externalTriggerId == "interacted_with_pot")
+            tutorial.NotifyExternalTrigger("interacted_with_pot");
+
         if (currentPot != null && mainPanel != null && mainPanel.activeSelf)
         {
             RefreshMainStatusBars();
