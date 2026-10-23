@@ -345,6 +345,44 @@ public class TutorialSequenceController : MonoBehaviour
         }
     }
 
+    private static readonly string[] BackTriggerIds =
+    {
+        "closed_inventory_back_button", "closed_journal_back_button", "closed_item_detail", "closed_pot_menu"
+    };
+
+    /// <summary>True while a Portable step is showing that hasn't ticked Allow Escape. ExitMenuController checks this
+    /// before doing anything with an Escape press.</summary>
+    public bool IsEscapeBlocked
+    {
+        get
+        {
+            TutorialStep step = CurrentStep;
+            return step != null && step.type == TutorialPromptType.Portable && !step.allowEscape;
+        }
+    }
+
+    /// <summary>True while a Portable step is showing that hasn't ticked Allow Back Buttons (and isn't itself
+    /// waiting on one of the "closed_..." triggers). Inventory/Journal/Pot menu back buttons check this.</summary>
+    public bool IsBackBlocked
+    {
+        get
+        {
+            TutorialStep step = CurrentStep;
+            if (step == null || step.type != TutorialPromptType.Portable || step.allowBackButtons) return false;
+            return System.Array.IndexOf(BackTriggerIds, step.externalTriggerId) < 0;
+        }
+    }
+
+    /// <summary>True while the current step has Lock Movement ticked. PlayerController zeroes movement/jump.</summary>
+    public bool IsMovementLocked
+    {
+        get
+        {
+            TutorialStep step = CurrentStep;
+            return step != null && step.lockMovement;
+        }
+    }
+
     /// <summary>Call this BEFORE letting a mission-task-driving action actually happen (opening the pot
     /// menu, watering, harvesting — not just before reporting the task complete afterward). Always true
     /// when input isn't locked; while it IS locked, only true for the exact mission+task the CURRENT

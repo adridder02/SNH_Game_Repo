@@ -42,6 +42,16 @@ public class TutorialPromptBox : MonoBehaviour
              "it's meant to auto-advance off a linked mission task instead).")]
     [SerializeField] private Button clickCatcher;
 
+    [Header("Follow a runtime target (optional)")]
+    [Tooltip("Leave blank for a normal hand-placed prompt. If set (e.g. 'journal_plant' or 'inventory_consumable'), " +
+             "this prompt's root snaps its position and size onto that UI element every frame while showing - " +
+             "for things that only exist at runtime so you can't place a box on them by hand. Anchor this " +
+             "object to a single point (not stretched). Put your outline on the root and the bubble/text as " +
+             "children offset where you want them; they move with it. See TutorialTargets.cs for the keys.")]
+    [SerializeField] private string followTargetKey;
+    [Tooltip("Extra size added around the target (px) so the outline sits just outside it.")]
+    [SerializeField] private Vector2 followPadding = new Vector2(12f, 12f);
+
     /// <summary>Fired when the player clicks this prompt while its step allows it.</summary>
     public event Action OnAdvanceRequested;
 
@@ -62,6 +72,34 @@ public class TutorialPromptBox : MonoBehaviour
             clickCatcher.interactable = advanceOnClick;
 
         gameObject.SetActive(true);
+        FollowTarget();
+    }
+
+    private void LateUpdate()
+    {
+        if (!string.IsNullOrEmpty(followTargetKey)) FollowTarget();
+    }
+
+    private void FollowTarget()
+    {
+        if (string.IsNullOrEmpty(followTargetKey)) return;
+        RectTransform target = TutorialTargets.Get(followTargetKey);
+        RectTransform self = transform as RectTransform;
+        RectTransform parent = self != null ? self.parent as RectTransform : null;
+        if (target == null || self == null || parent == null) return;
+
+        var c = new Vector3[4];
+        target.GetWorldCorners(c);
+        Vector3 center = (c[0] + c[2]) * 0.5f;
+
+        // size measured in the parent's local space so canvas scaling doesn't matter
+        Vector3 min = parent.InverseTransformPoint(c[0]);
+        Vector3 max = parent.InverseTransformPoint(c[2]);
+        self.sizeDelta = new Vector2(Mathf.Abs(max.x - min.x), Mathf.Abs(max.y - min.y)) + followPadding;
+
+        // move so the rect's CENTRE (not its pivot) sits on the target's centre
+        Vector3 pivotToCentre = self.TransformPoint(self.rect.center) - self.position;
+        self.position = center - pivotToCentre;
     }
 
     public void Hide() => gameObject.SetActive(false);

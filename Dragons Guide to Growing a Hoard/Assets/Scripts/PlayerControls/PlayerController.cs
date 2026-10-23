@@ -544,7 +544,8 @@ public class PlayerController : MonoBehaviour
         // currently using Space for something (dismissing a Portable prompt like the pot menu's health
         // bar callout, or a Sidebar page's Next/Complete button), that same press shouldn't ALSO make
         // the dragon jump underneath it.
-        if (TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsConsumingSpacebar)
+        if (TutorialSequenceController.Instance != null &&
+            (TutorialSequenceController.Instance.IsConsumingSpacebar || TutorialSequenceController.Instance.IsMovementLocked))
             return;
 
         switch (locomotionState)
@@ -638,6 +639,10 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if (!movementEnabled) return;
+
+        // Tutorial step with Lock Movement ticked: ignore WASD (jump is blocked in OnJump-equivalent below).
+        if (TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsMovementLocked)
+            moveInput = Vector2.zero;
 
         switch (locomotionState)
         {

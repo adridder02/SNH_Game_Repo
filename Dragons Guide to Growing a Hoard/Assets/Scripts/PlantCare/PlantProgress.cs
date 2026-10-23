@@ -132,6 +132,7 @@ public class PlantProgress : MonoBehaviour
         if (plantState == null) return;
 
         PlantSpeciesData species = plantState.journalSpecies;
+        PlantEvents.RaiseCompleted(species);
         if (species == null)
         {
             Debug.LogWarning($"[PlantProgress] '{gameObject.name}' reached full growth but its PlantState " +

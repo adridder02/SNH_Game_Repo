@@ -176,6 +176,7 @@ public class AbilityHotbarSystem : MonoBehaviour
 
         slots[slotIndex].assigned = data;
         OnSlotsChanged?.Invoke();
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("assigned_to_hotbar");
         return true;
     }
 
@@ -221,6 +222,8 @@ public class AbilityHotbarSystem : MonoBehaviour
 
         if (abilityInventory == null || abilityInventory.GetCount(data) <= 0)
             return; // stack ran out — slot stays assigned but does nothing until restocked
+
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("used_hotbar_slot"); // number key or click on a filled slot
 
         if (data.kind == AbilityKind.Placeable)
         {

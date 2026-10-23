@@ -659,6 +659,7 @@ public class PotContents : MonoBehaviour
         Plant.ApplyCondition(condition ?? PlantCondition.Healthy);
         if (tutorialMission != null && tutorialMission.tasks.Count > 3)
             MissionProgressManager.Instance?.CompleteTask(tutorialMission, tutorialMission.tasks[3]); // PlantedSeed
+        PlantEvents.RaisePlanted(Plant.journalSpecies);
         return true;
     }
 
@@ -750,6 +751,7 @@ public class PotContents : MonoBehaviour
     {
         if (!hasPlant || Plant == null) return;
 
+        PlantEvents.RaiseHarvested(Plant.journalSpecies);
         string harvestedName = Plant.gameObject.name.Replace("(Clone)", "").Trim();
         PlantHarvestYield yield = Plant.GetComponent<PlantHarvestYield>();
 

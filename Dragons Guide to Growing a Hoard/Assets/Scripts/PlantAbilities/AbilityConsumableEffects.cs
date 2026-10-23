@@ -40,6 +40,7 @@ public static class AbilityConsumableEffects
                     if (targetPot == null || targetPot.Plant == null) return false;
                     float duration = data.amountA > 0f ? data.amountA : 20f;
                     PotNeedIndicator.AttachTo(targetPot, duration, data.placedPrefab, data);
+                    PlantEvents.RaiseConsumableUsed(data, targetPot.Plant.journalSpecies);
                     return true;
                 }
 

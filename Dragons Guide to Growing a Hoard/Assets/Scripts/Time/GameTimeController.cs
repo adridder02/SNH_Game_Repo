@@ -27,6 +27,21 @@ public class GameTimeController : MonoBehaviour
     [SerializeField] private Button closeButton;
     [SerializeField] private TMP_Text speedLabel;
 
+    [Header("Tutorial reveal")]
+    [Tooltip("If on, the toggle button (and the T hotkey) stay hidden/disabled until RevealTimeUI() is called - wire " +
+             "that to the time-menu tutorial step's onStepShown, same as the other HUD reveals. MainUIController." +
+             "RevealAllTutorialGatedUI also calls it. Leave off to show the time button from the start.")]
+    [SerializeField] private bool startsHidden = true;
+
+    private bool revealed = true;
+
+    /// <summary>Shows the time toggle button and enables the hotkey. Safe to call repeatedly.</summary>
+    public void RevealTimeUI()
+    {
+        revealed = true;
+        if (toggleButton != null) toggleButton.gameObject.SetActive(true);
+    }
+
     [Header("Speeds")]
     [Tooltip("The speeds Faster/Slower step through, lowest to highest. Must contain 1.")]
     [SerializeField] private float[] speedSteps = { 0.25f, 0.5f, 1f, 2f, 4f, 8f };
@@ -45,6 +60,8 @@ public class GameTimeController : MonoBehaviour
     {
         index = DefaultIndex();
         toggleButton?.onClick.AddListener(ToggleMenu);
+        revealed = !startsHidden;
+        if (startsHidden && toggleButton != null) toggleButton.gameObject.SetActive(false);
         speedUpButton?.onClick.AddListener(SpeedUp);
         slowDownButton?.onClick.AddListener(SlowDown);
         resetButton?.onClick.AddListener(ResetSpeed);
@@ -73,14 +90,14 @@ public class GameTimeController : MonoBehaviour
 
     private void Update()
     {
-        if (!enableHotkey || Keyboard.current == null || !Keyboard.current.tKey.wasPressedThisFrame) return;
+        if (!revealed || !enableHotkey || Keyboard.current == null || !Keyboard.current.tKey.wasPressedThisFrame) return;
         ToggleMenu();
     }
 
     private static bool CanOpen()
     {
         var tutorial = TutorialSequenceController.Instance;
-        if (tutorial != null && tutorial.IsInputLocked) return false;
+        if (tutorial != null && !tutorial.IsActionAllowedForTrigger("time_menu_opened")) return false;
 
         // Only from normal gameplay - not while the Journal/Inventory/Pot menu is open or the player is
         // in a placement mode (opening on top of those would leave the input mode wrong on close).
@@ -90,6 +107,7 @@ public class GameTimeController : MonoBehaviour
 
     public void ToggleMenu()
     {
+        if (!revealed) return;
         if (menuOpen) { CloseMenu(); return; }
         if (!CanOpen()) return;
         OpenMenu();
@@ -108,6 +126,7 @@ public class GameTimeController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         ThirdPersonCameraController.CameraLocked = true;
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("time_menu_opened");
     }
 
     public void CloseMenu()
@@ -117,11 +136,32 @@ public class GameTimeController : MonoBehaviour
         MenuLayerManager.NotifyClosed(this);
         if (menuRoot != null) menuRoot.SetActive(false);
         GameInputModeManager.Instance?.SetGameplayMode();
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("time_menu_closed");
     }
 
-    public void SpeedUp() { index = Mathf.Min(index + 1, speedSteps.Length - 1); Apply(); }
-    public void SlowDown() { index = Mathf.Max(index - 1, 0); Apply(); }
-    public void ResetSpeed() { index = DefaultIndex(); Apply(); }
+    public void SpeedUp()
+    {
+        int before = index;
+        index = Mathf.Min(index + 1, speedSteps.Length - 1);
+        Apply();
+        if (index != before) TutorialSequenceController.Instance?.NotifyExternalTrigger("sped_up_time");
+    }
+
+    public void SlowDown()
+    {
+        int before = index;
+        index = Mathf.Max(index - 1, 0);
+        Apply();
+        if (index != before) TutorialSequenceController.Instance?.NotifyExternalTrigger("slowed_down_time");
+    }
+
+    public void ResetSpeed()
+    {
+        int before = index;
+        index = DefaultIndex();
+        Apply();
+        if (index != before) TutorialSequenceController.Instance?.NotifyExternalTrigger("reset_time_speed");
+    }
 
     private void Apply()
     {

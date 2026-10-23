@@ -101,6 +101,18 @@ public class TutorialStep
              "deliberately want other UI still usable underneath (e.g. a passive pointer-only popup).")]
     public bool lockOtherInput = true;
 
+    [Header("Escape / Back / Movement (Portable only)")]
+    [Tooltip("OFF by default: while this Portable step shows, Escape does nothing (it won't close menus, cancel " +
+             "placement or open the exit menu). Tick this on a step that actually teaches pressing Escape " +
+             "(e.g. 'exit placement mode').")]
+    public bool allowEscape = false;
+    [Tooltip("OFF by default: while this Portable step shows, the BACK / CLOSE buttons on the inventory, journal " +
+             "and pot menu do nothing. Tick this on a step that teaches closing something with its back button. " +
+             "(A step whose External Trigger Id is one of the 'closed_...' ids is allowed automatically.)")]
+    public bool allowBackButtons = false;
+    [Tooltip("Freezes the player (WASD/jump) while this step shows. Camera is unaffected. Off by default.")]
+    public bool lockMovement = false;
+
     [Header("Side effects (optional)")]
     [Tooltip("Invoked once, the instant this step becomes the current one (right as its UI is shown — or, " +
              "for a Gate step, the instant it becomes current even though it shows nothing). Use this to " +

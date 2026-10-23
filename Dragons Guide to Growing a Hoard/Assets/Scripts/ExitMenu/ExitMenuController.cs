@@ -68,6 +68,10 @@ public class ExitMenuController : MonoBehaviour
         if (Keyboard.current == null || !Keyboard.current.escapeKey.wasPressedThisFrame)
             return;
 
+        // A Portable tutorial step disables Escape entirely unless it ticked "Allow Escape".
+        if (TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsEscapeBlocked)
+            return;
+
         if (IsExitMenuOpen)
         {
             CloseExitMenu();

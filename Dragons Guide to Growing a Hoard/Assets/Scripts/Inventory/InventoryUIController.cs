@@ -426,6 +426,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
     /// step that actually says "click the back button".</summary>
     private void OnBackButtonClicked()
     {
+        if (TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsBackBlocked) return;
         TutorialSequenceController.Instance?.NotifyExternalTrigger("closed_inventory_back_button");
         ToggleInventory();
     }
@@ -659,8 +660,15 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         SetFilter(activeFilter == type ? (PlantType?)null : type);
     }
 
+    // Filter buttons are blocked while a Portable tutorial step locks input, unless that step is the one
+    // waiting on "used_inventory_filter".
+    private static bool FilterBlockedByTutorial =>
+        TutorialSequenceController.Instance != null &&
+        !TutorialSequenceController.Instance.IsActionAllowedForTrigger("used_inventory_filter");
+
     private void SetFilter(PlantType? type)
     {
+        if (FilterBlockedByTutorial) return;
         activeFilter = type;
         showOnlyConsumables = false; // mutually exclusive with the Consumables filter
         RefreshFilterButtonVisuals();
@@ -673,6 +681,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
 
     private void ToggleConsumablesFilter()
     {
+        if (FilterBlockedByTutorial) return;
         showOnlyConsumables = !showOnlyConsumables;
         if (showOnlyConsumables)
             activeFilter = null; // mutually exclusive with the PlantType filters
@@ -727,6 +736,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
 
     void RefreshUI()
     {
+        TutorialTargets.Clear("inventory_consumable");
         if (playerInventory == null || gridPanel == null || availablePanel == null || gridSlotTemplate == null)
         {
             Debug.LogWarning("[InventoryUIController] Missing a required reference — check the Inspector.");
@@ -843,6 +853,10 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         slot.gameObject.SetActive(true); // template itself is hidden — the clone needs to be shown
         slot.Initialize(occupant, this, rootCanvas, isAvailableSlot);
         slotVisuals[occupant.InstanceId] = slot;
+
+        // Tutorial pointer: the first consumable's slot (first one created per refresh wins).
+        if (!isAvailableSlot && occupant is AbilityItemInstance ai && ai.data != null && ai.data.kind == AbilityKind.Consumable)
+            TutorialTargets.Set("inventory_consumable", slot.GetComponent<RectTransform>());
         return slot;
     }
 
@@ -853,6 +867,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
     public void UseAbility(AbilityItemData data)
     {
         if (data == null || abilityInventory == null) return;
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("clicked_use_consumable");
 
         if (data.kind == AbilityKind.Consumable && AbilityConsumableEffects.RequiresPotTarget(data.effectId))
         {

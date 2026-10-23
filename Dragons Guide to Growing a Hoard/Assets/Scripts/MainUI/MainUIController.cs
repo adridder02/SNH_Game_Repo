@@ -703,6 +703,7 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         RevealToolSlot(1);
         RevealToolSlot(2);
         RevealToolSlot(3);
+        FindAnyObjectByType<GameTimeController>()?.RevealTimeUI();
 
         // Same problem as the elements above, but the flags behind these two live on PlayerInventory/
         // PlayerAbilityInventory (HasHarvestedFirstPlant/HasHarvestedFirstAbilityItem) rather than on

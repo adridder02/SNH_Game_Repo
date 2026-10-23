@@ -186,7 +186,11 @@ public class JournalUIController : MonoBehaviour
         }
 
         if (journalBackButton != null)
-            journalBackButton.onClick.AddListener(ToggleJournal);
+            journalBackButton.onClick.AddListener(() =>
+            {
+                if (TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsBackBlocked) return;
+                ToggleJournal();
+            });
 
         SetupCareDropdown(waterDropdown, new List<string> { "Low", "Medium", "High" });
         SetupCareDropdown(lightDropdown, new List<string> { "Low", "Medium", "High" });
@@ -398,9 +402,15 @@ public class JournalUIController : MonoBehaviour
             return;
         }
 
+        TutorialTargets.Clear("journal_plant");
+        TutorialTargets.Clear("journal_plant_completed");
         PopulateRow(sunnyRow, PlantType.Sunny);
         PopulateRow(darkRow, PlantType.Dark);
         PopulateRow(waterRow, PlantType.Water);
+
+        // Prefer the first completed plant for the tutorial pointer; otherwise keep the first discovered.
+        RectTransform done = TutorialTargets.Get("journal_plant_completed");
+        if (done != null) TutorialTargets.Set("journal_plant", done, overwrite: true);
     }
 
     private void PopulateRow(RectTransform row, PlantType category)
@@ -440,6 +450,12 @@ public class JournalUIController : MonoBehaviour
 
             slot.Initialize(species, true, this);
             existing.Add(slot);
+
+            // Tutorial pointer targets (resolved at the end of RefreshUI).
+            RectTransform sr = slot.GetComponent<RectTransform>();
+            if (journalManager != null && journalManager.IsCompleted(species))
+                TutorialTargets.Set("journal_plant_completed", sr);
+            TutorialTargets.Set("journal_plant", sr);
         }
     }
 

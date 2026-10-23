@@ -27,3 +27,13 @@ MonoBehaviour:
     description: Go to the water source nearby
   - taskId: water_refill
     description: Sit in the water until your water bar is refilled
+  - taskId: complete_plant
+    description: Grow a Pollen Puff to Completion
+  - taskId: harvest
+    description: Harvest the Pollen Puff
+  - taskId: plant_new
+    description: Plant another Pollen Puff
+  - taskId: use_puff
+    description: Use consumable on a plant
+  - taskId: exit
+    description: Exit the Tutorial Level

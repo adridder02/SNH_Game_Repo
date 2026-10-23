@@ -191,17 +191,17 @@ public class PotMenuUIController : MonoBehaviour
         waterSoilButton?.onClick.AddListener(() => SelectSoilOption(SoilKind.Water));
         infectedSoilButton?.onClick.AddListener(() => SelectSoilOption(SoilKind.Infected));
         selectSoilButton?.onClick.AddListener(ConfirmSoilSelection);
-        chooseSoilBackButton?.onClick.AddListener(ShowMain);
+        chooseSoilBackButton?.onClick.AddListener(BackToMain);
 
         choosePlantConfirmButton?.onClick.AddListener(ConfirmPlantSelection);
-        choosePlantBackButton?.onClick.AddListener(ShowMain);
+        choosePlantBackButton?.onClick.AddListener(BackToMain);
 
         soilActionButton?.onClick.AddListener(ShowChooseSoil);
         choosePlantButton?.onClick.AddListener(OnPlantActionButtonClicked);
         waterButton?.onClick.AddListener(OnWaterButtonClicked);
 
         useAbilityButton?.onClick.AddListener(ShowAbilities);
-        abilityBackButton?.onClick.AddListener(ShowMain);
+        abilityBackButton?.onClick.AddListener(BackToMain);
         abilityContinueButton?.onClick.AddListener(ConfirmAbilitySelection);
         collectPuffballsButton?.onClick.AddListener(OnCollectPuffballsClicked);
 
@@ -233,8 +233,15 @@ public class PotMenuUIController : MonoBehaviour
 
     /// <summary>The actual "exit the pot menu entirely" button — distinct from chooseSoilBackButton/
     /// choosePlantBackButton/abilityBackButton, which just go back to the main panel within the menu.</summary>
+    private void BackToMain()
+    {
+        if (TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsBackBlocked) return;
+        ShowMain();
+    }
+
     private void OnMenuCloseButtonClicked()
     {
+        if (TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsBackBlocked) return;
         // Tutorial hook — fires the moment the player actually exits the pot menu via this button.
         TutorialSequenceController.Instance?.NotifyExternalTrigger("closed_pot_menu");
         ownerInteraction?.CloseMenu();
@@ -323,6 +330,7 @@ public class PotMenuUIController : MonoBehaviour
 
     private void ShowChoosePlant()
     {
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_choose_plant_panel");
         SetActivePanel(choosePlantPanel);
         RefreshChoosePlantPanel();
         RefreshMainPanel();
@@ -333,6 +341,7 @@ public class PotMenuUIController : MonoBehaviour
         SetActivePanel(abilitiesPanel);
         RefreshAbilitiesPanel();
         RefreshMainPanel();
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_abilities_panel");
     }
 
     // ------------------------------------------------------------
@@ -871,6 +880,11 @@ public class PotMenuUIController : MonoBehaviour
         playerInventory.RemoveFirstPlant(item.plantPrefab);
         ownerInteraction?.RefreshOutlineFor(currentPot);
         ShowMain();
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("planted_plant"); // any plant, after it actually went in the pot
+        // The player is already inside the pot menu here, so a step waiting on "Press [E] to interact with the
+        // pot" (interacted_with_pot) would otherwise hang - they can't open a menu they're already in. If the
+        // planted_plant gate above just advanced onto that step, this satisfies it straight away.
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("interacted_with_pot");
     }
 
     // ------------------------------------------------------------
@@ -978,6 +992,7 @@ public class PotMenuUIController : MonoBehaviour
         if (stack?.data == null) return;
 
         pendingAbility = stack;
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("selected_consumable");
         if (EventSystem.current != null)
             EventSystem.current.SetSelectedGameObject(optionButton != null ? optionButton.gameObject : null);
 
@@ -992,6 +1007,7 @@ public class PotMenuUIController : MonoBehaviour
     {
         if (pendingAbility?.data == null || abilityInventory == null) return;
         AbilityItemData data = pendingAbility.data;
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("confirmed_ability");
 
         if (data.kind == AbilityKind.Placeable)
         {
