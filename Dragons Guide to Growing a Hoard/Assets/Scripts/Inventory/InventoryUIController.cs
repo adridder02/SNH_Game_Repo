@@ -592,6 +592,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
             consumablePanelDescription.text = stack.data.description;
 
         bool usableNow = stack.data.kind == AbilityKind.Consumable &&
+                          stack.data.effectId != AbilityEffectId.None && // no effect (e.g. the Shelf) = nothing to "use"
                           !AbilityConsumableEffects.RequiresPotTarget(stack.data.effectId);
 
         if (consumablePanelUseButton != null)
@@ -864,7 +865,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
         slotVisuals[occupant.InstanceId] = slot;
 
         // Tutorial pointer: the first consumable's slot (first one created per refresh wins).
-        if (!isAvailableSlot && occupant is AbilityItemInstance ai && ai.data != null && ai.data.kind == AbilityKind.Consumable)
+        if (!isAvailableSlot && occupant is AbilityItemInstance ai && ai.data != null && ai.data.kind == AbilityKind.Consumable && ai.data.effectId != AbilityEffectId.None)
             TutorialTargets.Set("inventory_consumable", slot.GetComponent<RectTransform>());
         return slot;
     }

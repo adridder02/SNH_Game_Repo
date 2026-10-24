@@ -633,9 +633,13 @@ public class TutorialSequenceController : MonoBehaviour
         }
 
         PlayerPrefs.DeleteKey(completionFlagKey);
+        // Modules also write "<key>_Started" the moment they begin, and use it to RESUME themselves on the next
+        // visit if they never finished — clearing only the completion flag left that behind, so a module that
+        // got started and abandoned kept replaying on every Play no matter how many times this was run.
+        PlayerPrefs.DeleteKey(StartedKey);
         PlayerPrefs.Save();
-        Debug.Log($"[TutorialSequenceController] Cleared PlayerPrefs key '{completionFlagKey}' — " +
-                  "this scene's tutorial will play again on the next Play.");
+        Debug.Log($"[TutorialSequenceController] Cleared PlayerPrefs keys '{completionFlagKey}' and '{StartedKey}' — " +
+                  "this scene's tutorial will play again on the next Play (modules: when their start trigger next fires).");
     }
 
     // ------------------------------------------------------------

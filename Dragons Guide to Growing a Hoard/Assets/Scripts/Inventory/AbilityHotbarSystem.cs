@@ -176,6 +176,9 @@ public class AbilityHotbarSystem : MonoBehaviour
         if (data == null) return false;
         if (data.kind == AbilityKind.OneOff) return false;
         if (data.requiresTreeTarget) return false;
+        // A "Consumable" with no effect (the Clovenwick Shelf, etc.) has nothing to activate — never hotbar-eligible,
+        // and therefore never counts as the first hotbar item either (PlayerAbilityInventory uses this check).
+        if (data.kind == AbilityKind.Consumable && data.effectId == AbilityEffectId.None) return false;
         return !AbilityConsumableEffects.RequiresPotTarget(data.effectId);
     }
 

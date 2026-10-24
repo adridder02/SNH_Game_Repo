@@ -198,7 +198,7 @@ public class JournalUIController : MonoBehaviour
         waterDropdown?.onValueChanged.AddListener(_ => OnCareDropdownChanged());
         lightDropdown?.onValueChanged.AddListener(_ => OnCareDropdownChanged());
         soilDropdown?.onValueChanged.AddListener(_ => OnCareDropdownChanged());
-        fillAnswersButton?.onClick.AddListener(OnFillAnswersClicked);
+        fillAnswersButton?.onClick.AddListener(() => { if (HudLocked) return; OnFillAnswersClicked(); });
 
         // Tutorial hooks on the three bookmark tabs — matches steps reading 'Open the "Plants"/
         // "Progress"/"Guide" bookmark'. Fired from the click listener itself rather than from inside
@@ -206,28 +206,31 @@ public class JournalUIController : MonoBehaviour
         // buttons below), so these only fire on an actual, deliberate tab click.
         plantsNavButton?.onClick.AddListener(() =>
         {
+            if (BlockedExcept("opened_plants_bookmark")) return;
             ShowPage(plantsPage, plantsNavButton);
             TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_plants_bookmark");
         });
         progressNavButton?.onClick.AddListener(() =>
         {
+            if (BlockedExcept("opened_progress_bookmark")) return;
             ShowPage(progressPage, progressNavButton);
             TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_progress_bookmark");
         });
         guideNavButton?.onClick.AddListener(() =>
         {
+            if (BlockedExcept("opened_guide_bookmark")) return;
             ShowPage(guidePage, guideNavButton);
             TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_guide_bookmark");
         });
-        settingsNavButton?.onClick.AddListener(() => ShowPage(settingsPage, settingsNavButton));
+        settingsNavButton?.onClick.AddListener(() => { if (HudLocked) return; ShowPage(settingsPage, settingsNavButton); });
 
         // Room shortcuts: same as clicking Progress, plus jump straight to that room.
-        mainRoomNavButton?.onClick.AddListener(() => GoToRoomShortcut(RoomType.Main));
-        eastRoomNavButton?.onClick.AddListener(() => GoToRoomShortcut(RoomType.East));
-        westRoomNavButton?.onClick.AddListener(() => GoToRoomShortcut(RoomType.West));
+        mainRoomNavButton?.onClick.AddListener(() => { if (HudLocked) return; GoToRoomShortcut(RoomType.Main); });
+        eastRoomNavButton?.onClick.AddListener(() => { if (HudLocked) return; GoToRoomShortcut(RoomType.East); });
+        westRoomNavButton?.onClick.AddListener(() => { if (HudLocked) return; GoToRoomShortcut(RoomType.West); });
 
-        previousSpeciesButton?.onClick.AddListener(() => StepSpecies(-1));
-        nextSpeciesButton?.onClick.AddListener(() => StepSpecies(1));
+        previousSpeciesButton?.onClick.AddListener(() => { if (HudLocked) return; StepSpecies(-1); });
+        nextSpeciesButton?.onClick.AddListener(() => { if (HudLocked) return; StepSpecies(1); });
 
         SetJournalVisible(false);
     }
@@ -270,13 +273,51 @@ public class JournalUIController : MonoBehaviour
             journalManager.OnJournalChanged -= RefreshUI;
     }
 
+    // ------------------------------------------------------------
+    // TUTORIAL LOCKING — while a Portable step has "Lock Other Input" on, everything in the journal
+    // except what that step is teaching is inert. The bookmarks / plant slots check for their own
+    // trigger id (so the step waiting on "opened_plants_bookmark" still lets that one tab through);
+    // everything else (settings, room shortcuts, prev/next, dropdowns, the fill-answers button, the J
+    // key) is blocked outright.
+    // ------------------------------------------------------------
+    private static bool HudLocked =>
+        TutorialSequenceController.Instance != null && TutorialSequenceController.Instance.IsHudBlocked;
+
+    private static bool BlockedExcept(string triggerId) =>
+        TutorialSequenceController.Instance != null &&
+        !TutorialSequenceController.Instance.IsActionAllowedForTrigger(triggerId);
+
+    /// <summary>Called by JournalSlotUI before opening a species page from a grid click.</summary>
+    public bool CanClickSlot() => !BlockedExcept("opened_plant_detail");
+
+    private bool lastHudLocked;
+
     void Update()
     {
+        // Dropdowns can't be "cancelled" after the fact, so they're simply made non-interactable while the
+        // tutorial has input locked, and restored (respecting the real per-species lock) when it lifts.
+        bool hudLocked = HudLocked;
+        if (hudLocked != lastHudLocked)
+        {
+            lastHudLocked = hudLocked;
+            if (selectedSpecies != null) RefreshCareRow(selectedSpecies);
+        }
+
         // See the class comment re: Escape — that's handled centrally elsewhere,
         // same as Inventory. J is polled directly here (not through a
         // PlayerControls action) so this works without any Input Actions asset changes.
         if (Keyboard.current != null && Keyboard.current.jKey.wasPressedThisFrame)
+        {
+            TutorialSequenceController tsc = TutorialSequenceController.Instance;
+            if (tsc != null)
+            {
+                // Opening is only allowed for the step waiting on "journal_opened"; closing follows the same
+                // rule as the back button.
+                if (!isJournalOpen && !tsc.IsActionAllowedForTrigger("journal_opened")) return;
+                if (isJournalOpen && tsc.IsBackBlocked) return;
+            }
             ToggleJournal();
+        }
     }
 
     // ------------------------------------------------------------
@@ -636,14 +677,15 @@ public class JournalUIController : MonoBehaviour
         refreshingCare = true;
         PlantJournalManager.CareGuess g = journalManager != null ? journalManager.GetGuess(species) : null;
         bool locked = g != null && g.locked;
+        bool uiLocked = locked || HudLocked; // answers locked for good OR the tutorial has input locked right now
 
         // Dropdown index 0 is the "?" option, so a stored value v maps to v + 1 (soil maps through SoilChoices).
-        ApplyCare(waterDropdown, g != null && g.water >= 0 ? g.water + 1 : 0, locked);
-        ApplyCare(lightDropdown, g != null && g.light >= 0 ? g.light + 1 : 0, locked);
+        ApplyCare(waterDropdown, g != null && g.water >= 0 ? g.water + 1 : 0, uiLocked);
+        ApplyCare(lightDropdown, g != null && g.light >= 0 ? g.light + 1 : 0, uiLocked);
         int soilIdx = g != null && g.soil >= 0 ? System.Array.IndexOf(SoilChoices, (SoilKind)g.soil) + 1 : 0;
-        ApplyCare(soilDropdown, Mathf.Max(0, soilIdx), locked);
+        ApplyCare(soilDropdown, Mathf.Max(0, soilIdx), uiLocked);
 
-        if (fillAnswersButton != null) fillAnswersButton.interactable = !locked;
+        if (fillAnswersButton != null) fillAnswersButton.interactable = !uiLocked;
         if (answersLockedIndicator != null) answersLockedIndicator.SetActive(locked);
         refreshingCare = false;
     }

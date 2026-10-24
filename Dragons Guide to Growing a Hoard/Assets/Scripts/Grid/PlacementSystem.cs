@@ -369,9 +369,8 @@ public class PlacementSystem : MonoBehaviour
         // could immediately flip it right back, ping-ponging within one frame. Only PlacementSystem
         // polls Tab, and it decides which direction to go by checking BOTH systems' current mode.
         //
-        // NOTE: this is now the ONLY way to enter wall-Placing mode at all — you have to be in pot-
-        // Placing (F) first, then Tab across. There's no standalone "just enter wall placing" key
-        // anymore now that R belongs to pot-Remove.
+        // Tab is the only way to enter wall-Placing mode — from idle it goes straight in, and from pot-
+        // Placing (F) it swaps across. There's no separate key now that R belongs to pot-Remove.
         if (Keyboard.current.tabKey.wasPressedThisFrame)
         {
             if (mode == Mode.Placing)
@@ -384,6 +383,17 @@ public class PlacementSystem : MonoBehaviour
             {
                 wallPlacementSystem.CancelMode();
                 EnterPlaceMode(selectedIndex);
+            }
+            else if (mode == Mode.None && wallPlacementSystem != null &&
+                     wallPlacementSystem.CurrentMode == WallPlacementSystem.Mode.None &&
+                     (GameInputModeManager.Instance == null ||
+                      GameInputModeManager.Instance.CurrentMode == GameInputModeManager.InputMode.Gameplay) &&
+                     (TutorialSequenceController.Instance == null ||
+                      TutorialSequenceController.Instance.IsActionAllowedForTrigger("entered_wall_placement_mode")))
+            {
+                // Idle (no tool active): Tab goes straight into wall placing, so the player doesn't have to
+                // press F first just to reach it. Tab again from there still swaps over to pot placing.
+                wallPlacementSystem.ToggleMushroomPlaceMode(wallPlacementSystem.SelectedIndex);
             }
         }
 

@@ -87,6 +87,9 @@ public class JournalSlotUI : MonoBehaviour, IPointerClickHandler
         // Locked slots don't open the detail page — nothing to show yet.
         if (!IsUnlocked || Species == null || controller == null) return;
 
+        // Tutorial lock: only the step waiting on "opened_plant_detail" lets a slot click through.
+        if (!controller.CanClickSlot()) return;
+
         NewItemTracker.Instance?.MarkSeenInJournal(Species.ResolvedId);
         controller.ShowSpeciesDetail(Species);
     }
