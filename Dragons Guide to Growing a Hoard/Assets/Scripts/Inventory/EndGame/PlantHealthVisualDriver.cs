@@ -7,8 +7,10 @@ using UnityEngine;
 // health value (PlantState.HealthNormalized01 — 1 = fully healthy, 0 = fully
 // dead, confirmed straight from PlantState.cs).
 //
-// Two mutually-exclusive modes, auto-detected per-plant so ONE script works
-// across all 15 species regardless of which kind a given prefab is:
+// Two modes, auto-detected per-plant so ONE script works across all 15 species
+// regardless of which kind a given prefab is. A plant can use EITHER or BOTH at once:
+// assign an Animator for the animated scrub AND drag renderers into Material Renderers
+// and the shader blend is driven in step with the animation.
 //
 //   A) ANIMATED  — this prefab has the 36-second scrub clip. Assign
 //      `animator` + `clipStateName` in the Inspector. 0s = healthy,
@@ -50,10 +52,11 @@ public class PlantHealthVisualDriver : MonoBehaviour
     // ---------------------------------------------------------------
     // MODE B — Material Lerp (texture-only plants)
     // ---------------------------------------------------------------
-    [Header("Mode B - Material Lerp (used when Animator above is left empty)")]
-    [Tooltip("Every renderer that should have the healthy/dead blend applied. Usually just the " +
-             "plant's mesh renderer(s) — leave empty and this auto-collects all renderers in " +
-             "children the first time it runs.")]
+    [Header("Mode B - Material Lerp (runs alongside Mode A if renderers are assigned)")]
+    [Tooltip("Every renderer that should have the healthy/dead blend applied. With NO Animator above, " +
+             "leaving this empty auto-collects all renderers in children. With an Animator above, drag " +
+             "the renderer(s) in here to ALSO drive the shader blend alongside the animation (nothing " +
+             "is auto-collected in that case).")]
     public Renderer[] materialRenderers;
 
     [Tooltip("The shader's exposed Vector1 blend property name. 0 = healthy sample, 1 = dead sample " +
@@ -76,6 +79,7 @@ public class PlantHealthVisualDriver : MonoBehaviour
     private float smoothVelocity = 0f;      // SmoothDamp's internal velocity state
 
     private bool useAnimatedMode;
+    private bool useMaterialMode;
     private int clipStateHash;
 
     private void Awake()
@@ -91,11 +95,15 @@ public class PlantHealthVisualDriver : MonoBehaviour
             // Freeze normal playback entirely — this component drives time directly every frame.
             animator.speed = 0f;
         }
-        else
-        {
-            if (materialRenderers == null || materialRenderers.Length == 0)
-                materialRenderers = GetComponentsInChildren<Renderer>();
 
+        // Material blend: always on when there's no animator (auto-collecting renderers), and on
+        // alongside the animator when renderers have been assigned by hand.
+        if (!useAnimatedMode && (materialRenderers == null || materialRenderers.Length == 0))
+            materialRenderers = GetComponentsInChildren<Renderer>();
+
+        useMaterialMode = materialRenderers != null && materialRenderers.Length > 0;
+        if (useMaterialMode)
+        {
             mpb = new MaterialPropertyBlock();
             blendPropertyId = Shader.PropertyToID(blendPropertyName);
         }
@@ -133,7 +141,8 @@ public class PlantHealthVisualDriver : MonoBehaviour
             animator.Play(clipStateHash, 0, normalizedTime);
             // speed stays 0 (set in Awake) — Play() here is a pure seek, not a resumed playback.
         }
-        else
+
+        if (useMaterialMode)
         {
             float blend = Mathf.Clamp01(1f - health01); // 0 = healthy, 1 = dead
             for (int i = 0; i < materialRenderers.Length; i++)

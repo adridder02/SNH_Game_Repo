@@ -44,7 +44,7 @@ public class WallGridVisual : MonoBehaviour
 
     private void BuildMaterials()
     {
-        Shader s = Shader.Find("GUI/Text Shader") ?? Shader.Find("Unlit/Color") ?? Shader.Find("Standard");
+        Shader s = Shader.Find("Sprites/Default") ?? Shader.Find("GUI/Text Shader") ?? Shader.Find("Unlit/Color") ?? Shader.Find("Standard");
 
         matIdle = MakeMat(s, ColorIdle);
         matValid = MakeMat(s, ColorValid);
@@ -58,6 +58,7 @@ public class WallGridVisual : MonoBehaviour
         matGL.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         matGL.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
         matGL.SetInt("_ZWrite", 0);
+        if (matGL.HasProperty("_ZTest")) matGL.SetInt("_ZTest", (int)UnityEngine.Rendering.CompareFunction.LessEqual);
     }
 
     private static Material MakeMat(Shader s, Color c)

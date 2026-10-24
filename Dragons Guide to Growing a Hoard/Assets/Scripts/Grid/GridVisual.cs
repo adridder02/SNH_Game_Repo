@@ -68,7 +68,10 @@ public class GridVisual : MonoBehaviour
     {
         // shader is always available, supports transparency, ignores lighting
         // works in Built in and URP without any setup (I dont know yet what exactly we're gonna use for the actual assets)
-        Shader s = Shader.Find("GUI/Text Shader")
+        // "Sprites/Default" first: it is transparent and unlit like GUI/Text Shader, but it depth-tests, so
+        // the grid sits UNDER the dragon, plants and pots in front of it instead of drawing over them.
+        Shader s = Shader.Find("Sprites/Default")
+                ?? Shader.Find("GUI/Text Shader")
                 ?? Shader.Find("Unlit/Color")
                 ?? Shader.Find("Standard");
 
@@ -85,6 +88,7 @@ public class GridVisual : MonoBehaviour
         matGL.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         matGL.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
         matGL.SetInt("_ZWrite", 0);
+        if (matGL.HasProperty("_ZTest")) matGL.SetInt("_ZTest", (int)UnityEngine.Rendering.CompareFunction.LessEqual);
     }
 
     private static Material MakeMat(Shader s, Color c)
