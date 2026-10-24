@@ -1364,6 +1364,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &16116480
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2091,6 +2094,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &20400677 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1857309847194865932, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -3499,6 +3505,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &34199968
 GameObject:
   m_ObjectHideFlags: 0
@@ -5308,6 +5317,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &53616210
 GameObject:
   m_ObjectHideFlags: 0
@@ -6723,6 +6735,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &70523397
 GameObject:
   m_ObjectHideFlags: 0
@@ -7104,6 +7119,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &71938780 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8485173162082002552, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -7434,6 +7452,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &73781219
 GameObject:
   m_ObjectHideFlags: 0
@@ -8085,7 +8106,6 @@ MonoBehaviour:
   gridHeight: 3
   maxWaterRefill: 30
   abilityInventory: {fileID: 74016825}
-  clovenwickSpecies: {fileID: 11400000, guid: 6f2538c3bc1119e49a8e9eb7482fda92, type: 2}
   waterRefillRate: 10
 --- !u!114 &74016825
 MonoBehaviour:
@@ -8099,6 +8119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4b1a93910a82ec4ea70b5dd9586de00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAbilityInventory
+  wallPlacementItem: {fileID: 11400000, guid: c0d2884e06ed33f4cbf72ffe18248292, type: 2}
 --- !u!114 &74016826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8622,6 +8643,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &83193150
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -8952,6 +8976,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &84402835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8972,6 +8999,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &85226046
 GameObject:
   m_ObjectHideFlags: 0
@@ -9141,6 +9171,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &89625017
 GameObject:
   m_ObjectHideFlags: 0
@@ -9336,6 +9369,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &89990657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9356,6 +9392,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &90252102
 GameObject:
   m_ObjectHideFlags: 0
@@ -10895,6 +10934,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &103370023 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1237893336017162492, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -11411,6 +11453,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &108163734
 GameObject:
   m_ObjectHideFlags: 0
@@ -12330,6 +12375,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &119726957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12762,6 +12810,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WallSurface
   cellSize: 5
   facing: 1
+  placementOffset: 0
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
 --- !u!64 &122068084
@@ -13030,6 +13079,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &123364076
 GameObject:
   m_ObjectHideFlags: 0
@@ -14501,6 +14553,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &138954608
 GameObject:
   m_ObjectHideFlags: 0
@@ -15607,6 +15662,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &155854945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15627,6 +15685,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &155896587
 GameObject:
   m_ObjectHideFlags: 0
@@ -15775,6 +15836,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &156476535 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3540495426589365078, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -15973,6 +16037,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1001 &157154358
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16362,6 +16429,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &160964746
 GameObject:
   m_ObjectHideFlags: 0
@@ -17836,6 +17906,10 @@ MonoBehaviour:
   wallMushroomSelectorIcons:
   - {fileID: 977781298}
   inactiveWallMushroomIconOpacity: 0.35
+  wallMushroomCountTexts: []
+  wallMushroomCountFormat: x{0}
+  wallMushroomCountEmptyColor: {r: 0.9, g: 0.3, b: 0.3, a: 1}
+  wallMushroomCountColor: {r: 1, g: 1, b: 1, a: 1}
   harvestFeedbackRoot: {fileID: 410336903}
   harvestFeedbackText: {fileID: 1326053036}
   harvestFeedbackDuration: 2.5
@@ -23941,6 +24015,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &189869322
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -24687,6 +24764,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &198383239
 GameObject:
   m_ObjectHideFlags: 0
@@ -25736,6 +25816,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &208875150
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -26025,6 +26108,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &210876854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27393,6 +27479,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &221030462
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -28030,6 +28119,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &227278496
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -28701,6 +28793,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &239892629
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -29389,6 +29484,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1001 &249846759
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30455,6 +30553,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WallSurface
   cellSize: 5
   facing: 1
+  placementOffset: 0
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
 --- !u!64 &261089474
@@ -30978,6 +31077,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &270986295
 GameObject:
   m_ObjectHideFlags: 0
@@ -31354,6 +31456,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &272854386
 GameObject:
   m_ObjectHideFlags: 0
@@ -32080,6 +32185,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &290900484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32793,6 +32901,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &306569508
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -33311,6 +33422,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &311258074
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -33481,6 +33595,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &312917303
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -33888,6 +34005,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &317940148
 GameObject:
   m_ObjectHideFlags: 0
@@ -34037,6 +34157,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &317960963
 GameObject:
   m_ObjectHideFlags: 0
@@ -34538,6 +34661,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &322089213
 GameObject:
   m_ObjectHideFlags: 0
@@ -34782,6 +34908,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &323564203
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -36886,6 +37015,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &357488351
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38351,6 +38483,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &366851737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38661,6 +38796,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &371463616
 GameObject:
   m_ObjectHideFlags: 0
@@ -38810,6 +38948,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &372769361
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -39197,6 +39338,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &380513685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40123,6 +40267,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WallSurface
   cellSize: 5
   facing: 0
+  placementOffset: 0
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
 --- !u!64 &394878834
@@ -40531,6 +40676,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &398538693
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42621,6 +42769,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &425729348
 GameObject:
   m_ObjectHideFlags: 0
@@ -42967,6 +43118,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &431570483
 GameObject:
   m_ObjectHideFlags: 0
@@ -43191,6 +43345,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &433689557
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -45021,6 +45178,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &463462620
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -45896,6 +46056,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &469741606
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -46066,6 +46229,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &470272373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46309,6 +46475,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &473104520
 GameObject:
   m_ObjectHideFlags: 0
@@ -46945,6 +47114,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &480978653
 GameObject:
   m_ObjectHideFlags: 0
@@ -47159,6 +47331,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &482817529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48745,6 +48920,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &502702446
 GameObject:
   m_ObjectHideFlags: 0
@@ -50574,6 +50752,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &528034143
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -50891,6 +51072,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &534184882 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8669978531624305096, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
@@ -51383,6 +51567,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &535322592
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -51931,6 +52118,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &542249411
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53154,6 +53344,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &560657394
 GameObject:
   m_ObjectHideFlags: 0
@@ -53745,6 +53938,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &566474206
 GameObject:
   m_ObjectHideFlags: 0
@@ -53989,6 +54185,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &568149558
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -55031,6 +55230,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &587078489
 GameObject:
   m_ObjectHideFlags: 0
@@ -55999,6 +56201,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &590229191
 GameObject:
   m_ObjectHideFlags: 0
@@ -56321,6 +56526,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &597720734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56341,6 +56549,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &597890546
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -56629,6 +56840,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &598487061
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -57138,6 +57352,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &602707048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57158,6 +57375,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &606558706
 GameObject:
   m_ObjectHideFlags: 0
@@ -57561,6 +57781,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &611721573
 GameObject:
   m_ObjectHideFlags: 0
@@ -58193,6 +58416,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &619410817
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -59754,6 +59980,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &646386023
 GameObject:
   m_ObjectHideFlags: 0
@@ -59998,6 +60227,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &646682792
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -60607,6 +60839,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &654443424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67024,6 +67259,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &672771782
 GameObject:
   m_ObjectHideFlags: 0
@@ -68984,6 +69222,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &685241167
 GameObject:
   m_ObjectHideFlags: 0
@@ -69546,6 +69787,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &688974236
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -69716,6 +69960,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &694045524
 GameObject:
   m_ObjectHideFlags: 0
@@ -71499,6 +71746,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &712390574
 GameObject:
   m_ObjectHideFlags: 0
@@ -71744,6 +71994,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &712390583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72044,6 +72297,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &715320751
 GameObject:
   m_ObjectHideFlags: 0
@@ -73162,6 +73418,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &737973449
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -73592,6 +73851,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &741890765
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -74166,6 +74428,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!114 &747264621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75020,6 +75285,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &761207432
 GameObject:
   m_ObjectHideFlags: 0
@@ -75541,6 +75809,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &774816717
 GameObject:
   m_ObjectHideFlags: 0
@@ -78502,6 +78773,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &825872623
 GameObject:
   m_ObjectHideFlags: 0
@@ -79067,6 +79341,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &829551019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79280,6 +79557,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &830459899
 GameObject:
   m_ObjectHideFlags: 0
@@ -79428,6 +79708,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &830738823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79552,6 +79835,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WallSurface
   cellSize: 5
   facing: 1
+  placementOffset: 0
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
 --- !u!64 &832554746
@@ -80205,6 +80489,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &844346757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80469,6 +80756,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &844773769
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -81068,6 +81358,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &855358170
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -86054,6 +86347,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WallSurface
   cellSize: 5
   facing: 0
+  placementOffset: 0
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
 --- !u!64 &857739420
@@ -86461,6 +86755,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &859585689
 GameObject:
   m_ObjectHideFlags: 0
@@ -86882,6 +87179,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &862294363
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -87397,6 +87697,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &867303434
 GameObject:
   m_ObjectHideFlags: 0
@@ -87641,6 +87944,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &868063284
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -87934,6 +88240,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &868570150
 GameObject:
   m_ObjectHideFlags: 0
@@ -88059,6 +88368,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &869602977
 GameObject:
   m_ObjectHideFlags: 0
@@ -89296,6 +89608,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &888363861 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 388017943894283486, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -89567,6 +89882,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &889437739
 GameObject:
   m_ObjectHideFlags: 0
@@ -89916,6 +90234,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &892994284
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -92473,6 +92794,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &918279725
 GameObject:
   m_ObjectHideFlags: 0
@@ -92717,6 +93041,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &920877750
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -96124,6 +96451,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &972612913
 GameObject:
   m_ObjectHideFlags: 0
@@ -97002,6 +97332,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &981304441 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2655573560833850164, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
@@ -97362,6 +97695,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &985951467
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -98011,6 +98347,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &990488377
 GameObject:
   m_ObjectHideFlags: 0
@@ -98416,6 +98755,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &996474171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98436,6 +98778,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &996599226
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -99056,6 +99401,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1013148193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99233,6 +99581,7 @@ MonoBehaviour:
   placementSystem: {fileID: 1014228678}
   availableMushrooms:
   - {fileID: 11400000, guid: 4eea3bfabe17cdf40af5b4ccfd2bb0cf, type: 2}
+  abilityInventory: {fileID: 0}
   showPreviewObject: 1
 --- !u!4 &1014228680
 Transform:
@@ -99948,6 +100297,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1022210653
 GameObject:
   m_ObjectHideFlags: 0
@@ -100097,6 +100449,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1022493339
 GameObject:
   m_ObjectHideFlags: 0
@@ -102426,6 +102781,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WallSurface
   cellSize: 5
   facing: 0
+  placementOffset: 0
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
 --- !u!64 &1035900032
@@ -102747,6 +103103,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1041158873
 GameObject:
   m_ObjectHideFlags: 0
@@ -103249,6 +103608,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1042593574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103677,6 +104039,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1047992271
 GameObject:
   m_ObjectHideFlags: 0
@@ -105057,6 +105422,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1063621760
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -105227,6 +105595,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1064509675
 GameObject:
   m_ObjectHideFlags: 0
@@ -110507,6 +110878,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1068611855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110527,6 +110901,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1068669157
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -111242,6 +111619,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1072997137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111262,6 +111642,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1074376756 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7018062922782214677, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
@@ -111575,6 +111958,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1076237547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112863,6 +113249,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1100221617
 GameObject:
   m_ObjectHideFlags: 0
@@ -113107,6 +113496,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!4 &1100340792 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5599988933133864458, guid: bc986ca5750010c4ca6380036bbb7d8d, type: 3}
@@ -114168,6 +114560,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &1112873005
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -115511,6 +115906,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1128807359
 GameObject:
   m_ObjectHideFlags: 0
@@ -116043,6 +116441,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1137298211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116261,6 +116662,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1141979312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116771,6 +117175,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1152139089 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 50754954277266222, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -118028,6 +118435,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1171486106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119305,6 +119715,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1202790002
 GameObject:
   m_ObjectHideFlags: 0
@@ -119690,6 +120103,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1205850283
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -120351,6 +120767,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1211132419
 GameObject:
   m_ObjectHideFlags: 0
@@ -126114,6 +126533,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1227049778 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1513602152902842219, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
@@ -127090,6 +127512,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1238966951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127110,6 +127535,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1239208922
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -127427,6 +127855,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1241716046
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -127661,6 +128092,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1245765856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127975,6 +128409,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1249790948
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -128386,6 +128823,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1254800279
 GameObject:
   m_ObjectHideFlags: 0
@@ -128775,6 +129215,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1258196801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128795,6 +129238,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1258716922
 GameObject:
   m_ObjectHideFlags: 0
@@ -129410,6 +129856,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1264570140
 GameObject:
   m_ObjectHideFlags: 0
@@ -130326,6 +130775,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1274242487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131733,6 +132185,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1287985379
 GameObject:
   m_ObjectHideFlags: 0
@@ -133272,6 +133727,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &1308668474
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -133896,6 +134354,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1317330590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134902,6 +135363,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1325128045
 GameObject:
   m_ObjectHideFlags: 0
@@ -135464,6 +135928,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1328573744
 GameObject:
   m_ObjectHideFlags: 0
@@ -137172,6 +137639,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1350561702
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -138015,6 +138485,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1357491896
 GameObject:
   m_ObjectHideFlags: 0
@@ -138321,6 +138794,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1361466814
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -138614,6 +139090,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1363874891
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -139330,6 +139809,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1370783622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139350,6 +139832,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1370822299 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3088434457227564255, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
@@ -140366,6 +140851,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1395602537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140386,6 +140874,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1395747467
 GameObject:
   m_ObjectHideFlags: 0
@@ -140534,6 +141025,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1396833905
 GameObject:
   m_ObjectHideFlags: 0
@@ -140589,6 +141083,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1396833908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142069,6 +142566,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1413302256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142455,6 +142955,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1417647563 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8413292768477716508, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
@@ -142828,6 +143331,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1419929979
 GameObject:
   m_ObjectHideFlags: 0
@@ -144305,6 +144811,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1436729966
 GameObject:
   m_ObjectHideFlags: 0
@@ -144893,6 +145402,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1441930953
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -150259,6 +150771,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1448103602
 GameObject:
   m_ObjectHideFlags: 0
@@ -150407,6 +150922,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1448181201
 GameObject:
   m_ObjectHideFlags: 0
@@ -152262,6 +152780,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1474358761
 GameObject:
   m_ObjectHideFlags: 0
@@ -152485,6 +153006,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1475665247
 GameObject:
   m_ObjectHideFlags: 0
@@ -153467,6 +153991,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1487306710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154265,6 +154792,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1496407373
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -154731,6 +155261,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1504718277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155071,6 +155604,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1510311895
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -155582,6 +156118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WallSurface
   cellSize: 5
   facing: 1
+  placementOffset: 0
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
 --- !u!114 &1516886498
@@ -155989,6 +156526,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1521954702 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5049032948309972686, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -156164,6 +156704,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1522530552
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -157336,6 +157879,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1538037515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157411,6 +157957,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1539707584
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157772,6 +158321,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1545301500
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -158778,6 +159330,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1557133627
 GameObject:
   m_ObjectHideFlags: 0
@@ -158926,6 +159481,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1557629480
 GameObject:
   m_ObjectHideFlags: 0
@@ -159150,6 +159708,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1558748020
 GameObject:
   m_ObjectHideFlags: 0
@@ -159298,6 +159859,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1560149024
 GameObject:
   m_ObjectHideFlags: 0
@@ -159542,6 +160106,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1561813200
 GameObject:
   m_ObjectHideFlags: 0
@@ -159786,6 +160353,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &1562363179
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -160969,6 +161539,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1571415111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161697,6 +162270,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1581267388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161953,6 +162529,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1585470748 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3893722416717529905, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
@@ -162477,6 +163056,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1592463819
 GameObject:
   m_ObjectHideFlags: 0
@@ -163030,6 +163612,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &1595514170
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -164026,6 +164611,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1606436734
 GameObject:
   m_ObjectHideFlags: 0
@@ -180829,6 +181417,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1626744143
 GameObject:
   m_ObjectHideFlags: 0
@@ -182238,6 +182829,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1647882698
 GameObject:
   m_ObjectHideFlags: 0
@@ -183374,6 +183968,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1659718135
 GameObject:
   m_ObjectHideFlags: 0
@@ -184306,6 +184903,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1665489604 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5190630082793040378, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -184789,6 +185389,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1672296907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185269,6 +185872,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1677806143
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -186056,6 +186662,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1692931997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186823,6 +187432,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1707743922
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -187181,6 +187793,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1714820657
 GameObject:
   m_ObjectHideFlags: 0
@@ -187467,6 +188082,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1715813628 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6666660977082890997, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
@@ -188707,6 +189325,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1732041237
 GameObject:
   m_ObjectHideFlags: 0
@@ -189619,6 +190240,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WallSurface
   cellSize: 5
   facing: 0
+  placementOffset: 0
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
 --- !u!64 &1739819307
@@ -190149,6 +190771,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1744985629
 GameObject:
   m_ObjectHideFlags: 0
@@ -191510,6 +192135,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1761056872
 GameObject:
   m_ObjectHideFlags: 0
@@ -196749,6 +197377,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1763208887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197033,6 +197664,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1764048462
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -198084,6 +198718,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1773497933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198272,6 +198909,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1775782896
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -199163,6 +199803,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1782351532
 GameObject:
   m_ObjectHideFlags: 0
@@ -199857,6 +200500,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!114 &1786904388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200413,6 +201059,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1790207729
 GameObject:
   m_ObjectHideFlags: 0
@@ -200717,6 +201366,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1792355416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201964,6 +202616,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1809218250
 GameObject:
   m_ObjectHideFlags: 0
@@ -202826,6 +203481,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1816976268
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -204120,6 +204778,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1846308503 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4811171726696857748, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -204710,6 +205371,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1850204110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205048,6 +205712,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1856551278
 GameObject:
   m_ObjectHideFlags: 0
@@ -205197,6 +205864,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1856999475
 GameObject:
   m_ObjectHideFlags: 0
@@ -205372,6 +206042,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1857056345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205995,6 +206668,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1864493340
 GameObject:
   m_ObjectHideFlags: 0
@@ -206351,6 +207027,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &1865315296
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -207545,6 +208224,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1875928553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208993,6 +209675,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1887174041
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -210197,6 +210882,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1902035035 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1585015375599971490, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
@@ -210395,6 +211083,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1902652137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210753,6 +211444,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1909038346
 GameObject:
   m_ObjectHideFlags: 0
@@ -211105,6 +211799,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &1909227100
 GameObject:
   m_ObjectHideFlags: 0
@@ -211964,6 +212661,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1919448421
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -212461,6 +213161,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1922680112
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -212853,6 +213556,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1926100887
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -215133,6 +215839,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WallSurface
   cellSize: 5
   facing: 1
+  placementOffset: 0
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
 --- !u!114 &1969525300
@@ -215766,6 +216473,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &1974495026
 GameObject:
   m_ObjectHideFlags: 0
@@ -217656,6 +218366,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &2007201954
 GameObject:
   m_ObjectHideFlags: 0
@@ -217900,6 +218613,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &2007251907
 GameObject:
   m_ObjectHideFlags: 0
@@ -218006,6 +218722,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WallSurface
   cellSize: 5
   facing: 1
+  placementOffset: 0
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
 --- !u!64 &2007251912
@@ -218179,6 +218896,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &2008211964
 GameObject:
   m_ObjectHideFlags: 0
@@ -218327,6 +219047,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &2008807182 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1146405724920615501, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
@@ -218524,6 +219247,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &2011706687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218978,6 +219704,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WallSurface
   cellSize: 5
   facing: 1
+  placementOffset: 0
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
 --- !u!64 &2018220240
@@ -219150,6 +219877,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &2019567182
 GameObject:
   m_ObjectHideFlags: 0
@@ -219643,6 +220373,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &2024388275
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -219927,6 +220660,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &2026079023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -220604,6 +221340,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &2033038301
 GameObject:
   m_ObjectHideFlags: 0
@@ -220951,6 +221690,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &2036603279
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -221293,6 +222035,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &2038452634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230539,6 +231284,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &2092214863
 GameObject:
   m_ObjectHideFlags: 0
@@ -231013,6 +231761,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WallSurface
   cellSize: 5
   facing: 1
+  placementOffset: 0
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
 --- !u!64 &2093469805
@@ -232030,6 +232779,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &2102286033
 GameObject:
   m_ObjectHideFlags: 0
@@ -232771,6 +233523,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &2114610241
 GameObject:
   m_ObjectHideFlags: 0
@@ -233015,6 +233770,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!64 &2114690242
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -233798,6 +234556,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &2123101369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234566,6 +235327,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &2130397057 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5501625611831835619, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
@@ -235495,6 +236259,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 1
 --- !u!1 &2141436103
 GameObject:
   m_ObjectHideFlags: 0
@@ -235836,6 +236603,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!1 &2145450853
 GameObject:
   m_ObjectHideFlags: 0
@@ -236779,6 +237549,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &7106053869885642875
 MonoBehaviour:
   m_ObjectHideFlags: 0

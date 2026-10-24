@@ -194,10 +194,17 @@ public class PlantState : MonoBehaviour
     /// -> replanting. Call this BEFORE destroying/detaching the plant (PotContents.RemovePlant).</summary>
     public PlantCondition CaptureCondition()
     {
+        // Size is only saved for plants that actually have one (Whumprill, Clovenwick, ...), so every
+        // other plant still comes back as a seedling like before.
+        PlantGrowthSize growthSize = GetComponentInParent<PlantGrowthSize>();
+        if (growthSize == null) growthSize = GetComponentInChildren<PlantGrowthSize>();
+
         return new PlantCondition
         {
             isPermanentlyDead = isPermanentlyDead,
             startingHealth01 = HealthNormalized01,
+            setStartingGrowth = growthSize != null,
+            startingGrowth01 = growthSize != null ? growthSize.Growth01 : 0f,
         };
     }
 
@@ -219,6 +226,15 @@ public class PlantState : MonoBehaviour
             : PlantStateEnum.Dead;
 
         timeInLiveDeadState = 0f; // fresh start for the permanent-death timer either way
+
+        // Saved / chosen size (see PlantCondition.setStartingGrowth) - start the plant at it.
+        if (condition.setStartingGrowth)
+        {
+            PlantGrowthSize growthSize = GetComponentInParent<PlantGrowthSize>();
+            if (growthSize == null) growthSize = GetComponentInChildren<PlantGrowthSize>();
+            if (growthSize != null) growthSize.SetGrowth01(condition.startingGrowth01);
+        }
+
         UpdateVisuals();
     }
 

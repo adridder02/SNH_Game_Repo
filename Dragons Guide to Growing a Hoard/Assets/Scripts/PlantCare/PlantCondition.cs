@@ -26,6 +26,19 @@ public class PlantCondition
     [Range(0f, 1f)]
     public float startingHealth01 = 1f;
 
+    [Tooltip("Only matters for plants with a PlantGrowthSize on them (Whumprill, Clovenwick). TICK to choose " +
+             "how big the plant is when the player picks it up - it keeps that size in the inventory and " +
+             "starts at it when planted, then keeps growing from there. Leave OFF and it starts as a " +
+             "seedling, like every other plant.")]
+    public bool setStartingGrowth = false;
+
+    [Tooltip("The size the plant is picked up at, when Set Starting Growth is ticked. 0 = smallest, 1 = full " +
+             "size. (A plant can't be planted already fully grown - values near 1 are held just below it, so " +
+             "it still has to finish growing before it can be harvested.) Pulling a growing plant back out of " +
+             "a pot saves its CURRENT size here automatically.")]
+    [Range(0f, 1f)]
+    public float startingGrowth01 = 0f;
+
     /// <summary>A fresh, fully healthy plant — the default for anything that doesn't explicitly
     /// carry a saved/preset condition (e.g. a plant instantiated directly in the scene rather than
     /// through the pickup/plant pipeline).</summary>

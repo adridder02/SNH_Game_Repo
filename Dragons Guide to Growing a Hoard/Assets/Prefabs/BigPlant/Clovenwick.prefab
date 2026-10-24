@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: -5934839192404977691}
   - component: {fileID: 7386589814496549319}
   - component: {fileID: -8238253388439927810}
+  - component: {fileID: 3444826063663258455}
   m_Layer: 3
   m_Name: Clovenwick
   m_TagString: Selectable
@@ -324,6 +325,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ClovenwickWallMount
   maxWeight: 1
   mountedMushroomPrefab: {fileID: 3493835662444555350}
+  sourceData: {fileID: 0}
   fullWeightKg: 15
   smallWeightKg: 5
   growth: {fileID: 0}
+--- !u!114 &3444826063663258455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493835662444555350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e406e6b2c1e7784479c80c53a2fb8f67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlantHarvestYield
+  yieldItem: {fileID: 11400000, guid: c0d2884e06ed33f4cbf72ffe18248292, type: 2}
+  amountOverride: 0

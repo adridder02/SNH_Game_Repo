@@ -18,3 +18,7 @@ MonoBehaviour:
   previewPrefab: {fileID: 3493835662444555350, guid: cbd2a11c8414f4549a6d7beb967f5c2e, type: 3}
   icon: {fileID: 21300000, guid: d6e55c2ac8ff58449bdda624ac2689d0, type: 3}
   maxSupportedWeightKg: 100
+  requiredItem: {fileID: 11400000, guid: c0d2884e06ed33f4cbf72ffe18248292, type: 2}
+  refundOnRemove: 1
+  wallOffset: 0
+  planeNudge: {x: 0, y: 0}

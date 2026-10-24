@@ -19,6 +19,12 @@ using UnityEngine;
 // =============================================================
 public class PlayerAbilityInventory : MonoBehaviour
 {
+    [Header("Wall Placement")]
+    [Tooltip("The placeable Clovenwick item (the Shelf). The first time the player receives one - picked up " +
+             "fully grown, or harvested from a pot - wall placement unlocks and the 'picked_up_clovenwick' " +
+             "tutorial trigger fires. Growing Clovenwicks (the plant itself) no longer trigger it.")]
+    [SerializeField] private AbilityItemData wallPlacementItem;
+
     private readonly List<AbilityItemInstance> stacks = new List<AbilityItemInstance>();
 
     /// <summary>Fired whenever a stack is added/consumed, so ability-inventory UI can redraw.</summary>
@@ -76,6 +82,9 @@ public class PlayerAbilityInventory : MonoBehaviour
 
         Debug.Log($"[PlayerAbilityInventory] +{amount} {data.displayName} (now {existing.count}).");
         OnChanged?.Invoke();
+
+        if (wallPlacementItem != null && data == wallPlacementItem)
+            GetComponent<PlayerInventory>()?.UnlockWallPlacement();
 
         if (!HasHarvestedFirstHotbarItem && AbilityHotbarSystem.CanAssign(data))
         {

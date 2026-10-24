@@ -55,6 +55,11 @@ public class HarvestNodeTypeGroup : MonoBehaviour
              "different starting condition than the rest.")]
     [SerializeField] private PlantCondition startingCondition = new PlantCondition { isPermanentlyDead = false, startingHealth01 = 1f };
 
+    [Header("Fully Grown Pickup")]
+    [Tooltip("Same purpose as CollectablePlant's Collected Fully Grown - every node in this group gives the " +
+             "plant's harvest item (e.g. the placeable Clovenwick Shelf) instead of the plant itself.")]
+    [SerializeField] private bool collectedFullyGrown = false;
+
     /// <summary>Called by HarvestNodeContainer.CacheChildren() — adds and configures a CollectablePlant
     /// on every direct child of this group that doesn't already have one. Safe to call repeatedly (e.g.
     /// CacheChildren re-scanning after nodes are added/removed at runtime) — anything already configured,
@@ -77,7 +82,7 @@ public class HarvestNodeTypeGroup : MonoBehaviour
                 continue; // already set up (by hand, or an earlier pass) - leave it exactly as it is
 
             CollectablePlant plant = child.gameObject.AddComponent<CollectablePlant>();
-            plant.ConfigureFromGroup(plantPrefab, plantName, plantIcon, plantImage, tutorialMission, startingCondition);
+            plant.ConfigureFromGroup(plantPrefab, plantName, plantIcon, plantImage, tutorialMission, startingCondition, collectedFullyGrown);
         }
     }
 }

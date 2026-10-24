@@ -58,13 +58,40 @@ public class CollectablePlant : MonoBehaviour
 
     public PlantCondition StartingCondition => startingCondition;
 
+    [Header("Fully Grown Pickup")]
+    [Tooltip("ON = this node is a FULLY GROWN plant. Picking it up skips the plant inventory and gives the " +
+             "player the item the plant yields when harvested (its PlantHarvestYield - for Clovenwick, the " +
+             "placeable Shelf) straight away, exactly as if they had grown it and harvested it from a pot. " +
+             "Needs a PlantHarvestYield with a Yield Item on the plant prefab, otherwise it is picked up as a " +
+             "normal plant.")]
+    [SerializeField] private bool collectedFullyGrown = false;
+
+    public bool CollectedFullyGrown => collectedFullyGrown;
+
+    /// <summary>For a fully grown node: the ability item (and amount) it gives. False if this node isn't
+    /// fully grown, or the prefab has no PlantHarvestYield to take the item from.</summary>
+    public bool TryGetGrownYield(out AbilityItemData item, out int amount)
+    {
+        item = null;
+        amount = 0;
+        if (!collectedFullyGrown || plantPrefab == null) return false;
+
+        PlantHarvestYield yield = plantPrefab.GetComponentInChildren<PlantHarvestYield>();
+        if (yield == null || yield.yieldItem == null) return false;
+
+        item = yield.yieldItem;
+        amount = yield.ResolveAmount();
+        return amount > 0;
+    }
+
     /// <summary>Called by HarvestNodeTypeGroup.ConfigureChildren() when this component was just
     /// auto-added onto a node under a type group, instead of being hand-configured per-node in the
     /// Inspector. Fills in exactly the same fields the Inspector would — nothing else about this
     /// component behaves differently afterward.</summary>
     public void ConfigureFromGroup(GameObject prefab, string name, Sprite icon, Sprite image,
-        MissionData mission, PlantCondition condition)
+        MissionData mission, PlantCondition condition, bool fullyGrown = false)
     {
+        collectedFullyGrown = fullyGrown;
         plantPrefab = prefab;
         plantName = name;
         plantIcon = icon;

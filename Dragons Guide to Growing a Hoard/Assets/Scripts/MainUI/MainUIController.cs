@@ -338,6 +338,20 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
     [Range(0f, 1f)]
     [SerializeField] private float inactiveWallMushroomIconOpacity = 0.35f;
 
+    [Tooltip("One text per wall-mushroom type, in the SAME order as the icons - shows how many of that " +
+             "mount the player has left to place (the mature Clovenwick 'Shelf' count). Leave empty to " +
+             "skip the counter.")]
+    [SerializeField] private List<TextMeshProUGUI> wallMushroomCountTexts;
+
+    [Tooltip("Format for the count. {0} is the number. For example 'x{0}' shows 'x3'.")]
+    [SerializeField] private string wallMushroomCountFormat = "x{0}";
+
+    [Tooltip("Colour of the count while the player has none left to place.")]
+    [SerializeField] private Color wallMushroomCountEmptyColor = new Color(0.9f, 0.3f, 0.3f, 1f);
+
+    [Tooltip("Colour of the count while the player has some.")]
+    [SerializeField] private Color wallMushroomCountColor = Color.white;
+
     [Header("Harvest Feedback (HUD)")]
     [Tooltip("Root of the fixed HUD feedback popup (e.g. 'Harvested Sparkmint x1') — replaces the old " +
              "runtime-built floating canvas HarvestNodeContainer used to create itself. Should start " +
@@ -500,7 +514,10 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             wallPlacementSystem = FindAnyObjectByType<WallPlacementSystem>();
 
         if (wallPlacementSystem != null)
+        {
             wallPlacementSystem.OnModeChanged += RefreshWallPlacementUI;
+            wallPlacementSystem.OnCountChanged += RefreshWallMushroomSelector; // live count as shelves are placed / picked up
+        }
 
         RefreshWallPlacementUI(); // sync initial state
 
@@ -570,7 +587,10 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
             abilityPlacementSystem.OnPlacingChanged -= RefreshSecondaryHudVisibility;
 
         if (wallPlacementSystem != null)
+        {
             wallPlacementSystem.OnModeChanged -= RefreshWallPlacementUI;
+            wallPlacementSystem.OnCountChanged -= RefreshWallMushroomSelector;
+        }
 
         if (playerInventory != null)
         {
@@ -796,10 +816,29 @@ public class MainUIController : MonoBehaviour, IHotbarActivator
         if (wallMushroomSelectorRoot != null)
             wallMushroomSelectorRoot.SetActive(visible);
 
-        if (!visible || wallMushroomSelectorIcons == null || wallPlacementSystem == null) return;
+        if (!visible || wallPlacementSystem == null) return;
 
         IReadOnlyList<WallMushroomData> mushrooms = wallPlacementSystem.AvailableMushrooms;
         int activeIndex = wallPlacementSystem.SelectedIndex;
+
+        // How many of each mount the player still has to place.
+        if (wallMushroomCountTexts != null)
+        {
+            for (int i = 0; i < wallMushroomCountTexts.Count; i++)
+            {
+                TextMeshProUGUI label = wallMushroomCountTexts[i];
+                if (label == null) continue;
+
+                WallMushroomData d = mushrooms != null && i < mushrooms.Count ? mushrooms[i] : null;
+                if (d == null) { label.text = string.Empty; continue; }
+
+                int count = wallPlacementSystem.GetAvailableCount(i);
+                label.text = string.Format(wallMushroomCountFormat, count);
+                label.color = count > 0 ? wallMushroomCountColor : wallMushroomCountEmptyColor;
+            }
+        }
+
+        if (wallMushroomSelectorIcons == null) return;
 
         for (int i = 0; i < wallMushroomSelectorIcons.Count; i++)
         {

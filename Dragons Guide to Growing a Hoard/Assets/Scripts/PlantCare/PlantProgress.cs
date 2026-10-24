@@ -176,6 +176,19 @@ public class PlantProgress : MonoBehaviour
     }
 
     /// <summary>
+    /// Starts the plant partway through its growth (used when a plant is picked up / re-planted at a
+    /// saved size - see PlantGrowthSize.SetGrowth01 and PlantState.ApplyCondition). Held just below 1 so a
+    /// plant can never be planted already "Complete" (that would skip the harvest wait and fire the
+    /// journal's gold milestone without any growing). Does nothing once the plant is complete.
+    /// </summary>
+    public void SetStartingProgress(float value01)
+    {
+        if (isComplete) return;
+        progress = Mathf.Clamp(value01, 0f, 0.99f);
+        smoothedRatePerSecond = 0f;
+    }
+
+    /// <summary>
     /// Resets progress back to empty and clears Complete. Not called anywhere yet — here in case a future
     /// feature (e.g. replanting into the same slot, or a "prune and regrow" action) needs to restart growth.
     /// </summary>

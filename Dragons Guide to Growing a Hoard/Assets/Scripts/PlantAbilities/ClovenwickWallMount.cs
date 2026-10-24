@@ -26,6 +26,10 @@ public class ClovenwickWallMount : MonoBehaviour
     public WeightClass maxWeight = WeightClass.Small;
     public GameObject mountedMushroomPrefab;
 
+    /// <summary>Which wall-mushroom type this was placed from - set by WallPlacementSystem so removing
+    /// it knows which inventory item to hand back.</summary>
+    [HideInInspector] public WallMushroomData sourceData;
+
     [Header("Weight capacity (grows with the plant)")]
     [Tooltip("Weight it can hold when FULLY GROWN. WallPlacementSystem overwrites this from the wall mushroom's " +
              "Max Supported Weight Kg when placed.")]

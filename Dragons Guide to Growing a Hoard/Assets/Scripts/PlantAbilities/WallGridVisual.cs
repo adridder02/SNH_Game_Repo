@@ -79,8 +79,8 @@ public class WallGridVisual : MonoBehaviour
 
         float inset = cellSize * 0.04f;
         float quadSize = cellSize - inset * 2f;
-        Quaternion faceRot = facing == WallSurface.FacingAxis.FacesZ
-            ? Quaternion.identity                    // quad's own normal (+Z) already faces along world Z
+        Quaternion faceRot = WallSurface.FacingRunsAlongX(facing)
+            ? Quaternion.identity                    // quad's own normal already faces along world Z
             : Quaternion.Euler(0f, 90f, 0f);          // rotate to face along world X instead
 
         for (int v = 0; v < dimensions.y; v++)
@@ -109,7 +109,7 @@ public class WallGridVisual : MonoBehaviour
         float horiz = h * cellSize + cellSize * 0.5f;
         float vert = v * cellSize + cellSize * 0.5f;
 
-        return facing == WallSurface.FacingAxis.FacesZ
+        return WallSurface.FacingRunsAlongX(facing)
             ? new Vector3(originWorld.x + horiz, originWorld.y + vert, originWorld.z)
             : new Vector3(originWorld.x, originWorld.y + vert, originWorld.z + horiz);
     }
@@ -148,9 +148,11 @@ public class WallGridVisual : MonoBehaviour
 
     private Vector3 LinePoint(float horiz, float vert)
     {
-        return facing == WallSurface.FacingAxis.FacesZ
-            ? new Vector3(originWorld.x + horiz, originWorld.y + vert, originWorld.z + 0.002f)
-            : new Vector3(originWorld.x + 0.002f, originWorld.y + vert, originWorld.z + horiz);
+        // lines sit a hair further out from the wall than the cell quads, on whichever side the room is
+        Vector3 lift = WallSurface.FacingNormal(facing) * 0.002f;
+        return WallSurface.FacingRunsAlongX(facing)
+            ? new Vector3(originWorld.x + horiz, originWorld.y + vert, originWorld.z) + lift
+            : new Vector3(originWorld.x, originWorld.y + vert, originWorld.z + horiz) + lift;
     }
 
     public void SetVisible(bool visible) => gameObject.SetActive(visible);
@@ -188,7 +190,7 @@ public class WallGridVisual : MonoBehaviour
 
     public bool WorldToCell(Vector3 worldPos, out Vector2Int cell)
     {
-        float horiz = facing == WallSurface.FacingAxis.FacesZ ? worldPos.x - originWorld.x : worldPos.z - originWorld.z;
+        float horiz = WallSurface.FacingRunsAlongX(facing) ? worldPos.x - originWorld.x : worldPos.z - originWorld.z;
         float vert = worldPos.y - originWorld.y;
 
         int h = Mathf.FloorToInt(horiz / cellSize);

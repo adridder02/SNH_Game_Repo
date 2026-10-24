@@ -84,11 +84,6 @@ public class PlayerInventory : MonoBehaviour
              "this script just also gives each stack a spot in the same grid plants use.")]
     [SerializeField] private PlayerAbilityInventory abilityInventory;
 
-    [Tooltip("The Clovenwick species asset (PlantSpeciesData) — used only to fire a one-time tutorial " +
-             "hook (see AddPlantToInventory below) the very first time one is ever picked up, so the " +
-             "wall-placement tutorial chain can start itself. Leave empty if nothing depends on it.")]
-    [SerializeField] private PlantSpeciesData clovenwickSpecies;
-
     // Which ability stacks (by instanceId) have already had their one-time auto-place attempt —
     // see ReconcileAbilityGridPlacement(). Prevents re-placing a stack the player has since
     // dragged to Available themselves.
@@ -97,8 +92,9 @@ public class PlayerInventory : MonoBehaviour
     /// <summary>Fired whenever the grid or available contents change, so the UI can redraw.</summary>
     public event Action OnInventoryChanged;
 
-    /// <summary>Fires exactly once — the first time the player ever picks up Clovenwick specifically
-    /// (see clovenwickSpecies/AddPlantToInventory below). Lets onboarding-only UI that's specifically
+    /// <summary>Fires exactly once — the first time the player gets a PLACEABLE Clovenwick (the Shelf):
+    /// either picked up fully grown, or harvested from a pot. See UnlockWallPlacement, called by
+    /// PlayerAbilityInventory.Add when the wall-placement item arrives. Lets onboarding-only UI that's specifically
     /// about wall placement (e.g. MainUIController's Tab-to-switch hint icon during floor Placing
     /// mode) stay hidden until wall placement is actually something the player can do. See
     /// HasUnlockedWallPlacement for the already-happened case.</summary>
@@ -200,7 +196,7 @@ public class PlayerInventory : MonoBehaviour
                 GameObject plantPrefab = plant.GetPlantPrefab();
                 if (plantPrefab != null)
                 {
-                    AddPlantToInventory(plantPrefab, plant.GetPlantIcon(), plant.GetPlantImage(), plant.GetPlantName(), plant.StartingCondition);
+                    CollectPlant(plant, plantPrefab);
                     Destroy(collision.gameObject);
                     Debug.Log($"Collected: {plantPrefab.name}. Inventory: {GetInventorySize()} items ({GetGridItems().Count} in grid, {GetAvailableItems().Count} in Available)");
                 }
@@ -221,6 +217,40 @@ public class PlayerInventory : MonoBehaviour
         // water's surface). That's why refill wasn't working. Water is now handled by
         // PlayerWaterSource.cs (attach it to the Player alongside this component), which uses
         // OnTriggerEnter/Stay and calls AddWater() below.
+    }
+
+    /// <summary>
+    /// Single entry point for picking up a CollectablePlant (harvest node or physical collision). A normal
+    /// plant goes into the plant inventory. A node marked Collected Fully Grown gives the plant's harvest
+    /// item (e.g. the placeable Clovenwick Shelf) straight into the ability inventory instead - the species
+    /// is still marked discovered in the journal either way.
+    /// </summary>
+    public void CollectPlant(CollectablePlant plant, GameObject plantPrefab)
+    {
+        if (plant != null && plant.TryGetGrownYield(out AbilityItemData item, out int amount) && abilityInventory != null)
+        {
+            PlantState state = plantPrefab != null ? plantPrefab.GetComponentInChildren<PlantState>() : null;
+            if (state != null && state.journalSpecies != null && PlantJournalManager.Instance != null)
+            {
+                PlantJournalManager.Instance.MarkDiscovered(state.journalSpecies);
+                NewItemTracker.Instance?.MarkAcquiredJournal(state.journalSpecies.ResolvedId);
+            }
+
+            abilityInventory.Add(item, amount);
+            return;
+        }
+
+        AddPlantToInventory(plantPrefab, plant.GetPlantIcon(), plant.GetPlantImage(), plant.GetPlantName(), plant.StartingCondition);
+    }
+
+    /// <summary>Unlocks wall placement (once per session) and fires the wall-placement tutorial trigger.
+    /// Called by PlayerAbilityInventory.Add the first time the player receives the wall-placement item.</summary>
+    public void UnlockWallPlacement()
+    {
+        if (HasUnlockedWallPlacement) return;
+        HasUnlockedWallPlacement = true;
+        TutorialSequenceController.Instance?.NotifyExternalTrigger("picked_up_clovenwick");
+        OnWallPlacementUnlocked?.Invoke();
     }
 
     // ------------------------------------------------------------
@@ -287,17 +317,6 @@ public class PlayerInventory : MonoBehaviour
                 PlantJournalManager.Instance.MarkDiscovered(state.journalSpecies);
                 NewItemTracker.Instance?.MarkAcquiredJournal(state.journalSpecies.ResolvedId);
 
-                // Wall-placement tutorial hook — fires exactly once PER SESSION, the first time
-                // Clovenwick specifically is picked up (harvest node, physical pickup, or pulled back
-                // out of a pot — same as everything else this method handles), regardless of whether
-                // it was already journal-discovered in a previous session. Assign clovenwickSpecies in
-                // the Inspector to wire this up; a harmless no-op otherwise.
-                if (!HasUnlockedWallPlacement && clovenwickSpecies != null && state.journalSpecies == clovenwickSpecies)
-                {
-                    HasUnlockedWallPlacement = true;
-                    TutorialSequenceController.Instance?.NotifyExternalTrigger("picked_up_clovenwick");
-                    OnWallPlacementUnlocked?.Invoke();
-                }
             }
             else
                 Debug.LogWarning("[PlayerInventory] No PlantJournalManager in scene — journal discovery was skipped.");

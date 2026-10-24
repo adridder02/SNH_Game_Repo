@@ -28,6 +28,9 @@ public class WallPlacementSystem : MonoBehaviour
     [Header("Mushroom Types")]
     [SerializeField] private List<WallMushroomData> availableMushrooms;
 
+    [Tooltip("Where the Clovenwick 'Shelf' items live. Auto-found on the player if left empty.")]
+    [SerializeField] private PlayerAbilityInventory abilityInventory;
+
     [Header("Preview")]
     [SerializeField] private bool showPreviewObject = true;
 
@@ -40,11 +43,16 @@ public class WallPlacementSystem : MonoBehaviour
     /// Placement Mode banner — nothing here previously needed to observe this from outside.</summary>
     public event System.Action OnModeChanged;
 
+    /// <summary>Fires when the number of placeable items changes (picked up, placed, taken back), so the
+    /// HUD can redraw the count next to the wall-mushroom icon.</summary>
+    public event System.Action OnCountChanged;
+
     private readonly Dictionary<WallSurface, GridData> surfaceGridData = new Dictionary<WallSurface, GridData>();
     private WallSurface activeSurface;
     private int selectedIndex = 0;
     private Vector2Int lastHoveredCell = new Vector2Int(-999, -999);
     private GameObject previewObject;
+    private bool previewUsesMountRotation; // only when the preview IS the real prefab (a separate preview prefab keeps its own authored rotation)
 
     public bool IsActive => mode != Mode.None;
 
@@ -61,7 +69,40 @@ public class WallPlacementSystem : MonoBehaviour
     {
         foreach (WallSurface surface in wallSurfaces)
             if (surface != null) surfaceGridData[surface] = new GridData();
+
+        if (abilityInventory == null) abilityInventory = FindAnyObjectByType<PlayerAbilityInventory>();
+        if (abilityInventory != null) abilityInventory.OnChanged += HandleInventoryChanged;
     }
+
+    private void OnDestroy()
+    {
+        if (abilityInventory != null) abilityInventory.OnChanged -= HandleInventoryChanged;
+    }
+
+    private void HandleInventoryChanged()
+    {
+        lastHoveredCell = new Vector2Int(-999, -999); // re-evaluate valid/invalid colour on the next frame
+        OnCountChanged?.Invoke();
+    }
+
+    /// <summary>How many of this type the player can place right now. 0 if the type has no required
+    /// item at all (those can't be wall-placed).</summary>
+    public int GetAvailableCount(int index)
+    {
+        if (availableMushrooms == null || index < 0 || index >= availableMushrooms.Count) return 0;
+        return GetAvailableCount(availableMushrooms[index]);
+    }
+
+    public int GetAvailableCount(WallMushroomData data)
+    {
+        if (data == null || data.requiredItem == null || abilityInventory == null) return 0;
+        return abilityInventory.GetCount(data.requiredItem);
+    }
+
+    /// <summary>How many of the currently selected type the player has.</summary>
+    public int SelectedCount => GetAvailableCount(selectedIndex);
+
+    private bool HasItemFor(WallMushroomData data) => GetAvailableCount(data) > 0;
 
     public void ToggleMushroomPlaceMode(int index)
     {
@@ -152,7 +193,11 @@ public class WallPlacementSystem : MonoBehaviour
         }
 
         if (previewObject != null && mode == Mode.Placing)
-            previewObject.transform.position = activeSurface.CellToWorldCentre(cell, availableMushrooms[selectedIndex].size);
+        {
+            WallMushroomData pd = availableMushrooms[selectedIndex];
+            previewObject.transform.position = activeSurface.MountPosition(cell, pd.size, pd.wallOffset, pd.planeNudge);
+            if (previewUsesMountRotation) previewObject.transform.rotation = activeSurface.MountRotation;
+        }
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
@@ -184,7 +229,7 @@ public class WallPlacementSystem : MonoBehaviour
         {
             WallMushroomData data = availableMushrooms[selectedIndex];
             bool canFit = gridVisual.FootprintInBounds(cell, data.size);
-            bool canPlace = canFit && gridData.CanPlace(ToVec3(cell), data.size);
+            bool canPlace = canFit && HasItemFor(data) && gridData.CanPlace(ToVec3(cell), data.size);
             gridVisual.SetFootprint(cell, data.size, canPlace ? WallGridVisual.CellState.Valid : WallGridVisual.CellState.Invalid);
             SetPreviewVisible(true);
         }
@@ -207,7 +252,16 @@ public class WallPlacementSystem : MonoBehaviour
         Vector3Int key = ToVec3(cell);
         if (!gridData.CanPlace(key, data.size)) return;
 
-        Vector3 worldPos = activeSurface.CellToWorldCentre(cell, data.size);
+        // Only mature Clovenwicks (the Shelf item) can go on a wall. No item = no placing.
+        if (data.requiredItem == null)
+        {
+            Debug.LogWarning($"[WallPlacementSystem] '{data.displayName}' has no Required Item assigned, so it can't be " +
+                             "placed on a wall. Assign the Shelf ability item on its WallMushroomData.");
+            return;
+        }
+        if (abilityInventory == null || !abilityInventory.TryConsume(data.requiredItem, 1)) return;
+
+        Vector3 worldPos = activeSurface.MountPosition(cell, data.size, data.wallOffset, data.planeNudge);
 
         GameObject prefab = data.prefab != null ? data.prefab : null;
         GameObject placed = prefab != null
@@ -221,6 +275,7 @@ public class WallPlacementSystem : MonoBehaviour
         if (mount == null) mount = placed.AddComponent<ClovenwickWallMount>();
         mount.maxWeight = data.maxSupportedWeightKg > 12f ? ClovenwickWallMount.WeightClass.Medium : ClovenwickWallMount.WeightClass.Small;
         mount.fullWeightKg = data.maxSupportedWeightKg;
+        mount.sourceData = data;
 
         gridData.AddPlacement(key, data.size, placed);
         gridVisual.MarkOccupied(cell, data.size);
@@ -239,7 +294,15 @@ public class WallPlacementSystem : MonoBehaviour
         gridData.RemovePlacement(data.Origin);
         gridVisual.ClearFootprint(origin, data.Size);
 
-        if (data.PlacedObject != null) Destroy(data.PlacedObject);
+        if (data.PlacedObject != null)
+        {
+            ClovenwickWallMount mount = data.PlacedObject.GetComponent<ClovenwickWallMount>();
+            WallMushroomData source = mount != null ? mount.sourceData : null;
+            if (source != null && source.refundOnRemove && source.requiredItem != null && abilityInventory != null)
+                abilityInventory.Add(source.requiredItem, 1);
+
+            Destroy(data.PlacedObject);
+        }
     }
 
     // ---------------------------------------------------------------
@@ -259,7 +322,7 @@ public class WallPlacementSystem : MonoBehaviour
             bool inBounds;
             float depthDist;
 
-            if (surface.Facing == WallSurface.FacingAxis.FacesZ)
+            if (surface.RunsAlongX)
             {
                 inBounds = worldPos.x >= origin.x - 0.05f && worldPos.x <= origin.x + dims.x * cs + 0.05f &&
                            worldPos.y >= origin.y - 0.05f && worldPos.y <= origin.y + dims.y * cs + 0.05f;
@@ -289,6 +352,7 @@ public class WallPlacementSystem : MonoBehaviour
         GameObject prefab = data.previewPrefab != null ? data.previewPrefab : data.prefab;
         if (prefab == null) return;
 
+        previewUsesMountRotation = data.previewPrefab == null;
         previewObject = Instantiate(prefab);
         foreach (Collider c in previewObject.GetComponentsInChildren<Collider>()) c.enabled = false;
         previewObject.SetActive(true);

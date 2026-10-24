@@ -40,6 +40,33 @@ public class PlantGrowthSize : MonoBehaviour
     /// <summary>The size actually being shown right now (eased), 0-1. Use this for effects that should match what the player sees.</summary>
     public float ShownGrowth01 => shownGrowth;
 
+    /// <summary>
+    /// Starts this plant at a given size (0-1, the same scale as Growth01) - used when a plant is picked up
+    /// or re-planted at a saved size. Works by moving the plant's PlantProgress to the point where the
+    /// growth curve gives that size, so it carries on growing from there. The visible size snaps straight
+    /// to it instead of easing up from the smallest scale.
+    /// </summary>
+    public void SetGrowth01(float growth01)
+    {
+        if (progress == null) progress = GetComponentInParent<PlantProgress>();
+        if (progress == null) return;
+
+        float target = Mathf.Clamp01(growth01);
+
+        // Invert the growth curve (assumed to rise from 0 to 1) by bisection, so a custom curve still
+        // lands on the size that was asked for.
+        float lo = 0f, hi = 1f;
+        for (int i = 0; i < 24; i++)
+        {
+            float mid = (lo + hi) * 0.5f;
+            if (growthCurve.Evaluate(mid) < target) lo = mid; else hi = mid;
+        }
+
+        progress.SetStartingProgress((lo + hi) * 0.5f);
+        shownGrowth = Growth01;
+        Apply();
+    }
+
     private void Awake()
     {
         if (progress == null) progress = GetComponentInParent<PlantProgress>();
