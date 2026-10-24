@@ -564,6 +564,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &9747701
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1497,6 +1500,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &27029478
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3024,6 +3030,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &71720934
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3368,6 +3377,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &85613534
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5761,6 +5773,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &148459110
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6031,6 +6046,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &150684470
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6316,6 +6334,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &157045053
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -7070,615 +7091,615 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -9166542269769922854, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -9166542269769922854, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -9155095867613012042, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -9155095867613012042, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -9036122917662899679, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -9036122917662899679, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -8699795678739313069, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8699795678739313069, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.4
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_LocalScale.y
       value: 1.758234
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.25239447
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.31742045
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_LocalPosition.y
       value: 6.43
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.32571697
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_LocalRotation.x
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_LocalRotation.y
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: -8566880519300354999, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8566880519300354999, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -8564739416398835156, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8564739416398835156, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -8484085870017509354, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8484085870017509354, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -8342980142391755379, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8342980142391755379, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -8045730868542202455, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -8045730868542202455, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -7896409822783956088, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -7896409822783956088, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -7570282236916632945, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -7570282236916632945, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -7482199140926609235, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -7482199140926609235, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -6662924901893070812, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -6662924901893070812, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -6563034434524802148, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -6563034434524802148, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -6476380188172037305, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -6476380188172037305, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -6434047092386438535, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -6434047092386438535, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -6425784218905623490, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -6425784218905623490, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -6252696953996470268, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -6252696953996470268, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -5973680012079556967, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -5973680012079556967, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -5770370733344091148, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -5770370733344091148, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -5548315324758346158, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -5548315324758346158, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -5433848606822266054, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -5433848606822266054, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -5145048705523945054, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -5145048705523945054, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -4913921467516327257, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -4913921467516327257, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -4869838840647250921, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -4869838840647250921, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -4702222872272604620, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -4702222872272604620, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -4604572052179564242, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -4604572052179564242, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -4500226909802064394, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -4500226909802064394, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -4430323143360299999, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -4430323143360299999, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -4389249031344282815, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -4389249031344282815, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -4244916430471034539, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -4244916430471034539, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -4154515191532665168, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -4154515191532665168, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a00ff4f8fec52ec43a185207b8f4e842, type: 2}
-    - target: {fileID: -4149213439509644120, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -4149213439509644120, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -3930565674023575438, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -3930565674023575438, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -3743922287943613152, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -3743922287943613152, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -3607409800622511634, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -3607409800622511634, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -3368744034683991708, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -3368744034683991708, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -3353714968008582948, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -3353714968008582948, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -3161304929660780716, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -3161304929660780716, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -2805347617782568424, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -2805347617782568424, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -2703393808195325043, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -2703393808195325043, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -2645803110103397770, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -2645803110103397770, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -2555311245772789851, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -2555311245772789851, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -2504256771581892759, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -2504256771581892759, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -2107680660533226575, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -2107680660533226575, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -1697509552293867669, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -1697509552293867669, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -1515914613856381903, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -1515914613856381903, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -1511239585214691379, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -1511239585214691379, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -1483395919140965194, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -1483395919140965194, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -1460419997411825037, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -1460419997411825037, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -1298083870551915099, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -1298083870551915099, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -1181196521307583350, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -1181196521307583350, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -1181196521307583350, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -1181196521307583350, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: -1018069467973631664, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -1018069467973631664, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -1016727008892472733, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -1016727008892472733, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -931563376738145737, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -931563376738145737, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -666030491347306930, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -666030491347306930, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -540039185407766593, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -540039185407766593, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -436864349420781040, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -436864349420781040, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -343811546415361432, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -343811546415361432, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -193972489913297718, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -193972489913297718, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -144254890714562414, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -144254890714562414, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: -13749640269639992, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: -13749640269639992, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 25744631095181378, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 25744631095181378, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 41454512968476061, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 41454512968476061, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 486245638786663928, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 486245638786663928, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 501640429879001783, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 501640429879001783, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 583828013892136504, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 583828013892136504, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 919132149155446097, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Name
-      value: DragonUpdated4 1
+      value: DragonFix8
       objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 919132149155446097, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 1072683720748980561, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 1072683720748980561, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 1080957057546105339, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 1080957057546105339, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 1379445825395180826, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 1379445825395180826, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 1382505780147226361, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 1382505780147226361, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 1404014639301787893, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 1404014639301787893, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 1542296287064325602, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 1542296287064325602, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 1853792793747926980, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 1853792793747926980, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 2055634903111724804, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 2055634903111724804, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 2092863991223938411, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 2092863991223938411, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 2132772884944848668, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 2132772884944848668, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 2151602629794550210, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 2151602629794550210, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 2321523695958950486, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 2321523695958950486, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 99957c5a10773304e928a4e54542ba74, type: 2}
-    - target: {fileID: 2718198116697482139, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 2718198116697482139, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 2806868002773574764, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 2806868002773574764, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 3085933622695309546, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 3085933622695309546, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 3096249721699231065, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 3096249721699231065, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 3422771073375146224, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 3422771073375146224, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 3478487439943030199, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 3478487439943030199, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 3549724183445097933, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 3549724183445097933, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 3556570630487778994, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 3556570630487778994, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 3595664927642665245, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 3595664927642665245, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 3610066352992230796, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 3610066352992230796, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 3635919600810334566, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 3635919600810334566, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 3912707571773014273, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 3912707571773014273, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 4070647927786574094, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 4070647927786574094, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 4370194129664761894, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 4370194129664761894, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 4509931060462196623, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 4509931060462196623, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 4517278905705845388, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 4517278905705845388, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 4533727073429316081, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 4533727073429316081, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 4789463489221367272, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 4789463489221367272, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 4871027933336091385, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 4871027933336091385, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 4885844194785505299, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 4885844194785505299, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 4946932327224716363, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 4946932327224716363, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 5263404108580100622, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 5263404108580100622, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 5292317575308675187, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 5292317575308675187, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 5458099642299298253, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 5458099642299298253, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 5481256324819618924, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 5481256324819618924, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 5574513558774807354, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 5574513558774807354, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 5808678682736063205, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 5808678682736063205, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 5813465510448953335, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 5813465510448953335, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: feed2ab40160a8044a7097cd8cf533e8, type: 2}
-    - target: {fileID: 5883151083045005748, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 5883151083045005748, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 6023754299931249694, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 6023754299931249694, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 6236476769846118822, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 6236476769846118822, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 6256931143266275150, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 6256931143266275150, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 6504898790709540902, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 6504898790709540902, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 6544845448643930132, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 6544845448643930132, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 6598272105704843512, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 6598272105704843512, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 6657560127643677590, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 6657560127643677590, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 6672123786470775849, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 6672123786470775849, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 6711923108042865862, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 6711923108042865862, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 6767994223201664314, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 6767994223201664314, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 6986628635337106857, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 6986628635337106857, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 7015156796013129707, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 7015156796013129707, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 7527176787074462806, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 7527176787074462806, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 7581353613143249193, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 7581353613143249193, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 7600979475818315404, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 7600979475818315404, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 7752764148870325191, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 7752764148870325191, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 7775891985168187834, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 7775891985168187834, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 7873938175304344641, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 7873938175304344641, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 8296696165561785490, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 8296696165561785490, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 8304835916916774533, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 8304835916916774533, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 8458820408505907865, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 8458820408505907865, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 8837855370551503935, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 8837855370551503935, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 8943770368988794662, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 8943770368988794662, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 8949493655046447840, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 8949493655046447840, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 8958284294498813281, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 8958284294498813281, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 8982373042287806614, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 8982373042287806614, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 9039333217544360225, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 9039333217544360225, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 9130400975611737921, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+    - target: {fileID: 9130400975611737921, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
@@ -7688,25 +7709,25 @@ PrefabInstance:
     - {fileID: -7029948723529949830, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
 --- !u!137 &192123033 stripped
 SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: -4154515191532665168, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+  m_CorrespondingSourceObject: {fileID: -4154515191532665168, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
   m_PrefabInstance: {fileID: 192123032}
   m_PrefabAsset: {fileID: 0}
 --- !u!137 &192123034 stripped
 SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 2321523695958950486, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+  m_CorrespondingSourceObject: {fileID: 2321523695958950486, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
   m_PrefabInstance: {fileID: 192123032}
   m_PrefabAsset: {fileID: 0}
 --- !u!137 &192123035 stripped
 SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 5813465510448953335, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5813465510448953335, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
   m_PrefabInstance: {fileID: 192123032}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &192123036 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a8bfce948522b7d42872562820cccccf, type: 3}
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: aaeada4be855aa04e91cb6bcc1cfd865, type: 3}
   m_PrefabInstance: {fileID: 192123032}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &194168732
@@ -7942,6 +7963,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &197015585
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -8435,6 +8459,7 @@ MonoBehaviour:
   placementSystem: {fileID: 204426705}
   availableMushrooms:
   - {fileID: 11400000, guid: 4eea3bfabe17cdf40af5b4ccfd2bb0cf, type: 2}
+  abilityInventory: {fileID: 0}
   showPreviewObject: 1
 --- !u!114 &204426705
 MonoBehaviour:
@@ -9540,6 +9565,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &227933719
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -11685,6 +11713,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &279540762
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -11908,6 +11939,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &297617882
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -30543,6 +30577,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &323715207
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -31974,6 +32011,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &381033134
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -32620,6 +32660,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &410295023
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -34532,6 +34575,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &453467081
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -35280,6 +35326,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &462490907
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -35854,6 +35903,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &468069122
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -37059,6 +37111,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &491867301
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -37294,6 +37349,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WallSurface
   cellSize: 5
   facing: 1
+  placementOffset: 0
   gridVisualPrefab: {fileID: 0}
   gridMaterial: {fileID: 2100000, guid: a9257cd06f9d47a498f4de807e43b534, type: 2}
 --- !u!114 &501261332
@@ -37537,6 +37593,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &504226101
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -38279,6 +38338,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &528503096
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -40284,6 +40346,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &594709261
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -40956,6 +41021,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &600603647
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -41707,6 +41775,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &638538800
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -41855,6 +41926,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &640201607
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -42348,6 +42422,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &649658393
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -42496,6 +42573,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &652522119
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -43304,6 +43384,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &676529726
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -44188,6 +44271,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &697285305
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -45410,6 +45496,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &723213172
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -45709,6 +45798,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &728996971
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -47423,6 +47515,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &776601182
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -47915,6 +48010,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &791241954
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -48791,6 +48889,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &819512446
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -49151,6 +49252,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &830378751
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -51120,6 +51224,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &875454522
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -54415,6 +54522,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &941219795
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -54783,6 +54893,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &961606105
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -54931,6 +55044,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &963461878
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -55079,6 +55195,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &964505999
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -56523,6 +56642,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1006901806
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -56671,6 +56793,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1007835415
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -58414,6 +58539,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4b1a93910a82ec4ea70b5dd9586de00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAbilityInventory
+  wallPlacementItem: {fileID: 0}
 --- !u!114 &1028081828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58430,7 +58556,6 @@ MonoBehaviour:
   gridHeight: 3
   maxWaterRefill: 30
   abilityInventory: {fileID: 1028081827}
-  clovenwickSpecies: {fileID: 11400000, guid: 6f2538c3bc1119e49a8e9eb7482fda92, type: 2}
   waterRefillRate: 10
 --- !u!114 &1028081829
 MonoBehaviour:
@@ -59195,6 +59320,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1036155236
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -60373,6 +60501,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1086577586
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -62543,6 +62674,10 @@ MonoBehaviour:
   wallMushroomSelectorIcons:
   - {fileID: 547406130}
   inactiveWallMushroomIconOpacity: 0.35
+  wallMushroomCountTexts: []
+  wallMushroomCountFormat: x{0}
+  wallMushroomCountEmptyColor: {r: 0.9, g: 0.3, b: 0.3, a: 1}
+  wallMushroomCountColor: {r: 1, g: 1, b: 1, a: 1}
   harvestFeedbackRoot: {fileID: 204655328}
   harvestFeedbackText: {fileID: 912465335}
   harvestFeedbackDuration: 2.5
@@ -63331,6 +63466,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1169365841
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -63663,6 +63801,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1173370253
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -66333,6 +66474,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1246018141
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -66888,6 +67032,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1262986115
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -69028,6 +69175,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1339842254
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -69326,6 +69476,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1349120252
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -70362,6 +70515,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1379635914
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -70559,6 +70715,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1380031020
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -70707,6 +70866,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1380147729
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -71385,6 +71547,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1392273556
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -73153,6 +73318,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1428515473
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -74862,6 +75030,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   autoStart: 1
+  startTriggerId: 
   completionFlagKey: 
   movementMissionForHardcodedScript: {fileID: 11400000, guid: bc08ac5a41257484bb6bf6139a8d2944, type: 2}
   harvestMissionForHardcodedScript: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
@@ -76000,6 +76169,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1479000837
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -78983,6 +79155,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1561766270
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -79291,6 +79466,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1570809208
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -79593,6 +79771,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1573514553
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -82158,6 +82339,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1632185703
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -82658,6 +82842,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1643826929
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -85307,6 +85494,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1703443304
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -85606,6 +85796,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1709282072
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -86068,6 +86261,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1724727334
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -90533,6 +90729,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1813028033
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -91497,6 +91696,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1856303527
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -92390,6 +92592,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1876542897
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -93723,6 +93928,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1918306061
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -94169,6 +94377,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1929791171
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -95560,6 +95771,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1960784432
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -95845,6 +96059,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &1966285851
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -97478,6 +97695,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &2015340870
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -98423,6 +98643,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &2034171282
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -99113,6 +99336,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &2051772213
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -100137,6 +100363,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &2071636338
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -100285,6 +100514,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!64 &2074659591
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -625311,6 +625543,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &3832930854755454757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -652798,6 +653033,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &4036126753998395024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -658872,6 +659110,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &4087307300796099381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -681213,6 +681454,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &4244090084542617422
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -727161,6 +727405,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &4583977392911498092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -761825,6 +762072,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &4829168099268896887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -802144,6 +802394,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &5120762483108433149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -808296,6 +808549,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &5165617465537078763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -847531,6 +847787,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &5453443258874956464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -895914,6 +896173,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &5797487994483006659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -900926,6 +901188,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &5833971687229748408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -941700,6 +941965,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &6128483725764924882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -960525,6 +960793,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &6264563696868518126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -965646,6 +965917,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &6301591468076371455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -968091,6 +968365,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &6324045905834630813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -985533,6 +985810,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &6453780518090076596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -998841,6 +999121,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &6546559850994483087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1001845,6 +1002128,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &6571725396114027783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1009058,6 +1009344,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &6628681969064640131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1036686,6 +1036975,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &6825493575479951222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1055099,6 +1055391,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &6964854486972920364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1095235,6 +1095530,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &7259844957514810347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1118525,6 +1118823,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &7429101420939766910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1133984,6 +1134285,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &7556167438165251146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1158857,6 +1159161,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &7744998283130617740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1170308,6 +1170615,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &7828117388910056626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1182042,6 +1182352,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &7911671629249214640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1195306,6 +1195619,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8011963254361906963
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1210090,6 +1210406,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8120986747139185858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1224606,6 +1224925,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8228805646949102720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1230068,6 +1230390,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8267950750577668027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1238793,6 +1239118,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8329463729432245294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1248570,6 +1248898,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8398260642565733398
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1260843,6 +1261174,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8482187167746277041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1260926,6 +1261260,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8482536283546946737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1264122,6 +1264459,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8510036592658443923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1265318,6 +1265658,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8519922480283228857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1287984,6 +1288327,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8681604643507022270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1290046,6 +1290392,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8699442751569240471
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1294004,6 +1294353,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8727679610647163773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1310053,6 +1310405,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8838301295330891706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1311334,6 +1311689,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8844074875652157438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1313059,6 +1313417,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &8856166828297476854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1342420,6 +1342781,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &9077659376077887608
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1358491,6 +1358855,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &9187736974229458721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1361420,6 +1361787,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &9209862126899857921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1362807,6 +1363177,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!33 &9220255037406448728
 MeshFilter:
   m_ObjectHideFlags: 0
