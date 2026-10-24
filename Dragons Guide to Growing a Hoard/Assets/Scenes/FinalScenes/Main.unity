@@ -6677,8 +6677,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::playerAnimation
   speedDampTime: 0.12
-  jumpStateName: 
-  flyStateName: 
+  jumpStateName: Jump
+  flyStateName: Fly
   forceFlyCrossfade: 0.1
 --- !u!114 &74016811
 MonoBehaviour:
@@ -16121,7 +16121,7 @@ MonoBehaviour:
   playerInventory: {fileID: 74016824}
   abilityInventoryForGating: {fileID: 74016825}
   waterBar: {fileID: 2115435799}
-  waterBarStartsHidden: 1
+  waterBarStartsHidden: 0
   journalButton: {fileID: 1423353679}
   journalUI: {fileID: 670171843}
   journalNewDot: {fileID: 819390318}
@@ -16147,7 +16147,7 @@ MonoBehaviour:
   toolSlotsStartHidden: 0
   toolSelectorRoot: {fileID: 338956974}
   debugDisableTutorialHiding: 0
-  tutorialCompletedPrefsKey: 
+  tutorialCompletedPrefsKey: Tutorial_MainHalfCompleted
   hudHotbarSlotUIs:
   - {fileID: 1921471680}
   - {fileID: 253971962}
@@ -26258,7 +26258,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &234485908
 RectTransform:
   m_ObjectHideFlags: 0
@@ -62584,7 +62584,7 @@ MonoBehaviour:
         m_Calls: []
   autoStart: 1
   startTriggerId: 
-  completionFlagKey: 
+  completionFlagKey: Tutorial_MainHalfCompleted
   movementMissionForHardcodedScript: {fileID: 11400000, guid: bc08ac5a41257484bb6bf6139a8d2944, type: 2}
   harvestMissionForHardcodedScript: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
 --- !u!114 &682049884
@@ -62741,9 +62741,9 @@ MonoBehaviour:
     onStepHidden:
       m_PersistentCalls:
         m_Calls: []
-  autoStart: 1
-  startTriggerId: 
-  completionFlagKey: 
+  autoStart: 0
+  startTriggerId: first_hotbar_item
+  completionFlagKey: Tutorial_ConsumableModuleDone
   movementMissionForHardcodedScript: {fileID: 0}
   harvestMissionForHardcodedScript: {fileID: 0}
 --- !u!114 &682049885
@@ -62875,9 +62875,9 @@ MonoBehaviour:
     onStepHidden:
       m_PersistentCalls:
         m_Calls: []
-  autoStart: 1
-  startTriggerId: 
-  completionFlagKey: 
+  autoStart: 0
+  startTriggerId: first_plant_completed
+  completionFlagKey: Tutorial_PassiveModuleDone
   movementMissionForHardcodedScript: {fileID: 0}
   harvestMissionForHardcodedScript: {fileID: 0}
 --- !u!1 &682641872
@@ -196868,7 +196868,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1924726636
 MonoBehaviour:
   m_ObjectHideFlags: 0

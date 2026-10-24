@@ -812,6 +812,17 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        // Jumping locomotion: nothing above covers this state, so once the jump clip finishes while the
+        // dragon is still airborne (long hang time, or spamming Space so a queued Jump trigger got
+        // consumed/cleared early), the Animator drifts back to the walk/run blend and the dragon
+        // "walks in the air". Same debounced fall as the Grounded branch, but only once the jump clip has
+        // finished and the upward push has actually been applied.
+        if (locomotionState == LocomotionState.Jumping && !controller.isGrounded && !jumpPending &&
+            ungroundedTimer >= fallAnimationDelay && !playerAnim.IsJumpAnimPlaying)
+        {
+            playerAnim.fall();
+        }
+
         // Flying locomotion
         if (locomotionState == LocomotionState.Flying)
         {
