@@ -18,7 +18,6 @@ GameObject:
   - component: {fileID: -861078862449864002}
   - component: {fileID: -1257692516311092426}
   - component: {fileID: 7911230658230625637}
-  - component: {fileID: 4130329681856582782}
   - component: {fileID: 4975129066613381195}
   m_Layer: 3
   m_Name: Dewdropper
@@ -39,7 +38,8 @@ Transform:
   m_LocalPosition: {x: 18.16444, y: 0.6733705, z: -11.420283}
   m_LocalScale: {x: 4.0560284, y: 4.056028, z: 4.056028}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8494160460932974846}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4847872284978358227
@@ -57,7 +57,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5086658688875511756}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -266,56 +266,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlantHarvestYield
   yieldItem: {fileID: 11400000, guid: 32f4be995edc3844a8f6ad5c3f0947ea, type: 2}
   amountOverride: 0
---- !u!114 &4130329681856582782
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5086658688875511756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e16a041bee9a0f743b0b1f61c2c5f566, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PotContents
-  plantAnchor: {fileID: 0}
-  isStaticPot: 0
-  fixedSoil: 0
-  fixedSoilKind: 3
-  potData: {fileID: 0}
-  potSize: 1
-  plantSurfaceOffset: 0
-  claySoilPrefab: {fileID: 0}
-  loamSoilPrefab: {fileID: 0}
-  sandySoilPrefab: {fileID: 0}
-  waterSoilPrefab: {fileID: 0}
-  infectedSoilPrefab: {fileID: 0}
-  clayMaterial: {fileID: 0}
-  loamMaterial: {fileID: 0}
-  sandyMaterial: {fileID: 0}
-  waterMaterial: {fileID: 0}
-  infectedMaterial: {fileID: 0}
-  clayAlgaeMaterial: {fileID: 0}
-  loamAlgaeMaterial: {fileID: 0}
-  sandyAlgaeMaterial: {fileID: 0}
-  waterAlgaeMaterial: {fileID: 0}
-  infectedAlgaeMaterial: {fileID: 0}
-  dryTintColor: {r: 1, g: 1, b: 1, a: 1}
-  wetTintColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  plantWaterMax: 10
-  baseDrainRate: 0.3
-  sunDrainMultiplier: 0.4
-  waterLevel: 0
-  tutorialMission: {fileID: 0}
-  currentSoil: 1
-  hasSoil: 0
-  hasPlant: 0
-  guardingNodes: []
-  autoDetectNodeRadius: 0.6
-  removableOnceCleared: 0
-  ownerSurface: {fileID: 0}
-  currentPlantPrefab: {fileID: 0}
-  GridOrigin: {x: 0, y: 0, z: 0}
 --- !u!114 &4975129066613381195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,9 +278,173 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c0b7d4cf5669834aa0c42ba6972ba8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlantHealthVisualDriver
-  animator: {fileID: 0}
+  animator: {fileID: 3413367144758958358}
   clipStateName: PlantHealthCycle
   clipLength: 36
-  materialRenderers: []
+  materialRenderers:
+  - {fileID: 4063963574686578439}
   blendPropertyName: _DeathBlend
   smoothTime: 1.5
+--- !u!1001 &8244939256958119701
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1969194570128585405}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_DirtyAABB
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_AABB.m_Center.x
+      value: -0.00059113634
+      objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_AABB.m_Center.y
+      value: 0.006178868
+      objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_AABB.m_Center.z
+      value: -0.000011779717
+      objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_AABB.m_Extent.x
+      value: 0.0019164644
+      objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_AABB.m_Extent.y
+      value: 0.0063367197
+      objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_AABB.m_Extent.z
+      value: 0.0015474495
+      objectReference: {fileID: 0}
+    - target: {fileID: -3887185075125053422, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 3a2ed9122d63bd1488a5ca2e63e7a0a3, type: 2}
+    - target: {fileID: -3887185075125053422, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0cfe2f43db1f1a645a7a6fcbdf299791, type: 2}
+    - target: {fileID: 919132149155446097, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      propertyPath: m_Name
+      value: DropperDead
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8741417650387425381}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3413367144758958358}
+  m_SourcePrefab: {fileID: 100100000, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+--- !u!137 &4063963574686578439 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -3887185075125053422, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+  m_PrefabInstance: {fileID: 8244939256958119701}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8494160460932974846 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+  m_PrefabInstance: {fileID: 8244939256958119701}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &9127249723636601412 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 87e034f2a23266e4984a2de4d835d38b, type: 3}
+  m_PrefabInstance: {fileID: 8244939256958119701}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8741417650387425381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9127249723636601412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c970ce2db7f34134185fa42217feeeb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeepLocalTransform
+  localPosition: {x: 0, y: 0, z: 0}
+  localEuler: {x: 0, y: 0, z: 0}
+  localScale: {x: 100, y: 100, z: 100}
+--- !u!95 &3413367144758958358
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9127249723636601412}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2e1de27bb08e4d542ba55d2bdd9247ca, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

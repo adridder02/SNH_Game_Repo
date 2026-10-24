@@ -7021,6 +7021,34 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 715b81ccc9ebf9241afa9f5e181152b5, type: 2}
+    - target: {fileID: -3727097990083951874, guid: 8c63e06d6c749c44dadf0ec35a537d6a, type: 3}
+      propertyPath: m_DirtyAABB
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3727097990083951874, guid: 8c63e06d6c749c44dadf0ec35a537d6a, type: 3}
+      propertyPath: m_AABB.m_Center.x
+      value: -0.020691395
+      objectReference: {fileID: 0}
+    - target: {fileID: -3727097990083951874, guid: 8c63e06d6c749c44dadf0ec35a537d6a, type: 3}
+      propertyPath: m_AABB.m_Center.y
+      value: -0.029277205
+      objectReference: {fileID: 0}
+    - target: {fileID: -3727097990083951874, guid: 8c63e06d6c749c44dadf0ec35a537d6a, type: 3}
+      propertyPath: m_AABB.m_Center.z
+      value: 0.5746099
+      objectReference: {fileID: 0}
+    - target: {fileID: -3727097990083951874, guid: 8c63e06d6c749c44dadf0ec35a537d6a, type: 3}
+      propertyPath: m_AABB.m_Extent.x
+      value: 2.4943886
+      objectReference: {fileID: 0}
+    - target: {fileID: -3727097990083951874, guid: 8c63e06d6c749c44dadf0ec35a537d6a, type: 3}
+      propertyPath: m_AABB.m_Extent.y
+      value: 2.21249
+      objectReference: {fileID: 0}
+    - target: {fileID: -3727097990083951874, guid: 8c63e06d6c749c44dadf0ec35a537d6a, type: 3}
+      propertyPath: m_AABB.m_Extent.z
+      value: 0.75673115
+      objectReference: {fileID: 0}
     - target: {fileID: -3126104926745123969, guid: 8c63e06d6c749c44dadf0ec35a537d6a, type: 3}
       propertyPath: m_DirtyAABB
       value: 0
