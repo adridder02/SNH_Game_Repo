@@ -38,11 +38,11 @@ Material:
     m_Ints: []
     m_Floats:
     - _CrestFoamThreshold: 0.65
-    - _DepthRange: 3
+    - _DepthRange: 5
     - _FoamCutoff: 0.6
-    - _FoamDirection: 0.25
+    - _FoamDirection: 0.36
     - _FoamDistortion: 1
-    - _FoamSpeed: 0.05
+    - _FoamSpeed: 0.005
     - _FoamStepFPS: 0
     - _Hardness: 0.5
     - _HorizonDistance: 3
@@ -56,22 +56,22 @@ Material:
     - _NormalsSpeed: 0.09
     - _NormalsStrength: 0.6
     - _PosterizeSteps: 4
-    - _RefractionScale: 10
-    - _RefractionSpeed: 0.2
+    - _RefractionScale: 15
+    - _RefractionSpeed: 0.05
     - _RefractionStrength: 0.015
     - _RippleFrequency: 6
     - _RippleHeight: 0.12
-    - _RippleSpeed: 3
+    - _RippleSpeed: 0.5
     - _Smoothness: 0.9
-    - _Steepness: 0.15
-    - _WaveSpeed: 1
-    - _Wavelength: 10
+    - _Steepness: 0.1
+    - _WaveSpeed: 0.1
+    - _Wavelength: 5
     m_Colors:
     - _CrestFoamColor: {r: 1, g: 1, b: 1, a: 1}
     - _DeepColor: {r: 0.049999982, g: 0.24999997, b: 0.5, a: 0.95}
-    - _Directions: {r: 0.1, g: 0.35, b: 0.6, a: 0.85}
+    - _Directions: {r: 0.1, g: 0.9, b: 0.6, a: 0.85}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
-    - _FoamTiling: {r: 0.2, g: 0.2, b: 0, a: 0}
+    - _FoamTiling: {r: 0.05, g: 0.05, b: 0, a: 0}
     - _HorizonColor: {r: 0.7, g: 0.9, b: 1, a: 1}
     - _IntersectionFoamColor: {r: 1, g: 1, b: 1, a: 1}
     - _IntersectionFoamTiling: {r: 0.3, g: 0.3, b: 0, a: 0}

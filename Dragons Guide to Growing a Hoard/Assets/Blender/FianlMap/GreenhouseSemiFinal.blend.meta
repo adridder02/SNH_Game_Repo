@@ -222,6 +222,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Leaf
+    second: {fileID: 2100000, guid: 872c019bece770a4cab651f4972b89df, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Leaf.001
     second: {fileID: 2100000, guid: 872c019bece770a4cab651f4972b89df, type: 2}
   - first:
@@ -267,6 +272,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Material.001
+    second: {fileID: 2100000, guid: afa2fd8872e1291469c094a39ffbc81f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Material.012
     second: {fileID: 2100000, guid: de1e18032284aec46b7fb6e2c3127fb2, type: 2}
   - first:
@@ -284,6 +294,16 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: MediumBlurple
     second: {fileID: 2100000, guid: 03738c83f405f9145a32d6b8e31fd7a9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Melody.001
+    second: {fileID: 2100000, guid: c1cb9f33de59bd545a436b463ce05aaa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MelodyVine
+    second: {fileID: 1656051788618914791, guid: c36694da2be13dc43b863ff1cec1a40d, type: 3}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule

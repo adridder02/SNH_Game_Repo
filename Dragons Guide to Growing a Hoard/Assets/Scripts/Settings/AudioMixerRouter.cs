@@ -81,7 +81,7 @@ public class AudioMixerRouter : MonoBehaviour
     private void RouteAll()
     {
         if (!ready) return;
-        foreach (AudioSource src in FindObjectsByType<AudioSource>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        foreach (AudioSource src in FindObjectsByType<AudioSource>(FindObjectsInactive.Include))
         {
             if (src == null || src.outputAudioMixerGroup != null) continue;
             AudioMixerGroup g = Pick(src);

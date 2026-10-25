@@ -53,7 +53,7 @@ public static class SaveWorld
     }
 
     private static T[] All<T>() where T : UnityEngine.Object
-        => UnityEngine.Object.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        => UnityEngine.Object.FindObjectsByType<T>(FindObjectsInactive.Include);
 
     private static bool IsRuntimeClone(GameObject go) => go.name.Contains("(Clone)");
 
