@@ -7728,7 +7728,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9999d7c03b2d6444c9f8328b5ba079fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::playerAnimation
-  speedDampTime: 1
+  speedDampTime: 0.5
   jumpStateName: Jump
   flyStateName: Fly
   forceFlyCrossfade: 0.5
@@ -19417,7 +19417,7 @@ MonoBehaviour:
   playerInventory: {fileID: 74016824}
   abilityInventoryForGating: {fileID: 74016825}
   waterBar: {fileID: 2115435799}
-  waterBarStartsHidden: 1
+  waterBarStartsHidden: 0
   journalButton: {fileID: 1423353679}
   journalUI: {fileID: 670171843}
   journalNewDot: {fileID: 819390318}

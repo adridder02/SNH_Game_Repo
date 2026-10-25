@@ -39,6 +39,12 @@ public class TitleScreenController : MonoBehaviour
              "New Game just goes ahead.")]
     [SerializeField] private ConfirmationDialog confirmDialog;
 
+    [Header("Hide while a popup is open")]
+    [Tooltip("Everything on the title screen that should disappear while the settings panel or the " +
+             "confirmation popup is showing: the logo, the signpost menu, decorations. Do NOT put the " +
+             "settings panel or the confirmation dialog in here.")]
+    [SerializeField] private GameObject[] hideWhilePopupOpen;
+
     [Tooltip("Only used as a fallback when there's no SaveRegistry asset. Exact scene name from Build Settings.")]
     [SerializeField] private string tutorialSceneName = "Tutorial";
 
@@ -67,8 +73,19 @@ public class TitleScreenController : MonoBehaviour
 
     private void OnDisable() => SaveManager.SaveStateChanged -= RefreshContinue;
 
+    private bool popupWasOpen;
+
     private void Update()
     {
+        bool popupOpen = (settingsPanel != null && settingsPanel.activeSelf) ||
+                         (confirmDialog != null && confirmDialog.IsShowing);
+        if (popupOpen != popupWasOpen)
+        {
+            popupWasOpen = popupOpen;
+            foreach (GameObject g in hideWhilePopupOpen)
+                if (g != null) g.SetActive(!popupOpen);
+        }
+
         if (settingsPanel != null && settingsPanel.activeSelf &&
             Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
             CloseSettings();

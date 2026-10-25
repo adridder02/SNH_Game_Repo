@@ -31,7 +31,14 @@ public class SaveManager : MonoBehaviour
     private SaveFile pending;       // set by Continue(), consumed when its scene finishes loading
     private float nextTimer;
 
-    private static string FilePath => Path.Combine(Application.persistentDataPath, "neglect_save.json");
+    // The Editor and a built game share Application.persistentDataPath on the same machine, so they get
+    // DIFFERENT file names — a save made while testing in the Editor can never leak into a build (and a
+    // build never sees old "neglect_save.json" files from earlier versions).
+#if UNITY_EDITOR
+    public static string FilePath => Path.Combine(Application.persistentDataPath, "neglect_save_editor.json");
+#else
+    public static string FilePath => Path.Combine(Application.persistentDataPath, "neglect_save_v1.json");
+#endif
     private static string BackupPath => FilePath + ".bak";
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -214,6 +221,13 @@ public class SaveManager : MonoBehaviour
             foreach (string k in r.floatPrefKeys) PlayerPrefs.DeleteKey(k);
         }
         foreach (string k in SaveRegistry.BuiltInStringKeys) PlayerPrefs.DeleteKey(k);
+
+        // Belt and braces: a new game starts from ZERO. Every progress flag (tutorial completion keys, journal,
+        // badges...) lives in PlayerPrefs, and some are typed into scene inspectors this scene can't see, so
+        // wipe the lot and then write the player's settings straight back (they aren't "progress").
+        GameSettings keep = SettingsManager.Current;
+        PlayerPrefs.DeleteAll();
+        SettingsManager.Save();
         PlayerPrefs.Save();
 
         // In-memory singletons that already loaded their prefs this session.
