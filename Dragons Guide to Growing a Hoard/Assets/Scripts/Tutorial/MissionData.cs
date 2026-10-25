@@ -20,9 +20,20 @@ using UnityEngine;
 //     - add it to a MissionDatabase asset so it shows up as a
 //       button on the Guide page's left-hand list.
 // =============================================================
+public enum GuideEntryType
+{
+    Mission, // checklist + status + (optional) Track button
+    Lore     // text only: no checklist, no status, no Track button
+}
+
 [CreateAssetMenu(fileName = "Mission_", menuName = "Guide/Mission Data")]
 public class MissionData : ScriptableObject
 {
+    [Header("Entry Type")]
+    [Tooltip("Mission = normal checklist page. Lore = a text-only page (no checklist, no status, no Track " +
+             "button) that still sits in the same left-hand list and uses the same layout.")]
+    public GuideEntryType entryType = GuideEntryType.Mission;
+
     [Header("Identity")]
     [Tooltip("Stable unique key used for save data / completion tracking. Leave blank to just use " +
              "the asset's file name. IMPORTANT: once players have save data, don't rename this (or " +
@@ -35,6 +46,24 @@ public class MissionData : ScriptableObject
     [Tooltip("Tasks in the order they should be completed/displayed. Each task's checkmark is driven by " +
              "MissionProgressManager, keyed off this mission's id + the task's own id.")]
     public List<MissionTaskEntry> tasks = new List<MissionTaskEntry>();
+
+    [Header("Mission Text (optional)")]
+    [Tooltip("Optional. Shown ABOVE the checklist. Leave blank for none.")]
+    [TextArea(3, 12)] public string openingText;
+
+    [Tooltip("Optional. Shown BELOW the checklist once the mission's last task is finished. Leave blank for none.")]
+    [TextArea(3, 12)] public string completionText;
+
+    [Header("Tracking (Mission only)")]
+    [Tooltip("If ON, the Guide page shows a Track / Untrack button for this mission, and the tracked mission " +
+             "is the one the Tutorial Objective banner displays.")]
+    public bool trackable = true;
+
+    [Header("Lore (Lore entries only)")]
+    [Tooltip("The body text of a Lore entry.")]
+    [TextArea(5, 30)] public string loreText;
+
+    public bool IsLore => entryType == GuideEntryType.Lore;
 
     /// <summary>The key actually used for save/progress data — falls back to the asset name if missionId is blank.</summary>
     public string ResolvedId => string.IsNullOrEmpty(missionId) ? name : missionId;

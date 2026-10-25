@@ -34,6 +34,12 @@ public class TutorialObjectiveUI : MonoBehaviour
     [Tooltip("Mission whose next incomplete task this banner tracks. Swap at runtime with SetMission(...).")]
     [SerializeField] private MissionData mission;
 
+    [Tooltip("ON = ignore the Mission field above and show whichever mission the player is tracking on the " +
+             "Guide page (Track / Untrack button). Nothing tracked = banner hidden.")]
+    [SerializeField] private bool followTrackedMission = false;
+    [Tooltip("Needed when Follow Tracked Mission is ON: the database used to look the tracked mission up by id.")]
+    [SerializeField] private MissionDatabase missionDatabase;
+
     [Tooltip("Optional. If assigned, this banner stays hidden entirely until this mission is fully " +
              "complete — e.g. assign the movement mission here so the harvest checklist doesn't pop up " +
              "in the corner while the player's still in the middle of the WASD/jump/fly tutorial. Leave " +
@@ -48,10 +54,12 @@ public class TutorialObjectiveUI : MonoBehaviour
 
     void Awake()
     {
-        if (progressManager == null)
-            progressManager = MissionProgressManager.Instance != null
-                ? MissionProgressManager.Instance
-                : FindAnyObjectByType<MissionProgressManager>();
+        // The surviving manager (Instance) always wins over a reference dragged in the Inspector — a
+        // duplicate manager in the scene destroys itself, and a reference to it would never see progress.
+        if (MissionProgressManager.Instance != null)
+            progressManager = MissionProgressManager.Instance;
+        else if (progressManager == null)
+            progressManager = FindAnyObjectByType<MissionProgressManager>();
     }
 
     void OnEnable()
@@ -84,6 +92,9 @@ public class TutorialObjectiveUI : MonoBehaviour
             return;
         }
 
+        if (followTrackedMission)
+            mission = FindTrackedMission();
+
         MissionTaskEntry nextTask = GetNextIncompleteTask();
         bool show = nextTask != null;
 
@@ -94,6 +105,18 @@ public class TutorialObjectiveUI : MonoBehaviour
 
         if (objectiveLabel != null) objectiveLabel.text = nextTask.description;
         if (iconRoot != null) iconRoot.SetActive(true);
+    }
+
+    private MissionData FindTrackedMission()
+    {
+        if (progressManager == null || missionDatabase == null || string.IsNullOrEmpty(progressManager.TrackedMissionId))
+            return null;
+
+        foreach (MissionData m in missionDatabase.missions)
+            if (m != null && m.ResolvedId == progressManager.TrackedMissionId)
+                return m;
+
+        return null;
     }
 
     private MissionTaskEntry GetNextIncompleteTask()

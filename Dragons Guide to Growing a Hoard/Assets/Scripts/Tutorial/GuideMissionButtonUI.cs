@@ -26,11 +26,14 @@ public class GuideMissionButtonUI : MonoBehaviour
              "— e.g. a small badge or dot next to the title. Leave blank if you don't want this.")]
     [SerializeField] private GameObject completeIndicator;
 
+    [Tooltip("Optional. Shown only while this mission is the tracked one.")]
+    [SerializeField] private GameObject trackedIndicator;
+
     private MissionData mission;
     private Color normalTextColor;
     private bool normalColorCached = false;
 
-    public void Initialize(MissionData mission, bool isComplete, Action<MissionData> onClicked)
+    public void Initialize(MissionData mission, bool isComplete, Action<MissionData> onClicked, bool isTracked = false)
     {
         this.mission = mission;
 
@@ -47,6 +50,9 @@ public class GuideMissionButtonUI : MonoBehaviour
 
         if (completeIndicator != null)
             completeIndicator.SetActive(isComplete);
+
+        if (trackedIndicator != null)
+            trackedIndicator.SetActive(isTracked);
 
         if (button != null)
         {

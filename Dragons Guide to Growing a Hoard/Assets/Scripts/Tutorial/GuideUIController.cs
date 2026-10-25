@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 // =============================================================
 // GuideUIController.cs
@@ -69,6 +70,43 @@ public class GuideUIController : MonoBehaviour
     [SerializeField] private GuideTaskRowUI taskRowTemplate;
     [SerializeField] private float taskRowGapY = 8f;
 
+    [Header("Right Side — Scroll + Text Sections")]
+    [Tooltip("Optional ScrollRect wrapping the right page. Reset to the top whenever a different entry is opened.")]
+    [SerializeField] private ScrollRect scrollRect;
+    [Tooltip("The ScrollRect's Content object — must be anchored/pivoted TOP (pivot Y = 1). Its height is set " +
+             "automatically to fit everything below. Put the opening text, task list container and completion " +
+             "text (and ideally the title/status too, if they should scroll) inside it.")]
+    [SerializeField] private RectTransform contentRoot;
+    [Tooltip("Text shown above the checklist (a mission's Opening Text) — also used as the body text of a Lore " +
+             "entry. Anchor/pivot top-left (0,1). Hidden when empty.")]
+    [SerializeField] private TMP_Text openingText;
+    [Tooltip("Text shown below the checklist once the mission's last task is finished. Anchor/pivot top-left " +
+             "(0,1). Hidden until then, and when empty.")]
+    [SerializeField] private TMP_Text completionText;
+        [Tooltip("Optional decorative line shown only when there IS opening text (sits between it and the checklist).")]
+    [SerializeField] private RectTransform openingDivider;
+    [Tooltip("Optional decorative line shown only when there IS completion text (sits between the checklist and it).")]
+    [SerializeField] private RectTransform completionDivider;
+    [SerializeField] private float sectionGapY = 16f;
+    [Tooltip("Logs how every text block was measured — turn on if the text and the lines under it overlap.")]
+    [SerializeField] private bool debugLayout = false;
+    [SerializeField] private float bottomPadding = 16f;
+
+    [Header("Right Side — Status + Tracking")]
+    [Tooltip("Optional. Parent of the whole 'Status: Complete' line (label + value). Hidden for Lore entries. " +
+             "If left blank only the value text is hidden.")]
+    [SerializeField] private GameObject statusRoot;
+    [Tooltip("Track / Untrack button. Hidden for Lore entries, non-trackable missions and completed missions.")]
+    [SerializeField] private Button trackButton;
+    [SerializeField] private TMP_Text trackButtonLabel;
+    [SerializeField] private string trackText = "Track";
+    [SerializeField] private string untrackText = "Untrack";
+
+    private string shownMissionId;
+    // Where each block sits in the editor — all flow positions are offsets from these, so the layout
+    // you set up by hand is respected instead of being overwritten.
+    private float contentBaseHeight, startTopOffset;
+    private bool layoutCaptured;
     private RectTransform missionButtonTemplateRect;
     private RectTransform taskRowTemplateRect;
 
@@ -80,10 +118,12 @@ public class GuideUIController : MonoBehaviour
 
     void Awake()
     {
-        if (progressManager == null)
-            progressManager = MissionProgressManager.Instance != null
-                ? MissionProgressManager.Instance
-                : FindAnyObjectByType<MissionProgressManager>();
+        // The surviving manager (Instance) always wins over a reference dragged in the Inspector — a
+        // duplicate manager in the scene destroys itself, and a reference to it would never see progress.
+        if (MissionProgressManager.Instance != null)
+            progressManager = MissionProgressManager.Instance;
+        else if (progressManager == null)
+            progressManager = FindAnyObjectByType<MissionProgressManager>();
 
         if (missionButtonTemplate != null)
         {
@@ -99,6 +139,18 @@ public class GuideUIController : MonoBehaviour
 
         if (checklistPanel != null)
             checklistPanel.SetActive(false);
+
+        if (trackButton != null)
+            trackButton.onClick.AddListener(OnTrackClicked);
+
+
+        // The height you set up in the editor is the minimum — it only ever grows from there.
+    }
+
+    private void OnTrackClicked()
+    {
+        if (selectedMission == null || progressManager == null) return;
+        progressManager.ToggleTracked(selectedMission); // fires OnProgressChanged -> everything refreshes
     }
 
     void OnEnable()
@@ -156,8 +208,9 @@ public class GuideUIController : MonoBehaviour
             RectTransform buttonRect = button.GetComponent<RectTransform>();
             buttonRect.anchoredPosition = GuideVerticalLayout.GetPosition(missionButtonTemplateRect, i, buttonGapY);
 
-            bool isComplete = progressManager != null && progressManager.IsMissionComplete(mission);
-            button.Initialize(mission, isComplete, m => OnMissionButtonClicked(m, button));
+            bool isComplete = !mission.IsLore && progressManager != null && progressManager.IsMissionComplete(mission);
+            bool isTracked = progressManager != null && progressManager.IsTracked(mission);
+            button.Initialize(mission, isComplete, m => OnMissionButtonClicked(m, button), isTracked);
 
             // Re-apply the persistent highlight if this clone happens to be the mission
             // that's currently open on the right (e.g. after a progress-triggered refresh).
@@ -205,42 +258,276 @@ public class GuideUIController : MonoBehaviour
         if (mission == null) return;
         selectedMission = mission;
 
+        bool lore = mission.IsLore;
+        bool complete = !lore && progressManager != null && progressManager.IsMissionComplete(mission);
+
         if (checklistPanel != null) checklistPanel.SetActive(true);
+
+        // The page was probably just switched on — let Unity finish laying it out so widths are real
+        // before any text is measured.
+        Canvas.ForceUpdateCanvases();
+
+        // Capture the Content's editor height the first time the page is actually showing (Awake runs
+        // before the layout is calculated, which gave a too-small number).
+        if (contentRoot != null && !layoutCaptured)
+        {
+            Canvas.ForceUpdateCanvases();
+            contentBaseHeight = contentRoot.rect.height;
+
+            // Where the first block (the opening-text box) sits in the editor, measured down from the
+            // top of the Content. Everything stacks downward from this point.
+            Vector3[] cc = new Vector3[4];
+            contentRoot.GetWorldCorners(cc);
+            float capTop = cc[1].y;
+            float capScale = Mathf.Max(0.0001f, Mathf.Abs(contentRoot.lossyScale.y));
+            RectTransform first = openingText != null ? openingText.rectTransform : taskListContainer;
+            if (first != null)
+            {
+                first.GetWorldCorners(cc);
+                startTopOffset = (capTop - cc[1].y) / capScale;
+            }
+            layoutCaptured = true;
+        }
+
         if (missionTitleText != null) missionTitleText.text = mission.missionTitle;
 
-        if (statusValueText != null)
-        {
-            bool complete = progressManager != null && progressManager.IsMissionComplete(mission);
+        if (statusRoot != null) statusRoot.SetActive(!lore);
+        else if (statusValueText != null) statusValueText.gameObject.SetActive(!lore);
+        if (statusValueText != null && !lore)
             statusValueText.text = complete ? "Complete" : "Incomplete";
+
+        if (trackButton != null)
+        {
+            bool showTrack = !lore && mission.trackable && !complete && progressManager != null;
+            trackButton.gameObject.SetActive(showTrack);
+            if (showTrack && trackButtonLabel != null)
+                trackButtonLabel.text = progressManager.IsTracked(mission) ? untrackText : trackText;
         }
 
         foreach (GuideTaskRowUI old in spawnedRows)
             if (old != null) Destroy(old.gameObject);
         spawnedRows.Clear();
 
-        if (taskRowTemplate == null) return;
+        // ---- vertical flow: [opening / lore text] -> [checklist] -> [completion text] ----
+        // Blocks are STACKED from the top: whatever isn't shown takes no space, so the checklist moves up
+        // when there's no opening text, and the completion text sits right under the last row.
+        bool showTasks = !lore && taskRowTemplate != null;
+        if (taskListContainer != null)
+            taskListContainer.gameObject.SetActive(showTasks);
 
-        for (int i = 0; i < mission.tasks.Count; i++)
+        Vector3[] c = new Vector3[4];
+        float scaleY = 1f, contentTop = 0f, cursorTop = 0f, lowest = 0f;
+        bool canStack = contentRoot != null;
+
+        if (canStack)
         {
-            MissionTaskEntry task = mission.tasks[i];
-
-            GuideTaskRowUI row = Instantiate(taskRowTemplate, taskListContainer);
-            row.gameObject.SetActive(true);
-
-            RectTransform rowRect = row.GetComponent<RectTransform>();
-            rowRect.anchoredPosition = GuideVerticalLayout.GetPosition(taskRowTemplateRect, i, taskRowGapY);
-
-            bool complete = progressManager != null && progressManager.IsTaskComplete(mission, task);
-            row.SetState(task.description, complete);
-
-            spawnedRows.Add(row);
+            contentRoot.GetWorldCorners(c);
+            contentTop = c[1].y;
+            scaleY = Mathf.Max(0.0001f, Mathf.Abs(contentRoot.lossyScale.y));
+            cursorTop = contentTop - startTopOffset * scaleY;
+            lowest = cursorTop;
         }
+
+        // 1) opening text (or the lore body)
+        float h = FitText(openingText, lore ? mission.loreText : mission.openingText);
+        if (h > 0f && canStack)
+        {
+            lowest = SetTopWorldY(openingText.rectTransform, cursorTop);
+            cursorTop = lowest - sectionGapY * scaleY;
+        }
+
+        // 1b) divider under the opening text — only when that text is showing
+        if (openingDivider != null) openingDivider.gameObject.SetActive(h > 0f);
+        if (h > 0f && canStack && openingDivider != null)
+        {
+            lowest = SetTopWorldY(openingDivider, cursorTop);
+            cursorTop = lowest - sectionGapY * scaleY;
+        }
+
+        // 2) checklist
+        if (showTasks)
+        {
+            if (canStack && taskListContainer != null)
+                SetTopWorldY(taskListContainer, cursorTop);
+
+            for (int i = 0; i < mission.tasks.Count; i++)
+            {
+                MissionTaskEntry task = mission.tasks[i];
+
+                GuideTaskRowUI row = Instantiate(taskRowTemplate, taskListContainer);
+                row.gameObject.SetActive(true);
+
+                RectTransform rowRect = row.GetComponent<RectTransform>();
+                rowRect.anchoredPosition = GuideVerticalLayout.GetPosition(taskRowTemplateRect, i, taskRowGapY);
+
+                bool taskComplete = progressManager != null && progressManager.IsTaskComplete(mission, task);
+                row.SetState(task.description, taskComplete);
+
+                spawnedRows.Add(row);
+
+                if (canStack)
+                {
+                    YRange(rowRect, out _, out float rowBottom);
+                    lowest = Mathf.Min(lowest, rowBottom);
+                }
+            }
+
+            if (canStack)
+                cursorTop = lowest - sectionGapY * scaleY;
+        }
+
+        // 3) completion text — only once the mission is finished
+        h = FitText(completionText, complete ? mission.completionText : null);
+        if (completionDivider != null) completionDivider.gameObject.SetActive(h > 0f);
+        if (h > 0f && canStack && completionDivider != null)
+        {
+            lowest = SetTopWorldY(completionDivider, cursorTop);
+            cursorTop = lowest - sectionGapY * scaleY;
+        }
+        if (h > 0f && canStack)
+        {
+            lowest = SetTopWorldY(completionText.rectTransform, cursorTop);
+        }
+
+        if (debugLayout && canStack)
+        {
+            string P(RectTransform r)
+            {
+                if (r == null || !r.gameObject.activeSelf) return "hidden";
+                YRange(r, out float yt, out float yb);
+                return $"top={(contentTop - yt) / scaleY:F0} bottom={(contentTop - yb) / scaleY:F0}";
+            }
+            Debug.Log($"[GuideUI] layout (units below Content top) | opening {P(openingText != null ? openingText.rectTransform : null)} | " +
+                      $"openingDivider {P(openingDivider)} | tasks {P(taskListContainer)} | " +
+                      $"completionDivider {P(completionDivider)} | completion {P(completionText != null ? completionText.rectTransform : null)} | startTopOffset={startTopOffset:F0}");
+        }
+
+        // 4) size the Content to fit
+        if (canStack)
+        {
+            float bottom = (contentTop - lowest) / scaleY;
+
+            // At least as tall as the viewport (or the height you set in the editor), otherwise as tall as the content.
+            float minHeight = scrollRect != null && scrollRect.viewport != null
+                ? scrollRect.viewport.rect.height
+                : contentBaseHeight;
+            float total = Mathf.Max(bottom + bottomPadding, minHeight);
+
+            // Resize, then slide back so the TOP edge stays exactly where it was (works for any pivot/anchors).
+            contentRoot.GetWorldCorners(c);
+            float topBefore = c[1].y;
+            contentRoot.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, total);
+            contentRoot.GetWorldCorners(c);
+            contentRoot.position += new Vector3(0f, topBefore - c[1].y, 0f);
+        }
+
+        // Back to the top only when a DIFFERENT entry was opened, not on a progress refresh of the same one.
+        bool newlyOpened = shownMissionId != mission.ResolvedId;
+        if (scrollRect != null && newlyOpened)
+            scrollRect.verticalNormalizedPosition = 1f;
+        shownMissionId = mission.ResolvedId;
+
+        // Measuring on the same frame the page switches on can come out short, so lay it out once more
+        // next frame, when everything has its real size.
+        if (newlyOpened && isActiveAndEnabled)
+            StartCoroutine(RelayoutNextFrame(mission));
+    }
+
+    private System.Collections.IEnumerator RelayoutNextFrame(MissionData mission)
+    {
+        yield return null;
+        if (selectedMission == mission)
+            ShowMissionDetail(mission);
+    }
+
+    // Shows/hides one text block and sets its height to fit its text. Returns that height, or 0 if hidden/empty.
+    private float FitText(TMP_Text label, string content)
+    {
+        if (label == null) return 0f;
+
+        bool has = !string.IsNullOrWhiteSpace(content);
+        label.gameObject.SetActive(has);
+        if (!has) return 0f;
+
+        label.text = content;
+        RectTransform rt = label.rectTransform;
+
+        float width = rt.rect.width;
+        if (width <= 1f && contentRoot != null) width = contentRoot.rect.width;
+        // Height is passed as "unlimited" — passing 0 made TMP report the box's CURRENT height back.
+        float height = label.GetPreferredValues(content, width, 100000f).y;
+        float preferred = height;
+
+        rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+
+        // Double-check against what TMP actually lays out at the box's real width (the estimate above can
+        // come out short, which made the text run into the divider/list below it).
+        float rendered = height;
+        if (label.isActiveAndEnabled)
+        {
+            try { label.ForceMeshUpdate(true, true); rendered = label.preferredHeight; }
+            catch (System.Exception) { }
+        }
+        if (rendered > height + 0.5f) { /* the current width gives a taller layout than the estimate — trust it */ }
+        if (rendered > height + 0.5f)
+        {
+            height = rendered;
+            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+        }
+
+        // Third opinion, straight from the generated glyph lines: top of the first line to bottom of the last.
+        // Only once the label is really running (during the page's own OnEnable its TMP hasn't started yet,
+        // and TMP throws if asked to build a mesh at that point — the next-frame pass covers that case).
+        TMP_TextInfo info = null;
+        if (label.isActiveAndEnabled)
+        {
+            try { info = label.GetTextInfo(content); }
+            catch (System.Exception) { info = null; }
+        }
+        float lineSpan = -1f;
+        if (info != null && info.lineCount > 0)
+        {
+            lineSpan = info.lineInfo[0].ascender - info.lineInfo[info.lineCount - 1].descender + label.margin.y + label.margin.w;
+            if (lineSpan > 1f && Mathf.Abs(lineSpan - height) > 0.5f)
+            {
+                height = lineSpan;
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+            }
+        }
+
+        if (debugLayout)
+            Debug.Log($"[GuideUI] '{label.name}' infoLines={(info != null ? info.lineCount : -1)} lineSpan={lineSpan:F1} width={width:F1} preferred={preferred:F1} rendered={rendered:F1} " +
+                      $"final={height:F1} rectH={rt.rect.height:F1} lines={label.textInfo.lineCount} " +
+                      $"fontSize={label.fontSize} lossyScaleY={rt.lossyScale.y:F5} contentScaleY={(contentRoot != null ? contentRoot.lossyScale.y : 0f):F5} " +
+                      $"wrap={label.textWrappingMode} autosize={label.enableAutoSizing}", label);
+        return height;
+    }
+
+    // Highest and lowest world-space Y of a rect. Uses all four corners, so a rect that has been flipped
+    // (negative Y scale / rotated 180°, common for mirrored divider ornaments) is measured correctly.
+    private static void YRange(RectTransform rt, out float top, out float bottom)
+    {
+        Vector3[] c = new Vector3[4];
+        rt.GetWorldCorners(c);
+        top = Mathf.Max(Mathf.Max(c[0].y, c[1].y), Mathf.Max(c[2].y, c[3].y));
+        bottom = Mathf.Min(Mathf.Min(c[0].y, c[1].y), Mathf.Min(c[2].y, c[3].y));
+    }
+
+    // Moves rt vertically so its visual TOP edge sits at world-space Y (independent of pivot/anchors/flipping).
+    // Returns the world-space Y of its visual BOTTOM edge afterwards, measured from the real rect.
+    private static float SetTopWorldY(RectTransform rt, float worldTop)
+    {
+        YRange(rt, out float top, out _);
+        rt.position += new Vector3(0f, worldTop - top, 0f);
+        YRange(rt, out _, out float bottom);
+        return bottom;
     }
 
     /// <summary>Hides the right-side checklist, e.g. when the Guide page itself closes.</summary>
     public void ClearSelection()
     {
         selectedMission = null;
+        shownMissionId = null;
         if (selectedButton != null)
             selectedButton.SetSelected(false);
         selectedButton = null;
