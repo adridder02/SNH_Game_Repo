@@ -32,6 +32,10 @@ public class PotNeedIndicator : MonoBehaviour
     /// Read by the overhead bars and the pot menu to show the same hint.</summary>
     public Color CurrentColor { get; private set; } = Color.white;
 
+    /// <summary>Plain-word name of that same need: "soil", "light" or "water". Used for the pot menu's
+    /// "Needs water" text so the words always match the colour.</summary>
+    public string CurrentNeedName { get; private set; } = "";
+
     /// <summary>The active indicator on this pot, or null if no Pollen Puff is active.</summary>
     public static PotNeedIndicator GetActive(PotContents pot)
     {
@@ -72,12 +76,14 @@ public class PotNeedIndicator : MonoBehaviour
         int water = pot.Plant.WaterScore;
 
         Color colour = SoilColor;
+        string need = "soil";
         int lowest = soil;
 
-        if (light < lowest) { lowest = light; colour = LightColor; }
-        if (water < lowest) { colour = WaterColor; }
+        if (light < lowest) { lowest = light; colour = LightColor; need = "light"; }
+        if (water < lowest) { colour = WaterColor; need = "water"; }
 
         CurrentColor = colour;
+        CurrentNeedName = need;
         Renderer rend = GetComponent<Renderer>();
         if (rend != null) rend.material.color = colour;
     }

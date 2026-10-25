@@ -93470,7 +93470,7 @@ RectTransform:
   m_Father: {fileID: 1515944930}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -119556,7 +119556,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1185127351
 RectTransform:
   m_ObjectHideFlags: 0
@@ -163539,7 +163539,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1588513925
 RectTransform:
   m_ObjectHideFlags: 0
@@ -204931,8 +204931,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 931033073}
   m_HandleRect: {fileID: 931033072}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 1
+  m_Value: 0.063535914
+  m_Size: 0.99998575
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -219423,6 +219423,14 @@ MonoBehaviour:
   activeConsumableIcon: {fileID: 1209076878}
   consumableIconSpacing: 8
   pollenNeedImage: {fileID: 719320221}
+  pollenNeedText: {fileID: 812240391}
+  soilNeedMessage: Needs better soil
+  lightNeedMessage: Needs different lighting
+  waterNeedMessage: Needs water
+  plantTypeIcon: {fileID: 1520222447}
+  sunnyTypeSprite: {fileID: 21300000, guid: f8f6765d96d5b614aa121fd9d08747d2, type: 3}
+  darkTypeSprite: {fileID: 21300000, guid: f70fce289a588044cb9bb22c690f12d1, type: 3}
+  waterTypeSprite: {fileID: 21300000, guid: eddf8ac0b26ceba4981aab402142f07e, type: 3}
   soilActionButton: {fileID: 744239623}
   soilActionButtonLabel: {fileID: 1159913560}
   choosePlantButton: {fileID: 1271652927}
