@@ -37,6 +37,23 @@ public class PotMenuUIController : MonoBehaviour
              "while a Pollen Puff is active on this pot - the menu counterpart of the overhead bars' image. " +
              "Hidden otherwise. Use a white/greyscale sprite so the tint shows true.")]
     [SerializeField] private Image pollenNeedImage;
+    [Tooltip("OPTIONAL text shown next to the need image while a Pollen Puff is active, e.g. 'Needs water', " +
+             "coloured to match (brown = soil, yellow = light, blue = water). Hidden otherwise.")]
+    [SerializeField] private TextMeshProUGUI pollenNeedText;
+    [Tooltip("Message shown when the plant's lowest need is SOIL.")]
+    [SerializeField] private string soilNeedMessage = "Needs better soil";
+    [Tooltip("Message shown when the plant's lowest need is LIGHT.")]
+    [SerializeField] private string lightNeedMessage = "Needs more light";
+    [Tooltip("Message shown when the plant's lowest need is WATER.")]
+    [SerializeField] private string waterNeedMessage = "Needs water";
+
+    [Header("Main Panel - Plant Type Icon")]
+    [Tooltip("OPTIONAL small image showing the category of whatever is planted in this pot (sunny / dark / " +
+             "water). Hidden while the pot has no plant.")]
+    [SerializeField] private Image plantTypeIcon;
+    [SerializeField] private Sprite sunnyTypeSprite;
+    [SerializeField] private Sprite darkTypeSprite;
+    [SerializeField] private Sprite waterTypeSprite;
     [SerializeField] private Button soilActionButton;
     [SerializeField] private TextMeshProUGUI soilActionButtonLabel;
     [SerializeField] private Button choosePlantButton;
@@ -381,6 +398,22 @@ public class PotMenuUIController : MonoBehaviour
                 : currentPot.Plant.name.Replace("(Clone)", "").Trim();
         }
 
+        if (plantTypeIcon != null)
+        {
+            Sprite typeSprite = null;
+            if (hasPlant && currentPot.Plant != null)
+            {
+                switch (currentPot.Plant.plantType)
+                {
+                    case PlantType.Sunny: typeSprite = sunnyTypeSprite; break;
+                    case PlantType.Dark:  typeSprite = darkTypeSprite;  break;
+                    case PlantType.Water: typeSprite = waterTypeSprite; break;
+                }
+            }
+            plantTypeIcon.sprite = typeSprite;
+            plantTypeIcon.enabled = typeSprite != null;
+        }
+
         if (mainSoilIcon != null)
         {
             Sprite soilSprite = hasSoil ? GetSoilIcon(currentPot.CurrentSoil) : null;
@@ -514,11 +547,29 @@ public class PotMenuUIController : MonoBehaviour
 
     private void RefreshPollenNeedImage()
     {
-        if (pollenNeedImage == null) return;
         PotNeedIndicator indicator = PotNeedIndicator.GetActive(currentPot);
         bool show = indicator != null;
-        if (pollenNeedImage.gameObject.activeSelf != show) pollenNeedImage.gameObject.SetActive(show);
-        if (show) pollenNeedImage.color = indicator.CurrentColor;
+
+        if (pollenNeedImage != null)
+        {
+            if (pollenNeedImage.gameObject.activeSelf != show) pollenNeedImage.gameObject.SetActive(show);
+            if (show) pollenNeedImage.color = indicator.CurrentColor;
+        }
+
+        if (pollenNeedText != null)
+        {
+            if (pollenNeedText.gameObject.activeSelf != show) pollenNeedText.gameObject.SetActive(show);
+            if (show)
+            {
+                switch (indicator.CurrentNeedName)
+                {
+                    case "light": pollenNeedText.text = lightNeedMessage; break;
+                    case "water": pollenNeedText.text = waterNeedMessage; break;
+                    default:      pollenNeedText.text = soilNeedMessage;  break;
+                }
+                pollenNeedText.color = indicator.CurrentColor;
+            }
+        }
     }
 
     private void RefreshConsumableIcons()
