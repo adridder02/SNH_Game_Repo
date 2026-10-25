@@ -40,7 +40,7 @@ public class SaveRegistry : ScriptableObject
     public List<string> floatPrefKeys = new List<string>();
 
     // Keys the game already uses (see PlantJournalManager / NewItemTracker).
-    public static readonly string[] BuiltInStringKeys = { "PlantJournal_Discovered", "PlantJournal_Guesses", "NewItemTracker_State" };
+    public static readonly string[] BuiltInStringKeys = { "PlantJournal_Discovered", "PlantJournal_Guesses", "NewItemTracker_State", "FirstPickup_Seen", "PlantCompleted_Seen" };
 
     private static SaveRegistry instance;
     public static SaveRegistry Instance

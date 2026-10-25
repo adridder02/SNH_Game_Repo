@@ -59407,18 +59407,18 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1028081822}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d83c85a64c5a24241b888072edb1788f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StartingInventoryGrant
   inventory: {fileID: 1028081828}
   abilityInventory: {fileID: 1028081827}
-  sceneName: Main
+  sceneName: Tutorial
   plantPrefab: {fileID: 2775176059256192284, guid: a652209b9c817cd419181350c1ec215c, type: 3}
-  plantCount: 1
+  plantCount: 2
   consumableItem: {fileID: 11400000, guid: 9df404b2e95e4554084436c27162021d, type: 2}
-  consumableCount: 1
+  consumableCount: 0
 --- !u!65 &1028081824
 BoxCollider:
   m_ObjectHideFlags: 0

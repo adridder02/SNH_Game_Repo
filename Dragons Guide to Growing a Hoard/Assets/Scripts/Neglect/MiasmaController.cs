@@ -33,7 +33,7 @@ public class MiasmaController : MonoBehaviour
     public MiasmaIntensity currentIntensity = MiasmaIntensity.Easy;
 
     [Tooltip("Time in contact with plants to increase intensity (seconds)")]
-    public float timeToIncreaseIntensity = 120f;
+    public float timeToIncreaseIntensity = 300f;
 
     [Tooltip("Easy intensity debuff values (applied every minute)")]
     public float easyLightPenalty = 0.01f;
@@ -351,8 +351,31 @@ public class MiasmaController : MonoBehaviour
     }
 
 
+    // Set by ZoneHealth: net size units/sec from room happiness (negative = receding).
+    private bool  useExternalRate = false;
+    private float externalRate    = 0f;
+
+    /// <summary>
+    /// Called every frame by the room's ZoneHealth. Replaces rateOfMiasma while active, so a happy room
+    /// pushes the miasma back and a neglected one lets it creep forward. Negative = shrink.
+    /// </summary>
+    public void SetExternalRate(float unitsPerSecond)
+    {
+        useExternalRate = true;
+        externalRate = unitsPerSecond;
+    }
+
+    /// <summary>True while a ZoneHealth is pushing the miasma back.</summary>
+    public bool IsReceding => useExternalRate && externalRate < 0f;
+
     void HandleGrowth()
     {
+        if (useExternalRate)
+        {
+            ApplySize(currentSize + externalRate * GameClock.DeltaTime);
+            return;
+        }
+
         if (!incSize)
         {
             // Keep currentSize synchronized with the actual transform.
@@ -491,7 +514,19 @@ public class MiasmaController : MonoBehaviour
 
     void UpdateIntensity()
     {
-        if (plantsInMiasma.Count > 0)
+        if (IsReceding)
+        {
+            // Room is winning: the intensity cools off instead of building.
+            contactTimer -= GameClock.DeltaTime * 2f;
+            if (contactTimer <= 0f)
+            {
+                contactTimer = timeToIncreaseIntensity * 0.5f;
+                if (currentIntensity == MiasmaIntensity.Intense) currentIntensity = MiasmaIntensity.Mild;
+                else if (currentIntensity == MiasmaIntensity.Mild) currentIntensity = MiasmaIntensity.Easy;
+                else contactTimer = 0f;
+            }
+        }
+        else if (plantsInMiasma.Count > 0)
         {
             // Increase contact timer.
             contactTimer += GameClock.DeltaTime;

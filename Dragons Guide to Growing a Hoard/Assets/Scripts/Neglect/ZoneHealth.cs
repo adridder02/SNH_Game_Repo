@@ -72,6 +72,38 @@ public class ZoneHealth : MonoBehaviour
              "Lower = more responsive. Higher = better performance.")]
     public float evaluationInterval = 1f;
 
+    [Header("Smoothing (makes happiness change gradually)")]
+    [Tooltip("Happiness points per second the displayed/used happiness climbs toward the real value when the " +
+             "room is improving. 100 points of improvement takes (100 / this) seconds, e.g. 1.5 = about a minute.")]
+    public float riseRate = 1.5f;
+
+    [Tooltip("Happiness points per second it sinks toward the real value when the room is getting worse. " +
+             "Keep this LOWER than riseRate so neglect is slow and progress is felt. 0.4 = a full drop takes ~4 min.")]
+    public float fallRate = 0.4f;
+
+    [Header("Miasma response (drives the linked MiasmaController)")]
+    [Tooltip("If on, this zone controls how fast its linked Miasma grows or recedes from its smoothed happiness. " +
+             "If off, the miasma uses its own constant rateOfMiasma like before.")]
+    public bool driveMiasma = true;
+
+    [Tooltip("Happiness at or ABOVE this makes the miasma recede. Speed scales up to Max Recede Rate at 100.")]
+    public float recedeAbove = 55f;
+
+    [Tooltip("Happiness at or BELOW this lets the miasma grow. Speed scales up to Max Grow Rate at 0. " +
+             "Between this and Recede Above the miasma just holds still.")]
+    public float growBelow = 30f;
+
+    [Tooltip("Miasma size units per second at 0 happiness. With maxSize 250, 0.1 = about 40 minutes of total " +
+             "neglect to fill the room. Raise for a harsher game.")]
+    public float maxGrowRate = 0.1f;
+
+    [Tooltip("Miasma size units per second shrink at 100 happiness. Higher than the grow rate so progress is " +
+             "rewarded faster than neglect punishes.")]
+    public float maxRecedeRate = 0.6f;
+
+    [Tooltip("Zones with no plants in them: grow miasma at this fraction of Max Grow Rate (0 = leave it alone).")]
+    [Range(0f, 1f)] public float emptyZoneGrowFraction = 0f;
+
     [Header("Negligence thresholds")]
     [Tooltip("Zone happiness below this is Neglected (yellow warning).")]
     public float neglectedThreshold = 40f;
@@ -83,8 +115,14 @@ public class ZoneHealth : MonoBehaviour
     // Public read-only state (read by GreenhouseHealth and NegligenceUI)
     // -------------------------------------------------------------------------
 
-    /// <summary>Average happiness score of all plants in this zone (0–100).</summary>
+    /// <summary>
+    /// Smoothed happiness (0–100). Eases toward RawHappiness over time (riseRate / fallRate) so the bar and
+    /// the miasma never spike. This is what the UI, GreenhouseHealth and the miasma all read.
+    /// </summary>
     public float ZoneHappiness { get; private set; } = 0f;
+
+    /// <summary>Instant average happiness score of all plants in this zone (0–100), no smoothing.</summary>
+    public float RawHappiness { get; private set; } = 0f;
 
     /// <summary>Number of plants currently detected in this zone.</summary>
     public int PlantCount { get; private set; } = 0;
@@ -144,6 +182,59 @@ public class ZoneHealth : MonoBehaviour
             _evaluationTimer = 0f;
             Evaluate();
         }
+
+        SmoothHappiness(GameClock.DeltaTime);
+        DriveMiasma();
+    }
+
+    /// <summary>Instantly sets smoothed happiness to the real value (use after loading a save).</summary>
+    public void SnapToRaw()
+    {
+        ZoneHappiness = RawHappiness;
+        UpdateNegligence();
+    }
+
+    private void SmoothHappiness(float dt)
+    {
+        if (dt <= 0f || Mathf.Approximately(ZoneHappiness, RawHappiness)) return;
+
+        float rate = RawHappiness > ZoneHappiness ? riseRate : fallRate;
+        ZoneHappiness = Mathf.MoveTowards(ZoneHappiness, RawHappiness, rate * dt);
+        UpdateNegligence();
+    }
+
+    private void UpdateNegligence()
+    {
+        NegligenceLevel before = Negligence;
+        if (ZoneHappiness >= neglectedThreshold)      Negligence = NegligenceLevel.Healthy;
+        else if (ZoneHappiness >= criticalThreshold)  Negligence = NegligenceLevel.Neglected;
+        else                                           Negligence = NegligenceLevel.Critical;
+
+        if (before != Negligence) OnZoneUpdated?.Invoke(this);
+    }
+
+    private void DriveMiasma()
+    {
+        if (!driveMiasma || miasma == null) return;
+
+        float rate;
+        if (PlantCount == 0)
+        {
+            rate = maxGrowRate * emptyZoneGrowFraction;
+        }
+        else if (ZoneHappiness >= recedeAbove)
+        {
+            float t = Mathf.InverseLerp(recedeAbove, 100f, ZoneHappiness);
+            rate = -Mathf.Lerp(0f, maxRecedeRate, t);
+        }
+        else if (ZoneHappiness <= growBelow)
+        {
+            float t = Mathf.InverseLerp(growBelow, 0f, ZoneHappiness);
+            rate = Mathf.Lerp(0f, maxGrowRate, t);
+        }
+        else rate = 0f;
+
+        miasma.SetExternalRate(rate);
     }
 
     // -------------------------------------------------------------------------
@@ -165,8 +256,7 @@ public class ZoneHealth : MonoBehaviour
 
         if (PlantCount == 0)
         {
-            // Empty zone → treat as fully happy (nothing to neglect)
-            ZoneHappiness = 0f;
+            RawHappiness = 0f;
         }
         else
         {
@@ -175,16 +265,11 @@ public class ZoneHealth : MonoBehaviour
             foreach (PlantState plant in plants)
                 total += StateToScore(plant.CurrentState);
 
-            ZoneHappiness = total / PlantCount;
+            RawHappiness = total / PlantCount;
         }
 
-        // Derive negligence level from the score
-        if (ZoneHappiness >= neglectedThreshold)
-            Negligence = NegligenceLevel.Healthy;
-        else if (ZoneHappiness >= criticalThreshold)
-            Negligence = NegligenceLevel.Neglected;
-        else
-            Negligence = NegligenceLevel.Critical;
+        // ZoneHappiness itself eases toward RawHappiness every frame (see SmoothHappiness).
+        UpdateNegligence();
 
         // Notify GreenhouseHealth and any other listeners
         OnZoneUpdated?.Invoke(this);

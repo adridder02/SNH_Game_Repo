@@ -277,6 +277,10 @@ public class PlayerInventory : MonoBehaviour
     /// passes a harvest node's designer-set starting condition. Defaults to fully healthy
     /// (PlantCondition.Healthy) if omitted.
     /// </summary>
+    /// <summary>Fired every time a plant lands in the inventory (harvest or returned from a pot). Used by
+    /// MainUIPopups for the "first time you pick this up" card; it decides itself whether it's the first time.</summary>
+    public static event Action<PlantSpeciesData> PlantAcquired;
+
     public bool AddPlantToInventory(GameObject plantPrefab, Sprite icon = null, Sprite displayImage = null, string displayName = null, PlantCondition condition = null)
     {
         if (plantPrefab == null)
@@ -321,6 +325,9 @@ public class PlayerInventory : MonoBehaviour
             else
                 Debug.LogWarning("[PlayerInventory] No PlantJournalManager in scene — journal discovery was skipped.");
         }
+
+        if (state != null && state.journalSpecies != null)
+            PlantAcquired?.Invoke(state.journalSpecies);
 
         Debug.Log(placedInGrid
             ? $"Added {plantPrefab.name} to grid at ({instance.gridX},{instance.gridY})"
