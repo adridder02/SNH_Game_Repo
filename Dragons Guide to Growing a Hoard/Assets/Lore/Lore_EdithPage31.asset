@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546ea7ecb2303074683eae13d20a01ad, type: 3}
+  m_Name: Lore_EdithPage31
+  m_EditorClassIdentifier: 
+  entryType: 1
+  missionId: lore_edith_page_31
+  missionTitle: "Edith's journal, page 31"
+  tasks: []
+  openingText: 
+  completionText: 
+  trackable: 0
+  loreSource: "Fallen behind a bookcase, the Study"
+  loreText: "I think I understand it now. The fog isn't a disease. The Tree is hungry, and it's eating the only thing within reach, which is us and everything we planted. We emptied its larder and now we're surprised that it's raiding ours."

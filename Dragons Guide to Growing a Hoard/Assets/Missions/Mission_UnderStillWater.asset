@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546ea7ecb2303074683eae13d20a01ad, type: 3}
+  m_Name: Mission_UnderStillWater
+  m_EditorClassIdentifier: 
+  entryType: 0
+  missionId: quest_under_still_water
+  missionTitle: "Under Still Water"
+  tasks:
+  - taskId: revive_drifter
+    description: "Revive a Drifter"
+    group: 0
+  - taskId: revive_verdant_algae
+    description: "Revive a Verdant Algae"
+    group: 0
+  - taskId: revive_waterbell
+    description: "Revive a Waterbell"
+    group: 0
+  - taskId: revive_dewdropper
+    description: "Revive a Dewdropper"
+    group: 0
+  - taskId: revive_bubble_blossom
+    description: "Revive a Bubble Blossom"
+    group: 0
+  - taskId: west_wing_happiness
+    description: "Raise the West Wing's room happiness (you can leave the wing)"
+    group: 0
+  - taskId: find_laboratory
+    description: "Find the Upstairs Laboratory"
+    group: 1
+  - taskId: find_deluge_catcher
+    description: "Find the Deluge Catcher"
+    group: 2
+  - taskId: revive_deluge_catcher
+    description: "Revive the Deluge Catcher"
+    group: 3
+  - taskId: harvest_heart_tide
+    description: "Harvest the Heart of the Tide"
+    group: 4
+  - taskId: return_heart_tide
+    description: "Return the Heart of the Tide to the World Tree"
+    group: 5
+  openingText: "Phlox's Note\n\n“There's water flooded in the West Wing. I can hear it dripping through the doors. I'm not a very good swimmer, so I'm going to need a path.”"
+  completionText: "Phlox's Note\n\n“It was raining inside the flower. Only a little bit. When it finished, there was a stone at the bottom, blue and cold. I held it the whole way back so I wouldn't drop it in the water.”"
+  trackable: 1
+  loreText: 

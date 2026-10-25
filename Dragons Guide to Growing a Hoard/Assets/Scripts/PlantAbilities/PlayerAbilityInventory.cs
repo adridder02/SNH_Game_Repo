@@ -53,6 +53,10 @@ public class PlayerAbilityInventory : MonoBehaviour
     /// <summary>True once OnFirstHotbarItemHarvested has fired.</summary>
     public bool HasHarvestedFirstHotbarItem { get; private set; }
 
+    /// <summary>Fired for every Add() — static so scene-level scripts (e.g. MissionObjectiveLinks) can listen
+    /// without a reference to the player.</summary>
+    public static event Action<AbilityItemData, int> ItemAdded;
+
     public IReadOnlyList<AbilityItemInstance> Stacks => stacks;
 
     // ---------------------------------------------------------------
@@ -82,6 +86,7 @@ public class PlayerAbilityInventory : MonoBehaviour
 
         Debug.Log($"[PlayerAbilityInventory] +{amount} {data.displayName} (now {existing.count}).");
         OnChanged?.Invoke();
+        ItemAdded?.Invoke(data, amount);
 
         if (wallPlacementItem != null && data == wallPlacementItem)
             GetComponent<PlayerInventory>()?.UnlockWallPlacement();

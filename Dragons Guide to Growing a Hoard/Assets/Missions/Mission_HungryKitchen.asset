@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546ea7ecb2303074683eae13d20a01ad, type: 3}
+  m_Name: Mission_HungryKitchen
+  m_EditorClassIdentifier: 
+  entryType: 0
+  missionId: quest_hungry_kitchen
+  missionTitle: "The Hungry Kitchen"
+  tasks:
+  - taskId: revive_sundial_cactus
+    description: "Revive a Sundial Cactus"
+    group: 0
+  - taskId: revive_windmill_aster
+    description: "Revive a Windmill Aster"
+    group: 0
+  - taskId: revive_sparkmint
+    description: "Revive a Sparkmint"
+    group: 0
+  - taskId: east_wing_happiness
+    description: "Raise the East Wing's room happiness (you can leave the wing)"
+    group: 0
+  - taskId: head_main_hall
+    description: "Head into the Main Hall"
+    group: 1
+  - taskId: find_dorms
+    description: "Find the Dorms"
+    group: 2
+  - taskId: find_kitchen
+    description: "Find the Kitchen"
+    group: 3
+  - taskId: find_maw_jaw
+    description: "Find the Maw Jaw"
+    group: 4
+  - taskId: revive_maw_jaw
+    description: "Revive the Maw Jaw"
+    group: 5
+  - taskId: harvest_heart_sun
+    description: "Harvest the Heart of the Sun"
+    group: 6
+  - taskId: return_heart_sun
+    description: "Return the Heart of the Sun to the World Tree"
+    group: 7
+  openingText: "Phlox's Note\n\n“The sunny rooms are the easiest to love. The light comes in properly here, even through the dirty glass. There's a fireplace in the room with beds that smells like old bread and smoke. There is something in there.”"
+  completionText: "Phlox's Note\n\n“It opened its mouth for me. I really thought it was going to bite. There was a stone inside instead, warm as a windowsill. I wanted to keep it. I didn't, though. I think it belongs to the tree.”"
+  trackable: 1
+  loreText: 

@@ -15,6 +15,8 @@ public static class PlantEvents
     public static event Action<PlantSpeciesData> Completed;
     /// <summary>A plant was harvested from a pot.</summary>
     public static event Action<PlantSpeciesData> Harvested;
+    /// <summary>A plant's live health state became Revived (it was not Revived a moment ago).</summary>
+    public static event Action<PlantSpeciesData> Revived;
     /// <summary>A consumable was applied to a plant in a pot.</summary>
     public static event Action<AbilityItemData, PlantSpeciesData> ConsumableUsed;
 
@@ -25,6 +27,7 @@ public static class PlantEvents
         Completed?.Invoke(s);
         TutorialSequenceController.RaiseStartTrigger("first_plant_completed");
     }
+    public static void RaiseRevived(PlantSpeciesData s) => Revived?.Invoke(s);
     public static void RaiseHarvested(PlantSpeciesData s) => Harvested?.Invoke(s);
     public static void RaiseConsumableUsed(AbilityItemData d, PlantSpeciesData s) => ConsumableUsed?.Invoke(d, s);
 }

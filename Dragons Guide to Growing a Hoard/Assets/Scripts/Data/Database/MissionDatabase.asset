@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MissionDatabase
   missions:
   - {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  - {fileID: 11400000, guid: dc318dcdc7ab438aa73d3da0cd942459, type: 2}
+  - {fileID: 11400000, guid: 59f9b596e37d46cf839ab18c987ae04f, type: 2}
+  - {fileID: 11400000, guid: 7d3a4a2fd813438f80419e8a2dcabce1, type: 2}

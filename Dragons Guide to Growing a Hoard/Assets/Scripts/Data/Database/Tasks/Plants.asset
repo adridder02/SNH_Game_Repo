@@ -38,15 +38,7 @@ MonoBehaviour:
     description: Use consumable on a plant
   - taskId: exit
     description: Exit the Tutorial Level
-  openingText: 'Phlox''s Note
-
-
-    "The sunny rooms are the easiest to love. The
-    light comes in properly here, even through the dirty glass. There''s a fireplace
-    in the room with beds that smells like old bread and smoke. I think there is
-    something in there."'
-  completionText: "Phlox's Note\n\n\u201CIt opened its mouth for me. I really thought
-    it was going to bite. There was a stone inside instead, warm as a windowsill.
-    I wanted to keep it. I didn't, though. I think it belongs to the tree.\u201D"
+  openingText: 
+  completionText: 
   trackable: 1
   loreText: 

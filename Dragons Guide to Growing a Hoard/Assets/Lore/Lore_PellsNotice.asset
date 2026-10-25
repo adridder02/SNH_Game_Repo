@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546ea7ecb2303074683eae13d20a01ad, type: 3}
+  m_Name: Lore_PellsNotice
+  m_EditorClassIdentifier: 
+  entryType: 1
+  missionId: lore_pells_notice
+  missionTitle: "Mrs. Pell's kitchen notice"
+  tasks: []
+  openingText: 
+  completionText: 
+  trackable: 0
+  loreSource: "Pinned inside the pantry door"
+  loreText: "Professor Crane's stone is to STAY in the bread oven. He says it goes dull in the cold. I have asked where I am meant to bake. He has not answered. Bread will be from the village until further notice."

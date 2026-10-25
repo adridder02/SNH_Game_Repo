@@ -35,6 +35,39 @@ public class MissionProgressManager : MonoBehaviour
     [SerializeField] private bool persistProgress = false;
     [SerializeField] private string saveKey = "MissionProgress_v1";
 
+    // ---- lore ----
+    private readonly HashSet<string> collectedLore = new HashSet<string>();
+    private const string LoreSaveKey = "LoreCollected_v1";
+    [Serializable] private class LoreSave { public List<string> ids = new List<string>(); }
+
+    /// <summary>Marks a Lore entry as found (shows up in the journal's Lore bookmark). Always saved.</summary>
+    public void CollectLore(MissionData lore)
+    {
+        if (lore == null) return;
+        if (collectedLore.Add(lore.ResolvedId))
+        {
+            SaveLore();
+            OnProgressChanged?.Invoke();
+        }
+    }
+
+    public bool IsLoreCollected(MissionData lore) => lore != null && collectedLore.Contains(lore.ResolvedId);
+
+    private void SaveLore()
+    {
+        PlayerPrefs.SetString(LoreSaveKey, JsonUtility.ToJson(new LoreSave { ids = new List<string>(collectedLore) }));
+        PlayerPrefs.Save();
+    }
+
+    private void LoadLore()
+    {
+        if (!PlayerPrefs.HasKey(LoreSaveKey)) return;
+        LoreSave data = JsonUtility.FromJson<LoreSave>(PlayerPrefs.GetString(LoreSaveKey));
+        if (data?.ids == null) return;
+        collectedLore.Clear();
+        foreach (string id in data.ids) collectedLore.Add(id);
+    }
+
     /// <summary>Id of the mission the player is tracking (shown on the Tutorial Objective banner). Empty = none.</summary>
     public string TrackedMissionId { get; private set; } = "";
 
@@ -49,6 +82,7 @@ public class MissionProgressManager : MonoBehaviour
             // Remove this if MissionProgressManager is placed once per-scene instead of persisted globally.
             DontDestroyOnLoad(gameObject);
             Load();
+            LoadLore();
         }
         else if (Instance != this)
         {
@@ -155,7 +189,9 @@ public class MissionProgressManager : MonoBehaviour
     public void ClearAllProgress()
     {
         completedTasks.Clear();
+        collectedLore.Clear();
         TrackedMissionId = "";
+        PlayerPrefs.DeleteKey(LoreSaveKey);
         PlayerPrefs.DeleteKey(saveKey);
         PlayerPrefs.Save();
         OnProgressChanged?.Invoke();
@@ -169,6 +205,25 @@ public class MissionProgressManager : MonoBehaviour
 
     public bool IsTaskComplete(string missionId, string taskId)
         => completedTasks.TryGetValue(missionId, out HashSet<string> set) && set.Contains(taskId);
+
+    /// <summary>True when every task in a LOWER group is complete — i.e. this task has been revealed.
+    /// (Everything is unlocked if all tasks share group 0.)</summary>
+    public bool IsTaskUnlocked(MissionData mission, MissionTaskEntry task)
+    {
+        if (mission == null || task == null) return false;
+        foreach (MissionTaskEntry other in mission.tasks)
+            if (other.group < task.group && !IsTaskComplete(mission.ResolvedId, other.ResolvedId))
+                return false;
+        return true;
+    }
+
+    public bool IsTaskUnlocked(MissionData mission, string taskId)
+    {
+        if (mission == null) return false;
+        foreach (MissionTaskEntry t in mission.tasks)
+            if (t.ResolvedId == taskId) return IsTaskUnlocked(mission, t);
+        return false;
+    }
 
     public bool IsMissionComplete(MissionData mission)
     {

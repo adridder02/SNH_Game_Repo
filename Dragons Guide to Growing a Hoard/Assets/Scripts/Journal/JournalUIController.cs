@@ -75,6 +75,11 @@ public class JournalUIController : MonoBehaviour
     [SerializeField] private Button plantsNavButton;
     [SerializeField] private Button progressNavButton;
     [SerializeField] private Button guideNavButton;
+    [Tooltip("The Lore bookmark. Opens the SAME page as the Guide bookmark, showing the Lore list instead " +
+             "(see GuideUIController.SetMode). Set a Selected sprite/colour on it like the other nav buttons.")]
+    [SerializeField] private Button loreNavButton;
+    [Tooltip("The GuideUIController on the guide page. Auto-found on guidePage if left empty.")]
+    [SerializeField] private GuideUIController guideController;
     [SerializeField] private Button settingsNavButton;
 
     [Header("Progress — Room Shortcuts")]
@@ -186,6 +191,9 @@ public class JournalUIController : MonoBehaviour
         if (progressPageController == null && progressPage != null)
             progressPageController = progressPage.GetComponent<ProgressPageUIController>();
 
+        if (guideController == null && guidePage != null)
+            guideController = guidePage.GetComponentInChildren<GuideUIController>(true);
+
         if (slotTemplate != null)
         {
             slotTemplateRect = slotTemplate.GetComponent<RectTransform>();
@@ -226,8 +234,16 @@ public class JournalUIController : MonoBehaviour
         guideNavButton?.onClick.AddListener(() =>
         {
             if (BlockedExcept("opened_guide_bookmark", JournalAction.Bookmarks)) return;
+            guideController?.SetMode(GuideUIController.GuideMode.Guide);
             ShowPage(guidePage, guideNavButton);
             TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_guide_bookmark");
+        });
+        loreNavButton?.onClick.AddListener(() =>
+        {
+            if (BlockedExcept("opened_lore_bookmark", JournalAction.Bookmarks)) return;
+            guideController?.SetMode(GuideUIController.GuideMode.Lore);
+            ShowPage(guidePage, loreNavButton);
+            TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_lore_bookmark");
         });
         settingsNavButton?.onClick.AddListener(() => { if (HudLockedFor(JournalAction.Settings)) return; ShowPage(settingsPage, settingsNavButton); });
 
@@ -370,6 +386,16 @@ public class JournalUIController : MonoBehaviour
             TutorialSequenceController.Instance?.NotifyExternalTrigger("closed_journal_back_button");
         }
     }
+    /// <summary>Opens the journal on the Lore bookmark with this entry selected (used when the player picks
+    /// a lore item up in the world). The normal back button / Escape / J close it again.</summary>
+    public void OpenLoreEntry(MissionData entry)
+    {
+        if (!isJournalOpen) ToggleJournal();
+
+        guideController?.OpenLoreEntry(entry);
+        ShowPage(guidePage, loreNavButton);
+    }
+
     /// <summary>Closes the journal if it's open. Does nothing if already closed. Call this from ExitMenuController on Escape.</summary>
     public void CloseJournal()
     {
@@ -430,6 +456,7 @@ public class JournalUIController : MonoBehaviour
         SetNavButtonActive(plantsNavButton, navButton == plantsNavButton);
         SetNavButtonActive(progressNavButton, navButton == progressNavButton);
         SetNavButtonActive(guideNavButton, navButton == guideNavButton);
+        SetNavButtonActive(loreNavButton, navButton == loreNavButton);
         SetNavButtonActive(settingsNavButton, navButton == settingsNavButton);
     }
 

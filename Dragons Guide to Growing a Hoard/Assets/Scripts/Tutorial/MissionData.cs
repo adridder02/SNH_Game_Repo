@@ -63,6 +63,9 @@ public class MissionData : ScriptableObject
     [Tooltip("The body text of a Lore entry.")]
     [TextArea(5, 30)] public string loreText;
 
+    [Tooltip("Where it was found, e.g. 'Tied to a Drifter in the flooded wing'. Shown above the body text.")]
+    [TextArea(1, 3)] public string loreSource;
+
     public bool IsLore => entryType == GuideEntryType.Lore;
 
     /// <summary>The key actually used for save/progress data — falls back to the asset name if missionId is blank.</summary>
@@ -79,6 +82,11 @@ public class MissionTaskEntry
     [TextArea(1, 3)]
     [Tooltip("The task text shown on the Guide page's right-side panel next to its checkmark.")]
     public string description;
+
+    [Tooltip("Reveal order. Tasks with the SAME group number show together and can be done in any order. " +
+             "A higher group only appears (and can only be completed) once EVERY task in the lower groups " +
+             "is done. Leave everything at 0 to show all tasks from the start.")]
+    [Min(0)] public int group = 0;
 
     /// <summary>The key actually used for save/progress data — falls back to the description if taskId is blank.</summary>
     public string ResolvedId => string.IsNullOrEmpty(taskId) ? description : taskId;

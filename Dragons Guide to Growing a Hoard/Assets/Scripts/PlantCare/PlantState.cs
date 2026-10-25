@@ -314,6 +314,8 @@ public class PlantState : MonoBehaviour
             currentState = newState;
             UpdateVisuals();
             Debug.Log($"[PlantState] State -> {currentState} ({lastTotalScore}/6)");
+            if (currentState == PlantStateEnum.Revived)
+                PlantEvents.RaiseRevived(journalSpecies); // lets missions react to "Revive a ..."
         }
 
         // Permanent death — only tracked while not already permanent, and only while genuinely

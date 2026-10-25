@@ -51,6 +51,9 @@ public class TutorialObjectiveUI : MonoBehaviour
     [SerializeField] private GameObject bannerRoot;
     [SerializeField] private GameObject iconRoot;
     [SerializeField] private TMP_Text objectiveLabel;
+    [Tooltip("Used when several tasks of the current group are still open (missions that use task groups). " +
+             "{0} = the first open task, {1} = how many are open.")]
+    [SerializeField] private string remainingFormat = "{0} ({1} left)";
 
     void Awake()
     {
@@ -103,7 +106,11 @@ public class TutorialObjectiveUI : MonoBehaviour
 
         if (!show) return;
 
-        if (objectiveLabel != null) objectiveLabel.text = nextTask.description;
+        if (objectiveLabel != null)
+        {
+            int left = CountRemainingInGroup(nextTask);
+            objectiveLabel.text = left > 1 ? string.Format(remainingFormat, nextTask.description, left) : nextTask.description;
+        }
         if (iconRoot != null) iconRoot.SetActive(true);
     }
 
@@ -124,9 +131,23 @@ public class TutorialObjectiveUI : MonoBehaviour
         if (mission == null || progressManager == null) return null;
 
         foreach (MissionTaskEntry task in mission.tasks)
-            if (!progressManager.IsTaskComplete(mission, task))
+            if (!progressManager.IsTaskComplete(mission, task) && progressManager.IsTaskUnlocked(mission, task))
                 return task;
 
         return null; // every task done
+    }
+
+    // How many tasks of the same (revealed) group are still open — only counted for missions that use groups.
+    private int CountRemainingInGroup(MissionTaskEntry current)
+    {
+        bool usesGroups = false;
+        foreach (MissionTaskEntry t in mission.tasks)
+            if (t.group != current.group) { usesGroups = true; break; }
+        if (!usesGroups) return 1;
+
+        int n = 0;
+        foreach (MissionTaskEntry t in mission.tasks)
+            if (t.group == current.group && !progressManager.IsTaskComplete(mission, t)) n++;
+        return n;
     }
 }

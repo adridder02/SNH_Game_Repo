@@ -25191,7 +25191,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1284.3, y: -318}
+  m_AnchoredPosition: {x: -1284.3, y: -209}
   m_SizeDelta: {x: 567.5066, y: 214.2141}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &202360102
@@ -28105,7 +28105,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &234485908
 RectTransform:
   m_ObjectHideFlags: 0
@@ -29526,6 +29526,143 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!1 &253027247
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 253027248}
+  - component: {fileID: 253027250}
+  - component: {fileID: 253027249}
+  m_Layer: 5
+  m_Name: text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &253027248
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 253027247}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 523424278}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -0.0000076293945, y: 0}
+  m_SizeDelta: {x: 236.4313, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &253027249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 253027247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Lore
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: d389b45c10957c74c95520f6923a5c88, type: 2}
+  m_sharedMaterial: {fileID: 2351274673999765770, guid: d389b45c10957c74c95520f6923a5c88, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4283992999
+  m_fontColor: {r: 0.654088, g: 0.54316336, b: 0.34349903, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 110
+  m_fontSizeBase: 110
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: -36.37944, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &253027250
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 253027247}
+  m_CullTransparentMesh: 1
 --- !u!1 &253971957
 GameObject:
   m_ObjectHideFlags: 0
@@ -48059,7 +48196,7 @@ MonoBehaviour:
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: 40
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -50464,6 +50601,143 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -6564086670116265437, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
+--- !u!1 &523424277
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 523424278}
+  - component: {fileID: 523424282}
+  - component: {fileID: 523424281}
+  - component: {fileID: 523424280}
+  - component: {fileID: 523424279}
+  m_Layer: 5
+  m_Name: BookmarkButton (8)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &523424278
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 523424277}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 253027248}
+  m_Father: {fileID: 1297592929}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -1291.364, y: -465}
+  m_SizeDelta: {x: 406.7025, y: 183.0701}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &523424279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 523424277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9967423b5d812b843951a3f37d86af07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonTextHover
+  buttonText: {fileID: 253027249}
+  normalColor: {r: 0.654902, g: 0.54509807, b: 0.34509805, a: 1}
+  hoverColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &523424280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 523424277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 2
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 21300000, guid: 194a533735a11a843bdad5078b9507a6, type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: 194a533735a11a843bdad5078b9507a6, type: 3}
+    m_SelectedSprite: {fileID: 21300000, guid: 194a533735a11a843bdad5078b9507a6, type: 3}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 523424281}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &523424281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 523424277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 5e50fa7ca5bf9f44ebe2913327bdd45b, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &523424282
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 523424277}
+  m_CullTransparentMesh: 1
 --- !u!64 &523732467
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -60236,7 +60510,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -170.35489, y: 0, z: -170.39453, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -67398,6 +67672,8 @@ MonoBehaviour:
   plantsNavButton: {fileID: 1012094732}
   progressNavButton: {fileID: 1753572485}
   guideNavButton: {fileID: 202360105}
+  loreNavButton: {fileID: 523424280}
+  guideController: {fileID: 670171847}
   settingsNavButton: {fileID: 1870401589}
   progressPageController: {fileID: 670171845}
   mainRoomNavButton: {fileID: 577846443}
@@ -67526,7 +67802,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GuideUIController
   database: {fileID: 11400000, guid: 48bd6d26a026e7c479d2480cf0738cf1, type: 2}
+  loreDatabase: {fileID: 11400000, guid: 7b87349c943048b2a61cc99f269d73ff, type: 2}
   progressManager: {fileID: 1419929983}
+  debugShowAllLore: 1
+  debugRevealAllTasks: 0
+  guideTitle: {fileID: 108163734}
+  loreTitle: {fileID: 0}
+  emptyLoreState: {fileID: 0}
+  loreBodyFormat: '{0}
+
+
+    {1}'
   missionListContainer: {fileID: 168478086}
   missionButtonTemplate: {fileID: 553217908}
   buttonGapY: 8
@@ -67543,7 +67829,7 @@ MonoBehaviour:
   openingDivider: {fileID: 1339787772}
   completionDivider: {fileID: 1942738702}
   sectionGapY: 50
-  debugLayout: 1
+  debugLayout: 0
   bottomPadding: 30
   statusRoot: {fileID: 275018034}
   trackButton: {fileID: 429091220}
@@ -100314,7 +100600,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1284.3, y: 5.6601}
+  m_AnchoredPosition: {x: -1284.3, y: 45}
   m_SizeDelta: {x: 480.6186, y: 181.4167}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1012094729
@@ -134601,6 +134887,7 @@ RectTransform:
   - {fileID: 1783055978}
   - {fileID: 1012094728}
   - {fileID: 202360101}
+  - {fileID: 523424278}
   - {fileID: 1870401585}
   - {fileID: 17900636}
   - {fileID: 398134847}
@@ -145151,6 +145438,9 @@ GameObject:
   - component: {fileID: 1419929984}
   - component: {fileID: 1419929982}
   - component: {fileID: 1419929989}
+  - component: {fileID: 1419929990}
+  - component: {fileID: 1419929992}
+  - component: {fileID: 1419929991}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -145316,6 +145606,351 @@ MonoBehaviour:
   missions:
   - {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
   onlyIfPrefsKey: 
+--- !u!114 &1419929990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1419929979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9009f3413b6d36548ab2bfd34674ad01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MissionObjectiveLinks
+  mission: {fileID: 11400000, guid: dc318dcdc7ab438aa73d3da0cd942459, type: 2}
+  links:
+  - label: Revive a Sundial Cactus
+    taskId: revive_sundial_cactus
+    type: 0
+    species: {fileID: 11400000, guid: 006bc5c7905cc09439e368abab1bcff4, type: 2}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Revive a Windmill Aster
+    taskId: revive_windmill_aster
+    type: 0
+    species: {fileID: 11400000, guid: d463c86c7cf658e4ca6285118f5236e8, type: 2}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Revive a Sparkmint
+    taskId: revive_sparkmint
+    type: 0
+    species: {fileID: 11400000, guid: c1da464e3762ebe4483ebae2c08cada8, type: 2}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Raise the East Wing's room happiness (you can leave the wing)
+    taskId: east_wing_happiness
+    type: 4
+    species: {fileID: 0}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Head into the Main Hall
+    taskId: head_main_hall
+    type: 5
+    species: {fileID: 0}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Find the Dorms
+    taskId: find_dorms
+    type: 5
+    species: {fileID: 0}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Find the Kitchen
+    taskId: find_kitchen
+    type: 5
+    species: {fileID: 0}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Find the Maw Jaw
+    taskId: find_maw_jaw
+    type: 5
+    species: {fileID: 0}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Revive the Maw Jaw
+    taskId: revive_maw_jaw
+    type: 0
+    species: {fileID: 11400000, guid: e174be48238809a44b9b6394a33f67f9, type: 2}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Harvest the Heart of the Sun
+    taskId: harvest_heart_sun
+    type: 2
+    species: {fileID: 0}
+    item: {fileID: 11400000, guid: 72306af1b9397a547994d5b44495eaa8, type: 2}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Return the Heart of the Sun to the World Tree
+    taskId: return_heart_sun
+    type: 3
+    species: {fileID: 0}
+    item: {fileID: 11400000, guid: 72306af1b9397a547994d5b44495eaa8, type: 2}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  player: {fileID: 74016818}
+  pollInterval: 0.25
+--- !u!114 &1419929991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1419929979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9009f3413b6d36548ab2bfd34674ad01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MissionObjectiveLinks
+  mission: {fileID: 11400000, guid: 7d3a4a2fd813438f80419e8a2dcabce1, type: 2}
+  links:
+  - label: Revive a Glowcap
+    taskId: revive_glowcap
+    type: 0
+    species: {fileID: 11400000, guid: 6d84b47cdcd2f404693f35aa49ea02fc, type: 2}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Revive a Whumpril
+    taskId: revive_whumpril
+    type: 0
+    species: {fileID: 0}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Revive a Melodybloom
+    taskId: revive_melodybloom
+    type: 0
+    species: {fileID: 11400000, guid: 6b81dee6748f16042a5ec916d3dfb264, type: 2}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Revive a Clovenwick
+    taskId: revive_clovenwick
+    type: 0
+    species: {fileID: 11400000, guid: 6f2538c3bc1119e49a8e9eb7482fda92, type: 2}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Raise the Central Wing's room happiness (you can leave the wing)
+    taskId: central_wing_happiness
+    type: 4
+    species: {fileID: 0}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Find a way to the second floor and enter the Study
+    taskId: enter_study
+    type: 5
+    species: {fileID: 0}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Inspect the bookshelves
+    taskId: inspect_bookshelves
+    type: 6
+    species: {fileID: 0}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Find the Luminary
+    taskId: find_luminary
+    type: 5
+    species: {fileID: 0}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Revive the Luminary
+    taskId: revive_luminary
+    type: 0
+    species: {fileID: 11400000, guid: 5425a0b9d0faa7d489c45e25044cb586, type: 2}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Harvest the Heart of the Night
+    taskId: harvest_heart_night
+    type: 2
+    species: {fileID: 0}
+    item: {fileID: 11400000, guid: 32b8e90682ced224caed9d893a2f665f, type: 2}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Return the Heart of the Night to the World Tree
+    taskId: return_heart_night
+    type: 3
+    species: {fileID: 0}
+    item: {fileID: 11400000, guid: 32b8e90682ced224caed9d893a2f665f, type: 2}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  player: {fileID: 74016818}
+  pollInterval: 0.25
+--- !u!114 &1419929992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1419929979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9009f3413b6d36548ab2bfd34674ad01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MissionObjectiveLinks
+  mission: {fileID: 11400000, guid: 59f9b596e37d46cf839ab18c987ae04f, type: 2}
+  links:
+  - label: Revive a Drifter
+    taskId: revive_drifter
+    type: 0
+    species: {fileID: 11400000, guid: fdd364b0d2358b64b9e6a41eb519f73b, type: 2}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Revive a Verdant Algae
+    taskId: revive_verdant_algae
+    type: 0
+    species: {fileID: 11400000, guid: 28b2263d7c6345140a1c60d037e89800, type: 2}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Revive a Waterbell
+    taskId: revive_waterbell
+    type: 0
+    species: {fileID: 11400000, guid: cedaa3ddba8cb394cb471a513d2deb99, type: 2}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Revive a Dewdropper
+    taskId: revive_dewdropper
+    type: 0
+    species: {fileID: 11400000, guid: e603394f5bd98ae4c8143964100fdd4d, type: 2}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Revive a Bubble Blossom
+    taskId: revive_bubble_blossom
+    type: 0
+    species: {fileID: 11400000, guid: 3f441615e5414324abbaafa89640a437, type: 2}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Raise the West Wing's room happiness (you can leave the wing)
+    taskId: west_wing_happiness
+    type: 4
+    species: {fileID: 0}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Find the Upstairs Laboratory
+    taskId: find_laboratory
+    type: 5
+    species: {fileID: 0}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Find the Deluge Catcher
+    taskId: find_deluge_catcher
+    type: 5
+    species: {fileID: 0}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Revive the Deluge Catcher
+    taskId: revive_deluge_catcher
+    type: 0
+    species: {fileID: 11400000, guid: 6ec5f9545c2ab0a4abbee8337bf18c24, type: 2}
+    item: {fileID: 0}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Harvest the Heart of the Tide
+    taskId: harvest_heart_tide
+    type: 2
+    species: {fileID: 0}
+    item: {fileID: 11400000, guid: ee748c195e00e7a4592e264026485ca8, type: 2}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  - label: Return the Heart of the Tide to the World Tree
+    taskId: return_heart_tide
+    type: 3
+    species: {fileID: 0}
+    item: {fileID: 11400000, guid: ee748c195e00e7a4592e264026485ca8, type: 2}
+    zone: {fileID: 0}
+    happinessThreshold: 60
+    area: {fileID: 0}
+    radius: 4
+  player: {fileID: 74016818}
+  pollInterval: 0.25
 --- !u!1 &1423353675
 GameObject:
   m_ObjectHideFlags: 0
@@ -184751,8 +185386,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 894470122}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0.0010560845}
+  m_AnchorMax: {x: 1, y: 0.9999999}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 4740, y: 372}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -205137,6 +205772,7 @@ MonoBehaviour:
   bannerRoot: {fileID: 198383239}
   iconRoot: {fileID: 300996139}
   objectiveLabel: {fileID: 140734560}
+  remainingFormat: '{0} ({1} left)'
 --- !u!1 &1805753800
 GameObject:
   m_ObjectHideFlags: 0

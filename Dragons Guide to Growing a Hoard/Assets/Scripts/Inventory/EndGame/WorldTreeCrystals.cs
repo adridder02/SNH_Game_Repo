@@ -43,6 +43,9 @@ public class WorldTreeCrystals : MonoBehaviour
         [System.NonSerialized] public bool revealed;
     }
 
+    /// <summary>Fired when a Heart item is handed to the tree and its crystal is revealed.</summary>
+    public static event System.Action<AbilityItemData> CrystalRevealed;
+
     [Header("Crystals")]
     [SerializeField] private CrystalEntry[] crystals = new CrystalEntry[3];
 
@@ -139,6 +142,7 @@ public class WorldTreeCrystals : MonoBehaviour
             entry.layer.SetActive(true);
             entry.revealed = true;
             revealedAny = true;
+            CrystalRevealed?.Invoke(entry.keyItem);
 
             Debug.Log($"[WorldTreeCrystals] Revealed '{entry.label}' using {entry.keyItem.displayName}.");
         }

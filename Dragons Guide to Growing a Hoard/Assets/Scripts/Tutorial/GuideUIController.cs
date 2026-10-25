@@ -42,9 +42,28 @@ using UnityEngine.UI;
 public class GuideUIController : MonoBehaviour
 {
     [Header("Data")]
+    [Tooltip("Missions shown on the Guide bookmark.")]
     [SerializeField] private MissionDatabase database;
+    [Tooltip("Lore entries for the Lore bookmark. Only entries the player has picked up are listed.")]
+    [SerializeField] private MissionDatabase loreDatabase;
     [Tooltip("Auto-found via MissionProgressManager.Instance if left empty.")]
     [SerializeField] private MissionProgressManager progressManager;
+
+    [Header("Testing")]
+    [Tooltip("TESTING: list every Lore entry on the Lore bookmark, collected or not. Turn off for real play.")]
+    [SerializeField] private bool debugShowAllLore = false;
+    [Tooltip("TESTING: show every mission task from the start, ignoring task groups. Turn off for real play.")]
+    [SerializeField] private bool debugRevealAllTasks = false;
+
+    [Header("Guide / Lore Bookmarks")]
+    [Tooltip("Page title art shown while the Guide bookmark is open.")]
+    [SerializeField] private GameObject guideTitle;
+    [Tooltip("Page title art shown while the Lore bookmark is open.")]
+    [SerializeField] private GameObject loreTitle;
+    [Tooltip("Optional. Shown instead of the right page while the Lore list is still empty.")]
+    [SerializeField] private GameObject emptyLoreState;
+    [Tooltip("How a Lore entry's body is laid out. {0} = where it was found, {1} = the entry text.")]
+    [SerializeField] private string loreBodyFormat = "{0}\n\n{1}";
 
     [Header("Left Side — Mission List")]
     [Tooltip("Parent container for the mission buttons. Anchor/pivot must be top-left (0,1).")]
@@ -102,6 +121,11 @@ public class GuideUIController : MonoBehaviour
     [SerializeField] private string trackText = "Track";
     [SerializeField] private string untrackText = "Untrack";
 
+    public enum GuideMode { Guide, Lore }
+    private GuideMode mode = GuideMode.Guide;
+    private MissionData pendingSelect;
+    public GuideMode Mode => mode;
+
     private string shownMissionId;
     // Where each block sits in the editor — all flow positions are offsets from these, so the layout
     // you set up by hand is respected instead of being overwritten.
@@ -147,6 +171,33 @@ public class GuideUIController : MonoBehaviour
         // The height you set up in the editor is the minimum — it only ever grows from there.
     }
 
+    /// <summary>Switches between the Guide and Lore bookmarks (title art, list and right page).</summary>
+    public void SetMode(GuideMode newMode)
+    {
+        bool changed = newMode != mode;
+        mode = newMode;
+        if (guideTitle != null) guideTitle.SetActive(mode == GuideMode.Guide);
+        if (loreTitle != null) loreTitle.SetActive(mode == GuideMode.Lore);
+
+        if (changed)
+        {
+            ClearSelection();
+            if (isActiveAndEnabled) PopulateMissionList();
+        }
+    }
+
+    /// <summary>Switches to the Lore list and opens this entry (works before or after the page is active).</summary>
+    public void OpenLoreEntry(MissionData entry)
+    {
+        pendingSelect = entry;
+        SetMode(GuideMode.Lore);
+        if (isActiveAndEnabled)
+        {
+            ClearSelection();
+            PopulateMissionList();
+        }
+    }
+
     private void OnTrackClicked()
     {
         if (selectedMission == null || progressManager == null) return;
@@ -158,6 +209,7 @@ public class GuideUIController : MonoBehaviour
         if (progressManager != null)
             progressManager.OnProgressChanged += HandleProgressChanged;
 
+        SetMode(mode); // re-applies the right title art
         PopulateMissionList();
     }
 
@@ -181,7 +233,8 @@ public class GuideUIController : MonoBehaviour
     // ------------------------------------------------------------
     private void PopulateMissionList()
     {
-        if (database == null || missionButtonTemplate == null)
+        MissionDatabase activeDb = mode == GuideMode.Lore ? loreDatabase : database;
+        if (activeDb == null || missionButtonTemplate == null)
         {
             Debug.LogWarning("[GuideUIController] Missing database or mission button template — check the Inspector.");
             return;
@@ -197,16 +250,21 @@ public class GuideUIController : MonoBehaviour
         MissionData firstMission = null;
         GuideMissionButtonUI firstButton = null;
 
-        for (int i = 0; i < database.missions.Count; i++)
+        MissionData pendingMission = null;
+        GuideMissionButtonUI pendingButton = null;
+        int listIndex = 0;
+
+        for (int i = 0; i < activeDb.missions.Count; i++)
         {
-            MissionData mission = database.missions[i];
+            MissionData mission = activeDb.missions[i];
             if (mission == null) continue;
+            if (mode == GuideMode.Lore && !debugShowAllLore && (progressManager == null || !progressManager.IsLoreCollected(mission))) continue;
 
             GuideMissionButtonUI button = Instantiate(missionButtonTemplate, missionListContainer);
             button.gameObject.SetActive(true);
 
             RectTransform buttonRect = button.GetComponent<RectTransform>();
-            buttonRect.anchoredPosition = GuideVerticalLayout.GetPosition(missionButtonTemplateRect, i, buttonGapY);
+            buttonRect.anchoredPosition = GuideVerticalLayout.GetPosition(missionButtonTemplateRect, listIndex++, buttonGapY);
 
             bool isComplete = !mission.IsLore && progressManager != null && progressManager.IsMissionComplete(mission);
             bool isTracked = progressManager != null && progressManager.IsTracked(mission);
@@ -218,6 +276,12 @@ public class GuideUIController : MonoBehaviour
             {
                 button.SetSelected(true);
                 selectedButton = button;
+            }
+
+            if (pendingSelect != null && mission == pendingSelect)
+            {
+                pendingMission = mission;
+                pendingButton = button;
             }
 
             if (firstMission == null)
@@ -232,8 +296,18 @@ public class GuideUIController : MonoBehaviour
         // Auto-open the first mission the moment the page has something to show and nothing's
         // selected yet — a fresh journal-open, not a progress-triggered refresh (which always has
         // selectedMission already set by that point, so this never overrides an in-progress read).
-        if (selectedMission == null && firstMission != null)
+        if (pendingMission != null)
+        {
+            OnMissionButtonClicked(pendingMission, pendingButton);
+            pendingSelect = null;
+        }
+        else if (selectedMission == null && firstMission != null)
             OnMissionButtonClicked(firstMission, firstButton);
+
+        // Nothing collected yet on the Lore bookmark: hide the right page, show the optional empty message.
+        bool emptyLore = mode == GuideMode.Lore && firstMission == null;
+        if (emptyLoreState != null) emptyLoreState.SetActive(emptyLore);
+        if (emptyLore && checklistPanel != null) checklistPanel.SetActive(false);
     }
 
     // ------------------------------------------------------------
@@ -329,7 +403,10 @@ public class GuideUIController : MonoBehaviour
         }
 
         // 1) opening text (or the lore body)
-        float h = FitText(openingText, lore ? mission.loreText : mission.openingText);
+        string topText = lore
+            ? string.Format(loreBodyFormat, mission.loreSource, mission.loreText).Trim()
+            : mission.openingText;
+        float h = FitText(openingText, topText);
         if (h > 0f && canStack)
         {
             lowest = SetTopWorldY(openingText.rectTransform, cursorTop);
@@ -350,20 +427,23 @@ public class GuideUIController : MonoBehaviour
             if (canStack && taskListContainer != null)
                 SetTopWorldY(taskListContainer, cursorTop);
 
+            int shown = 0; // only revealed tasks get a row; later groups stay hidden until earlier ones are done
             for (int i = 0; i < mission.tasks.Count; i++)
             {
                 MissionTaskEntry task = mission.tasks[i];
+                if (!debugRevealAllTasks && progressManager != null && !progressManager.IsTaskUnlocked(mission, task)) continue;
 
                 GuideTaskRowUI row = Instantiate(taskRowTemplate, taskListContainer);
                 row.gameObject.SetActive(true);
 
                 RectTransform rowRect = row.GetComponent<RectTransform>();
-                rowRect.anchoredPosition = GuideVerticalLayout.GetPosition(taskRowTemplateRect, i, taskRowGapY);
+                rowRect.anchoredPosition = GuideVerticalLayout.GetPosition(taskRowTemplateRect, shown, taskRowGapY);
 
                 bool taskComplete = progressManager != null && progressManager.IsTaskComplete(mission, task);
                 row.SetState(task.description, taskComplete);
 
                 spawnedRows.Add(row);
+                shown++;
 
                 if (canStack)
                 {

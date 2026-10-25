@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546ea7ecb2303074683eae13d20a01ad, type: 3}
+  m_Name: Lore_TobiasNote
+  m_EditorClassIdentifier: 
+  entryType: 1
+  missionId: lore_tobias_note
+  missionTitle: "Tobias's note"
+  tasks: []
+  openingText: 
+  completionText: 
+  trackable: 0
+  loreSource: "Under a flowerpot"
+  loreText: "The oven stone has grown something. It's black in the middle and it eats the lamplight, I watched it. I called it the Maw Jaw as a joke and now Dr. Marrow has written it on the label, so I suppose that's its name. I've stopped going in there for biscuits."

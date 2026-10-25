@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546ea7ecb2303074683eae13d20a01ad, type: 3}
+  m_Name: Mission_TheLightLeftOn
+  m_EditorClassIdentifier: 
+  entryType: 0
+  missionId: quest_light_left_on
+  missionTitle: "The Light Left On"
+  tasks:
+  - taskId: revive_glowcap
+    description: "Revive a Glowcap"
+    group: 0
+  - taskId: revive_whumpril
+    description: "Revive a Whumpril"
+    group: 0
+  - taskId: revive_melodybloom
+    description: "Revive a Melodybloom"
+    group: 0
+  - taskId: revive_clovenwick
+    description: "Revive a Clovenwick"
+    group: 0
+  - taskId: central_wing_happiness
+    description: "Raise the Central Wing's room happiness (you can leave the wing)"
+    group: 0
+  - taskId: enter_study
+    description: "Find a way to the second floor and enter the Study"
+    group: 1
+  - taskId: inspect_bookshelves
+    description: "Inspect the bookshelves"
+    group: 2
+  - taskId: find_luminary
+    description: "Find the Luminary"
+    group: 3
+  - taskId: revive_luminary
+    description: "Revive the Luminary"
+    group: 4
+  - taskId: harvest_heart_night
+    description: "Harvest the Heart of the Night"
+    group: 5
+  - taskId: return_heart_night
+    description: "Return the Heart of the Night to the World Tree"
+    group: 6
+  openingText: "Phlox's Note\n\n“The middle of the house is the worst. The fog is so thick I can't fly straight, and the tree creaks at me whenever I get close. Up on the higher floor there's bookshelves that don't seem right. I don't know how these books have stars coming from them.”"
+  completionText: "Phlox's Note\n\n“It wasn't stars. It was a flower, holding on to a bit of moonlight in case somebody came back. I'm sorry it had to wait so long.”"
+  trackable: 1
+  loreText: 
