@@ -247,7 +247,7 @@ MonoBehaviour:
   secondsToGrowFull: 220
   secondsToDrainFromDead: 800
   intermediateDrainFraction: 0.5
-  smoothingSeconds: 8
+  smoothingSeconds: 300
   plantState: {fileID: 0}
   progress: 0
   isComplete: 0

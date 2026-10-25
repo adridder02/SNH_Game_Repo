@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom_StylizedWater
+  m_Shader: {fileID: 4800000, guid: 7b2fa53aa68f6ae42b70dc927d8e353c, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _FoamTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _IntersectionFoamTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalsTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _CrestFoamThreshold: 0.65
+    - _DepthRange: 3
+    - _FoamCutoff: 0.6
+    - _FoamDirection: 0.25
+    - _FoamDistortion: 1
+    - _FoamSpeed: 0.05
+    - _FoamStepFPS: 0
+    - _Hardness: 0.5
+    - _HorizonDistance: 3
+    - _IntersectionFoamCutoff: 1
+    - _IntersectionFoamDirection: 0.6
+    - _IntersectionFoamFade: 0.6
+    - _IntersectionFoamSpeed: 0.05
+    - _MainLightCutoff: 0.5
+    - _NormalsDirection: 0.3
+    - _NormalsScale: 0.15
+    - _NormalsSpeed: 0.05
+    - _NormalsStrength: 0.6
+    - _PosterizeSteps: 4
+    - _RefractionScale: 10
+    - _RefractionSpeed: 0.2
+    - _RefractionStrength: 0.015
+    - _RippleFrequency: 6
+    - _RippleHeight: 0.12
+    - _RippleSpeed: 3
+    - _Smoothness: 0.9
+    - _Steepness: 0.15
+    - _WaveSpeed: 1
+    - _Wavelength: 10
+    m_Colors:
+    - _CrestFoamColor: {r: 1, g: 1, b: 1, a: 1}
+    - _DeepColor: {r: 0.049999982, g: 0.24999997, b: 0.5, a: 0.95}
+    - _Directions: {r: 0.1, g: 0.35, b: 0.6, a: 0.85}
+    - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FoamTiling: {r: 0.2, g: 0.2, b: 0, a: 0}
+    - _HorizonColor: {r: 0.7, g: 0.9, b: 1, a: 1}
+    - _IntersectionFoamColor: {r: 1, g: 1, b: 1, a: 1}
+    - _IntersectionFoamTiling: {r: 0.3, g: 0.3, b: 0, a: 0}
+    - _ShallowColor: {r: 0.29999998, g: 0.85, b: 0.8, a: 0.5}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
