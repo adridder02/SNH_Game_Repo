@@ -9,13 +9,7 @@ public class BuoyantObject : MonoBehaviour
     private readonly Color orange = new(0.97f, 0.79f, 0.26f);
 
     [Header("Water")]
-    [SerializeField] private float waterHeight = 0.0f;
-
-    [Header("Waves (must match the shader)")]
-    [SerializeField] private float steepness;
-    [SerializeField] private float wavelength;
-    [SerializeField] private float speed;
-    [SerializeField] private float[] directions = new float[4];
+    public WaterWaveSettings water = new WaterWaveSettings();
 
     [Header("Buoyancy")]
     [Range(1, 5)] public float strength = 1f;
@@ -30,10 +24,14 @@ public class BuoyantObject : MonoBehaviour
     private Rigidbody rb;
     private Vector3[] effectorProjections;
 
+    [ContextMenu("Read Wave Settings From Material")]
+    private void ReadWaveSettings() => water.ReadFromMaterial();
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
+        water.ReadFromMaterial();
 
         effectorProjections = new Vector3[effectors.Length];
         for (var i = 0; i < effectors.Length; i++) effectorProjections[i] = effectors[i].position;
@@ -54,8 +52,7 @@ public class BuoyantObject : MonoBehaviour
             var effectorPosition = effectors[i].position;
 
             effectorProjections[i] = effectorPosition;
-            effectorProjections[i].y = waterHeight +
-                GerstnerWaveDisplacement.GetWaveHeight(effectorPosition, steepness, wavelength, speed, directions);
+            effectorProjections[i].y = water.HeightAt(effectorPosition);
 
             // gravity
             rb.AddForceAtPosition(Physics.gravity / effectorAmount, effectorPosition, ForceMode.Acceleration);
@@ -71,8 +68,7 @@ public class BuoyantObject : MonoBehaviour
             // buoyancy
             rb.AddForceAtPosition(Vector3.up * buoyancy, effectorPosition, ForceMode.Acceleration);
 
-            // damping, divided by effector count so it doesn't scale with how many effectors you add
-            // (Unity 6: Rigidbody.velocity was renamed to linearVelocity)
+            // damping (Unity 6: velocity -> linearVelocity), divided so it doesn't scale with effector count
             rb.AddForce(-rb.linearVelocity * (velocityDrag * Time.fixedDeltaTime) / effectorAmount, ForceMode.VelocityChange);
             rb.AddTorque(-rb.angularVelocity * (angularDrag * Time.fixedDeltaTime) / effectorAmount, ForceMode.Impulse);
         }
@@ -93,7 +89,7 @@ public class BuoyantObject : MonoBehaviour
             }
             else
             {
-                Gizmos.color = effectors[i].position.y < effectorProjections[i].y ? red : green; // submerged
+                Gizmos.color = effectors[i].position.y < effectorProjections[i].y ? red : green;
                 Gizmos.DrawSphere(effectors[i].position, 0.06f);
 
                 Gizmos.color = orange;

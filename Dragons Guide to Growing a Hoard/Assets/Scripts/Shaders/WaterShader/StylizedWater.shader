@@ -14,10 +14,10 @@ Shader "Custom/StylizedWater"
         _DeepColor ("Deep Color", Color) = (0.05, 0.25, 0.50, 0.95)
         _HorizonColor ("Horizon Color", Color) = (0.70, 0.90, 1.00, 1.00)
         _HorizonDistance ("Horizon Distance", Float) = 3
-        _PosterizeSteps ("Posterize Steps (0 = off)", Float) = 0
+        _PosterizeSteps ("Posterize Steps (0 = off)", Float) = 4
 
         [Header(Refraction)]
-        _RefractionStrength ("Refraction Strength", Float) = 0.02
+        _RefractionStrength ("Refraction Strength", Float) = 0.015
         _RefractionScale ("Refraction Scale", Float) = 10
         _RefractionSpeed ("Refraction Speed", Float) = 0.2
 
@@ -44,11 +44,21 @@ Shader "Custom/StylizedWater"
         _NormalsScale ("Normals Scale", Float) = 0.15
         _NormalsSpeed ("Normals Speed", Float) = 0.05
         _NormalsDirection ("Normals Direction (0-1)", Range(0, 1)) = 0.3
-        _NormalsStrength ("Normals Strength", Float) = 1
+        _NormalsStrength ("Normals Strength", Float) = 0.6
         _Smoothness ("Smoothness", Range(0, 1)) = 0.9
         _Hardness ("Additional Lights Hardness", Range(0, 1)) = 0.5
         _MainLightCutoff ("Main Light Cutoff", Range(0, 1)) = 0.5
         _SpecularColor ("Specular Color", Color) = (1, 1, 1, 1)
+
+        [Header(Cartoon)]
+        _FoamStepFPS ("Foam Frame Rate (0 = smooth)", Float) = 0
+        _CrestFoamColor ("Crest Foam Color", Color) = (1, 1, 1, 1)
+        _CrestFoamThreshold ("Crest Foam Threshold", Range(0, 1)) = 0.65
+
+        [Header(Player and Object Ripples)]
+        _RippleFrequency ("Ripple Frequency", Float) = 6
+        _RippleSpeed ("Ripple Speed", Float) = 3
+        _RippleHeight ("Ripple Height", Float) = 0.12
 
         [Header(Waves)]
         _Steepness ("Steepness", Float) = 0.15
@@ -135,7 +145,21 @@ Shader "Custom/StylizedWater"
                 float _Wavelength;
                 float _WaveSpeed;
                 float4 _Directions;
+
+                float _FoamStepFPS;
+                float4 _CrestFoamColor;
+                float _CrestFoamThreshold;
+
+                float _RippleFrequency;
+                float _RippleSpeed;
+                float _RippleHeight;
             CBUFFER_END
+
+            // Set every frame by WaterInteractor.cs (global, not per-material)
+            #define MAX_WATER_INTERACTORS 16
+            float4 _WaterInteractors[MAX_WATER_INTERACTORS];       // xyz = world position, w = radius
+            float4 _WaterInteractorParams[MAX_WATER_INTERACTORS];  // x = strength 0..1
+            float _WaterInteractorCount;
 
             // ------------------------------------------------------------------
             // Waves
@@ -216,16 +240,26 @@ Shader "Custom/StylizedWater"
                 return float4(WaterHSVToRGB(hsv), lerp(A.a, B.a, T));
             }
 
-            float2 PanningUV(float2 uv, float direction, float speed, float2 tiling, float2 offset)
+            float2 PanningUVT(float2 uv, float direction, float speed, float2 tiling, float2 offset, float time)
             {
                 float angle = (direction * 2 - 1) * PI;
                 float2 dir = float2(cos(angle), sin(angle));
-                return uv * tiling + offset + _Time.y * speed * dir;
+                return uv * tiling + offset + time * speed * dir;
             }
 
-            float2 DistortUV(float2 uv, float amount)
+            float2 PanningUV(float2 uv, float direction, float speed, float2 tiling, float2 offset)
             {
-                float time = _Time.y;
+                return PanningUVT(uv, direction, speed, tiling, offset, _Time.y);
+            }
+
+            // Time that advances in steps (stop-motion look). fps <= 0 gives smooth time.
+            float WaterTime(float fps)
+            {
+                return fps > 0.5 ? floor(_Time.y * fps) / fps : _Time.y;
+            }
+
+            float2 DistortUV(float2 uv, float amount, float time)
+            {
                 uv.y += amount * 0.01 * (sin(uv.x * 3.5 + time * 0.35) + sin(uv.x * 4.8 + time * 1.05) + sin(uv.x * 7.3 + time * 0.45)) / 3.0;
                 uv.x += amount * 0.12 * (sin(uv.y * 4.0 + time * 0.50) + sin(uv.y * 6.8 + time * 0.75) + sin(uv.y * 11.3 + time * 0.2)) / 3.0;
                 uv.y += amount * 0.12 * (sin(uv.x * 4.2 + time * 0.64) + sin(uv.x * 6.3 + time * 1.65) + sin(uv.x * 8.2 + time * 0.45)) / 3.0;
@@ -296,6 +330,26 @@ Shader "Custom/StylizedWater"
             // ------------------------------------------------------------------
             // Vertex / fragment
             // ------------------------------------------------------------------
+            // x = ripple height, y = foam amount (0..1) from all active interactors at this XZ position.
+            float2 WaterInteraction(float2 posXZ)
+            {
+                float height = 0;
+                float foam = 0;
+                int count = (int)_WaterInteractorCount;
+                for (int i = 0; i < MAX_WATER_INTERACTORS; i++)
+                {
+                    if (i >= count) break;
+                    float4 data = _WaterInteractors[i];
+                    float strength = _WaterInteractorParams[i].x;
+                    float d = distance(posXZ, data.xz);
+                    float falloff = saturate(1 - d / max(data.w, 0.001));
+                    falloff *= falloff;
+                    height += sin(d * _RippleFrequency - _Time.y * _RippleSpeed) * falloff * strength * _RippleHeight;
+                    foam += falloff * strength;
+                }
+                return float2(height, saturate(foam));
+            }
+
             struct Attributes
             {
                 float4 positionOS : POSITION;
@@ -307,6 +361,7 @@ Shader "Custom/StylizedWater"
                 float3 positionWS : TEXCOORD0;
                 float2 restXZ     : TEXCOORD1; // world XZ before wave displacement, for stable texture UVs
                 half   fogFactor  : TEXCOORD2;
+                float  waveHeight : TEXCOORD3; // Gerstner height, used for crest foam
             };
 
             Varyings vert(Attributes IN)
@@ -314,7 +369,10 @@ Shader "Custom/StylizedWater"
                 Varyings OUT;
                 float3 positionWS = TransformObjectToWorld(IN.positionOS.xyz);
                 OUT.restXZ = positionWS.xz;
-                positionWS += GerstnerWaves(positionWS);
+                float3 waveOffset = GerstnerWaves(positionWS);
+                positionWS += waveOffset;
+                positionWS.y += WaterInteraction(OUT.restXZ).x; // ripples from players / objects
+                OUT.waveHeight = waveOffset.y;
 
                 OUT.positionWS = positionWS;
                 OUT.positionCS = TransformWorldToHClip(positionWS);
@@ -346,18 +404,30 @@ Shader "Custom/StylizedWater"
                 float3 color = lerp(underwater, waterColor.rgb, waterColor.a);
 
                 // ---- Surface foam ----
-                float2 foamUV = DistortUV(PanningUV(IN.restXZ, _FoamDirection, _FoamSpeed, _FoamTiling.xy, 0), _FoamDistortion);
+                float foamTime = WaterTime(_FoamStepFPS);
+                float2 foamUV = DistortUV(PanningUVT(IN.restXZ, _FoamDirection, _FoamSpeed, _FoamTiling.xy, 0, foamTime), _FoamDistortion, foamTime);
                 float foamTex = SAMPLE_TEXTURE2D(_FoamTex, sampler_FoamTex, foamUV).r;
                 float foamMask = step(_FoamCutoff, foamTex) * _FoamColor.a;
                 color = BlendOverlay(color, _FoamColor.rgb, foamMask);
 
+                // ---- Wave crest foam (cartoon) ----
+                float maxAmplitude = max(4 * _Steepness * _Wavelength / (2 * WATER_PI), 0.0001);
+                float height01 = saturate(IN.waveHeight / maxAmplitude * 0.5 + 0.5);
+                float crestMask = step(_CrestFoamThreshold, height01) * step(_FoamCutoff, foamTex) * _CrestFoamColor.a;
+                color = BlendOverlay(color, _CrestFoamColor.rgb, crestMask);
+
                 // ---- Intersection foam ----
                 float edgeDepth = WorldDepthFade(screenUV, positionWS, _IntersectionFoamFade);
-                float2 ifUV = PanningUV(IN.restXZ, _IntersectionFoamDirection, _IntersectionFoamSpeed, _IntersectionFoamTiling.xy, 0);
+                float2 ifUV = PanningUVT(IN.restXZ, _IntersectionFoamDirection, _IntersectionFoamSpeed, _IntersectionFoamTiling.xy, 0, foamTime);
                 float ifTex = SAMPLE_TEXTURE2D(_IntersectionFoamTex, sampler_IntersectionFoamTex, ifUV).r;
                 float threshold = _IntersectionFoamCutoff * edgeDepth;
                 float ifMask = step(ifTex, threshold) * edgeDepth * _IntersectionFoamColor.a;
                 color = BlendOverlay(color, _IntersectionFoamColor.rgb, ifMask);
+
+                // ---- Foam around players / objects touching the water ----
+                float interactionFoam = WaterInteraction(IN.restXZ).y;
+                float interactionMask = step(ifTex, interactionFoam * 1.2) * step(0.001, interactionFoam) * _IntersectionFoamColor.a;
+                color = BlendOverlay(color, _IntersectionFoamColor.rgb, interactionMask);
 
                 // ---- Normals (two scrolling samples, blended) ----
                 float2 nUV1 = PanningUV(IN.restXZ, _NormalsDirection, _NormalsSpeed, _NormalsScale.xx, 0);
