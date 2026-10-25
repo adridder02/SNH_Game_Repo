@@ -17,6 +17,7 @@ MonoBehaviour:
   category: 2
   room: 2
   tier: 2
+  hasPassiveAbility: 0
   isCrystal: 0
   difficulty: 3
   description: "A tall, curling stalk that opens into a wide, trumpet-like bell,
@@ -31,7 +32,7 @@ MonoBehaviour:
   journalImage: {fileID: 21300000, guid: b4de76f04903b1c4bad7bc18bfc6ece9, type: 3}
   useAlternateJournalLayout: 0
   inventoryImage: {fileID: 0}
-  deadIcon: {fileID: 0}
+  deadIcon: {fileID: 21300000, guid: 2b82751c1b460614d8685df28eb29712, type: 3}
   disabledIcon: {fileID: 21300000, guid: 0c2171f27595a1142aa3b4aea424545e, type: 3}
   activeIcon: {fileID: 21300000, guid: 917afe6700aef7546a0b0a401c49ce8a, type: 3}
   goldIcon: {fileID: 21300000, guid: dc0ce6fb9baf89743b9d4bb43e385419, type: 3}

@@ -17,6 +17,7 @@ MonoBehaviour:
   category: 2
   room: 2
   tier: 1
+  hasPassiveAbility: 0
   isCrystal: 0
   difficulty: 1
   description: 'A broad, round lily pad with a trailing fringe of smaller leaves,
@@ -33,7 +34,7 @@ MonoBehaviour:
   journalImage: {fileID: 21300000, guid: 48a71a6083a51db4dac8038d9906de3e, type: 3}
   useAlternateJournalLayout: 1
   inventoryImage: {fileID: 0}
-  deadIcon: {fileID: 0}
+  deadIcon: {fileID: 21300000, guid: 536c5eeed2c93a641ac89775bac6de43, type: 3}
   disabledIcon: {fileID: 21300000, guid: e6c26e567b9dd0f4f836a052d1cddb40, type: 3}
   activeIcon: {fileID: 21300000, guid: 83e490e4e4abf31459a2b4ca94f5c623, type: 3}
   goldIcon: {fileID: 21300000, guid: 542b93cac594b5d429ffa4b0a5636004, type: 3}

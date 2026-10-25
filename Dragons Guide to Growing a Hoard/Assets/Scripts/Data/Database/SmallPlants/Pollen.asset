@@ -17,6 +17,7 @@ MonoBehaviour:
   category: 0
   room: 1
   tier: 1
+  hasPassiveAbility: 0
   isCrystal: 0
   difficulty: 1
   description: "Three soft, round blooms nod atop a single stalk like little cotton
@@ -31,7 +32,7 @@ MonoBehaviour:
   journalImage: {fileID: 21300000, guid: 34f60dcf8005e0a4f80cded19b3b7f69, type: 3}
   useAlternateJournalLayout: 0
   inventoryImage: {fileID: 0}
-  deadIcon: {fileID: 0}
+  deadIcon: {fileID: 21300000, guid: 420c6aa7c13265d4aab46fe69839c267, type: 3}
   disabledIcon: {fileID: 21300000, guid: 83a75e4656a1cf043842be8fe7d0aa7d, type: 3}
   activeIcon: {fileID: 21300000, guid: 1e953d9ebef0f73428d62adfdb33edd2, type: 3}
   goldIcon: {fileID: 21300000, guid: 8141eab061d6dbd4e95b772af646b916, type: 3}

@@ -17,6 +17,7 @@ MonoBehaviour:
   category: 2
   room: 2
   tier: 3
+  hasPassiveAbility: 0
   isCrystal: 0
   difficulty: 3
   description: 'A dramatic, wide-throated bloom with long curling tendrils that arch
@@ -33,7 +34,7 @@ MonoBehaviour:
   journalImage: {fileID: 21300000, guid: 278e820f8ba0de8489ba8251037570dc, type: 3}
   useAlternateJournalLayout: 0
   inventoryImage: {fileID: 0}
-  deadIcon: {fileID: 0}
+  deadIcon: {fileID: 21300000, guid: 79ea9fefc87bb2147b2841df86af77a2, type: 3}
   disabledIcon: {fileID: 21300000, guid: d95fc8d3ee178574cbff3146521c0a68, type: 3}
   activeIcon: {fileID: 21300000, guid: 32461b4b05e9e7b4ba8961cc742e052c, type: 3}
   goldIcon: {fileID: 21300000, guid: 16f8227041df3894b90165827a66bb48, type: 3}
