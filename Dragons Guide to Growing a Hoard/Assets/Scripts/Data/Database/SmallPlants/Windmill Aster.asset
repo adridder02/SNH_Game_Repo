@@ -17,6 +17,7 @@ MonoBehaviour:
   category: 0
   room: 1
   tier: 1
+  hasPassiveAbility: 1
   isCrystal: 0
   difficulty: 1
   description: 'A tight pinwheel of narrow petals radiating from a dark center, genuinely

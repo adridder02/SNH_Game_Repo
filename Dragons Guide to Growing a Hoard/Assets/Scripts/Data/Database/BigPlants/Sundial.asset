@@ -17,6 +17,7 @@ MonoBehaviour:
   category: 0
   room: 1
   tier: 2
+  hasPassiveAbility: 1
   isCrystal: 0
   difficulty: 2
   description: 'A squat, round cactus bristling with thin curling spines, crowned

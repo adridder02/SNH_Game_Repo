@@ -48,6 +48,8 @@ public class PlantJournalManager : MonoBehaviour
         public string id;
         public int water = -1, light = -1, soil = -1;
         public bool locked;
+        // The player's own picks, remembered while the answers are revealed so unlocking can give them back.
+        public int prevWater = -1, prevLight = -1, prevSoil = -1;
     }
 
     public CareGuess GetGuess(PlantSpeciesData species)
@@ -70,15 +72,30 @@ public class PlantJournalManager : MonoBehaviour
         SaveGuesses();
     }
 
-    /// <summary>Fills in the correct answers and locks the dropdowns for this species.</summary>
+    /// <summary>Fills in the correct answers and locks the dropdowns for this species. The player's own picks
+    /// are remembered so HideAnswers can bring them back.</summary>
     public void RevealAnswers(PlantSpeciesData species)
     {
         CareGuess g = GetGuess(species);
         if (g == null) return;
+        if (!g.locked)
+        {
+            g.prevWater = g.water; g.prevLight = g.light; g.prevSoil = g.soil;
+        }
         g.water = (int)species.waterRequirement;
         g.light = (int)species.lightRequirement;
         g.soil = (int)species.preferredSoilDisplay;
         g.locked = true;
+        SaveGuesses();
+    }
+
+    /// <summary>Unlocks the dropdowns again and puts back whatever the player had picked before revealing.</summary>
+    public void HideAnswers(PlantSpeciesData species)
+    {
+        CareGuess g = GetGuess(species);
+        if (g == null || !g.locked) return;
+        g.water = g.prevWater; g.light = g.prevLight; g.soil = g.prevSoil;
+        g.locked = false;
         SaveGuesses();
     }
 

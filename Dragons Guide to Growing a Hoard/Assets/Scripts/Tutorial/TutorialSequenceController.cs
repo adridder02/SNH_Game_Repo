@@ -484,6 +484,30 @@ public class TutorialSequenceController : MonoBehaviour
         return ownTriggerIds != null && System.Array.IndexOf(ownTriggerIds, step.externalTriggerId) >= 0;
     }
 
+    /// <summary>World-action gate (pot tools, pot select/rotate, wall placement, hotbar). True when input isn't
+    /// locked, when the current step ticked this action in Allowed Actions, or when the step is waiting on one of
+    /// this action's own trigger ids / mission task ids (so the thing a step teaches always still works).</summary>
+    public bool IsWorldActionAllowed(WorldAction action, string[] ownTriggerIds = null, string[] ownTaskIds = null)
+    {
+        if (!IsInputLocked) return true;
+        TutorialStep step = CurrentStep;
+        if (step == null) return true;
+        if ((step.allowedActions & action) != 0) return true;
+        if (ownTriggerIds != null && System.Array.IndexOf(ownTriggerIds, step.externalTriggerId) >= 0) return true;
+        if (ownTaskIds != null && System.Array.IndexOf(ownTaskIds, step.linkedTaskId) >= 0) return true;
+        return false;
+    }
+
+    /// <summary>Journal gate for the extras a step can leave on (see TutorialStep.allowedJournal). True when
+    /// input isn't locked or the current step ticked this journal action. The journal's own trigger-based
+    /// allowances (the tab / slot the step is waiting on) are still checked separately by the journal.</summary>
+    public bool IsJournalActionAllowed(JournalAction action)
+    {
+        if (!IsInputLocked) return true;
+        TutorialStep step = CurrentStep;
+        return step == null || (step.allowedJournal & action) != 0;
+    }
+
     /// <summary>True while the current step has Lock Movement ticked. PlayerController zeroes movement/jump.</summary>
     public bool IsMovementLocked
     {
@@ -710,6 +734,12 @@ public class TutorialSequenceController : MonoBehaviour
 
         if (!string.IsNullOrEmpty(step.message) && step.message.Contains("{Plant Name}"))
             step.message = step.message.Replace("{Plant Name}", TutorialTargets.GetText("plant_name", "the plant"));
+
+        if (!string.IsNullOrEmpty(step.message) && step.message.Contains("{Consumable Name}"))
+            step.message = step.message.Replace("{Consumable Name}", TutorialTargets.GetText("consumable_name", "the consumable"));
+
+        if (!string.IsNullOrEmpty(step.message) && step.message.Contains("{Passive Plant Name}"))
+            step.message = step.message.Replace("{Passive Plant Name}", TutorialTargets.GetText("passive_plant_name", "the plant"));
 
         SyncSidebarCameraLock(step.type);
 

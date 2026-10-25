@@ -212,6 +212,22 @@ public class PlacementSystem : MonoBehaviour
         }
     }
 
+    // Tutorial locking: which tutorial triggers / mission tasks make each pot tool legal while a step has the
+    // rest of the input locked (a step can also tick extras in its Allowed Actions). Always true with no tutorial.
+    private static readonly string[] PlaceIds = { "entered_placement_mode", "selected_smallest_pot", "cycled_pot_selection", "exited_placement_mode" };
+    private static readonly string[] PlaceTasks = { "place_pot" };
+    private static readonly string[] RemoveIds = { "removed_pot" };
+    private static readonly string[] MoveIds = { "moved_pot" };
+    private static readonly string[] WaterIds = { "watered_pot_via_tool" };
+    private static readonly string[] WaterTasks = { "water_plant" };
+    private static readonly string[] SelectIds = { "cycled_pot_selection", "selected_smallest_pot" };
+
+    private static bool TutorialAllows(WorldAction action, string[] triggers, string[] tasks = null)
+    {
+        TutorialSequenceController t = TutorialSequenceController.Instance;
+        return t == null || t.IsWorldActionAllowed(action, triggers, tasks);
+    }
+
     private void Update()
     {
         HandleModeToggleKeys();
@@ -223,10 +239,13 @@ public class PlacementSystem : MonoBehaviour
         {
             float scroll = Mouse.current.scroll.ReadValue().y;
 
-            if (scroll > 0f)
-                CycleSelection(1);
-            else if (scroll < 0f)
-                CycleSelection(-1);
+            if (TutorialAllows(WorldAction.PotSelect, SelectIds))
+            {
+                if (scroll > 0f)
+                    CycleSelection(1);
+                else if (scroll < 0f)
+                    CycleSelection(-1);
+            }
         }
 
         Vector3 mouseWorld = inputManager.GetSelectedMapPosition();
@@ -307,13 +326,21 @@ public class PlacementSystem : MonoBehaviour
                 Debug.Log($"Left click at cell {hoveredCell}, mode: {mode}");
 
             if (mode == Mode.Placing)
-                TryPlace(hoveredCell);
+            {
+                if (TutorialAllows(WorldAction.PlaceTool, PlaceIds, PlaceTasks)) TryPlace(hoveredCell);
+            }
             else if (mode == Mode.Removing)
-                TryRemove(hoveredCell);
+            {
+                if (TutorialAllows(WorldAction.RemoveTool, RemoveIds)) TryRemove(hoveredCell);
+            }
             else if (mode == Mode.Moving)
-                TryPickupOrDrop(hoveredCell);
+            {
+                if (TutorialAllows(WorldAction.MoveTool, MoveIds)) TryPickupOrDrop(hoveredCell);
+            }
             else if (mode == Mode.Watering)
-                TryWater(hoveredCell);
+            {
+                if (TutorialAllows(WorldAction.WaterTool, WaterIds, WaterTasks)) TryWater(hoveredCell);
+            }
 
             // The click may have changed occupancy under the cursor (placed/removed/picked up/dropped),
             // or switched mode - redraw the highlight next frame even though the cell hasn't changed.
@@ -352,7 +379,8 @@ public class PlacementSystem : MonoBehaviour
         // C rotates the pot being placed (or held, in Move mode) by 90 degrees; odd turns swap the
         // footprint's width/height, so a 1x2 pot becomes 2x1.
         if (Keyboard.current.cKey.wasPressedThisFrame &&
-            (mode == Mode.Placing || (mode == Mode.Moving && movingData != null)))
+            (mode == Mode.Placing || (mode == Mode.Moving && movingData != null)) &&
+            TutorialAllows(WorldAction.PotSelect, SelectIds))
         {
             rotationSteps = (rotationSteps + 1) & 3;
             ForceHoverRefresh();
@@ -458,6 +486,10 @@ public class PlacementSystem : MonoBehaviour
         if (potIndex < 0 || potIndex >= availablePots.Count)
             return;
 
+        // Tutorial lock - but never block cycling pots while already in Place mode (the scroll wheel has its own gate).
+        if (mode != Mode.Placing && !TutorialAllows(WorldAction.PlaceTool, PlaceIds, PlaceTasks))
+            return;
+
         CancelMode(suppressEvent: true);
         wallPlacementSystem?.CancelMode(); // pot grid and wall grid can never both be active at once
 
@@ -503,6 +535,7 @@ public class PlacementSystem : MonoBehaviour
 
     private void EnterRemoveMode()
     {
+        if (!TutorialAllows(WorldAction.RemoveTool, RemoveIds)) return;
         CancelMode(suppressEvent: true);
         wallPlacementSystem?.CancelMode();
 
@@ -523,6 +556,7 @@ public class PlacementSystem : MonoBehaviour
 
     private void EnterMoveMode()
     {
+        if (!TutorialAllows(WorldAction.MoveTool, MoveIds)) return;
         CancelMode(suppressEvent: true);
         wallPlacementSystem?.CancelMode();
 
@@ -543,6 +577,7 @@ public class PlacementSystem : MonoBehaviour
 
     private void EnterWaterMode()
     {
+        if (!TutorialAllows(WorldAction.WaterTool, WaterIds, WaterTasks)) return;
         CancelMode(suppressEvent: true);
         wallPlacementSystem?.CancelMode();
 

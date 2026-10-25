@@ -12,7 +12,8 @@ using UnityEngine;
 // a TutorialPromptBox with Follow Target Key = "some_key" then snaps its outline onto that rect
 // whenever it's showing. Keys currently registered by the game:
 //   "journal_plant"         - the first COMPLETED plant's slot in the journal (falls back to the first discovered)
-//   "inventory_consumable"  - the first consumable's slot in the inventory grid
+//   "inventory_consumable"  - the first consumable's slot in the inventory grid (text: {Consumable Name})
+//   "journal_passive_plant" - the first discovered species ticked "Has Passive Ability" (text: {Passive Plant Name})
 // =============================================================
 public static class TutorialTargets
 {

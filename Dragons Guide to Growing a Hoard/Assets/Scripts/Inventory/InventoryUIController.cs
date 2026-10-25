@@ -747,6 +747,7 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
     void RefreshUI()
     {
         TutorialTargets.Clear("inventory_consumable");
+        consumableTargetSet = false;
         if (playerInventory == null || gridPanel == null || availablePanel == null || gridSlotTemplate == null)
         {
             Debug.LogWarning("[InventoryUIController] Missing a required reference — check the Inspector.");
@@ -866,9 +867,18 @@ public class InventoryUIController : MonoBehaviour, IHotbarActivator
 
         // Tutorial pointer: the first consumable's slot (first one created per refresh wins).
         if (!isAvailableSlot && occupant is AbilityItemInstance ai && ai.data != null && ai.data.kind == AbilityKind.Consumable && ai.data.effectId != AbilityEffectId.None)
+        {
             TutorialTargets.Set("inventory_consumable", slot.GetComponent<RectTransform>());
+            if (!consumableTargetSet)
+            {
+                consumableTargetSet = true;
+                TutorialTargets.SetText("consumable_name", ai.data.displayName); // for the {Consumable Name} placeholder
+            }
+        }
         return slot;
     }
+
+    private bool consumableTargetSet;
 
     /// <summary>Called by the detail panel's Use button (ShowAbilityDetail) — reached only for
     /// untargeted Consumables now (Placeables/pot-targeted Consumables never show that button —

@@ -17,6 +17,7 @@ MonoBehaviour:
   category: 1
   room: 0
   tier: 2
+  hasPassiveAbility: 1
   isCrystal: 0
   difficulty: 3
   description: "A squat, spotted toadstool with a wide domed cap, rooted deep and

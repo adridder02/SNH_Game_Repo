@@ -138,6 +138,17 @@ public class AbilityHotbarSystem : MonoBehaviour
         if (changed) OnSlotsChanged?.Invoke();
     }
 
+    // Tutorial locking - the step's own trigger id always keeps these working; a step can tick Hotbar Use /
+    // Hotbar Assign in Allowed Actions to leave them on for other reasons.
+    private static readonly string[] UseIds = { "used_hotbar_slot" };
+    private static readonly string[] AssignIds = { "assigned_to_hotbar" };
+
+    private static bool TutorialAllows(WorldAction action, string[] triggers)
+    {
+        TutorialSequenceController t = TutorialSequenceController.Instance;
+        return t == null || t.IsWorldActionAllowed(action, triggers);
+    }
+
     private void Update()
     {
         if (Keyboard.current == null) return;
@@ -189,6 +200,7 @@ public class AbilityHotbarSystem : MonoBehaviour
     {
         if (slotIndex < 0 || slotIndex >= slots.Length) return false;
         if (!CanAssign(data)) return false;
+        if (!TutorialAllows(WorldAction.HotbarAssign, AssignIds)) return false; // drag snaps back while the tutorial has it locked
 
         slots[slotIndex].assigned = data;
         OnSlotsChanged?.Invoke();
@@ -199,6 +211,7 @@ public class AbilityHotbarSystem : MonoBehaviour
     public void Clear(int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= slots.Length) return;
+        if (!TutorialAllows(WorldAction.HotbarAssign, AssignIds)) return;
         slots[slotIndex].assigned = null;
         OnSlotsChanged?.Invoke();
     }
@@ -232,6 +245,7 @@ public class AbilityHotbarSystem : MonoBehaviour
     public void ActivateSlot(int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= slots.Length) return;
+        if (!TutorialAllows(WorldAction.HotbarUse, UseIds)) return;
 
         AbilityItemData data = slots[slotIndex].assigned;
         if (data == null) return;

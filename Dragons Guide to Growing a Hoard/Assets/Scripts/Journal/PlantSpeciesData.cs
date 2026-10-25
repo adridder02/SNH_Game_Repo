@@ -38,6 +38,11 @@ public class PlantSpeciesData : ScriptableObject
 
     public int tier = 1;
 
+    [Tooltip("Tick for species with a passive ability (Melodybloom, Whumprill, Sundial Cactus, Clovenwick, " +
+             "Drifter, Windmill Aster...). Lets the tutorial point at this species' slot in the journal - see " +
+             "the 'journal_passive_plant' target key and the {Passive Plant Name} placeholder.")]
+    public bool hasPassiveAbility = false;
+
     [Tooltip("Marks this species as its room's Crystal — the Progress page's dedicated crystal row " +
              "(ProgressPageUIController), separate from tiers 1-3. Independent of tier above (a " +
              "crystal's tier value is unused/ignored) and independent of requiresRoomUnlock below — " +

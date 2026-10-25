@@ -43,6 +43,34 @@ public enum PotMenuAction
     CollectButton = 1 << 6
 }
 
+/// <summary>World / tool actions a Portable step can leave usable while it's locking input. See TutorialStep.allowedActions.</summary>
+[System.Flags]
+public enum WorldAction
+{
+    None = 0,
+    PlaceTool = 1 << 0,     // F - pot Place tool: entering it, and left-clicking to place
+    RemoveTool = 1 << 1,    // R - pot Remove tool
+    MoveTool = 1 << 2,      // G - pot Move tool
+    WaterTool = 1 << 3,     // Q - pot Water tool
+    PotSelect = 1 << 4,     // scroll wheel to change pot, C to rotate it
+    WallPlacement = 1 << 5, // Tab into wall placement, clicking to place / remove on the wall
+    HotbarUse = 1 << 6,     // number keys 1-5 / clicking a hotbar slot
+    HotbarAssign = 1 << 7   // dragging an item onto / off the hotbar
+}
+
+/// <summary>Journal controls a Portable step can leave usable while it's locking input. See TutorialStep.allowedJournal.</summary>
+[System.Flags]
+public enum JournalAction
+{
+    None = 0,
+    Bookmarks = 1 << 0,      // the Plants / Progress / Guide tabs
+    PlantSlots = 1 << 1,     // clicking a plant in the grid to open its page
+    RoomShortcuts = 1 << 2,  // the Main / East / West room buttons
+    PageArrows = 1 << 3,     // previous / next species
+    Settings = 1 << 4,       // the settings tab
+    CareAnswers = 1 << 5     // the water / light / soil dropdowns and the fill-answers button
+}
+
 [System.Serializable]
 public class TutorialStep
 {
@@ -130,6 +158,16 @@ public class TutorialStep
              "menu is blocked. Controls whose own trigger this step waits on (e.g. opened_abilities_panel -> the " +
              "Plant Abilities button) are allowed automatically.")]
     public PotMenuAction allowedPotMenu = PotMenuAction.None;
+    [Tooltip("World actions that still work while this Portable step locks input - the pot tools (F / R / G / Q), " +
+             "scrolling or rotating pots (scroll / C), wall placement (Tab) and the hotbar. Everything else is " +
+             "blocked. Whatever this step is waiting on (its External Trigger Id or Linked Task Id - e.g. " +
+             "entered_placement_mode, removed_pot, used_hotbar_slot, place_pot) is allowed automatically, so you " +
+             "only tick extras here.")]
+    public WorldAction allowedActions = WorldAction.None;
+    [Tooltip("Journal controls that still work while this Portable step locks input - for the odd step that needs " +
+             "a bit more of the journal than the one thing it teaches. Whatever the step is waiting on (e.g. " +
+             "opened_plants_bookmark, opened_plant_detail) already works automatically, so you only tick extras.")]
+    public JournalAction allowedJournal = JournalAction.None;
 
     [Header("Side effects (optional)")]
     [Tooltip("Invoked once, the instant this step becomes the current one (right as its UI is shown — or, " +

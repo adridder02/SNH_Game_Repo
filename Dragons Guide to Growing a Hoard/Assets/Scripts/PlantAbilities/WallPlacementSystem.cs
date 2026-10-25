@@ -104,9 +104,18 @@ public class WallPlacementSystem : MonoBehaviour
 
     private bool HasItemFor(WallMushroomData data) => GetAvailableCount(data) > 0;
 
+    // Tutorial locking: wall placement is only usable while a step is teaching it (or ticked Wall Placement).
+    private static readonly string[] WallIds = { "entered_wall_placement_mode", "placed_wall_mushroom" };
+    private static bool TutorialAllows()
+    {
+        TutorialSequenceController t = TutorialSequenceController.Instance;
+        return t == null || t.IsWorldActionAllowed(WorldAction.WallPlacement, WallIds);
+    }
+
     public void ToggleMushroomPlaceMode(int index)
     {
         if (mode == Mode.Placing) { CancelMode(); return; }
+        if (!TutorialAllows()) return;
         if (availableMushrooms == null || index < 0 || index >= availableMushrooms.Count) return;
 
         placementSystem?.CancelActiveMode(); // wall grid and pot grid can never both be active at once
@@ -129,6 +138,7 @@ public class WallPlacementSystem : MonoBehaviour
     public void ToggleRemoveMode()
     {
         if (mode == Mode.Removing) { CancelMode(); return; }
+        if (!TutorialAllows()) return;
 
         placementSystem?.CancelActiveMode();
         CancelMode();
@@ -199,7 +209,7 @@ public class WallPlacementSystem : MonoBehaviour
             if (previewUsesMountRotation) previewObject.transform.rotation = activeSurface.MountRotation;
         }
 
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (Mouse.current.leftButton.wasPressedThisFrame && TutorialAllows())
         {
             if (mode == Mode.Placing) TryPlace(cell, gridData, gridVisual);
             else if (mode == Mode.Removing) TryRemove(cell, gridData, gridVisual);

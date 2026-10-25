@@ -151,8 +151,15 @@ public class JournalUIController : MonoBehaviour
     [SerializeField] private TMP_Dropdown waterDropdown;
     [SerializeField] private TMP_Dropdown lightDropdown;
     [SerializeField] private TMP_Dropdown soilDropdown;
-    [Tooltip("Optional. Fills in the correct answers for the open species and locks the dropdowns.")]
+    [Tooltip("Optional. ONE button that toggles the open species' answers: click to reveal the correct answers " +
+             "and lock the dropdowns, click again to unlock and get your own picks back.")]
     [SerializeField] private Button fillAnswersButton;
+    [Tooltip("Sprite shown on the button while the answers are revealed / locked.")]
+    [SerializeField] private Sprite lockedSprite;
+    [Tooltip("Sprite shown on the button while the answers are hidden / unlocked.")]
+    [SerializeField] private Sprite unlockedSprite;
+    [Tooltip("The Image the lock / unlock sprite is put on. Leave empty to use the button's own image.")]
+    [SerializeField] private Image fillAnswersIcon;
     [Tooltip("Optional. Shown (e.g. a padlock icon) while the open species' answers are locked.")]
     [SerializeField] private GameObject answersLockedIndicator;
     [Tooltip("Text for the unanswered first option.")]
@@ -198,7 +205,7 @@ public class JournalUIController : MonoBehaviour
         waterDropdown?.onValueChanged.AddListener(_ => OnCareDropdownChanged());
         lightDropdown?.onValueChanged.AddListener(_ => OnCareDropdownChanged());
         soilDropdown?.onValueChanged.AddListener(_ => OnCareDropdownChanged());
-        fillAnswersButton?.onClick.AddListener(() => { if (HudLocked) return; OnFillAnswersClicked(); });
+        fillAnswersButton?.onClick.AddListener(() => { if (HudLockedFor(JournalAction.CareAnswers)) return; OnFillAnswersClicked(); });
 
         // Tutorial hooks on the three bookmark tabs — matches steps reading 'Open the "Plants"/
         // "Progress"/"Guide" bookmark'. Fired from the click listener itself rather than from inside
@@ -206,31 +213,31 @@ public class JournalUIController : MonoBehaviour
         // buttons below), so these only fire on an actual, deliberate tab click.
         plantsNavButton?.onClick.AddListener(() =>
         {
-            if (BlockedExcept("opened_plants_bookmark")) return;
+            if (BlockedExcept("opened_plants_bookmark", JournalAction.Bookmarks)) return;
             ShowPage(plantsPage, plantsNavButton);
             TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_plants_bookmark");
         });
         progressNavButton?.onClick.AddListener(() =>
         {
-            if (BlockedExcept("opened_progress_bookmark")) return;
+            if (BlockedExcept("opened_progress_bookmark", JournalAction.Bookmarks)) return;
             ShowPage(progressPage, progressNavButton);
             TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_progress_bookmark");
         });
         guideNavButton?.onClick.AddListener(() =>
         {
-            if (BlockedExcept("opened_guide_bookmark")) return;
+            if (BlockedExcept("opened_guide_bookmark", JournalAction.Bookmarks)) return;
             ShowPage(guidePage, guideNavButton);
             TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_guide_bookmark");
         });
-        settingsNavButton?.onClick.AddListener(() => { if (HudLocked) return; ShowPage(settingsPage, settingsNavButton); });
+        settingsNavButton?.onClick.AddListener(() => { if (HudLockedFor(JournalAction.Settings)) return; ShowPage(settingsPage, settingsNavButton); });
 
         // Room shortcuts: same as clicking Progress, plus jump straight to that room.
-        mainRoomNavButton?.onClick.AddListener(() => { if (HudLocked) return; GoToRoomShortcut(RoomType.Main); });
-        eastRoomNavButton?.onClick.AddListener(() => { if (HudLocked) return; GoToRoomShortcut(RoomType.East); });
-        westRoomNavButton?.onClick.AddListener(() => { if (HudLocked) return; GoToRoomShortcut(RoomType.West); });
+        mainRoomNavButton?.onClick.AddListener(() => { if (HudLockedFor(JournalAction.RoomShortcuts)) return; GoToRoomShortcut(RoomType.Main); });
+        eastRoomNavButton?.onClick.AddListener(() => { if (HudLockedFor(JournalAction.RoomShortcuts)) return; GoToRoomShortcut(RoomType.East); });
+        westRoomNavButton?.onClick.AddListener(() => { if (HudLockedFor(JournalAction.RoomShortcuts)) return; GoToRoomShortcut(RoomType.West); });
 
-        previousSpeciesButton?.onClick.AddListener(() => { if (HudLocked) return; StepSpecies(-1); });
-        nextSpeciesButton?.onClick.AddListener(() => { if (HudLocked) return; StepSpecies(1); });
+        previousSpeciesButton?.onClick.AddListener(() => { if (HudLockedFor(JournalAction.PageArrows)) return; StepSpecies(-1); });
+        nextSpeciesButton?.onClick.AddListener(() => { if (HudLockedFor(JournalAction.PageArrows)) return; StepSpecies(1); });
 
         SetJournalVisible(false);
     }
@@ -287,8 +294,16 @@ public class JournalUIController : MonoBehaviour
         TutorialSequenceController.Instance != null &&
         !TutorialSequenceController.Instance.IsActionAllowedForTrigger(triggerId);
 
+    /// <summary>Locked by the tutorial, unless the current step ticked this journal action in Allowed Journal.</summary>
+    private static bool HudLockedFor(JournalAction action) =>
+        HudLocked && !TutorialSequenceController.Instance.IsJournalActionAllowed(action);
+
+    /// <summary>Same as BlockedExcept(triggerId), but ALSO lets it through when the step ticked this journal action.</summary>
+    private static bool BlockedExcept(string triggerId, JournalAction action) =>
+        BlockedExcept(triggerId) && !TutorialSequenceController.Instance.IsJournalActionAllowed(action);
+
     /// <summary>Called by JournalSlotUI before opening a species page from a grid click.</summary>
-    public bool CanClickSlot() => !BlockedExcept("opened_plant_detail");
+    public bool CanClickSlot() => !BlockedExcept("opened_plant_detail", JournalAction.PlantSlots);
 
     private bool lastHudLocked;
 
@@ -296,7 +311,7 @@ public class JournalUIController : MonoBehaviour
     {
         // Dropdowns can't be "cancelled" after the fact, so they're simply made non-interactable while the
         // tutorial has input locked, and restored (respecting the real per-species lock) when it lifts.
-        bool hudLocked = HudLocked;
+        bool hudLocked = HudLockedFor(JournalAction.CareAnswers);
         if (hudLocked != lastHudLocked)
         {
             lastHudLocked = hudLocked;
@@ -458,6 +473,8 @@ public class JournalUIController : MonoBehaviour
 
         TutorialTargets.Clear("journal_plant");
         TutorialTargets.Clear("journal_plant_completed");
+        TutorialTargets.Clear("journal_passive_plant");
+        passivePlantTargetSet = false;
         PopulateRow(sunnyRow, PlantType.Sunny);
         PopulateRow(darkRow, PlantType.Dark);
         PopulateRow(waterRow, PlantType.Water);
@@ -510,8 +527,19 @@ public class JournalUIController : MonoBehaviour
             if (journalManager != null && journalManager.IsCompleted(species))
                 TutorialTargets.Set("journal_plant_completed", sr);
             TutorialTargets.Set("journal_plant", sr);
+
+            // First discovered species with a passive ability - what a "passive ability" tutorial prompt
+            // outlines (Follow Target Key = journal_passive_plant), with its name for {Passive Plant Name}.
+            if (!passivePlantTargetSet && species.hasPassiveAbility)
+            {
+                passivePlantTargetSet = true;
+                TutorialTargets.Set("journal_passive_plant", sr);
+                TutorialTargets.SetText("passive_plant_name", species.displayName);
+            }
         }
     }
+
+    private bool passivePlantTargetSet;
 
     // ------------------------------------------------------------
     // DETAIL PAGE — called by JournalSlotUI.OnPointerClick
@@ -677,7 +705,8 @@ public class JournalUIController : MonoBehaviour
         refreshingCare = true;
         PlantJournalManager.CareGuess g = journalManager != null ? journalManager.GetGuess(species) : null;
         bool locked = g != null && g.locked;
-        bool uiLocked = locked || HudLocked; // answers locked for good OR the tutorial has input locked right now
+        bool tutorialLocked = HudLockedFor(JournalAction.CareAnswers);
+        bool uiLocked = locked || tutorialLocked; // answers locked for good OR the tutorial has input locked right now
 
         // Dropdown index 0 is the "?" option, so a stored value v maps to v + 1 (soil maps through SoilChoices).
         ApplyCare(waterDropdown, g != null && g.water >= 0 ? g.water + 1 : 0, uiLocked);
@@ -685,7 +714,16 @@ public class JournalUIController : MonoBehaviour
         int soilIdx = g != null && g.soil >= 0 ? System.Array.IndexOf(SoilChoices, (SoilKind)g.soil) + 1 : 0;
         ApplyCare(soilDropdown, Mathf.Max(0, soilIdx), uiLocked);
 
-        if (fillAnswersButton != null) fillAnswersButton.interactable = !uiLocked;
+        // The toggle stays clickable while the answers are locked (that's how you unlock them) - only the
+        // tutorial can disable it.
+        if (fillAnswersButton != null) fillAnswersButton.interactable = !tutorialLocked;
+        Image toggleIcon = fillAnswersIcon != null ? fillAnswersIcon
+            : fillAnswersButton != null ? fillAnswersButton.image : null;
+        if (toggleIcon != null)
+        {
+            Sprite s = locked ? lockedSprite : unlockedSprite;
+            if (s != null) toggleIcon.sprite = s;
+        }
         if (answersLockedIndicator != null) answersLockedIndicator.SetActive(locked);
         refreshingCare = false;
     }
@@ -713,7 +751,9 @@ public class JournalUIController : MonoBehaviour
     private void OnFillAnswersClicked()
     {
         if (selectedSpecies == null || journalManager == null) return;
-        journalManager.RevealAnswers(selectedSpecies);
+        PlantJournalManager.CareGuess g = journalManager.GetGuess(selectedSpecies);
+        if (g != null && g.locked) journalManager.HideAnswers(selectedSpecies);
+        else journalManager.RevealAnswers(selectedSpecies);
         RefreshCareRow(selectedSpecies);
     }
 }

@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 // =============================================================
 // MiasmaScreenEffectController.cs
@@ -34,6 +37,11 @@ using UnityEngine;
 //   2. Assign centerZone — that SAME room's ZoneHealth (ZoneHealth.miasma already links the two
 //      on that component, so these two fields should point at one matching pair).
 //   3. playerZoneTracker / playerController auto-find via FindObjectOfType if left empty.
+//   3b. OPTIONAL info popups: build a small panel (text + whatever art you like) for each status
+//      indicator, start it inactive, and assign dragDownPopup / noFlyPopup. It pops up for
+//      popupDuration seconds when that indicator appears, and stays up until the player clicks
+//      somewhere else if they click the indicator themselves. The indicator's Image needs
+//      Raycast Target ticked so it can be clicked.
 //   4. Build five UI elements on the HUD canvas (three stage overlays + two status indicators),
 //      each with a FadingOverlay component (auto-adds its own CanvasGroup), start them inactive
 //      in the scene, and assign overlayImage1/2/3 + dragDownIndicator/noFlyIndicator.
@@ -72,6 +80,18 @@ public class MiasmaScreenEffectController : MonoBehaviour
              "Pops instantly (no fade), unlike the overlay images above.")]
     [SerializeField] private GameObject noFlyIndicator;
 
+    [Header("Info Popups (optional)")]
+    [Tooltip("Small info panel for the drag-down indicator. Start it INACTIVE. Pops up when the indicator " +
+             "appears, or when the player clicks the indicator.")]
+    [SerializeField] private GameObject dragDownPopup;
+    [Tooltip("Small info panel for the no-fly indicator. Start it INACTIVE.")]
+    [SerializeField] private GameObject noFlyPopup;
+    [Tooltip("How many seconds the popup stays up when it appears on its own (the indicator just showed). " +
+             "Real seconds - not affected by the game's time speed.")]
+    [SerializeField] private float popupDuration = 5f;
+    [Tooltip("Pop the info up by itself whenever an indicator appears. Off = only when the player clicks it.")]
+    [SerializeField] private bool popUpWhenIndicatorAppears = true;
+
     [Header("Thresholds (fraction of this zone's MiasmaController.MaxSize)")]
     [Range(0f, 1f)] [SerializeField] private float middleThreshold = 0.33f;
     [Range(0f, 1f)] [SerializeField] private float finalThreshold = 0.66f;
@@ -79,8 +99,18 @@ public class MiasmaScreenEffectController : MonoBehaviour
     private enum Stage { None, Early, Middle, Final }
     private Stage currentStage = Stage.None;
 
+    private enum PopupId { None, DragDown, NoFly }
+    private PopupId openPopup = PopupId.None;
+    private bool popupSticky;          // opened by a click: stays until the player clicks elsewhere
+    private float popupTimer;
+    private bool prevDragShown, prevNoFlyShown;
+    private readonly List<RaycastResult> raycastHits = new List<RaycastResult>();
+
     private void Awake()
     {
+        if (dragDownPopup != null) dragDownPopup.SetActive(false);
+        if (noFlyPopup != null) noFlyPopup.SetActive(false);
+
         if (playerZoneTracker == null)
             playerZoneTracker = FindAnyObjectByType<PlayerZoneTracker>();
         if (playerController == null)
@@ -105,6 +135,101 @@ public class MiasmaScreenEffectController : MonoBehaviour
 
         if (newStage != currentStage)
             ApplyStage(newStage);
+
+        UpdatePopups();
+    }
+
+    // ---------------------------------------------------------------
+    // INFO POPUPS
+    // ---------------------------------------------------------------
+    private void UpdatePopups()
+    {
+        bool dragShown = dragDownIndicator != null && dragDownIndicator.activeInHierarchy;
+        bool noFlyShown = noFlyIndicator != null && noFlyIndicator.activeInHierarchy;
+
+        // The indicator just appeared - pop its info up for popupDuration seconds.
+        if (popUpWhenIndicatorAppears)
+        {
+            if (dragShown && !prevDragShown) OpenPopup(PopupId.DragDown, false);
+            if (noFlyShown && !prevNoFlyShown) OpenPopup(PopupId.NoFly, false);
+        }
+
+        // The indicator went away - its info has nothing to explain any more.
+        if (!dragShown && openPopup == PopupId.DragDown) ClosePopup();
+        if (!noFlyShown && openPopup == PopupId.NoFly) ClosePopup();
+
+        prevDragShown = dragShown;
+        prevNoFlyShown = noFlyShown;
+
+        if (openPopup != PopupId.None && !popupSticky)
+        {
+            popupTimer -= Time.unscaledDeltaTime;
+            if (popupTimer <= 0f) ClosePopup();
+        }
+
+        if (openPopup != PopupId.None || dragShown || noFlyShown)
+        {
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+                HandleClick(Mouse.current.position.ReadValue());
+        }
+    }
+
+    private void HandleClick(Vector2 screenPos)
+    {
+        if (EventSystem.current == null) return;
+
+        PointerEventData ped = new PointerEventData(EventSystem.current) { position = screenPos };
+        raycastHits.Clear();
+        EventSystem.current.RaycastAll(ped, raycastHits);
+
+        PopupId clickedIndicator = PopupId.None;
+        bool clickedOpenPopup = false;
+
+        foreach (RaycastResult hit in raycastHits)
+        {
+            GameObject go = hit.gameObject;
+            if (go == null) continue;
+            if (IsUnder(go, dragDownIndicator)) clickedIndicator = PopupId.DragDown;
+            else if (IsUnder(go, noFlyIndicator)) clickedIndicator = PopupId.NoFly;
+            if (openPopup == PopupId.DragDown && IsUnder(go, dragDownPopup)) clickedOpenPopup = true;
+            if (openPopup == PopupId.NoFly && IsUnder(go, noFlyPopup)) clickedOpenPopup = true;
+        }
+
+        if (clickedIndicator != PopupId.None)
+        {
+            // Clicking an indicator opens its info and keeps it up; clicking it again closes it.
+            if (openPopup == clickedIndicator && popupSticky) ClosePopup();
+            else OpenPopup(clickedIndicator, true);
+        }
+        else if (!clickedOpenPopup && openPopup != PopupId.None)
+        {
+            ClosePopup(); // clicked back into the game / on something else
+        }
+    }
+
+    private void OpenPopup(PopupId id, bool sticky)
+    {
+        GameObject popup = id == PopupId.DragDown ? dragDownPopup : noFlyPopup;
+        if (popup == null) return;
+
+        ClosePopup();
+        openPopup = id;
+        popupSticky = sticky;
+        popupTimer = popupDuration;
+        popup.SetActive(true);
+    }
+
+    private void ClosePopup()
+    {
+        if (dragDownPopup != null) dragDownPopup.SetActive(false);
+        if (noFlyPopup != null) noFlyPopup.SetActive(false);
+        openPopup = PopupId.None;
+        popupSticky = false;
+    }
+
+    private static bool IsUnder(GameObject hit, GameObject root)
+    {
+        return root != null && hit.transform.IsChildOf(root.transform);
     }
 
     private void ApplyStage(Stage stage)
