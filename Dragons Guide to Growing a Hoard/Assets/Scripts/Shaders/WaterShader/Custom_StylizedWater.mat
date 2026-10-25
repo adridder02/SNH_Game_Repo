@@ -24,23 +24,23 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _FoamTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 756d6724924f2448ab273c1be1db34c8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _IntersectionFoamTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 716010ae70e1b4e84ba6baf439991fae, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalsTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: ead3be67941d84de8806e2bdbc4a2d24, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _DepthRange: 3
     - _FoamCutoff: 0.6
-    - _FoamDirection: 0.25
-    - _FoamDistortion: 1
+    - _FoamDirection: 0.453
+    - _FoamDistortion: 22.18
     - _FoamSpeed: 0.05
     - _Hardness: 0.5
     - _HorizonDistance: 3
@@ -65,10 +65,10 @@ Material:
     - _DeepColor: {r: 0.049999982, g: 0.24999997, b: 0.5, a: 0.95}
     - _Directions: {r: 0.1, g: 0.35, b: 0.6, a: 0.85}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
-    - _FoamTiling: {r: 0.2, g: 0.2, b: 0, a: 0}
+    - _FoamTiling: {r: 5, g: 5, b: 0, a: 5}
     - _HorizonColor: {r: 0.7, g: 0.9, b: 1, a: 1}
     - _IntersectionFoamColor: {r: 1, g: 1, b: 1, a: 1}
-    - _IntersectionFoamTiling: {r: 0.3, g: 0.3, b: 0, a: 0}
+    - _IntersectionFoamTiling: {r: 0.3, g: 0.3, b: 0, a: 5}
     - _ShallowColor: {r: 0.29999998, g: 0.85, b: 0.8, a: 0.5}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
