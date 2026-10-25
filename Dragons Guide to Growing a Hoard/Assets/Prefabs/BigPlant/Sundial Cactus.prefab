@@ -244,10 +244,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a955a02e5f62b6144833ae3db4ca04e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlantProgress
-  secondsToGrowFull: 200
-  secondsToDrainFromDead: 600
-  intermediateDrainFraction: 0.5
-  smoothingSeconds: 8
+  secondsToGrowFull: 180
+  secondsToDrainFromDead: 800
+  intermediateDrainFraction: 0.2
+  smoothingSeconds: 200
   plantState: {fileID: 0}
   progress: 0
   isComplete: 0
