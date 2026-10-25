@@ -212,6 +212,8 @@ public class SettingsPageUI : MonoBehaviour
             pendingVideo.resolutionWidth = Screen.width;
             pendingVideo.resolutionHeight = Screen.height;
             pendingVideo.fullscreenMode = (int)Screen.fullScreenMode;
+            pendingVideo.vsync = QualitySettings.vSyncCount > 0;
+            pendingVideo.frameRateCap = Application.targetFrameRate > 0 ? Application.targetFrameRate : 0;
         }
         if (pendingVideo.qualityLevel < 0) pendingVideo.qualityLevel = QualitySettings.GetQualityLevel();
 

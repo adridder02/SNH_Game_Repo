@@ -4913,7 +4913,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52902df50ca0a3746b6a55aca1a5b575, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProximityTutorialTrigger
-  player: {fileID: 74016818}
+  player: {fileID: 0}
   target: {fileID: 0}
   radius: 5
   externalTriggerId: water_refill
@@ -7988,7 +7988,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 74016807}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -812.4}
+  m_LocalPosition: {x: 0, y: 0, z: -813.04}
   m_LocalScale: {x: 0.45, y: 0.35831407, z: 2.4960926}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -7997,7 +7997,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -205.3, y: -26.35}
+  m_AnchoredPosition: {x: -205.3, y: -32.08}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &74016819
@@ -18277,7 +18277,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExitMenuController
   exitMenuRoot: {fileID: 2071430790}
-  playerController: {fileID: 74016814}
+  playerController: {fileID: 0}
   unstuckButton: {fileID: 217987063}
   inventoryController: {fileID: 1089629608}
   potMenuController: {fileID: 1999593201}
@@ -19414,8 +19414,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 652a8c003cf73db46813640bc34b5ab9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainUIController
-  playerInventory: {fileID: 74016824}
-  abilityInventoryForGating: {fileID: 74016825}
+  playerInventory: {fileID: 0}
+  abilityInventoryForGating: {fileID: 0}
   waterBar: {fileID: 2115435799}
   waterBarStartsHidden: 0
   journalButton: {fileID: 1423353679}
@@ -19429,7 +19429,7 @@ MonoBehaviour:
   miasma: {fileID: 186100310}
   miasmaBarStartsHidden: 1
   zoneHappinessBar: {fileID: 1858791250}
-  playerZoneTracker: {fileID: 74016822}
+  playerZoneTracker: {fileID: 0}
   zoneNameLabel: {fileID: 1228479331}
   zoneHappinessBarStartsHidden: 1
   toolSlots:
@@ -19520,8 +19520,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MiasmaScreenEffectController
   centerZoneMiasma: {fileID: 186100310}
   centerZone: {fileID: 2140517483}
-  playerZoneTracker: {fileID: 74016822}
-  playerController: {fileID: 74016814}
+  playerZoneTracker: {fileID: 0}
+  playerController: {fileID: 0}
   overlayImage1: {fileID: 1249984983}
   overlayImage2: {fileID: 1802852810}
   overlayImage3: {fileID: 1946173044}
@@ -39488,7 +39488,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.08819456, y: -0.0000000124474555, z: 0.0000000011020923, w: 0.9961033}
-  m_LocalPosition: {x: -205.44284, y: -19.927366, z: -826.2592}
+  m_LocalPosition: {x: -205.44284, y: -25.657368, z: -826.8992}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -50788,7 +50788,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52902df50ca0a3746b6a55aca1a5b575, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProximityTutorialTrigger
-  player: {fileID: 74016818}
+  player: {fileID: 0}
   target: {fileID: 0}
   radius: 20
   externalTriggerId: reached_placement_grid
@@ -76575,7 +76575,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 1
-        - m_Target: {fileID: 74016827}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: DirectionalIndicator, Assembly-CSharp
           m_MethodName: ActivateTarget
           m_Mode: 2
@@ -76626,7 +76626,7 @@ MonoBehaviour:
     onStepHidden:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 74016827}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: DirectionalIndicator, Assembly-CSharp
           m_MethodName: DeactivateTarget
           m_Mode: 2
@@ -110249,8 +110249,8 @@ MonoBehaviour:
   loopAmbientMusic: 1
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
   collectionMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
-  potInteraction: {fileID: 74016811}
-  playerInventory: {fileID: 74016824}
+  potInteraction: {fileID: 0}
+  playerInventory: {fileID: 0}
 --- !u!114 &1014228679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115264,8 +115264,8 @@ MonoBehaviour:
     keyItem: {fileID: 11400000, guid: 72306af1b9397a547994d5b44495eaa8, type: 2}
     layer: {fileID: 588046985}
   interactRange: 50
-  dragonAbilityInventory: {fileID: 74016825}
-  player: {fileID: 74016818}
+  dragonAbilityInventory: {fileID: 0}
+  player: {fileID: 0}
   showInteractPrompt: 1
   mainUI: {fileID: 0}
 --- !u!64 &1054542346
@@ -124049,8 +124049,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4d7eaf7d00c3a64b89f9b0f58da602e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryUIController
-  playerInventory: {fileID: 74016824}
-  abilityInventory: {fileID: 74016825}
+  playerInventory: {fileID: 0}
+  abilityInventory: {fileID: 0}
   hotbarSystem: {fileID: 1419929981}
   collectionMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
   inventoryRoot: {fileID: 89625017}
@@ -142756,7 +142756,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52902df50ca0a3746b6a55aca1a5b575, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProximityTutorialTrigger
-  player: {fileID: 74016818}
+  player: {fileID: 0}
   target: {fileID: 0}
   radius: 5
   externalTriggerId: water_refill
@@ -154559,7 +154559,7 @@ Transform:
   m_GameObject: {fileID: 1393679874}
   serializedVersion: 2
   m_LocalRotation: {x: 0.08819454, y: -0.000000012447455, z: 0.0000000011020921, w: 0.9961033}
-  m_LocalPosition: {x: -322.97284, y: 6.4726334, z: -38.331726}
+  m_LocalPosition: {x: -322.97284, y: 0.7426319, z: -38.97168}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -154673,7 +154673,7 @@ MonoBehaviour:
   dragonHideDistance: 5
   dragonShowDistanceBuffer: 0.3
   enableDebugLogs: 0
-  outputCamera: {fileID: 0}
+  outputCamera: {fileID: 330585545}
 --- !u!114 &1393679878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -156430,7 +156430,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd671e3ffff6a3c4ba238cc9d487bd59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HarvestNodeContainer
-  player: {fileID: 32051273}
+  player: {fileID: 74016818}
   playerInventory: {fileID: 74016824}
   tutorialMission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
   interactRange: 11
@@ -171823,7 +171823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52902df50ca0a3746b6a55aca1a5b575, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProximityTutorialTrigger
-  player: {fileID: 74016818}
+  player: {fileID: 0}
   target: {fileID: 0}
   radius: 50
   externalTriggerId: reached_wall_grid
@@ -233319,7 +233319,7 @@ MonoBehaviour:
   interactRange: 15
   showInteractPrompt: 1
   mainUI: {fileID: 174021493}
-  player: {fileID: 74016818}
+  player: {fileID: 0}
   openClip: {fileID: 0}
   closeClip: {fileID: 0}
   onOpened:
@@ -237958,7 +237958,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52902df50ca0a3746b6a55aca1a5b575, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProximityTutorialTrigger
-  player: {fileID: 74016818}
+  player: {fileID: 0}
   target: {fileID: 0}
   radius: 50
   externalTriggerId: 
@@ -240139,7 +240139,7 @@ MonoBehaviour:
   abilityColumns: 5
   abilityGapX: 8
   abilityGapY: 8
-  abilityInventory: {fileID: 74016825}
+  abilityInventory: {fileID: 0}
   abilityPlacementSystem: {fileID: 1419929980}
   claySoilIcon: {fileID: 21300000, guid: f8dedea288579d140b29f73fd96fa3b1, type: 3}
   loamSoilIcon: {fileID: 21300000, guid: 27869d14e53e7244db2b046e7d4e5938, type: 3}
@@ -247469,7 +247469,7 @@ MonoBehaviour:
   interactRange: 17
   showInteractPrompt: 1
   mainUI: {fileID: 174021493}
-  player: {fileID: 74016818}
+  player: {fileID: 0}
   openClip: {fileID: 0}
   closeClip: {fileID: 0}
   onOpened:

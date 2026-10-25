@@ -153,14 +153,20 @@ public class SettingsManager : MonoBehaviour
         GameSettings s = Current;
 
         // ---- video ----
-        if (s.qualityLevel >= 0 && QualitySettings.names.Length > 0)
-            QualitySettings.SetQualityLevel(Mathf.Clamp(s.qualityLevel, 0, QualitySettings.names.Length - 1), true);
-
-        QualitySettings.vSyncCount = s.vsync ? 1 : 0;
-        Application.targetFrameRate = s.vsync ? -1 : (s.frameRateCap > 0 ? s.frameRateCap : -1);
-
+        // Only touch quality / vsync / frame cap / resolution once the player has actually pressed Apply on
+        // the video settings. Before that the project's own settings stay in charge, so simply having the
+        // settings system installed can't change frame pacing (which the player controller and camera are
+        // sensitive to).
         if (s.videoChosen)
+        {
+            if (s.qualityLevel >= 0 && QualitySettings.names.Length > 0)
+                QualitySettings.SetQualityLevel(Mathf.Clamp(s.qualityLevel, 0, QualitySettings.names.Length - 1), true);
+
+            QualitySettings.vSyncCount = s.vsync ? 1 : 0;
+            Application.targetFrameRate = s.vsync ? -1 : (s.frameRateCap > 0 ? s.frameRateCap : -1);
+
             Screen.SetResolution(s.resolutionWidth, s.resolutionHeight, (FullScreenMode)s.fullscreenMode);
+        }
 
         // ---- audio ----
         bool masterOnMixer = SetMixerVolume(MasterParam, s.masterVolume);
