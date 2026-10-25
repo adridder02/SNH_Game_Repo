@@ -108,6 +108,21 @@ public class HarvestNodeContainer : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics() { harvestedNodes.Clear(); NodeHarvested = null; }
     public static bool IsHarvested(Transform node) => node != null && harvestedNodes.Contains(node);
+
+    // Save/load (SaveWorld): which nodes have been harvested, and a silent way to mark one on load.
+    public static List<Transform> HarvestedSnapshot()
+    {
+        harvestedNodes.RemoveWhere(t => t == null);
+        return new List<Transform>(harvestedNodes);
+    }
+
+    /// <summary>Marks a node harvested + hides it with no plant given, no effect, no events.</summary>
+    public static void MarkHarvestedSilently(Transform node)
+    {
+        if (node == null) return;
+        harvestedNodes.Add(node);
+        node.gameObject.SetActive(false);
+    }
     /// <summary>Fired right after a node's plant lands in the player's inventory.</summary>
     public static event System.Action<Transform> NodeHarvested;
 

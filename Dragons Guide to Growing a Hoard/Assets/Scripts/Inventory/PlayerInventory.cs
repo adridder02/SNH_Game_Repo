@@ -511,4 +511,117 @@ public class PlayerInventory : MonoBehaviour
     {
         waterPool = Mathf.Min(waterPool + waterRefillRate * deltaTime, maxWaterRefill);
     }
+
+    // ------------------------------------------------------------
+    // SAVE / LOAD (SaveWorld) — plants, ability stacks, grid layout, water, flags
+    // ------------------------------------------------------------
+    public void CaptureSave(PlayerSave s)
+    {
+        s.water = waterPool;
+        s.gridW = grid.Width;
+        s.gridH = grid.Height;
+        s.hasUnlockedWallPlacement = HasUnlockedWallPlacement;
+        s.hasHarvestedFirstPlant = HasHarvestedFirstPlant;
+        s.plants.Clear();
+        s.abilities.Clear();
+
+        foreach (InventoryItemInstance i in items)
+        {
+            if (i.plantPrefab == null) continue;
+            s.plants.Add(new PlantItemSave
+            {
+                prefab = i.plantPrefab.name,
+                dead = i.condition.isPermanentlyDead,
+                health01 = i.condition.startingHealth01,
+                setGrowth = i.condition.setStartingGrowth,
+                growth01 = i.condition.startingGrowth01,
+                gx = i.gridX,
+                gy = i.gridY,
+            });
+        }
+
+        if (abilityInventory != null)
+        {
+            s.hasHarvestedFirstAbilityItem = abilityInventory.HasHarvestedFirstAbilityItem;
+            s.hasHarvestedFirstHotbarItem = abilityInventory.HasHarvestedFirstHotbarItem;
+            foreach (AbilityItemInstance a in abilityInventory.Stacks)
+            {
+                if (a.data == null) continue;
+                s.abilities.Add(new AbilityStackSave { item = a.data.name, count = a.count, gx = a.gridX, gy = a.gridY });
+            }
+        }
+    }
+
+    /// <summary>Replaces the whole inventory with the saved one WITHOUT the pickup side effects
+    /// (no journal discovery, new-item badges, tutorial triggers or first-pickup events).</summary>
+    public void RestoreSave(PlayerSave s, SaveRegistry registry)
+    {
+        // 1. wipe what's here (grid cells + lists)
+        foreach (InventoryItemInstance i in items.ToList())
+        {
+            if (i.IsInGrid) grid.RemoveItem(i);
+            items.Remove(i);
+        }
+        foreach (string id in new List<string>(trackedAbilityIds)) grid.RemoveById(id);
+        trackedAbilityIds.Clear();
+
+        // 2. grid size, water, flags
+        if (s.gridW > 0 && s.gridH > 0)
+        {
+            grid.Resize(s.gridW, s.gridH);
+            gridWidth = s.gridW;
+            gridHeight = s.gridH;
+        }
+        waterPool = Mathf.Clamp(s.water, 0f, maxWaterRefill);
+        HasUnlockedWallPlacement = s.hasUnlockedWallPlacement;
+        HasHarvestedFirstPlant = s.hasHarvestedFirstPlant;
+
+        var placeList = new List<KeyValuePair<IGridPlaceable, Vector2Int>>();
+
+        // 3. ability stacks
+        if (abilityInventory != null)
+        {
+            var stacks = new List<AbilityItemInstance>();
+            foreach (AbilityStackSave a in s.abilities)
+            {
+                AbilityItemData d = registry != null ? registry.FindAbility(a.item) : null;
+                if (d == null || a.count <= 0) continue;
+                var inst = new AbilityItemInstance(d, a.count);
+                stacks.Add(inst);
+                trackedAbilityIds.Add(inst.instanceId); // so ReconcileAbilityGridPlacement doesn't re-place it
+                if (a.gx >= 0 && a.gy >= 0) placeList.Add(new KeyValuePair<IGridPlaceable, Vector2Int>(inst, new Vector2Int(a.gx, a.gy)));
+            }
+            abilityInventory.ReplaceStacksSilently(stacks, s.hasHarvestedFirstAbilityItem, s.hasHarvestedFirstHotbarItem);
+        }
+
+        // 4. plants
+        foreach (PlantItemSave p in s.plants)
+        {
+            GameObject prefab = registry != null ? registry.FindPlant(p.prefab) : null;
+            if (prefab == null) continue;
+
+            PlantSpeciesData species = prefab.GetComponentInChildren<PlantState>() != null
+                ? prefab.GetComponentInChildren<PlantState>().journalSpecies : null;
+            var cond = new PlantCondition
+            {
+                isPermanentlyDead = p.dead,
+                startingHealth01 = p.health01,
+                setStartingGrowth = p.setGrowth,
+                startingGrowth01 = p.growth01,
+            };
+            var inst = new InventoryItemInstance(prefab,
+                species != null ? species.journalIcon : null,
+                species != null ? species.InventoryImage : null,
+                species != null ? species.displayName : null,
+                cond);
+            items.Add(inst);
+            if (p.gx >= 0 && p.gy >= 0) placeList.Add(new KeyValuePair<IGridPlaceable, Vector2Int>(inst, new Vector2Int(p.gx, p.gy)));
+        }
+
+        // 5. back into their saved grid cells (anything that no longer fits just stays in Available)
+        foreach (var kv in placeList) grid.PlaceAt(kv.Key, kv.Value.x, kv.Value.y);
+
+        abilityInventory?.NotifyChanged();
+        OnInventoryChanged?.Invoke();
+    }
 }

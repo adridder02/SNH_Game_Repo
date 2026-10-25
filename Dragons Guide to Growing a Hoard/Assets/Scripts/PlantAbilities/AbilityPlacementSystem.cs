@@ -219,6 +219,29 @@ public class AbilityPlacementSystem : MonoBehaviour
             Cancel();
     }
 
+    /// <summary>Save/load: re-creates a placed ability item at its saved spot WITHOUT consuming one from the inventory.</summary>
+    public AbilityPlaceable RestorePlaceable(AbilityItemData data, int surfaceIndex, Vector3Int origin, Vector2Int size,
+                                             Vector3 position, Quaternion rotation)
+    {
+        if (data == null || placementSystem == null) return null;
+        var list = placementSystem.Surfaces;
+        if (surfaceIndex < 0 || surfaceIndex >= list.Count || list[surfaceIndex] == null) return null;
+
+        GreenhouseSurface surface = list[surfaceIndex];
+        GridData gd = placementSystem.GetGridData(surface);
+        if (gd == null || !gd.CanPlace(origin, size)) return null;
+
+        GameObject go = data.placedPrefab != null ? Instantiate(data.placedPrefab) : new GameObject(data.displayName);
+        go.transform.SetPositionAndRotation(position, rotation);
+
+        gd.AddPlacement(origin, size, go);
+        surface.GridVisual.MarkOccupied(new Vector2Int(origin.x, origin.z), size);
+
+        AbilityPlaceable placeable = go.GetComponent<AbilityPlaceable>();
+        if (placeable != null) placeable.Initialise(data, origin, size, gd, surface);
+        return placeable;
+    }
+
     private void TryRemove(Vector2Int cell, GridData gridData, GridVisual gridVisual)
     {
         if (gridData == null) return;

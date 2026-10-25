@@ -263,4 +263,11 @@ public class PlantJournalManager : MonoBehaviour
         public List<string> ids;
         public List<string> completedIds;
     }
+
+    /// <summary>Save/load: re-reads discovery + guesses from PlayerPrefs after SaveManager restored them.</summary>
+    public void ReloadFromPrefs()
+    {
+        Load();
+        LoadGuesses();
+    }
 }

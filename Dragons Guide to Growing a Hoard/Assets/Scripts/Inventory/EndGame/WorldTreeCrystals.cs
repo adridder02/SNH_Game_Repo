@@ -116,6 +116,25 @@ public class WorldTreeCrystals : MonoBehaviour
         mainUI?.SetInteractPromptVisible(false, this);
     }
 
+    // Save/load (SaveWorld)
+    public bool[] CaptureRevealed()
+    {
+        var r = new bool[crystals.Length];
+        for (int i = 0; i < crystals.Length; i++) r[i] = crystals[i] != null && crystals[i].revealed;
+        return r;
+    }
+
+    public void RestoreRevealed(System.Collections.Generic.List<bool> revealed)
+    {
+        for (int i = 0; i < crystals.Length && i < revealed.Count; i++)
+        {
+            CrystalEntry e = crystals[i];
+            if (!revealed[i] || e == null || e.layer == null) continue;
+            e.layer.SetActive(true);
+            e.revealed = true;
+        }
+    }
+
     private bool AllRevealed()
     {
         foreach (CrystalEntry entry in crystals)

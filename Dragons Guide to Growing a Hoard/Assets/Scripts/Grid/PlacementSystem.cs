@@ -865,6 +865,35 @@ public class PlacementSystem : MonoBehaviour
         // on-screen system hasn't been rebuilt.
     }
 
+    /// <summary>Save/load: re-creates a player-placed pot exactly where it was (no inventory, tutorial or sound).
+    /// Returns the new pot, or null if the surface/cells aren't available.</summary>
+    public PotContents RestorePot(PotData data, int surfaceIndex, Vector3Int origin, Vector2Int size, Quaternion rotation)
+    {
+        if (data == null || data.potPrefab == null || surfaceIndex < 0 || surfaceIndex >= surfaces.Count) return null;
+        GreenhouseSurface surface = surfaces[surfaceIndex];
+        if (surface == null || !surfaceGridData.TryGetValue(surface, out GridData gridData)) return null;
+        if (!gridData.CanPlace(origin, size)) return null;
+
+        Vector2Int cell = new Vector2Int(origin.x, origin.z);
+        Vector3 worldPos = CellToWorldCentre(cell, size, surface);
+        GameObject placed = Instantiate(data.potPrefab, worldPos, rotation);
+
+        PotContents pc = placed.GetComponent<PotContents>();
+        if (pc != null)
+        {
+            pc.SetWaterSurfaceMode(surface.WaterSurface, surface.SoilHeightOffset);
+            pc.GridOrigin = origin;
+            pc.GridData = gridData;
+            pc.CachePlantReference();
+            if (pc.Plant != null)
+                pc.Plant.SetPotContents(pc);
+        }
+
+        gridData.AddPlacement(origin, size, placed);
+        surface.GridVisual.MarkOccupied(cell, size);
+        return pc;
+    }
+
     private void TryRemove(Vector2Int cell)
     {
         if (activeSurface == null)

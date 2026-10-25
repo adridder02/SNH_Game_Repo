@@ -384,6 +384,9 @@ public class JournalUIController : MonoBehaviour
             // game" (this used to be an Escape-based step; both the back button AND Escape route
             // through here via CloseJournal(), so either one satisfies it).
             TutorialSequenceController.Instance?.NotifyExternalTrigger("closed_journal_back_button");
+
+            // Autosave on closing the journal (does nothing outside the main scene or if autosave is off).
+            SaveManager.Autosave("journal");
         }
     }
     /// <summary>Opens the journal on the Lore bookmark with this entry selected (used when the player picks

@@ -937,8 +937,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonTextHover
   buttonText: {fileID: 269424568}
-  normalColor: {r: 0, g: 0, b: 0, a: 1}
-  hoverColor: {r: 1, g: 1, b: 1, a: 1}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &15250772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8029,7 +8029,7 @@ AudioSource:
   m_GameObject: {fileID: 74016807}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 387663224308496218, guid: f9f073c933e986f4abc7638e30dde4d5, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -13314,8 +13314,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonTextHover
   buttonText: {fileID: 691997910}
-  normalColor: {r: 0, g: 0, b: 0, a: 1}
-  hoverColor: {r: 1, g: 1, b: 1, a: 1}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &120494594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18944,8 +18944,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 468.44415, y: -9.807504}
-  m_SizeDelta: {x: 117.1117, y: 50}
+  m_AnchoredPosition: {x: 444.01086, y: -9.807504}
+  m_SizeDelta: {x: 165.9785, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &171335779
 MonoBehaviour:
@@ -27182,7 +27182,7 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.9568628, g: 0.9294118, b: 0.854902, a: 1}
+    m_NormalColor: {r: 0.6666667, g: 0.5411765, b: 0.38431373, a: 1}
     m_HighlightedColor: {r: 0.85098046, g: 0.8000001, b: 0.69803923, a: 1}
     m_PressedColor: {r: 0.6666667, g: 0.5411765, b: 0.38431373, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -29998,7 +29998,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &232768625
 RectTransform:
   m_ObjectHideFlags: 0
@@ -30016,7 +30016,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 360, y: -73.00002}
+  m_AnchoredPosition: {x: 13.987, y: -73.00002}
   m_SizeDelta: {x: 346.0131, y: 100.7749}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &232768626
@@ -30032,8 +30032,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonTextHover
   buttonText: {fileID: 2106227485}
-  normalColor: {r: 0, g: 0, b: 0, a: 1}
-  hoverColor: {r: 1, g: 1, b: 1, a: 1}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &232768627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32676,7 +32676,7 @@ GameObject:
   m_Component:
   - component: {fileID: 258295808}
   m_Layer: 5
-  m_Name: SyncRate
+  m_Name: FrameRate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34169,8 +34169,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 468.44415, y: -9.807504}
-  m_SizeDelta: {x: 117.1117, y: 50}
+  m_AnchoredPosition: {x: 444.01086, y: -9.807504}
+  m_SizeDelta: {x: 165.9785, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &273842031
 MonoBehaviour:
@@ -49026,7 +49026,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sync rate
+  m_text: Frame Rate
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0852abc7ad636ff43b13d0494a088a42, type: 2}
   m_sharedMaterial: {fileID: -5571737488688138172, guid: 0852abc7ad636ff43b13d0494a088a42, type: 2}
@@ -58075,7 +58075,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 13.986725, y: -72.99999}
+  m_AnchoredPosition: {x: 359.99997, y: -73.00004}
   m_SizeDelta: {x: 346.0131, y: 100.7749}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &545436424
@@ -58091,8 +58091,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonTextHover
   buttonText: {fileID: 1703264476}
-  normalColor: {r: 0, g: 0, b: 0, a: 1}
-  hoverColor: {r: 1, g: 1, b: 1, a: 1}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &545436425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73673,6 +73673,7 @@ GameObject:
   - component: {fileID: 670118954}
   - component: {fileID: 670118953}
   - component: {fileID: 670118952}
+  - component: {fileID: 670118955}
   m_Layer: 0
   m_Name: Main
   m_TagString: Untagged
@@ -73766,6 +73767,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &670118955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670118950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e231409e64ed08f45a77c49d6ce83f3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIScaleApplier
 --- !u!1 &670171842
 GameObject:
   m_ObjectHideFlags: 0
@@ -86718,6 +86731,7 @@ GameObject:
   - component: {fileID: 826075563}
   - component: {fileID: 826075562}
   - component: {fileID: 826075561}
+  - component: {fileID: 826075564}
   m_Layer: 5
   m_Name: InventoryUI
   m_TagString: Untagged
@@ -86810,6 +86824,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
+--- !u!114 &826075564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826075559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e231409e64ed08f45a77c49d6ce83f3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIScaleApplier
 --- !u!1 &827641529
 GameObject:
   m_ObjectHideFlags: 0
@@ -123734,8 +123760,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 468.44415, y: -9.807504}
-  m_SizeDelta: {x: 117.1117, y: 50}
+  m_AnchoredPosition: {x: 437.31192, y: -9.807504}
+  m_SizeDelta: {x: 179.3759, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1109422723
 MonoBehaviour:
@@ -128715,6 +128741,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1177784498}
+  - component: {fileID: 1177784499}
+  - component: {fileID: 1177784500}
   m_Layer: 5
   m_Name: Settings
   m_TagString: Untagged
@@ -128745,6 +128773,64 @@ RectTransform:
   m_AnchoredPosition: {x: 239.0669, y: 8.6124}
   m_SizeDelta: {x: 2753.25, y: 1712.4304}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1177784499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177784497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 050bd040ecdd8484b9737930afb68816, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SettingsPageUI
+  resolutionDropdown: {fileID: 1911445930}
+  windowModeDropdown: {fileID: 967236166}
+  vsyncToggle: {fileID: 1623132456}
+  frameRateDropdown: {fileID: 243019017}
+  qualityDropdown: {fileID: 1510015923}
+  brightnessSlider: {fileID: 2089307188}
+  brightnessValue: {fileID: 1109422723}
+  applyVideoButton: {fileID: 1758849498}
+  revertVideoButton: {fileID: 120494594}
+  masterSlider: {fileID: 1825870432}
+  masterValue: {fileID: 1232217615}
+  musicSlider: {fileID: 1480007952}
+  musicValue: {fileID: 1541188165}
+  sfxSlider: {fileID: 276863111}
+  sfxValue: {fileID: 1937457445}
+  ambienceSlider: {fileID: 300800528}
+  ambienceValue: {fileID: 273842031}
+  muteWhenUnfocusedToggle: {fileID: 1864043204}
+  cameraSensitivitySlider: {fileID: 1270814231}
+  cameraSensitivityValue: {fileID: 171335779}
+  invertYToggle: {fileID: 208101543}
+  uiScaleSlider: {fileID: 1814560828}
+  uiScaleValue: {fileID: 1935163766}
+  autosaveToggle: {fileID: 1964451996}
+  autosaveMinutesSlider: {fileID: 1008012213}
+  autosaveMinutesValue: {fileID: 1578963570}
+  resetDefaultsButton: {fileID: 15250772}
+--- !u!114 &1177784500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177784497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: badd661fc5aa0ed46aec784ff24fba8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SaveSlotButtonsUI
+  saveButton: {fileID: 545436425}
+  loadButton: {fileID: 0}
+  quitToTitleButton: {fileID: 0}
+  deleteSaveButton: {fileID: 0}
+  statusLabel: {fileID: 575779191}
+  confirmDialog: {fileID: 0}
+  flashSeconds: 2.5
 --- !u!1 &1177847328
 GameObject:
   m_ObjectHideFlags: 0
@@ -137344,8 +137430,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 468.44415, y: -9.807504}
-  m_SizeDelta: {x: 117.1117, y: 50}
+  m_AnchoredPosition: {x: 444.01086, y: -9.807504}
+  m_SizeDelta: {x: 165.9785, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1232217615
 MonoBehaviour:
@@ -144031,6 +144117,7 @@ GameObject:
   - component: {fileID: 1297592932}
   - component: {fileID: 1297592931}
   - component: {fileID: 1297592930}
+  - component: {fileID: 1297592933}
   m_Layer: 5
   m_Name: Journal
   m_TagString: Untagged
@@ -144139,6 +144226,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1297592933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1297592928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e231409e64ed08f45a77c49d6ce83f3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIScaleApplier
 --- !u!64 &1299197645
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -166766,6 +166865,7 @@ GameObject:
   - component: {fileID: 1488691400}
   - component: {fileID: 1488691399}
   - component: {fileID: 1488691398}
+  - component: {fileID: 1488691402}
   m_Layer: 5
   m_Name: PotUI
   m_TagString: Untagged
@@ -166861,6 +166961,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1488691402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488691397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e231409e64ed08f45a77c49d6ce83f3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIScaleApplier
 --- !u!64 &1488993900
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -171371,8 +171483,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 468.44415, y: -9.807504}
-  m_SizeDelta: {x: 117.1117, y: 50}
+  m_AnchoredPosition: {x: 444.01086, y: -9.807504}
+  m_SizeDelta: {x: 165.9785, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1541188165
 MonoBehaviour:
@@ -175796,8 +175908,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 468.44415, y: -9.807504}
-  m_SizeDelta: {x: 117.1117, y: 50}
+  m_AnchoredPosition: {x: 436.5639, y: -9.807504}
+  m_SizeDelta: {x: 179.3759, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1578963570
 MonoBehaviour:
@@ -195948,7 +196060,7 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.9568628, g: 0.9294118, b: 0.854902, a: 1}
+    m_NormalColor: {r: 0.6666667, g: 0.5411765, b: 0.38431373, a: 1}
     m_HighlightedColor: {r: 0.85098046, g: 0.8000001, b: 0.69803923, a: 1}
     m_PressedColor: {r: 0.6666667, g: 0.5411765, b: 0.38431373, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -207617,8 +207729,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonTextHover
   buttonText: {fileID: 1793578219}
-  normalColor: {r: 0, g: 0, b: 0, a: 1}
-  hoverColor: {r: 1, g: 1, b: 1, a: 1}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &1758849498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223742,7 +223854,7 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.9568628, g: 0.9294118, b: 0.854902, a: 1}
+    m_NormalColor: {r: 0.6666667, g: 0.5411765, b: 0.38431373, a: 1}
     m_HighlightedColor: {r: 0.85098046, g: 0.8000001, b: 0.69803923, a: 1}
     m_PressedColor: {r: 0.6666667, g: 0.5411765, b: 0.38431373, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -231495,6 +231607,7 @@ GameObject:
   - component: {fileID: 1924726638}
   - component: {fileID: 1924726637}
   - component: {fileID: 1924726636}
+  - component: {fileID: 1924726640}
   m_Layer: 5
   m_Name: ExitUI
   m_TagString: Untagged
@@ -231587,6 +231700,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1924726640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924726635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e231409e64ed08f45a77c49d6ce83f3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIScaleApplier
 --- !u!1 &1925556311
 GameObject:
   m_ObjectHideFlags: 0
@@ -232429,8 +232554,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 468.44415, y: -9.807504}
-  m_SizeDelta: {x: 117.1117, y: 50}
+  m_AnchoredPosition: {x: 444.01086, y: -9.807504}
+  m_SizeDelta: {x: 165.9785, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1935163766
 MonoBehaviour:
@@ -232628,8 +232753,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 468.44415, y: -9.807504}
-  m_SizeDelta: {x: 117.1117, y: 50}
+  m_AnchoredPosition: {x: 444.01086, y: -9.807504}
+  m_SizeDelta: {x: 165.9785, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1937457445
 MonoBehaviour:
@@ -233972,7 +234097,7 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.9568628, g: 0.9294118, b: 0.854902, a: 1}
+    m_NormalColor: {r: 0.6666667, g: 0.5411765, b: 0.38431373, a: 1}
     m_HighlightedColor: {r: 0.85098046, g: 0.8000001, b: 0.69803923, a: 1}
     m_PressedColor: {r: 0.6666667, g: 0.5411765, b: 0.38431373, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -250415,6 +250540,7 @@ GameObject:
   - component: {fileID: 2088636131}
   - component: {fileID: 2088636130}
   - component: {fileID: 2088636129}
+  - component: {fileID: 2088636132}
   m_Layer: 0
   m_Name: Tutorial
   m_TagString: Untagged
@@ -250509,6 +250635,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 2
   m_TargetDisplay: 0
+--- !u!114 &2088636132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2088636127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e231409e64ed08f45a77c49d6ce83f3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIScaleApplier
 --- !u!1 &2089307186
 GameObject:
   m_ObjectHideFlags: 0

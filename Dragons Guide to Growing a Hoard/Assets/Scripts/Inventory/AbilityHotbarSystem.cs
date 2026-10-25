@@ -208,6 +208,14 @@ public class AbilityHotbarSystem : MonoBehaviour
         return true;
     }
 
+    /// <summary>Save/load: assigns (or clears, with null) a slot with no tutorial trigger and no eligibility check.</summary>
+    public void SetSlotSilently(int slotIndex, AbilityItemData data)
+    {
+        if (slotIndex < 0 || slotIndex >= slots.Length) return;
+        slots[slotIndex].assigned = data;
+        OnSlotsChanged?.Invoke();
+    }
+
     public void Clear(int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= slots.Length) return;

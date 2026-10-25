@@ -193,4 +193,7 @@ public class NewItemTracker : MonoBehaviour
         public List<string> everAcquiredJournal;
         public List<string> unseenJournal;
     }
+
+    /// <summary>Save/load: re-reads badge state from PlayerPrefs after SaveManager restored it.</summary>
+    public void ReloadFromPrefs() => Load();
 }

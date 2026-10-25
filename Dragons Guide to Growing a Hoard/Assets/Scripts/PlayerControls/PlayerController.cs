@@ -474,6 +474,22 @@ public class PlayerController : MonoBehaviour
         playerAnim?.setJumpFalse();
     }
 
+    /// <summary>Save/load: moves the player to an exact position/rotation (CharacterController-safe).</summary>
+    public void TeleportTo(Vector3 position, Quaternion rotation)
+    {
+        if (controller != null) controller.enabled = false;
+
+        transform.position = position;
+        transform.rotation = rotation;
+
+        velocity = Vector3.zero;
+        locomotionState = LocomotionState.Grounded;
+        flyAscendHeld = false;
+
+        if (controller != null) controller.enabled = true;
+        playerAnim?.setJumpFalse();
+    }
+
     // ──────────────────────────────────────────────
     //  Public API (used by external launchers, e.g. WhumprilLauncher)
     // ──────────────────────────────────────────────

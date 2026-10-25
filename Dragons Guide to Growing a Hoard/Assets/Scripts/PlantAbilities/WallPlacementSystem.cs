@@ -56,6 +56,15 @@ public class WallPlacementSystem : MonoBehaviour
 
     public bool IsActive => mode != Mode.None;
 
+    // Save/load: what's been mounted where (the scene itself doesn't remember surface/cell).
+    public struct WallRecord { public GameObject obj; public WallMushroomData data; public int surfaceIndex; public Vector3Int origin; }
+    private readonly List<WallRecord> placedRecords = new List<WallRecord>();
+
+    public IReadOnlyList<WallRecord> PlacedRecords
+    {
+        get { placedRecords.RemoveAll(r => r.obj == null); return placedRecords; }
+    }
+
     /// <summary>Which wall-mushroom index Placing mode would use right now (last selected). Read
     /// by PlacementSystem's Tab-toggle so switching TO wall placement preserves whatever type was
     /// last selected instead of always resetting to index 0.</summary>
@@ -289,10 +298,40 @@ public class WallPlacementSystem : MonoBehaviour
 
         gridData.AddPlacement(key, data.size, placed);
         gridVisual.MarkOccupied(cell, data.size);
+        placedRecords.Add(new WallRecord { obj = placed, data = data, surfaceIndex = wallSurfaces.IndexOf(activeSurface), origin = key });
 
         // Tutorial hook — matches a step reading something like "left-click to place it",
         // the wall-placement equivalent of PlacementSystem.TryPlace's own trigger calls.
         TutorialSequenceController.Instance?.NotifyExternalTrigger("placed_wall_mushroom");
+    }
+
+    /// <summary>Save/load: re-mounts a mushroom shelf at its saved wall cell without consuming an item.</summary>
+    public bool RestoreMushroom(WallMushroomData data, int surfaceIndex, Vector3Int origin)
+    {
+        if (data == null || surfaceIndex < 0 || surfaceIndex >= wallSurfaces.Count) return false;
+        WallSurface surface = wallSurfaces[surfaceIndex];
+        if (surface == null || surface.GridVisual == null || !surfaceGridData.TryGetValue(surface, out GridData gridData)) return false;
+        if (!gridData.CanPlace(origin, data.size)) return false;
+
+        Vector2Int cell = new Vector2Int(origin.x, origin.z);
+        Vector3 worldPos = surface.MountPosition(cell, data.size, data.wallOffset, data.planeNudge);
+
+        GameObject placed = data.prefab != null
+            ? Instantiate(data.prefab, worldPos, surface.MountRotation)
+            : new GameObject(data.displayName);
+        placed.transform.position = worldPos;
+        placed.transform.rotation = surface.MountRotation;
+
+        ClovenwickWallMount mount = placed.GetComponent<ClovenwickWallMount>();
+        if (mount == null) mount = placed.AddComponent<ClovenwickWallMount>();
+        mount.maxWeight = data.maxSupportedWeightKg > 12f ? ClovenwickWallMount.WeightClass.Medium : ClovenwickWallMount.WeightClass.Small;
+        mount.fullWeightKg = data.maxSupportedWeightKg;
+        mount.sourceData = data;
+
+        gridData.AddPlacement(origin, data.size, placed);
+        surface.GridVisual.MarkOccupied(cell, data.size);
+        placedRecords.Add(new WallRecord { obj = placed, data = data, surfaceIndex = surfaceIndex, origin = origin });
+        return true;
     }
 
     private void TryRemove(Vector2Int cell, GridData gridData, WallGridVisual gridVisual)
@@ -302,6 +341,7 @@ public class WallPlacementSystem : MonoBehaviour
 
         Vector2Int origin = new Vector2Int(data.Origin.x, data.Origin.z);
         gridData.RemovePlacement(data.Origin);
+        placedRecords.RemoveAll(r => r.obj == data.PlacedObject);
         gridVisual.ClearFootprint(origin, data.Size);
 
         if (data.PlacedObject != null)

@@ -220,4 +220,14 @@ public class PlantProgress : MonoBehaviour
 
         ReportGoldMilestone();
     }
+
+    /// <summary>Save/load: puts growth back exactly as saved. Silent — does NOT report the gold milestone
+    /// (the journal's own save already knows about it).</summary>
+    public void RestoreProgress(float value01, bool complete)
+    {
+        progress = Mathf.Clamp01(value01);
+        isComplete = complete;
+        if (complete) progress = 1f;
+        smoothedRatePerSecond = 0f;
+    }
 }

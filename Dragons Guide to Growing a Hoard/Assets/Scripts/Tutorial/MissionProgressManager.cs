@@ -184,6 +184,40 @@ public class MissionProgressManager : MonoBehaviour
         TrackedMissionId = data.trackedMissionId ?? "";
     }
 
+    // ------------------------------------------------------------
+    // SAVE SLOT SNAPSHOT (SaveManager) — missions + tracked mission + collected lore as one JSON string
+    // ------------------------------------------------------------
+    [Serializable] private class FullSnapshot { public SaveData progress = new SaveData(); public LoreSave lore = new LoreSave(); }
+
+    public string CaptureJson()
+    {
+        var snap = new FullSnapshot();
+        snap.progress.trackedMissionId = TrackedMissionId;
+        foreach (KeyValuePair<string, HashSet<string>> kv in completedTasks)
+            snap.progress.missions.Add(new MissionSave { missionId = kv.Key, taskIds = new List<string>(kv.Value) });
+        snap.lore.ids = new List<string>(collectedLore);
+        return JsonUtility.ToJson(snap);
+    }
+
+    public void RestoreJson(string json)
+    {
+        FullSnapshot snap = string.IsNullOrEmpty(json) ? null : JsonUtility.FromJson<FullSnapshot>(json);
+        if (snap == null) return;
+
+        completedTasks.Clear();
+        foreach (MissionSave m in snap.progress.missions)
+            if (!string.IsNullOrEmpty(m.missionId))
+                completedTasks[m.missionId] = new HashSet<string>(m.taskIds);
+        TrackedMissionId = snap.progress.trackedMissionId ?? "";
+
+        collectedLore.Clear();
+        foreach (string id in snap.lore.ids) collectedLore.Add(id);
+
+        Save();
+        SaveLore();
+        OnProgressChanged?.Invoke();
+    }
+
     /// <summary>Wipes all saved + in-memory mission progress and tracking (e.g. for a New Game button).</summary>
     [ContextMenu("Clear Saved Progress")]
     public void ClearAllProgress()

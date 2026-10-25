@@ -179,6 +179,7 @@ public class ThirdPersonCameraController : MonoBehaviour
         // holding a direct reference) can still reach this instance's pitch-range fields now that
         // they're no longer static themselves.
         Instance = this;
+        SettingsManager.Changed += ConfigureAxes; // re-applies sensitivity / invert Y when the player changes them
 
         controls = new PlayerControls();
         controls.Enable();
@@ -322,6 +323,7 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     private void OnDestroy()
     {
+        SettingsManager.Changed -= ConfigureAxes;
         RestoreAllTransparentRenderers();
 
         if (dragonHidden)
@@ -959,9 +961,9 @@ public class ThirdPersonCameraController : MonoBehaviour
             foreach (var c in inputAxis.Controllers)
             {
                 if (c.Name == "Look Orbit X")
-                    c.Input.Gain = mouseSensitivityX;
+                    c.Input.Gain = mouseSensitivityX * SettingsManager.CameraSensitivity;
                 else if (c.Name == "Look Orbit Y")
-                    c.Input.Gain = -mouseSensitivityY;
+                    c.Input.Gain = -mouseSensitivityY * SettingsManager.CameraSensitivity * (SettingsManager.InvertY ? -1f : 1f);
             }
         }
 

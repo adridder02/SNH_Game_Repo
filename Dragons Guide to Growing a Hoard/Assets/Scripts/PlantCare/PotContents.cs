@@ -866,4 +866,45 @@ public class PotContents : MonoBehaviour
         Gizmos.DrawWireSphere(plantAnchor.position, 0.1f);
     }
 #endif
+
+    // ------------------------------------------------------------
+    // SAVE / LOAD (SaveWorld)
+    // ------------------------------------------------------------
+    /// <summary>The prefab asset of the plant currently in this pot (null when empty).</summary>
+    public GameObject CurrentPlantPrefab => currentPlantPrefab;
+
+    /// <summary>Puts this pot back to a saved state: clears whatever the scene gave it, then soil, water,
+    /// plant (with its health / permanent-death condition) and growth progress.</summary>
+    public void RestoreState(bool savedHasSoil, SoilKind soil, float water, GameObject plantPrefab,
+                             PlantCondition condition, float progress01, bool complete)
+    {
+        if (Plant != null)
+        {
+            GameObject old = Plant.gameObject;
+            Plant = null;
+            hasPlant = false;
+            currentPlantPrefab = null;
+            old.SetActive(false);
+            Destroy(old);
+        }
+
+        if (savedHasSoil) SetSoil(soil);
+        waterLevel = Mathf.Clamp(water, 0f, plantWaterMax);
+
+        if (plantPrefab != null)
+        {
+            // AddPlant refuses permanently-dead plants, so plant it alive and apply the real condition after.
+            bool dead = condition != null && condition.isPermanentlyDead;
+            var alive = new PlantCondition { isPermanentlyDead = false, startingHealth01 = condition != null ? condition.startingHealth01 : 1f };
+            if (AddPlant(plantPrefab, alive) && Plant != null)
+            {
+                if (dead) Plant.ApplyCondition(condition);
+                PlantProgress pp = Plant.GetComponent<PlantProgress>();
+                if (pp == null) pp = Plant.GetComponentInChildren<PlantProgress>();
+                if (pp != null) pp.RestoreProgress(progress01, complete);
+            }
+        }
+
+        RefreshSoilWaterTint();
+    }
 }

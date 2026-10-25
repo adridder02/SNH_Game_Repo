@@ -128,4 +128,19 @@ public class PlayerAbilityInventory : MonoBehaviour
         AbilityItemInstance existing = stacks.FirstOrDefault(s => s.data == data);
         return existing?.count ?? 0;
     }
+
+    // ------------------------------------------------------------
+    // SAVE / LOAD (SaveWorld)
+    // ------------------------------------------------------------
+    /// <summary>Swaps in a saved set of stacks without firing pickup events (no tutorial triggers, no
+    /// ItemAdded, no first-pickup events). Call NotifyChanged() afterwards so the UI redraws.</summary>
+    public void ReplaceStacksSilently(List<AbilityItemInstance> newStacks, bool hadFirstAbilityItem, bool hadFirstHotbarItem)
+    {
+        stacks.Clear();
+        stacks.AddRange(newStacks);
+        HasHarvestedFirstAbilityItem = hadFirstAbilityItem;
+        HasHarvestedFirstHotbarItem = hadFirstHotbarItem;
+    }
+
+    public void NotifyChanged() => OnChanged?.Invoke();
 }

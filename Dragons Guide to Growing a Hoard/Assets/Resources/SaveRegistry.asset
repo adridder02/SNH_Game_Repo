@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 273324d470e533a4fa11ed6261654c9f, type: 3}
+  m_Name: SaveRegistry
+  m_EditorClassIdentifier: Assembly-CSharp::SaveRegistry
+  titleSceneName: Title
+  tutorialSceneName: Tutorial
+  mainSceneName: Main
+  plantPrefabs:
+  - {fileID: 864107347954856182, guid: 8cea0d4523543af4f9a60dcee71d2bab, type: 3}
+  - {fileID: 1785388513804121191, guid: 1561f603be669394ba21d92cd9289b82, type: 3}
+  - {fileID: 3493835662444555350, guid: cbd2a11c8414f4549a6d7beb967f5c2e, type: 3}
+  - {fileID: 2650251699068457546, guid: 6db11bb194fc76f4a88e65a10a7a414f, type: 3}
+  - {fileID: 1108434111351597028, guid: a6b2440c9fcf97c4a8e8f0060dbe96fe, type: 3}
+  - {fileID: 6397339370049151978, guid: f6ae0fd546c583d4295b4d12e60ee02d, type: 3}
+  - {fileID: 2779138664059445019, guid: 6128aaa10d29d0a45956dea94e6a7e1f, type: 3}
+  - {fileID: 1844357348191295120, guid: c8c0a6d54fb83724eb5fac9fd6640368, type: 3}
+  - {fileID: 3147640831792386703, guid: 41465438df12e0d4abc075ae4336a258, type: 3}
+  - {fileID: 3578709590621463675, guid: 8cac051d3f280ad4cb237aa844cb9252, type: 3}
+  - {fileID: 7106053868976010694, guid: 6cf00a1e2fb7a3e439e9aa4a4d49e137, type: 3}
+  - {fileID: 3072371233814078162, guid: f756857262772f24ba0a12b1049375e1, type: 3}
+  - {fileID: 7611842129091570943, guid: 8e0410c2b1bbd3e4eb225cf9420149cd, type: 3}
+  - {fileID: 7102230815214105827, guid: 087d0ac5534e6d142a56df9a6447ac34, type: 3}
+  - {fileID: 5501625611831835619, guid: 07cba13799ed6d14f8359e2f79118f0b, type: 3}
+  - {fileID: 4628395584035986834, guid: 1b409fc0e8a60104e9b91c1c5b4fcfb8, type: 3}
+  - {fileID: 7337490952738891472, guid: a64c875c030ef954cac1c1aa641c7ddc, type: 3}
+  - {fileID: 1792051965621327940, guid: 3e5be5e2ba2dc894abc32c2426abb056, type: 3}
+  - {fileID: 6501525469559862054, guid: 3434d23bc1e95ba408322c4c260ee539, type: 3}
+  - {fileID: 6757780952899065678, guid: 38b91cfdce0eef143801f5c931f8365e, type: 3}
+  - {fileID: 7516691526450252987, guid: 41867b6d8fead2e46b02c490613302ed, type: 3}
+  - {fileID: 2896139812680336864, guid: a96aa10438a484c4ba834a6a94ff42b1, type: 3}
+  - {fileID: 4155674856952879464, guid: c70ee3c6694144f438e7d558366e669a, type: 3}
+  - {fileID: 7780553288223979613, guid: 406a86c5f1513ae4ab560fa5b283faab, type: 3}
+  - {fileID: 6206462293399033202, guid: 42bd5cf7ba28fc74881ac722397659d7, type: 3}
+  - {fileID: 197400439646519503, guid: 1906377c07777024692dcc1687905926, type: 3}
+  - {fileID: 6703200343087572510, guid: e1bd2a8906563cb4f808c03663bb7eae, type: 3}
+  - {fileID: 5086658688875511756, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+  - {fileID: 2775176059256192284, guid: a652209b9c817cd419181350c1ec215c, type: 3}
+  - {fileID: 2004079843505719078, guid: 98630d39ea56b1241b9adb4faeaf16c3, type: 3}
+  - {fileID: 7512854205896871279, guid: 187dc7aa1a89bf34eb05ad860f2ba227, type: 3}
+  - {fileID: 7443154059041681990, guid: 1585d53afbc80614582b370de8cda904, type: 3}
+  - {fileID: 6160393185916373558, guid: 0984c5850461a0b41baf5366056fe4e0, type: 3}
+  abilityItems:
+  - {fileID: 11400000, guid: bf34dc142d8bcfe44927675fc1ebbf3b, type: 2}
+  - {fileID: 11400000, guid: c0d2884e06ed33f4cbf72ffe18248292, type: 2}
+  - {fileID: 11400000, guid: 32f4be995edc3844a8f6ad5c3f0947ea, type: 2}
+  - {fileID: 11400000, guid: 916ff57f2a74f7244a8048d45b9e8b56, type: 2}
+  - {fileID: 11400000, guid: 32b8e90682ced224caed9d893a2f665f, type: 2}
+  - {fileID: 11400000, guid: 72306af1b9397a547994d5b44495eaa8, type: 2}
+  - {fileID: 11400000, guid: ee748c195e00e7a4592e264026485ca8, type: 2}
+  - {fileID: 11400000, guid: 9df404b2e95e4554084436c27162021d, type: 2}
+  - {fileID: 11400000, guid: f3e3ff68bcc11044f8b737142c05ef1b, type: 2}
+  - {fileID: 11400000, guid: 66ef07b35aa2125489b7b159fc7e5110, type: 2}
+  - {fileID: 11400000, guid: 2a844a56d1d7e9144aa938e2022db57b, type: 2}
+  pots:
+  - {fileID: 11400000, guid: 250dc76ea43d8a44698faca40d5ef1c1, type: 2}
+  - {fileID: 11400000, guid: 697b9909e231f8e4eaa08224acc23148, type: 2}
+  - {fileID: 11400000, guid: 436aed676e7c07e40b5b5dc610152462, type: 2}
+  wallMushrooms:
+  - {fileID: 11400000, guid: 4eea3bfabe17cdf40af5b4ccfd2bb0cf, type: 2}
+  intPrefKeys: []
+  stringPrefKeys: []
+  floatPrefKeys: []

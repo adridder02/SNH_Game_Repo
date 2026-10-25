@@ -1,19 +1,37 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 // =============================================================
 // TitleScreenController.cs
 // -------------------------------------------------------------
-// Put this anywhere in the Title scene. Assign startButton (or call
-// StartTutorial() directly from a Button's onClick if you'd rather wire
-// it that way instead).
+// Put this anywhere in the Title scene.
+//
+//   startButton     = NEW GAME (same field as before, so your existing wiring keeps working). If a save
+//                     exists, asks "overwrite?" through the scene's ConfirmationDialog first, then wipes the
+//                     save + progress and loads the tutorial scene.
+//   continueButton  = CONTINUE. Loads the saved game. Disabled (or hidden) when there's no save.
+//   saveInfoLabel   = optional TMP text next to Continue: "Saved 25 Oct 2026, 14:03".
+//
+// The scene names live on the SaveRegistry asset (Resources/SaveRegistry). If that asset doesn't exist
+// yet, New Game falls back to the old behaviour (loads tutorialSceneName below, no wipe).
 // =============================================================
 public class TitleScreenController : MonoBehaviour
 {
     [SerializeField] private Button startButton;
+    [SerializeField] private Button continueButton;
     [SerializeField] private Button exitButton;
 
-    [Tooltip("Exact scene name as it appears in File > Build Settings.")]
+    [Tooltip("Optional. Shows when the save was made, or is cleared when there isn't one.")]
+    [SerializeField] private TMP_Text saveInfoLabel;
+    [Tooltip("Hide the Continue button entirely when there's no save (otherwise it's just greyed out).")]
+    [SerializeField] private bool hideContinueWhenNoSave = false;
+
+    [Tooltip("Yes/No popup for 'overwrite your save?'. Auto-found in the scene if left empty; without one " +
+             "New Game just goes ahead.")]
+    [SerializeField] private ConfirmationDialog confirmDialog;
+
+    [Tooltip("Only used as a fallback when there's no SaveRegistry asset. Exact scene name from Build Settings.")]
     [SerializeField] private string tutorialSceneName = "Tutorial";
 
     [Header("Transition (optional)")]
@@ -25,14 +43,55 @@ public class TitleScreenController : MonoBehaviour
     private void Awake()
     {
         startButton?.onClick.AddListener(StartTutorial);
+        continueButton?.onClick.AddListener(ContinueGame);
         exitButton?.onClick.AddListener(QuitGame);
+        if (confirmDialog == null) confirmDialog = FindAnyObjectByType<ConfirmationDialog>();
     }
 
-    /// <summary>Public so it can also be wired directly to a Button's onClick in the Inspector
-    /// instead of (or in addition to) assigning startButton above.</summary>
+    private void OnEnable()
+    {
+        SaveManager.SaveStateChanged += RefreshContinue;
+        RefreshContinue();
+    }
+
+    private void OnDisable() => SaveManager.SaveStateChanged -= RefreshContinue;
+
+    private void RefreshContinue()
+    {
+        bool has = SaveManager.HasSave;
+        if (continueButton != null)
+        {
+            continueButton.interactable = has;
+            if (hideContinueWhenNoSave) continueButton.gameObject.SetActive(has);
+        }
+        if (saveInfoLabel != null) saveInfoLabel.text = has ? SaveManager.DescribeSave() : "";
+    }
+
+    /// <summary>NEW GAME. Public so it can also be wired straight to a Button's onClick.</summary>
     public void StartTutorial()
     {
-        SceneTransitionUtility.LoadScene(this, tutorialSceneName, transitionAnimator, transitionTime);
+        if (SaveManager.HasSave && confirmDialog != null)
+        {
+            confirmDialog.Show("Start a new game? Your current save will be overwritten.",
+                               BeginNewGame, null, "Overwrite", "Cancel");
+            return;
+        }
+        BeginNewGame();
+    }
+
+    private void BeginNewGame()
+    {
+        if (SaveRegistry.Instance != null)
+            SaveManager.NewGame(this, transitionAnimator, transitionTime);
+        else
+            SceneTransitionUtility.LoadScene(this, tutorialSceneName, transitionAnimator, transitionTime);
+    }
+
+    /// <summary>CONTINUE. Public so it can also be wired straight to a Button's onClick.</summary>
+    public void ContinueGame()
+    {
+        if (!SaveManager.Continue(this, transitionAnimator, transitionTime))
+            RefreshContinue();
     }
 
     /// <summary>Public so it can also be wired directly to a Button's onClick instead of (or in
