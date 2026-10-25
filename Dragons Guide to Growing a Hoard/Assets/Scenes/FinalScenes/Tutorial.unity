@@ -6082,19 +6082,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 136698946}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1231868356}
-        m_TargetAssemblyTypeName: Buttons, Assembly-CSharp
-        m_MethodName: RestartGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &136698946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11798,7 +11786,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Restart Game
+  m_text: Save Game
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d389b45c10957c74c95520f6923a5c88, type: 2}
   m_sharedMaterial: {fileID: 2351274673999765770, guid: d389b45c10957c74c95520f6923a5c88, type: 2}
@@ -43498,6 +43486,7 @@ GameObject:
   m_Component:
   - component: {fileID: 649448430}
   - component: {fileID: 649448431}
+  - component: {fileID: 649448432}
   m_Layer: 5
   m_Name: controller
   m_TagString: Untagged
@@ -43546,6 +43535,25 @@ MonoBehaviour:
   placementSystem: {fileID: 204426705}
   wallPlacementSystem: {fileID: 204426704}
   abilityPlacementSystem: {fileID: 1554875336}
+--- !u!114 &649448432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649448429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: badd661fc5aa0ed46aec784ff24fba8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SaveSlotButtonsUI
+  saveButton: {fileID: 136698945}
+  loadButton: {fileID: 0}
+  quitToTitleButton: {fileID: 0}
+  deleteSaveButton: {fileID: 0}
+  statusLabel: {fileID: 0}
+  confirmDialog: {fileID: 0}
+  flashSeconds: 2.5
 --- !u!1 &649658388
 GameObject:
   m_ObjectHideFlags: 0
@@ -50593,6 +50601,8 @@ MonoBehaviour:
   plantsNavButton: {fileID: 906281066}
   progressNavButton: {fileID: 2069915395}
   guideNavButton: {fileID: 870837055}
+  loreNavButton: {fileID: 0}
+  guideController: {fileID: 0}
   settingsNavButton: {fileID: 2058971359}
   progressPageController: {fileID: 833287493}
   mainRoomNavButton: {fileID: 1425584309}
@@ -50628,6 +50638,9 @@ MonoBehaviour:
   lightDropdown: {fileID: 0}
   soilDropdown: {fileID: 0}
   fillAnswersButton: {fileID: 0}
+  lockedSprite: {fileID: 0}
+  unlockedSprite: {fileID: 0}
+  fillAnswersIcon: {fileID: 0}
   answersLockedIndicator: {fileID: 0}
   unansweredLabel: '?'
 --- !u!224 &833287492
@@ -50718,7 +50731,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GuideUIController
   database: {fileID: 11400000, guid: 48bd6d26a026e7c479d2480cf0738cf1, type: 2}
+  loreDatabase: {fileID: 0}
   progressManager: {fileID: 1554875333}
+  debugShowAllLore: 0
+  debugRevealAllTasks: 0
+  guideTitle: {fileID: 0}
+  loreTitle: {fileID: 0}
+  emptyLoreState: {fileID: 0}
+  loreBodyFormat: '{0}
+
+
+    {1}'
   missionListContainer: {fileID: 1163427901}
   missionButtonTemplate: {fileID: 839418312}
   buttonGapY: 8
@@ -50728,6 +50751,20 @@ MonoBehaviour:
   taskListContainer: {fileID: 1290518201}
   taskRowTemplate: {fileID: 802307784}
   taskRowGapY: 8
+  scrollRect: {fileID: 0}
+  contentRoot: {fileID: 0}
+  openingText: {fileID: 0}
+  completionText: {fileID: 0}
+  openingDivider: {fileID: 0}
+  completionDivider: {fileID: 0}
+  sectionGapY: 16
+  debugLayout: 0
+  bottomPadding: 16
+  statusRoot: {fileID: 0}
+  trackButton: {fileID: 0}
+  trackButtonLabel: {fileID: 0}
+  trackText: Track
+  untrackText: Untrack
 --- !u!1 &836952227
 GameObject:
   m_ObjectHideFlags: 0
@@ -50950,6 +50987,7 @@ MonoBehaviour:
   titleLabel: {fileID: 803348483}
   selectedTextColor: {r: 1, g: 1, b: 1, a: 1}
   completeIndicator: {fileID: 0}
+  trackedIndicator: {fileID: 0}
 --- !u!114 &839418313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64010,6 +64048,10 @@ MonoBehaviour:
   overlayImage3: {fileID: 1426185488}
   dragDownIndicator: {fileID: 1392254171}
   noFlyIndicator: {fileID: 1320470291}
+  dragDownPopup: {fileID: 0}
+  noFlyPopup: {fileID: 0}
+  popupDuration: 5
+  popUpWhenIndicatorAppears: 1
   middleThreshold: 0.33
   finalThreshold: 0.66
 --- !u!114 &1150149629
@@ -70583,10 +70625,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialObjectiveUI
   progressManager: {fileID: 1554875333}
   mission: {fileID: 11400000, guid: c7f1e9f6e7bbc8b448aa85891aa2a612, type: 2}
+  followTrackedMission: 0
+  missionDatabase: {fileID: 0}
   gateOnMissionComplete: {fileID: 11400000, guid: bc08ac5a41257484bb6bf6139a8d2944, type: 2}
   bannerRoot: {fileID: 1496429775}
   iconRoot: {fileID: 1919785547}
   objectiveLabel: {fileID: 763186678}
+  remainingFormat: '{0} ({1} left)'
 --- !u!1 &1339842249
 GameObject:
   m_ObjectHideFlags: 0
@@ -75255,6 +75300,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75277,6 +75324,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75299,6 +75348,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75321,6 +75372,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75343,6 +75396,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75365,6 +75420,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75387,6 +75444,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -75433,6 +75492,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75455,6 +75516,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75477,6 +75540,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75499,6 +75564,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75523,6 +75590,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75546,6 +75615,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75568,6 +75639,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75590,6 +75663,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -75648,6 +75723,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -75694,6 +75771,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75716,6 +75795,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75738,6 +75819,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75760,6 +75843,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 16
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75782,6 +75867,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 32
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75804,6 +75891,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 16
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75826,6 +75915,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 48
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75848,6 +75939,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 4
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -75883,6 +75976,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75905,6 +76000,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -75928,6 +76025,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -75962,6 +76061,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -75996,6 +76097,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -76032,6 +76135,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76055,6 +76160,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76078,6 +76185,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76103,6 +76212,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76125,6 +76236,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -76183,6 +76296,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76217,6 +76332,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -76275,6 +76392,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -76309,6 +76428,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76331,6 +76452,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76353,6 +76476,8 @@ MonoBehaviour:
     allowBackButtons: 1
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76375,6 +76500,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76397,6 +76524,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -76443,6 +76572,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76465,6 +76596,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 2
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76487,6 +76620,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 2
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76509,6 +76644,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76531,6 +76668,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 8
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76553,6 +76692,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 16
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76575,6 +76716,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 32
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76598,6 +76741,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76624,6 +76769,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -76658,6 +76805,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls:
@@ -76692,6 +76841,8 @@ MonoBehaviour:
     allowBackButtons: 0
     lockMovement: 0
     allowedPotMenu: 0
+    allowedActions: 0
+    allowedJournal: 0
     onStepShown:
       m_PersistentCalls:
         m_Calls: []
@@ -80076,6 +80227,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 522e9b23c399aed41842f33a80c5162b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MissionProgressManager
+  persistProgress: 0
+  saveKey: MissionProgress_v1
 --- !u!114 &1554875335
 MonoBehaviour:
   m_ObjectHideFlags: 0

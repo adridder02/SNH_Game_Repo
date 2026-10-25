@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 // =============================================================
@@ -21,6 +22,13 @@ public class TitleScreenController : MonoBehaviour
     [SerializeField] private Button startButton;
     [SerializeField] private Button continueButton;
     [SerializeField] private Button exitButton;
+
+    [Header("Settings (optional)")]
+    [Tooltip("Opens the settings panel below.")]
+    [SerializeField] private Button settingsButton;
+    [Tooltip("A panel containing a SettingsPageUI. Starts hidden; Escape or the close button hides it.")]
+    [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private Button closeSettingsButton;
 
     [Tooltip("Optional. Shows when the save was made, or is cleared when there isn't one.")]
     [SerializeField] private TMP_Text saveInfoLabel;
@@ -45,6 +53,9 @@ public class TitleScreenController : MonoBehaviour
         startButton?.onClick.AddListener(StartTutorial);
         continueButton?.onClick.AddListener(ContinueGame);
         exitButton?.onClick.AddListener(QuitGame);
+        settingsButton?.onClick.AddListener(OpenSettings);
+        closeSettingsButton?.onClick.AddListener(CloseSettings);
+        if (settingsPanel != null) settingsPanel.SetActive(false);
         if (confirmDialog == null) confirmDialog = FindAnyObjectByType<ConfirmationDialog>();
     }
 
@@ -55,6 +66,21 @@ public class TitleScreenController : MonoBehaviour
     }
 
     private void OnDisable() => SaveManager.SaveStateChanged -= RefreshContinue;
+
+    private void Update()
+    {
+        if (settingsPanel != null && settingsPanel.activeSelf &&
+            Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            CloseSettings();
+    }
+
+    public void OpenSettings() { if (settingsPanel != null) settingsPanel.SetActive(true); }
+
+    public void CloseSettings()
+    {
+        if (settingsPanel != null) settingsPanel.SetActive(false);
+        SettingsManager.Save();
+    }
 
     private void RefreshContinue()
     {
