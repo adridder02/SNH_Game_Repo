@@ -5,6 +5,7 @@ using UnityEngine;
 /// Add to a GameObject, assign the water material to the MeshRenderer, then tweak the values.
 /// Changes regenerate automatically in the editor; right-click the component → Generate also works.
 /// </summary>
+
 [ExecuteAlways]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class WaterGridMesh : MonoBehaviour
