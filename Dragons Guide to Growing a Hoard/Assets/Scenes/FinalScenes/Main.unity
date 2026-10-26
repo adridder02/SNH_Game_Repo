@@ -19395,6 +19395,7 @@ GameObject:
   - component: {fileID: 174021493}
   - component: {fileID: 174021495}
   - component: {fileID: 174021496}
+  - component: {fileID: 174021497}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -19562,6 +19563,56 @@ MonoBehaviour:
   - 8
   labelFormat: '{0}x'
   enableHotkey: 1
+--- !u!114 &174021497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 174021492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ee4f1659fec5194da34e9b9549fd427, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainUIPopups
+  underwaterPanel: {fileID: 0}
+  viewCamera: {fileID: 330585545}
+  waterVolumes: []
+  waterSurface: {fileID: 0}
+  underwaterFadeSeconds: 0.25
+  pickupPanel:
+    root: {fileID: 0}
+    icon: {fileID: 0}
+    titleText: {fileID: 0}
+    nameText: {fileID: 0}
+    descriptionText: {fileID: 0}
+    countdownText: {fileID: 0}
+    countdownFill: {fileID: 0}
+    closeButton: {fileID: 0}
+  pickupTitle: New Item
+  popupSeconds: 5
+  countdownFormat: Closing in {0}
+  pickupSound: {fileID: 0}
+  completedPanel:
+    root: {fileID: 0}
+    icon: {fileID: 0}
+    titleText: {fileID: 0}
+    nameText: {fileID: 0}
+    descriptionText: {fileID: 0}
+    countdownText: {fileID: 0}
+    countdownFill: {fileID: 0}
+    closeButton: {fileID: 0}
+  completedTitle: Plant Completed Successfully!
+  oncePerSpecies: 1
+  completedSeconds: 6
+  completedSound: {fileID: 0}
+  audioSource: {fileID: 74016820}
+  soundVolume: 1
+  popInSeconds: 0.3
+  fadeOutSeconds: 0.25
+  startDelay: 0.25
+  debugSpecies: {fileID: 11400000, guid: 3f441615e5414324abbaafa89640a437, type: 2}
+  debugItem: {fileID: 11400000, guid: bf34dc142d8bcfe44927675fc1ebbf3b, type: 2}
 --- !u!1 &174596186
 GameObject:
   m_ObjectHideFlags: 0
@@ -104321,7 +104372,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -179.48, y: -66}
+  m_AnchoredPosition: {x: -179.48, y: -34.7}
   m_SizeDelta: {x: 250.7548, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &948483312
