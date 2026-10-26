@@ -7999,7 +7999,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -205.3, y: -32.08}
+  m_AnchoredPosition: {x: -209.3, y: -32.08}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &74016819
@@ -39745,7 +39745,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.08819456, y: -0.0000000124474555, z: 0.0000000011020923, w: 0.9961033}
-  m_LocalPosition: {x: -205.44284, y: -25.657368, z: -826.8992}
+  m_LocalPosition: {x: -209.44284, y: -25.657368, z: -826.8992}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -64261,6 +64261,81 @@ MonoBehaviour:
     setStartingGrowth: 0
     startingGrowth01: 0
   collectedFullyGrown: 0
+--- !u!1 &597793099
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 597793100}
+  - component: {fileID: 597793102}
+  - component: {fileID: 597793101}
+  m_Layer: 0
+  m_Name: back
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &597793100
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597793099}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1989038493}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 257.76, y: 68.7}
+  m_SizeDelta: {x: 222.1544, y: 120.53}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &597793101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597793099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 931b7dd19653e94438427e148bc98270, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &597793102
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597793099}
+  m_CullTransparentMesh: 1
 --- !u!64 &597890546
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -76509,7 +76584,7 @@ MonoBehaviour:
     message: The pink fog within the greenhouse is an indicator of the Miasma within
       the greenhouse
     portablePrompt: {fileID: 0}
-    sidebarImage: {fileID: 0}
+    sidebarImage: {fileID: 21300000, guid: 36ed513e1da299d4ea5a6f0517e7cf97, type: 3}
     sidebarTitle: Miasma
     advanceOnClick: 1
     advanceOnSpacebar: 0
@@ -76559,7 +76634,7 @@ MonoBehaviour:
   - type: 3
     message: Miasma is produced by the tree found in the center of the greenhouse.
     portablePrompt: {fileID: 0}
-    sidebarImage: {fileID: 0}
+    sidebarImage: {fileID: 21300000, guid: 96ccab5a81e7d90488057c02e63ba786, type: 3}
     sidebarTitle: The Tree
     advanceOnClick: 1
     advanceOnSpacebar: 0
@@ -76584,8 +76659,8 @@ MonoBehaviour:
     message: To decrease Miasma, you will need to find and take good care of the
       plants within the greenhouse. Bad things happen if you don't.
     portablePrompt: {fileID: 0}
-    sidebarImage: {fileID: 0}
-    sidebarTitle: 
+    sidebarImage: {fileID: 21300000, guid: 1b842c6a21d59344693bff97b0fdd8d6, type: 3}
+    sidebarTitle: Take Care
     advanceOnClick: 1
     advanceOnSpacebar: 0
     autoAdvanceAfterSeconds: 0
@@ -155167,7 +155242,7 @@ Transform:
   m_GameObject: {fileID: 1393679874}
   serializedVersion: 2
   m_LocalRotation: {x: 0.08819454, y: -0.000000012447455, z: 0.0000000011020921, w: 0.9961033}
-  m_LocalPosition: {x: -322.97284, y: 0.7426319, z: -38.97168}
+  m_LocalPosition: {x: -326.97284, y: 0.7426319, z: -38.97168}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -158336,7 +158411,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1419929979}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e29bc963c9d9a7040928a7c064fa2344, type: 3}
   m_Name: 
@@ -240356,6 +240431,7 @@ RectTransform:
   m_Children:
   - {fileID: 2100140983}
   - {fileID: 67538735}
+  - {fileID: 597793100}
   - {fileID: 2125172098}
   - {fileID: 272854387}
   - {fileID: 1216764449}
