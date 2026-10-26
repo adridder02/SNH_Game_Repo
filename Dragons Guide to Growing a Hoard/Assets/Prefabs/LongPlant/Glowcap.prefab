@@ -34,7 +34,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3147640831792386703}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.008007982, y: -0.24947886, z: 0.031066904, w: 0.96784866}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 20.423195, y: 0.23873281, z: -74.18295}
   m_LocalScale: {x: 0.28632092, y: 0.2863209, z: 0.28632092}
   m_ConstrainProportionsScale: 0
@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea6b95557e7067b4a8c58044c08c19c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plantSize: 1
+  plantSize: 2
   plantType: 1
   journalSpecies: {fileID: 11400000, guid: 6d84b47cdcd2f404693f35aa49ea02fc, type: 2}
   potPlacementOffset: 1

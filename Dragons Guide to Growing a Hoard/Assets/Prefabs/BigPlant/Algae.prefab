@@ -33,10 +33,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 864107347954856182}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.5, y: -0.49999997, z: -0.5, w: 0.5}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 23.972673, y: -0.7691741, z: 32.454647}
-  m_LocalScale: {x: 14.199859, y: 14.199859, z: 14.199859}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -174,7 +174,7 @@ MonoBehaviour:
   plantType: 2
   journalSpecies: {fileID: 11400000, guid: 28b2263d7c6345140a1c60d037e89800, type: 2}
   potPlacementOffset: 1
-  potPlacementRotation: {x: 90, y: 0, z: 0}
+  potPlacementRotation: {x: 0, y: 0, z: 0}
   preferredSoil: 3
   neutralSoil: 3
   lightThresholdHigh: 0.1
