@@ -18,6 +18,10 @@ public class PlayerSounds : MonoBehaviour
     private Animator playerAni;
     private bool wasFlying = false;
 
+    // Surface-based footsteps (SoundBank footsteps; falls back to the clips above if the bank has none).
+    private SurfaceType surface = SurfaceType.Default;
+    private float surfaceTimer;
+
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -35,17 +39,33 @@ public class PlayerSounds : MonoBehaviour
 
         wasFlying = isFlying;
 
+        // In water the swim loop (PlayerWaterAudio) takes over from footsteps.
+        if (WaterVolume.Count > 0 && WaterVolume.Contains(transform.position + Vector3.up * 0.4f))
+        {
+            if (audioSource.isPlaying) audioSource.Stop();
+            return;
+        }
+
+        surfaceTimer -= Time.deltaTime;
+        if (surfaceTimer <= 0f && !isFlying && speed >= 1f)
+        {
+            surfaceTimer = 0.2f;
+            surface = FootstepSensor.Detect(transform.position);
+        }
+
         if (isFlying)
         {
-            PlayLoop(wingFlap, wingFlapVolume);
+            PlayLoop(wingFlap, wingFlapVolume, 1f);
         }
         else if (speed >= 3f)
         {
-            PlayLoop(running, runningVolume);
+            AudioClip c = StepClip(running, runningVolume, true, out float v, out float pitch);
+            PlayLoop(c, v, pitch);
         }
         else if (speed >= 1f)
         {
-            PlayLoop(walking, walkingVolume);
+            AudioClip c = StepClip(walking, walkingVolume, false, out float v, out float pitch);
+            PlayLoop(c, v, pitch);
         }
         else
         {
@@ -54,9 +74,25 @@ public class PlayerSounds : MonoBehaviour
         }
     }
 
-    private void PlayLoop(AudioClip clip, float volume)
+    private AudioClip StepClip(AudioClip fallback, float fallbackVolume, bool run, out float volume, out float pitch)
     {
-        if (audioSource.clip == clip && audioSource.isPlaying) return;
+        SoundBank bank = GameAudio.Bank;
+        if (bank != null && bank.TryGetStep(surface, out AudioClip clip, out float v))
+        {
+            volume = v;
+            pitch = run ? bank.runPitch : 1f;
+            return clip;
+        }
+        volume = fallbackVolume;
+        pitch = 1f;
+        return fallback;
+    }
+
+    private void PlayLoop(AudioClip clip, float volume, float pitch)
+    {
+        if (clip == null) return;
+        audioSource.pitch = pitch;
+        if (audioSource.clip == clip && audioSource.isPlaying) { audioSource.volume = volume; return; }
 
         audioSource.clip = clip;
         audioSource.volume = volume;

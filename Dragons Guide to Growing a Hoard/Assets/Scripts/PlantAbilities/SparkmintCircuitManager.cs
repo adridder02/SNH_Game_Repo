@@ -51,6 +51,10 @@ public static class SparkmintCircuitManager
         wardedPlants.TryGetValue(surface, out HashSet<PlantState> previouslyWarded);
         previouslyWarded ??= new HashSet<PlantState>();
 
+        // A closed circuit just started protecting more plants (skip the scene-load / save-restore rebuild).
+        if (newlyWarded.Count > previouslyWarded.Count && Time.timeSinceLevelLoad > 3f)
+            GameAudio.Play(SoundId.CircuitActivate);
+
         foreach (PlantState plant in previouslyWarded)
             if (plant != null && !newlyWarded.Contains(plant))
                 plant.RemoveMiasmaImmunitySource(surface);

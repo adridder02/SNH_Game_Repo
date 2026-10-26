@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 6155035638967588191}
   - component: {fileID: 9023216589586649666}
   - component: {fileID: -8405466361495210341}
+  - component: {fileID: 2192630774640862304}
   m_Layer: 0
   m_Name: SparkmintPlantable
   m_TagString: Untagged
@@ -263,6 +264,25 @@ MonoBehaviour:
   - {fileID: 567984332045365679}
   blendPropertyName: _DeathBlend
   smoothTime: 1.5
+--- !u!114 &2192630774640862304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072371233814078162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7640fe4804113e41a7d66b6b04fdda5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LoopSoundEmitter
+  sound: 8
+  overrideClip: {fileID: 8300000, guid: 916f39603f64d59469aeada79f017764, type: 3}
+  volume: 0.3
+  spatial: 1
+  minDistance: 2
+  maxDistance: 20
+  fadeInSeconds: 1
 --- !u!1001 &5614884247605455293
 PrefabInstance:
   m_ObjectHideFlags: 0

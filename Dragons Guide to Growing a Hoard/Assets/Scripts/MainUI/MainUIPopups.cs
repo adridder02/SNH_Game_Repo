@@ -212,6 +212,10 @@ public class MainUIPopups : MonoBehaviour
         if (cam == null) return false;
         Vector3 p = cam.transform.position;
 
+        // No volumes assigned here? Use the scene's WaterVolume components (same ones the swim sounds use).
+        if ((waterVolumes == null || waterVolumes.Length == 0) && WaterVolume.Count > 0)
+            return WaterVolume.Contains(p);
+
         if (waterVolumes != null && waterVolumes.Length > 0)
         {
             foreach (Collider v in waterVolumes)
@@ -311,6 +315,7 @@ public class MainUIPopups : MonoBehaviour
         PopupPanel p = r.kind == Kind.Completed ? completedPanel : pickupPanel;
         float duration = Mathf.Max(0.5f, r.kind == Kind.Completed ? completedSeconds : popupSeconds);
         AudioClip clip = r.kind == Kind.Completed ? completedSound : pickupSound;
+        if (clip == null && r.kind == Kind.Pickup) clip = GameAudio.GetClip(SoundId.NewThingUnlocked); // default "new thing unlocked" ting
         string title = r.kind == Kind.Completed ? completedTitle : pickupTitle;
         if (p.root == null) yield break;
 

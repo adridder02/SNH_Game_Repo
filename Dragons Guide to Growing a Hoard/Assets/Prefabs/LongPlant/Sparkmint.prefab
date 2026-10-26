@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 240548843487737389}
   - component: {fileID: 8424443488978904386}
   - component: {fileID: 1136257469525111338}
+  - component: {fileID: 4898097229719826236}
   m_Layer: 0
   m_Name: Sparkmint
   m_TagString: Untagged
@@ -112,6 +113,9 @@ MonoBehaviour:
   startingCondition:
     isPermanentlyDead: 0
     startingHealth01: 1
+    setStartingGrowth: 0
+    startingGrowth01: 0
+  collectedFullyGrown: 0
 --- !u!114 &1136257469525111338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,3 +129,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineEffect
   outlineMaterial: {fileID: 2100000, guid: c78a665dbdd30ef409bb435d796f20f2, type: 2}
+--- !u!114 &4898097229719826236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8858335015665988730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7640fe4804113e41a7d66b6b04fdda5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LoopSoundEmitter
+  sound: 8
+  overrideClip: {fileID: 8300000, guid: 916f39603f64d59469aeada79f017764, type: 3}
+  volume: 0.2
+  spatial: 1
+  minDistance: 2
+  maxDistance: 20
+  fadeInSeconds: 1

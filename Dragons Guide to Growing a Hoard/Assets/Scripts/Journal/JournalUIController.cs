@@ -223,18 +223,21 @@ public class JournalUIController : MonoBehaviour
         plantsNavButton?.onClick.AddListener(() =>
         {
             if (BlockedExcept("opened_plants_bookmark", JournalAction.Bookmarks)) return;
+            GameAudio.Play(SoundId.OpenBookmarks);
             ShowPage(plantsPage, plantsNavButton);
             TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_plants_bookmark");
         });
         progressNavButton?.onClick.AddListener(() =>
         {
             if (BlockedExcept("opened_progress_bookmark", JournalAction.Bookmarks)) return;
+            GameAudio.Play(SoundId.OpenBookmarks);
             ShowPage(progressPage, progressNavButton);
             TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_progress_bookmark");
         });
         guideNavButton?.onClick.AddListener(() =>
         {
             if (BlockedExcept("opened_guide_bookmark", JournalAction.Bookmarks)) return;
+            GameAudio.Play(SoundId.OpenBookmarks);
             guideController?.SetMode(GuideUIController.GuideMode.Guide);
             ShowPage(guidePage, guideNavButton);
             TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_guide_bookmark");
@@ -242,6 +245,7 @@ public class JournalUIController : MonoBehaviour
         loreNavButton?.onClick.AddListener(() =>
         {
             if (BlockedExcept("opened_lore_bookmark", JournalAction.Bookmarks)) return;
+            GameAudio.Play(SoundId.OpenBookmarks);
             guideController?.SetMode(GuideUIController.GuideMode.Lore);
             ShowPage(guidePage, loreNavButton);
             TutorialSequenceController.Instance?.NotifyExternalTrigger("opened_lore_bookmark");
@@ -372,6 +376,7 @@ public class JournalUIController : MonoBehaviour
         {
             MenuLayerManager.NotifyOpened(this, CloseJournal);
             onJournalOpened?.Invoke();
+            GameAudio.Play(SoundId.OpenJournal);
 
             GameInputModeManager.Instance?.SetMenuUIMode();
 

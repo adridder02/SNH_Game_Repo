@@ -39,6 +39,9 @@ public static class MenuLayerManager
 
         _currentOwner = owner;
         _currentCloseAction = closeAction;
+
+        // The journal plays its own book sound; every other menu uses the generic open/close click.
+        if (!(owner is JournalUIController)) GameAudio.Play(SoundId.MenuOpenClose);
     }
 
     /// <summary>Call this right as a menu closes (however it closed — its own back button, Escape,
@@ -51,5 +54,7 @@ public static class MenuLayerManager
 
         _currentOwner = null;
         _currentCloseAction = null;
+
+        GameAudio.Play(SoundId.MenuOpenClose);
     }
 }

@@ -57,6 +57,7 @@ public static class AbilityConsumableEffects
 
                     inv.ExpandGrid(inv.GridWidth, newHeight);
                     Debug.Log($"[AbilityConsumableEffects] Inventory expanded to {inv.GridWidth}x{newHeight}.");
+                    GameAudio.Play(SoundId.UseBubble);
                     return true;
                 }
 

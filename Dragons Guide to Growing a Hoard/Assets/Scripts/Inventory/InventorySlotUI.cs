@@ -323,6 +323,7 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public void OnPointerClick(PointerEventData eventData)
     {
         if (Occupant == null || controller == null) return;
+        GameAudio.Play(SoundId.ClickItem);
 
         // Clears the "new" badge the moment this slot is clicked, whether it's in the main grid
         // or Available — both count as "the player has seen it" per how this was asked for, even

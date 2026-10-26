@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58feffb84a5355d4aa23c9b43278177e, type: 3}
+  m_Name: SoundBank
+  m_EditorClassIdentifier: Assembly-CSharp::SoundBank
+  sounds:
+  - id: 0
+    clip: {fileID: 8300000, guid: 510788070d16f1f44b34ac83a6ae6e90, type: 3}
+    volume: 1
+    category: 0
+    filenameHints:
+    - shutter-click
+  - id: 1
+    clip: {fileID: 8300000, guid: 216e981ebf9c4454e9a28a8bcca5bf8c, type: 3}
+    volume: 1
+    category: 0
+    filenameHints:
+    - click-sound
+  - id: 2
+    clip: {fileID: 8300000, guid: 5b5904db386b971409283c3f983d87f4, type: 3}
+    volume: 1
+    category: 0
+    filenameHints:
+    - click-sfx
+  - id: 3
+    clip: {fileID: 8300000, guid: 55910ce5e473097499db1f8eb1def988, type: 3}
+    volume: 1
+    category: 0
+    filenameHints:
+    - swimming-sounds
+  - id: 4
+    clip: {fileID: 8300000, guid: a7ad2f13a996d2849a8ed2026b45d45c, type: 3}
+    volume: 1
+    category: 0
+    filenameHints:
+    - jumping-into
+  - id: 5
+    clip: {fileID: 8300000, guid: 1e15b93bfbe27d54f83cf736b7333f5c, type: 3}
+    volume: 1
+    category: 0
+    filenameHints:
+    - running-water
+  - id: 6
+    clip: {fileID: 8300000, guid: 60b13ebd2b3fb9842af947cfcfc298f0, type: 3}
+    volume: 1
+    category: 1
+    filenameHints: []
+  - id: 7
+    clip: {fileID: 8300000, guid: 60b13ebd2b3fb9842af947cfcfc298f0, type: 3}
+    volume: 1
+    category: 1
+    filenameHints:
+    - horror-ambience
+  - id: 8
+    clip: {fileID: 8300000, guid: 916f39603f64d59469aeada79f017764, type: 3}
+    volume: 1
+    category: 2
+    filenameHints:
+    - static-electricity
+  - id: 9
+    clip: {fileID: 0}
+    volume: 1
+    category: 2
+    filenameHints:
+    - fan-blowing
+  - id: 10
+    clip: {fileID: 8300000, guid: 52f9b04a40fd8fe478a3f1456e5091b1, type: 3}
+    volume: 0.2
+    category: 2
+    filenameHints:
+    - wind-blowing
+  - id: 11
+    clip: {fileID: 8300000, guid: 073c18656bfc3d04bb3ade83b8ae62b6, type: 3}
+    volume: 1
+    category: 0
+    filenameHints:
+    - snd-fragment
+    - retrieve
+  - id: 12
+    clip: {fileID: 8300000, guid: 400a3668064aa4b4ca35bd10288d89f6, type: 3}
+    volume: 1
+    category: 0
+    filenameHints:
+    - news-ting
+  - id: 13
+    clip: {fileID: 8300000, guid: 1900a9bd8b3606e4b999769eba85fc6a, type: 3}
+    volume: 1
+    category: 0
+    filenameHints:
+    - book-opening
+  - id: 14
+    clip: {fileID: 8300000, guid: 08db0a6a298b5cf49b032ed7c71d38e8, type: 3}
+    volume: 1
+    category: 0
+    filenameHints:
+    - page-turn
+  - id: 15
+    clip: {fileID: 8300000, guid: 21f32f1ed5d16154e83416d404c37afa, type: 3}
+    volume: 1
+    category: 0
+    filenameHints:
+    - turning-page
+  - id: 16
+    clip: {fileID: 8300000, guid: e286f6501f79ec849adb1d1305df7f26, type: 3}
+    volume: 1
+    category: 0
+    filenameHints:
+    - bubble-pop
+  - id: 17
+    clip: {fileID: 8300000, guid: 5c9125097963aa648be87c5d14eaeadc, type: 3}
+    volume: 1
+    category: 0
+    filenameHints:
+    - high-voltage
+    - spark
+  footsteps:
+  - surface: 0
+    clip: {fileID: 8300000, guid: 25b3523f0709f0c498d4ae4e405792cc, type: 3}
+    volume: 1
+    filenameHints:
+    - people-walking
+  - surface: 1
+    clip: {fileID: 8300000, guid: 7f5676237c4d07f4bb7286cc0b982cdc, type: 3}
+    volume: 1
+    filenameHints:
+    - wooden-floor
+  - surface: 2
+    clip: {fileID: 8300000, guid: 42517568e02119e46948e509959312ae, type: 3}
+    volume: 1
+    filenameHints:
+    - stone-beach
+  - surface: 3
+    clip: {fileID: 0}
+    volume: 1
+    filenameHints:
+    - stone-path
+  - surface: 4
+    clip: {fileID: 8300000, guid: 286d8183ff790e948959de2169511b0e, type: 3}
+    volume: 1
+    filenameHints:
+    - stone-path
+  - surface: 5
+    clip: {fileID: 8300000, guid: 44302ea5300f2ed48ad735648fe86cb2, type: 3}
+    volume: 1
+    filenameHints:
+    - walking-on-leaves
+  runPitch: 1.35

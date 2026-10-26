@@ -103,6 +103,7 @@ public class MissionProgressManager : MonoBehaviour
 
         if (set.Add(taskId)) // only fire the event if this actually changed something
         {
+            GameAudio.Play(SoundId.TaskComplete);
             Save();
             OnProgressChanged?.Invoke();
         }

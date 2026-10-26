@@ -50766,6 +50766,12 @@ MonoBehaviour:
   fillAnswersIcon: {fileID: 0}
   answersLockedIndicator: {fileID: 0}
   unansweredLabel: '?'
+  onJournalOpened:
+    m_PersistentCalls:
+      m_Calls: []
+  onJournalClosed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!224 &833287492
 RectTransform:
   m_ObjectHideFlags: 0
@@ -59494,6 +59500,7 @@ MonoBehaviour:
   plantCount: 2
   consumableItem: {fileID: 11400000, guid: 9df404b2e95e4554084436c27162021d, type: 2}
   consumableCount: 0
+  keepOnboardingUIHidden: 1
 --- !u!65 &1028081824
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -80561,6 +80568,7 @@ GameObject:
   - component: {fileID: 1554875340}
   - component: {fileID: 1554875344}
   - component: {fileID: 1554875345}
+  - component: {fileID: 1554875346}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -80749,6 +80757,25 @@ MonoBehaviour:
   harvestTaskId: harvest
   plantNewTaskId: plant_new
   usePuffTaskId: use_puff
+--- !u!114 &1554875346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1554875332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7640fe4804113e41a7d66b6b04fdda5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LoopSoundEmitter
+  sound: 10
+  overrideClip: {fileID: 8300000, guid: 52f9b04a40fd8fe478a3f1456e5091b1, type: 3}
+  volume: 0.2
+  spatial: 1
+  minDistance: 2
+  maxDistance: 20
+  fadeInSeconds: 1
 --- !u!1 &1559143034
 GameObject:
   m_ObjectHideFlags: 0

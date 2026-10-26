@@ -89,6 +89,7 @@ public class JournalSlotUI : MonoBehaviour, IPointerClickHandler
 
         // Tutorial lock: only the step waiting on "opened_plant_detail" lets a slot click through.
         if (!controller.CanClickSlot()) return;
+        GameAudio.Play(SoundId.ClickItem);
 
         NewItemTracker.Instance?.MarkSeenInJournal(Species.ResolvedId);
         controller.ShowSpeciesDetail(Species);
