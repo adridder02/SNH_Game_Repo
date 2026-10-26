@@ -79,7 +79,29 @@ public class WaterbellSprinkler : AbilityPlaceable
             if (pot != null && !connectedPots.Contains(pot))
                 connectedPots.Add(pot);
         }
+
+        UpdateTints();
     }
+
+    // Blue grid cells under the pots this Waterbell is actually watering (pots that hold a plant).
+    private int lastTintSignature = int.MinValue;
+
+    private void UpdateTints()
+    {
+        int sig = 17;
+        foreach (PotContents pot in connectedPots)
+            if (pot != null && pot.HasPlant) sig = sig * 31 + pot.GetInstanceID();
+        if (sig == lastTintSignature) return;
+        lastTintSignature = sig;
+
+        GridEffectTints.Clear(this);
+        foreach (PotContents pot in connectedPots)
+            if (pot != null && pot.HasPlant)
+                GridEffectTints.TintPot(this, pot, GridEffectTints.Water, Surface);
+    }
+
+    protected override void OnRemoved() { GridEffectTints.Clear(this); }
+    private void OnDestroy() { GridEffectTints.Clear(this); }
 
     public void SetTargetLevel(float level) => targetWaterLevel = Mathf.Clamp(level, 0f, 10f);
 

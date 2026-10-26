@@ -39,6 +39,14 @@ public class GridVisual : MonoBehaviour
     private Material matOccupied;
     private Material matGL;     // for GL line drawing
 
+    // ---- Ability effect tints (see GridEffectTints) ----
+    /// <summary>false = tints show only while the grid itself is shown (placement mode). true = always visible.</summary>
+    public static bool AlwaysShowTints = false;
+    private Shader quadShader;
+    private GameObject tintRoot;
+    private readonly Dictionary<int, List<KeyValuePair<object, Color>>> tints = new Dictionary<int, List<KeyValuePair<object, Color>>>();
+    private readonly Dictionary<int, GameObject> tintQuads = new Dictionary<int, GameObject>();
+
     // * Setup 
 
     public void Initialise(Vector2Int dims, float size, Vector3 origin)
@@ -74,6 +82,7 @@ public class GridVisual : MonoBehaviour
                 ?? Shader.Find("GUI/Text Shader")
                 ?? Shader.Find("Unlit/Color")
                 ?? Shader.Find("Standard");
+        quadShader = s;
 
         matIdle = MakeMat(s, ColorIdle);
         matValid = MakeMat(s, ColorValid);
@@ -183,6 +192,96 @@ public class GridVisual : MonoBehaviour
     public void SetVisible(bool visible)
     {
         gameObject.SetActive(visible);
+        if (tintRoot != null) tintRoot.SetActive(visible || AlwaysShowTints);
+    }
+
+    // * Ability effect tints
+
+    /// <summary>Colours a block of cells for an ability (keyed by source so it can remove only its own).</summary>
+    public void AddTint(object source, Vector2Int origin, Vector2Int size, Color color)
+    {
+        if (cellStates == null || source == null) return;
+
+        for (int dx = 0; dx < size.x; dx++)
+            for (int dz = 0; dz < size.y; dz++)
+            {
+                int x = origin.x + dx, z = origin.y + dz;
+                if (!InBounds(x, z)) continue;
+                int idx = z * dimensions.x + x;
+
+                if (!tints.TryGetValue(idx, out var list)) { list = new List<KeyValuePair<object, Color>>(); tints[idx] = list; }
+                list.RemoveAll(e => ReferenceEquals(e.Key, source));
+                list.Add(new KeyValuePair<object, Color>(source, color));
+                RefreshTint(idx);
+            }
+    }
+
+    public void RemoveTints(object source)
+    {
+        if (source == null || tints.Count == 0) return;
+        var touched = new List<int>();
+        foreach (var kv in tints)
+            if (kv.Value.RemoveAll(e => ReferenceEquals(e.Key, source)) > 0) touched.Add(kv.Key);
+        foreach (int idx in touched) RefreshTint(idx);
+    }
+
+    private void RefreshTint(int idx)
+    {
+        if (!tints.TryGetValue(idx, out var list) || list.Count == 0)
+        {
+            tints.Remove(idx);
+            if (tintQuads.TryGetValue(idx, out GameObject old))
+            {
+                if (old != null)
+                {
+                    Renderer r = old.GetComponent<Renderer>();
+                    if (r != null && r.sharedMaterial != null) Destroy(r.sharedMaterial);
+                    Destroy(old);
+                }
+                tintQuads.Remove(idx);
+            }
+            return;
+        }
+
+        // blend: average colour, strongest alpha
+        Color sum = Color.black; float maxA = 0f;
+        foreach (var e in list) { sum += e.Value; maxA = Mathf.Max(maxA, e.Value.a); }
+        Color blended = sum / list.Count; blended.a = maxA;
+
+        if (!tintQuads.TryGetValue(idx, out GameObject quad) || quad == null)
+        {
+            if (tintRoot == null)
+            {
+                tintRoot = new GameObject("GridTints_" + name);
+                tintRoot.SetActive(gameObject.activeSelf || AlwaysShowTints);
+            }
+
+            int x = idx % dimensions.x, z = idx / dimensions.x;
+            float quadSize = cellSize - cellSize * 0.04f * 2f;
+
+            quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            quad.name = $"Tint_{x}_{z}";
+            quad.transform.SetParent(tintRoot.transform, false);
+            Destroy(quad.GetComponent<Collider>());
+            quad.transform.position = CellPoint(x + 0.5f, z + 0.5f) + Vector3.up * 0.004f;
+            quad.transform.rotation = Quaternion.Euler(0f, yaw, 0f) * Quaternion.Euler(90f, 0f, 0f);
+            quad.transform.localScale = new Vector3(quadSize, quadSize, 1f);
+
+            var mr = quad.GetComponent<MeshRenderer>();
+            mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            mr.receiveShadows = false;
+            var m = new Material(quadShader != null ? quadShader : Shader.Find("Sprites/Default")) { hideFlags = HideFlags.HideAndDontSave };
+            m.renderQueue = 2991;
+            mr.sharedMaterial = m;
+            tintQuads[idx] = quad;
+        }
+
+        quad.GetComponent<MeshRenderer>().sharedMaterial.color = blended;
+    }
+
+    private void OnDestroy()
+    {
+        if (tintRoot != null) Destroy(tintRoot);
     }
 
     /// <summary>Locked surface: faint grid lines and no cell fills, so it reads as unavailable.</summary>

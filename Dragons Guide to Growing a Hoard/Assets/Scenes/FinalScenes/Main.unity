@@ -7688,6 +7688,7 @@ GameObject:
   - component: {fileID: 74016828}
   - component: {fileID: 74016829}
   - component: {fileID: 74016830}
+  - component: {fileID: 74016831}
   m_Layer: 11
   m_Name: PlayerParent
   m_TagString: Player
@@ -8313,6 +8314,39 @@ MonoBehaviour:
   splashCooldown: 0.6
   swimFadeSeconds: 0.4
   swimVolume: 0.382
+--- !u!114 &74016831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 74016807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1917deb879b04d242ad44266e7b4bf6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DEBUG_GiveAllPlants
+  inventory: {fileID: 74016824}
+  plantPrefabs:
+  - {fileID: 864107347954856182, guid: 8cea0d4523543af4f9a60dcee71d2bab, type: 3}
+  - {fileID: 3493835662444555350, guid: cbd2a11c8414f4549a6d7beb967f5c2e, type: 3}
+  - {fileID: 2650251699068457546, guid: 6db11bb194fc76f4a88e65a10a7a414f, type: 3}
+  - {fileID: 1108434111351597028, guid: a6b2440c9fcf97c4a8e8f0060dbe96fe, type: 3}
+  - {fileID: 6397339370049151978, guid: f6ae0fd546c583d4295b4d12e60ee02d, type: 3}
+  - {fileID: 2779138664059445019, guid: 6128aaa10d29d0a45956dea94e6a7e1f, type: 3}
+  - {fileID: 1844357348191295120, guid: c8c0a6d54fb83724eb5fac9fd6640368, type: 3}
+  - {fileID: 3147640831792386703, guid: 41465438df12e0d4abc075ae4336a258, type: 3}
+  - {fileID: 7106053868976010694, guid: 6cf00a1e2fb7a3e439e9aa4a4d49e137, type: 3}
+  - {fileID: 3072371233814078162, guid: f756857262772f24ba0a12b1049375e1, type: 3}
+  - {fileID: 6703200343087572510, guid: e1bd2a8906563cb4f808c03663bb7eae, type: 3}
+  - {fileID: 5086658688875511756, guid: 67c4c512c97c97245a48b434d463a513, type: 3}
+  - {fileID: 2775176059256192284, guid: a652209b9c817cd419181350c1ec215c, type: 3}
+  - {fileID: 7512854205896871279, guid: 187dc7aa1a89bf34eb05ad860f2ba227, type: 3}
+  - {fileID: 7443154059041681990, guid: 1585d53afbc80614582b370de8cda904, type: 3}
+  - {fileID: 6160393185916373558, guid: 0984c5850461a0b41baf5366056fe4e0, type: 3}
+  copiesEach: 1
+  grantOnStart: 1
+  grantKey: 290
 --- !u!1 &74049292 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9158743094094176133, guid: c5419af77747e7a418d7c8c0b6a5a748, type: 3}
@@ -13143,7 +13177,7 @@ GameObject:
   - component: {fileID: 119726957}
   - component: {fileID: 119726956}
   m_Layer: 0
-  m_Name: Thye Maw Jaw
+  m_Name: The Maw Jaw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -106366,6 +106400,21 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 7004783832934855251, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!4 &968246843 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8356798180084556225, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+  m_PrefabInstance: {fileID: 1611457647}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &968246844 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -5187744657185396173, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+  m_PrefabInstance: {fileID: 1611457647}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &968246845 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -4947391115625189501, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+  m_PrefabInstance: {fileID: 1611457647}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &968328910
 GameObject:
   m_ObjectHideFlags: 0
@@ -143643,6 +143692,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 7567454165519355054, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+--- !u!4 &1264721313 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2201080925540369535, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+  m_PrefabInstance: {fileID: 1611457647}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1266801704
 GameObject:
   m_ObjectHideFlags: 0
@@ -158417,7 +158471,7 @@ MonoBehaviour:
     type: 4
     species: {fileID: 0}
     item: {fileID: 0}
-    zone: {fileID: 0}
+    zone: {fileID: 1567120033}
     happinessThreshold: 60
     area: {fileID: 0}
     radius: 4
@@ -158428,8 +158482,8 @@ MonoBehaviour:
     item: {fileID: 0}
     zone: {fileID: 0}
     happinessThreshold: 60
-    area: {fileID: 0}
-    radius: 4
+    area: {fileID: 968246845}
+    radius: 90
   - label: Find the Dorms
     taskId: find_dorms
     type: 5
@@ -158437,8 +158491,8 @@ MonoBehaviour:
     item: {fileID: 0}
     zone: {fileID: 0}
     happinessThreshold: 60
-    area: {fileID: 0}
-    radius: 4
+    area: {fileID: 968246844}
+    radius: 15
   - label: Find the Kitchen
     taskId: find_kitchen
     type: 5
@@ -158446,8 +158500,8 @@ MonoBehaviour:
     item: {fileID: 0}
     zone: {fileID: 0}
     happinessThreshold: 60
-    area: {fileID: 0}
-    radius: 4
+    area: {fileID: 968246843}
+    radius: 50
   - label: Find the Maw Jaw
     taskId: find_maw_jaw
     type: 5
@@ -158455,7 +158509,7 @@ MonoBehaviour:
     item: {fileID: 0}
     zone: {fileID: 0}
     happinessThreshold: 60
-    area: {fileID: 0}
+    area: {fileID: 119726955}
     radius: 4
   - label: Revive the Maw Jaw
     taskId: revive_maw_jaw
@@ -158541,7 +158595,7 @@ MonoBehaviour:
     type: 4
     species: {fileID: 0}
     item: {fileID: 0}
-    zone: {fileID: 0}
+    zone: {fileID: 483900860}
     happinessThreshold: 60
     area: {fileID: 0}
     radius: 4
@@ -158552,8 +158606,8 @@ MonoBehaviour:
     item: {fileID: 0}
     zone: {fileID: 0}
     happinessThreshold: 60
-    area: {fileID: 0}
-    radius: 4
+    area: {fileID: 1445149351}
+    radius: 10
   - label: Inspect the bookshelves
     taskId: inspect_bookshelves
     type: 6
@@ -158561,8 +158615,8 @@ MonoBehaviour:
     item: {fileID: 0}
     zone: {fileID: 0}
     happinessThreshold: 60
-    area: {fileID: 0}
-    radius: 4
+    area: {fileID: 97134183}
+    radius: 15
   - label: Find the Luminary
     taskId: find_luminary
     type: 5
@@ -158665,7 +158719,7 @@ MonoBehaviour:
     type: 4
     species: {fileID: 0}
     item: {fileID: 0}
-    zone: {fileID: 0}
+    zone: {fileID: 2140517483}
     happinessThreshold: 60
     area: {fileID: 0}
     radius: 4
@@ -158676,8 +158730,8 @@ MonoBehaviour:
     item: {fileID: 0}
     zone: {fileID: 0}
     happinessThreshold: 60
-    area: {fileID: 0}
-    radius: 4
+    area: {fileID: 1264721313}
+    radius: 15
   - label: Find the Deluge Catcher
     taskId: find_deluge_catcher
     type: 5
@@ -158685,8 +158739,8 @@ MonoBehaviour:
     item: {fileID: 0}
     zone: {fileID: 0}
     happinessThreshold: 60
-    area: {fileID: 0}
-    radius: 4
+    area: {fileID: 609760957}
+    radius: 15
   - label: Revive the Deluge Catcher
     taskId: revive_deluge_catcher
     type: 0
@@ -160891,6 +160945,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1443612916}
   m_CullTransparentMesh: 1
+--- !u!4 &1445149351 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8281321744065460383, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+  m_PrefabInstance: {fileID: 1611457647}
+  m_PrefabAsset: {fileID: 0}
 --- !u!64 &1445336380
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -184435,6 +184494,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6014232382242948077, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_Name
+      value: StudyDoor
+      objectReference: {fileID: 0}
     - target: {fileID: -5998301319071483956, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
@@ -184591,6 +184654,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: da60fc3aff45f6a4182d6a27b9a71acd, type: 2}
+    - target: {fileID: -5624719447545968024, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_Name
+      value: MainHall
+      objectReference: {fileID: 0}
     - target: {fileID: -5624719447545968024, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -184818,6 +184885,10 @@ PrefabInstance:
     - target: {fileID: -4990125288211002990, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4975099205285851653, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_Name
+      value: Kitchen
       objectReference: {fileID: 0}
     - target: {fileID: -4975099205285851653, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_Layer
@@ -186280,6 +186351,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -1371108373144935189, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_Name
+      value: UpLab
+      objectReference: {fileID: 0}
+    - target: {fileID: -1371108373144935189, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -186558,6 +186633,10 @@ PrefabInstance:
     - target: {fileID: -540903960752471907, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -529302823880388304, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_Name
+      value: stud
       objectReference: {fileID: 0}
     - target: {fileID: -529302823880388304, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -187094,6 +187173,10 @@ PrefabInstance:
     - target: {fileID: 781679719685557685, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 785759276956092244, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_Name
+      value: Dorm
       objectReference: {fileID: 0}
     - target: {fileID: 785759276956092244, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -189479,6 +189562,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: cb52f20938f505d47b1dce748faded6f, type: 2}
+    - target: {fileID: 6526223092448801408, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6526223092448801408, guid: 488131ba2efecc44b90c4aae30ba0cca, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
@@ -209686,10 +209773,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WindmillAsterWard
   sunlightThreshold: 0.6
   wardRadius: 4
+  coneAngle: 120
+  facingYawOffset: 0
   rescanInterval: 1
   plantLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  showRangeCircle: 1
+  rangeColor: {r: 1, g: 0.85, b: 0.35, a: 0.45}
+  rangeGroundOffset: 0.03
 --- !u!114 &1738163109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210862,7 +210954,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Camera - Hold Right Mouse Button \n\nConfirm Grid Spot - Left Click\n\nExit
-    Placment Mode -  ESC"
+    Placment Mode -  ESC\n\nRotate Pot - C"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0852abc7ad636ff43b13d0494a088a42, type: 2}
   m_sharedMaterial: {fileID: -5571737488688138172, guid: 0852abc7ad636ff43b13d0494a088a42, type: 2}
@@ -234305,7 +234397,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HingeInteractable
   leaves:
   - transform: {fileID: 97134183}
-    openAngle: -90
+    openAngle: 90
   axis: 2
   closedAngle: 0
   openSeconds: 1.2
@@ -234313,7 +234405,7 @@ MonoBehaviour:
   startLocked: 0
   lockedMessage: 
   interactPoint: {fileID: 0}
-  interactRange: 15
+  interactRange: 20
   showInteractPrompt: 1
   mainUI: {fileID: 174021493}
   player: {fileID: 0}

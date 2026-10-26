@@ -29,13 +29,17 @@ public class SparkmintLeafFence : AbilityPlaceable
         expireAtTime = GameClock.Now + lifespan;
         hasExpired = false;
 
+        GridEffectTints.TintCells(this, Surface, GridOrigin, GridSize, GridEffectTints.Sparkmint); // pink cell
         SparkmintCircuitManager.Recalculate(Surface, GridData);
     }
 
     protected override void OnRemoved()
     {
+        GridEffectTints.Clear(this);
         SparkmintCircuitManager.Recalculate(Surface, GridData);
     }
+
+    private void OnDestroy() { GridEffectTints.Clear(this); }
 
     private void Update()
     {
@@ -44,6 +48,7 @@ public class SparkmintLeafFence : AbilityPlaceable
         if (GameClock.Now >= expireAtTime)
         {
             hasExpired = true;
+            GridEffectTints.Clear(this); // a withered leaf no longer wards anything
             Debug.Log($"[SparkmintLeafFence] Leaf at {GridOrigin} expired — circuit broken until replaced.");
             SparkmintCircuitManager.Recalculate(Surface, GridData);
         }

@@ -42,14 +42,38 @@ public class MelodybloomTreeMimic : MonoBehaviour
             transferStolenWaterToSelf = false
         };
 
+        var affectedPots = new System.Collections.Generic.HashSet<PotContents>();
+
         foreach (Collider col in Physics.OverlapSphere(transform.position, radius, plantLayerMask))
         {
             PlantState plant = col.GetComponent<PlantState>() ?? col.GetComponentInParent<PlantState>();
             if (plant == null || plant.gameObject == gameObject) continue;
 
             plant.ApplyDebuffFromNeighbour(spec, GetComponent<PlantState>());
+
+            PotContents pot = plant.GetComponentInParent<PotContents>();
+            if (pot != null) affectedPots.Add(pot);
         }
+
+        UpdateTints(affectedPots);
     }
+
+    // Purple grid cells under every plant this Melodybloom is currently draining.
+    private int lastTintSignature = int.MinValue;
+
+    private void UpdateTints(System.Collections.Generic.HashSet<PotContents> pots)
+    {
+        int sig = 17;
+        foreach (PotContents pot in pots) sig += pot.GetInstanceID() * 31;
+        if (sig == lastTintSignature) return;
+        lastTintSignature = sig;
+
+        GridEffectTints.Clear(this);
+        foreach (PotContents pot in pots)
+            GridEffectTints.TintPot(this, pot, GridEffectTints.Melodybloom);
+    }
+
+    private void OnDisable() { GridEffectTints.Clear(this); lastTintSignature = int.MinValue; }
 
     private void OnDrawGizmosSelected()
     {
