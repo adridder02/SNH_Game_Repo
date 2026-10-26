@@ -70,16 +70,8 @@ public class LoadingScreenController : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            // Duplicate landed in a newly-loaded scene - this one already persists from
-            // wherever it was first created, so the new copy is redundant.
-            Destroy(gameObject);
-            return;
-        }
-
+        if (!PersistentManager.Claim(this, Instance)) return;
         Instance = this;
-        DontDestroyOnLoad(gameObject);
 
         ForceOnTop();
 

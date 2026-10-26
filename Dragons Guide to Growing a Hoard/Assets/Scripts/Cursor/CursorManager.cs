@@ -26,13 +26,8 @@ public class CursorManager : MonoBehaviour
     void Awake()
     {
         // Simple singleton so any script can call CursorManager.Instance.SetCursor(...)
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        if (!PersistentManager.Claim(this, Instance)) return;
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     void Start()

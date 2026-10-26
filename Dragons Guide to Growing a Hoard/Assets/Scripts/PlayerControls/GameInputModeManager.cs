@@ -26,16 +26,8 @@ public class GameInputModeManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
+        if (!PersistentManager.Claim(this, Instance)) return;
+        Instance = this;
 
         if (inputActions == null)
         {

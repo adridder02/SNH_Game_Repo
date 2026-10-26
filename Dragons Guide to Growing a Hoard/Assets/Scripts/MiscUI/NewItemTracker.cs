@@ -64,13 +64,8 @@ public class NewItemTracker : MonoBehaviour
 
     void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        if (!PersistentManager.Claim(this, Instance)) return;
         Instance = this;
-        DontDestroyOnLoad(gameObject);
         Load();
     }
 

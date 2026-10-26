@@ -76,18 +76,10 @@ public class MissionProgressManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            // Remove this if MissionProgressManager is placed once per-scene instead of persisted globally.
-            DontDestroyOnLoad(gameObject);
-            Load();
-            LoadLore();
-        }
-        else if (Instance != this)
-        {
-            Destroy(gameObject);
-        }
+        if (!PersistentManager.Claim(this, Instance)) return;
+        Instance = this;
+        Load();
+        LoadLore();
     }
 
     // ------------------------------------------------------------
