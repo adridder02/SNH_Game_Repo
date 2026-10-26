@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: HeartOfTheNight
   m_EditorClassIdentifier: Assembly-CSharp::AbilityItemData
   displayName: Heart of the Night
-  description: 
+  description: A heart that glows faintly in the dark, like a small captured night.
+    Offer it to the World Tree to sooth it.
   icon: {fileID: 21300000, guid: 10fdd8ea252bfab4ab8bb355eb7c3c49, type: 3}
   kind: 1
   effectId: 0

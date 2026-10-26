@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Dewdrop
   m_EditorClassIdentifier: Assembly-CSharp::AbilityItemData
   displayName: Dew Drop
-  description: Shows water levels
+  description: "A bead of morning dew that tunes you into a pot. Use it to permanently
+    show that plant\u2019s water level above it."
   icon: {fileID: 21300000, guid: 55eb08585d7f52b4fb941aeea19cfe87, type: 3}
   kind: 1
   effectId: 5

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: GlowcapSpore
   m_EditorClassIdentifier: Assembly-CSharp::AbilityItemData
   displayName: Glowcap Spore
-  description: Dragon glow
+  description: A softly glowing spore cap. Eat it gives you a gentle little light
+    for a while.
   icon: {fileID: 21300000, guid: 3f7b87df0ab8b8142a90a914b69aef8b, type: 3}
   kind: 1
   effectId: 4

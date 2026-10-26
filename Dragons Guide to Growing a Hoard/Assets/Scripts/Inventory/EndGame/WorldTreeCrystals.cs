@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 
 // =============================================================
 // WorldTreeCrystals.cs
@@ -49,6 +50,27 @@ public class WorldTreeCrystals : MonoBehaviour
     [Header("Crystals")]
     [SerializeField] private CrystalEntry[] crystals = new CrystalEntry[3];
 
+    [Header("When enough crystals are in place...")]
+    [Tooltip("The glass section. Its material is swapped to the transparent one below.")]
+    [SerializeField] private Renderer[] glassRenderers;
+    [Tooltip("Which material slot on those renderers is the glass (0 = the first).")]
+    [SerializeField] private int glassMaterialIndex = 0;
+    [Tooltip("Duplicate your glass material, set its Surface Type to Transparent (keep the colour/opacity), and drop " +
+             "it here. Recommended - it always works in builds. If left empty the script converts the current " +
+             "material at runtime, which works in the editor but can fail in a build.")]
+    [SerializeField] private Material transparentGlassMaterial;
+    [Tooltip("How many crystals must be revealed before the glass turns transparent.")]
+    [SerializeField] private int crystalsNeededForGlass = 2;
+
+    [Tooltip("The directional light. Once enough crystals are in, it starts affecting the Light Layer below.")]
+    [SerializeField] private Light directionalLight;
+    [Tooltip("Rendering/Light Layer number the light currently excludes (Light Layer 1 = 1).")]
+    [SerializeField] private int lightLayerToInclude = 1;
+    [SerializeField] private int crystalsNeededForLight = 2;
+
+    private bool glassApplied;
+    private bool lightApplied;
+
     [Header("Range")]
     [SerializeField] private float interactRange = 3f;
 
@@ -93,6 +115,8 @@ public class WorldTreeCrystals : MonoBehaviour
             if (!entry.revealed)
                 entry.layer.SetActive(false);
         }
+
+        ApplyCrystalThresholds();
     }
 
     private void Update()
@@ -133,6 +157,71 @@ public class WorldTreeCrystals : MonoBehaviour
             e.layer.SetActive(true);
             e.revealed = true;
         }
+        ApplyCrystalThresholds();
+    }
+
+    private int RevealedCount()
+    {
+        int n = 0;
+        foreach (CrystalEntry e in crystals) if (e != null && e.revealed) n++;
+        return n;
+    }
+
+    /// <summary>Glass -> transparent and the directional light -> includes the layer, once enough crystals are in.</summary>
+    private void ApplyCrystalThresholds()
+    {
+        int count = RevealedCount();
+
+        if (!glassApplied && count >= crystalsNeededForGlass && glassRenderers != null && glassRenderers.Length > 0)
+        {
+            glassApplied = true;
+            Material converted = transparentGlassMaterial;
+            foreach (Renderer r in glassRenderers)
+            {
+                if (r == null) continue;
+                Material[] mats = r.sharedMaterials;
+                if (glassMaterialIndex < 0 || glassMaterialIndex >= mats.Length) continue;
+
+                Material use = converted;
+                if (use == null)
+                {
+                    use = new Material(mats[glassMaterialIndex]);
+                    MakeTransparent(use);
+                }
+                mats[glassMaterialIndex] = use;
+                r.sharedMaterials = mats;
+            }
+        }
+
+        if (!lightApplied && count >= crystalsNeededForLight && directionalLight != null)
+        {
+            var data = directionalLight.GetComponent<UniversalAdditionalLightData>();
+            if (data != null)
+            {
+                lightApplied = true;
+#if UNITY_6000_0_OR_NEWER
+                data.renderingLayers |= (1u << lightLayerToInclude);
+#else
+                data.lightLayerMask |= (LightLayerEnum)(1 << lightLayerToInclude);
+#endif
+            }
+        }
+    }
+
+    /// <summary>Runtime URP/Lit opaque -> transparent (same switches the material Inspector flips).</summary>
+    private static void MakeTransparent(Material m)
+    {
+        m.SetFloat("_Surface", 1f);
+        m.SetFloat("_Blend", 0f);
+        m.SetOverrideTag("RenderType", "Transparent");
+        m.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        m.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        m.SetInt("_SrcBlendAlpha", (int)UnityEngine.Rendering.BlendMode.One);
+        m.SetInt("_DstBlendAlpha", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        m.SetInt("_ZWrite", 0);
+        m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        m.DisableKeyword("_ALPHATEST_ON");
+        m.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
     }
 
     private bool AllRevealed()
@@ -162,6 +251,7 @@ public class WorldTreeCrystals : MonoBehaviour
             entry.revealed = true;
             revealedAny = true;
             CrystalRevealed?.Invoke(entry.keyItem);
+            ApplyCrystalThresholds();
 
             Debug.Log($"[WorldTreeCrystals] Revealed '{entry.label}' using {entry.keyItem.displayName}.");
         }

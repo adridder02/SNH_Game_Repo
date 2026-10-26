@@ -271,6 +271,9 @@ MonoBehaviour:
   growth: {fileID: 0}
   launchCollider: {fileID: 0}
   launchOutwardForce: 2
+  launchSoundOverride: {fileID: 0}
+  launchSoundVolume: 1
+  smallSizeVolumeScale: 0.6
   cooldown: 0.5
   flyingNeedsGroundContact: 1
 --- !u!114 &1500539273978904161
@@ -306,7 +309,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlantGrowthSize
   progress: {fileID: -7496506593189826510}
   scaleTarget: {fileID: 0}
-  smallScale: 0.4
+  smallScale: 1
   growthCurve:
     serializedVersion: 2
     m_Curve:

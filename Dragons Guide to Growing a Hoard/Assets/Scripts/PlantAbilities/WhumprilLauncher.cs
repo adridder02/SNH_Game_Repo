@@ -41,6 +41,14 @@ public class WhumprilLauncher : MonoBehaviour
              "colliders on the mushroom (e.g. an old Box Collider) no longer launch the player.")]
     [SerializeField] private Collider launchCollider;
     public float launchOutwardForce = 2f;
+
+    [Header("Sound")]
+    [Tooltip("Optional: a clip just for this plant. Leave empty to use the SoundBank's Whumpril Launch sound.")]
+    [SerializeField] private AudioClip launchSoundOverride;
+    [Range(0f, 1f)] [SerializeField] private float launchSoundVolume = 1f;
+    [Tooltip("A small Whumpril is quieter; this is the volume at the smallest size (1 = no change).")]
+    [Range(0f, 1f)] [SerializeField] private float smallSizeVolumeScale = 0.6f;
+
     public float cooldown = 0.5f;
 
     [Tooltip("While the player is flying, only launch them once they've actually touched down on the " +
@@ -192,6 +200,12 @@ public class WhumprilLauncher : MonoBehaviour
         if (!launched) return;
 
         lastLaunchTime = Time.time;
+
+        float sizeT = growth != null ? growth.ShownGrowth01 : 1f;
+        float vol = launchSoundVolume * Mathf.Lerp(smallSizeVolumeScale, 1f, sizeT);
+        if (launchSoundOverride != null) GameAudio.PlayClipAt(launchSoundOverride, transform.position, vol);
+        else GameAudio.PlayAt(SoundId.WhumprilLaunch, transform.position, vol);
+
         Debug.Log($"[WhumprilLauncher] Launched '{obj.name}' with velocity {launchVelocity}.");
     }
 

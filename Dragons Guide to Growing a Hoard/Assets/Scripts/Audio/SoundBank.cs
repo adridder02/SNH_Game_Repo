@@ -19,7 +19,8 @@ public enum SoundId
     // Music / ambience
     TreeMusic1, TreeMusic2, SparkmintAmbient, Windmill, TutorialWind,
     // Gameplay
-    TaskComplete, NewThingUnlocked, OpenJournal, OpenBookmarks, FlipPage, UseBubble, CircuitActivate
+    TaskComplete, NewThingUnlocked, OpenJournal, OpenBookmarks, FlipPage, UseBubble, CircuitActivate,
+    WhumprilLaunch
 }
 
 public enum SurfaceType { Default, Wood, Wet, Stone, Carpet, Leaves }
@@ -117,6 +118,7 @@ public class SoundBank : ScriptableObject
         Add(SoundId.FlipPage, AudioCategory.Sfx, "turning-page");
         Add(SoundId.UseBubble, AudioCategory.Sfx, "bubble-pop");
         Add(SoundId.CircuitActivate, AudioCategory.Sfx, "high-voltage", "spark");
+        Add(SoundId.WhumprilLaunch, AudioCategory.Sfx, "whumpril", "boing", "launch");
 
         void AddStep(SurfaceType s, params string[] hints)
         {

@@ -84,6 +84,22 @@ public static class GameAudio
         Object.Destroy(go, e.clip.length + 0.2f);
     }
 
+    /// <summary>Plays any clip at a world position, routed through the mixer (for one-off clips set in the Inspector).</summary>
+    public static void PlayClipAt(AudioClip clip, Vector3 position, float volume = 1f, AudioCategory category = AudioCategory.Sfx)
+    {
+        if (clip == null) return;
+        LastPlayTime = Time.unscaledTime;
+        var go = new GameObject("Sfx_" + clip.name);
+        go.transform.position = position;
+        AudioSource s = go.AddComponent<AudioSource>();
+        s.clip = clip;
+        s.volume = volume;
+        s.spatialBlend = 1f;
+        Route(s, category);
+        s.Play();
+        Object.Destroy(go, clip.length + 0.2f);
+    }
+
     /// <summary>Sends an AudioSource to the mixer group for its category (no-op without a mixer).</summary>
     public static void Route(AudioSource source, AudioCategory category)
     {

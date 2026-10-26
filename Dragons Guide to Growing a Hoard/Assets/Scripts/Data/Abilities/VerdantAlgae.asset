@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: VerdantAlgae
   m_EditorClassIdentifier: Assembly-CSharp::AbilityItemData
   displayName: Verdant Algae
-  description: Clears soil of miasma
+  description: "A coat of living algae for a pot\u2019s soil. For a time, the plant
+    is shielded from the miasma\u2019s creeping decay"
   icon: {fileID: 21300000, guid: 169fa68028b24354b8ddd94b685c19cf, type: 3}
   kind: 1
   effectId: 3

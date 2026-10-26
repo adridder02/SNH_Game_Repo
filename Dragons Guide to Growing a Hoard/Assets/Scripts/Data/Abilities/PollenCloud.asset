@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: PollenCloud
   m_EditorClassIdentifier: Assembly-CSharp::AbilityItemData
   displayName: Puff of Pollen
-  description: puff info here
+  description: 'A drifting puff of pollen. Use it on a pot to reveal what its plant
+    needs most: yellow for light, blue for water, brown for soil. The hint fades
+    after a short while.'
   icon: {fileID: 21300000, guid: 31b030877b43f794baad885be07cbe11, type: 3}
   kind: 1
   effectId: 1

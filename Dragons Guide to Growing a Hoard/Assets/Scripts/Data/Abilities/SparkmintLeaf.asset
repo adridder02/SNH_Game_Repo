@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: SparkmintLeaf
   m_EditorClassIdentifier: Assembly-CSharp::AbilityItemData
   displayName: Spark Leaf
-  description: for ward
+  description: A tamed leaf crackling with static. Place leaves to close a loop around
+    your plants and ward off the miasma. Each leaf fades after a while and breaks
+    the circuit until you replace it
   icon: {fileID: 21300000, guid: 50700aa0f8ac77646bb5ea4783ca658f, type: 3}
   kind: 2
   effectId: 6

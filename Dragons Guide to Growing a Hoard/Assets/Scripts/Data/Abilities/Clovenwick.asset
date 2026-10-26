@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Clovenwick
   m_EditorClassIdentifier: Assembly-CSharp::AbilityItemData
   displayName: Cloven Shelf
-  description: Used to make paths up walls.
+  description: "A hardy mushroom that grows right out of the wall. Once it\u2019s
+    fully grown, harvest it and mount it on a wall to make a shelf. The bigger ones
+    can take a surprising amount of weight"
   icon: {fileID: 21300000, guid: d6e55c2ac8ff58449bdda624ac2689d0, type: 3}
   kind: 0
   effectId: 0

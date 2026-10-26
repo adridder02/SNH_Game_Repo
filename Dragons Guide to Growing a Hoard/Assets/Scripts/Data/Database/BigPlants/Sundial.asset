@@ -34,7 +34,7 @@ MonoBehaviour:
   journalIcon: {fileID: 21300000, guid: 4e07b70507f3d874687a9b3d0281023d, type: 3}
   journalImage: {fileID: 21300000, guid: ff807b72b4222b04992f72c758389467, type: 3}
   useAlternateJournalLayout: 0
-  inventoryImage: {fileID: 0}
+  inventoryImage: {fileID: 21300000, guid: 4e07b70507f3d874687a9b3d0281023d, type: 3}
   deadIcon: {fileID: 21300000, guid: db856e5498f26184d884ef93e38cfa3b, type: 3}
   disabledIcon: {fileID: 21300000, guid: d93f7ea1096531a44a3c0ad381248637, type: 3}
   activeIcon: {fileID: 21300000, guid: 4e07b70507f3d874687a9b3d0281023d, type: 3}

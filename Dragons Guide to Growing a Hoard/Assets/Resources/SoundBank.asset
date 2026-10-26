@@ -122,6 +122,13 @@ MonoBehaviour:
     filenameHints:
     - high-voltage
     - spark
+  - id: 18
+    clip: {fileID: 8300000, guid: 0e85b3b69a4ae104d9401e32bede7d52, type: 3}
+    volume: 1
+    category: 0
+    filenameHints:
+    - high-voltage
+    - spark
   footsteps:
   - surface: 0
     clip: {fileID: 8300000, guid: 25b3523f0709f0c498d4ae4e405792cc, type: 3}
