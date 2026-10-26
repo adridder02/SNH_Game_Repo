@@ -43,6 +43,13 @@ public class StartingInventoryGrant : MonoBehaviour
         if (inventory == null) inventory = GetComponent<PlayerInventory>();
         if (abilityInventory == null) abilityInventory = GetComponent<PlayerAbilityInventory>();
 
+        PlayerInventory.SuppressAcquirePopups = true; // starter items never show the "new item" popup
+        try { GrantItems(); }
+        finally { PlayerInventory.SuppressAcquirePopups = false; }
+    }
+
+    private void GrantItems()
+    {
         if (plantPrefab != null && inventory != null)
         {
             PlantState state = plantPrefab.GetComponent<PlantState>();

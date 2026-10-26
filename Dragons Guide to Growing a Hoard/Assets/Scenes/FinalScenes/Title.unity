@@ -1715,7 +1715,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 1170.5741, y: 0}
-  m_SizeDelta: {x: 6081.148, y: 2083.4824}
+  m_SizeDelta: {x: 6081.148, y: 2591.9976}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &126249767
 MonoBehaviour:
@@ -9255,7 +9255,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 3740, y: 2083.4824}
+  m_SizeDelta: {x: 3740, y: 2591.9976}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &587715253
 MonoBehaviour:
@@ -18114,7 +18114,6 @@ MonoBehaviour:
   settingsPanel: {fileID: 2096032766}
   closeSettingsButton: {fileID: 1678802231}
   saveInfoLabel: {fileID: 0}
-  hideContinueWhenNoSave: 1
   confirmDialog: {fileID: 393791707}
   hideWhilePopupOpen:
   - {fileID: 2079302144}
@@ -20668,7 +20667,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.12750244}
+  m_AnchoredPosition: {x: 0, y: 0.1274414}
   m_SizeDelta: {x: 0, y: 0.255}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1272609319
@@ -25128,7 +25127,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 0
+  m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -31462,8 +31461,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 28.2098, y: 1.2476997}
-  m_SizeDelta: {x: 4327.3013, y: 2457.1501}
+  m_AnchoredPosition: {x: -90.51215, y: -43.613102}
+  m_SizeDelta: {x: 4918.898, y: 2847.094}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1983885532
 MonoBehaviour:
@@ -33195,7 +33194,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 587715252}
   - {fileID: 126249766}

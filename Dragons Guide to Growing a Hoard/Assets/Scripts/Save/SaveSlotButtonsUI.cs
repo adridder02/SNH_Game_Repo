@@ -11,7 +11,7 @@ using UnityEngine.UI;
 //
 //   saveButton         Save now (manual save).
 //   loadButton         Load the last save (asks first — you lose progress since then).
-//   quitToTitleButton  Autosaves, then goes to the title screen (asks first).
+//   quitToTitleButton  Autosaves, then goes to the title screen (no confirmation).
 //   deleteSaveButton   Deletes the save (asks first).
 //   statusLabel        "Saved 25 Oct 2026, 14:03" / "Game saved." / "No saved game".
 //
@@ -82,8 +82,7 @@ public class SaveSlotButtonsUI : MonoBehaviour
 
     public void AskQuitToTitle()
     {
-        Confirm("Return to the title screen? Your game will be autosaved first.",
-                () => SaveManager.QuitToTitle(this), "Quit");
+        SaveManager.QuitToTitle(this); // autosaves, then goes straight to the title (no confirmation)
     }
 
     public void AskDelete()

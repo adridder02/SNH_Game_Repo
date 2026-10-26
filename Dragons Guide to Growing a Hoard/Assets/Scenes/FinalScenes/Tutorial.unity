@@ -36234,19 +36234,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 459184178}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1231868356}
-        m_TargetAssemblyTypeName: Buttons, Assembly-CSharp
-        m_MethodName: QuitGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &459184178
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43735,7 +43723,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SaveSlotButtonsUI
   saveButton: {fileID: 136698945}
   loadButton: {fileID: 0}
-  quitToTitleButton: {fileID: 0}
+  quitToTitleButton: {fileID: 459184177}
   deleteSaveButton: {fileID: 0}
   statusLabel: {fileID: 0}
   confirmDialog: {fileID: 0}
@@ -1367582,11 +1367570,11 @@ SceneRoots:
   - {fileID: 36880362}
   - {fileID: 1398448645}
   - {fileID: 448077193}
-  - {fileID: 1357208784}
   - {fileID: 1030126192}
   - {fileID: 1425186115}
   - {fileID: 1220952548}
   - {fileID: 635677005}
   - {fileID: 2026259457}
   - {fileID: 311990168}
+  - {fileID: 1357208784}
   - {fileID: 1986210987}

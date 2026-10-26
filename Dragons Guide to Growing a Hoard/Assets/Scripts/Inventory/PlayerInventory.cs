@@ -281,6 +281,9 @@ public class PlayerInventory : MonoBehaviour
     /// MainUIPopups for the "first time you pick this up" card; it decides itself whether it's the first time.</summary>
     public static event Action<PlantSpeciesData> PlantAcquired;
 
+    /// <summary>True while starter/debug items are being handed out - the "new item" popup is skipped for them.</summary>
+    public static bool SuppressAcquirePopups;
+
     public bool AddPlantToInventory(GameObject plantPrefab, Sprite icon = null, Sprite displayImage = null, string displayName = null, PlantCondition condition = null, bool countsAsFirstPickup = true)
     {
         if (plantPrefab == null)
@@ -327,7 +330,7 @@ public class PlayerInventory : MonoBehaviour
         }
 
         if (state != null && state.journalSpecies != null)
-            PlantAcquired?.Invoke(state.journalSpecies);
+            if (!SuppressAcquirePopups) PlantAcquired?.Invoke(state.journalSpecies);
 
         Debug.Log(placedInGrid
             ? $"Added {plantPrefab.name} to grid at ({instance.gridX},{instance.gridY})"

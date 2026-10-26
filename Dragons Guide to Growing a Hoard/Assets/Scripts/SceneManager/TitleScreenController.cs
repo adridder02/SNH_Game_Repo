@@ -32,8 +32,7 @@ public class TitleScreenController : MonoBehaviour
 
     [Tooltip("Optional. Shows when the save was made, or is cleared when there isn't one.")]
     [SerializeField] private TMP_Text saveInfoLabel;
-    [Tooltip("Hide the Continue button entirely when there's no save (otherwise it's just greyed out).")]
-    [SerializeField] private bool hideContinueWhenNoSave = false;
+    // (Removed: "hide Continue when no save". Continue is now always shown and just disabled without a save.)
 
     [Tooltip("Yes/No popup for 'overwrite your save?'. Auto-found in the scene if left empty; without one " +
              "New Game just goes ahead.")]
@@ -104,8 +103,8 @@ public class TitleScreenController : MonoBehaviour
         bool has = SaveManager.HasSave;
         if (continueButton != null)
         {
-            continueButton.interactable = has;
-            if (hideContinueWhenNoSave) continueButton.gameObject.SetActive(has);
+            continueButton.interactable = has; // disabled (not hidden) when there's no save
+            if (!continueButton.gameObject.activeSelf) continueButton.gameObject.SetActive(true);
         }
         if (saveInfoLabel != null) saveInfoLabel.text = has ? SaveManager.DescribeSave() : "";
     }

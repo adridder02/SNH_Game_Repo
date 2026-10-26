@@ -86,7 +86,7 @@ public class PlayerAbilityInventory : MonoBehaviour
 
         Debug.Log($"[PlayerAbilityInventory] +{amount} {data.displayName} (now {existing.count}).");
         OnChanged?.Invoke();
-        ItemAdded?.Invoke(data, amount);
+        if (!PlayerInventory.SuppressAcquirePopups) ItemAdded?.Invoke(data, amount);
 
         if (wallPlacementItem != null && data == wallPlacementItem)
             GetComponent<PlayerInventory>()?.UnlockWallPlacement();
