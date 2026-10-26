@@ -18,27 +18,40 @@ MonoBehaviour:
   tasks:
   - taskId: find_node
     description: Find a harvest node
+    group: 0
   - taskId: plant_pickup
     description: Press [E] to pick up the plant
+    group: 0
   - taskId: place_pot
     description: Place a Pot
+    group: 0
   - taskId: water_plant
     description: Place a plant in a pot and water it
+    group: 0
   - taskId: find_water
     description: Go to the water source nearby
+    group: 0
   - taskId: water_refill
     description: Sit in the water until your water bar is refilled
+    group: 0
   - taskId: complete_plant
     description: Grow a Pollen Puff to Completion
+    group: 0
   - taskId: harvest
     description: Harvest the Pollen Puff
+    group: 0
   - taskId: plant_new
     description: Plant another Pollen Puff
+    group: 0
   - taskId: use_puff
     description: Use consumable on a plant
+    group: 0
   - taskId: exit
     description: Exit the Tutorial Level
+    group: 0
   openingText: 
   completionText: 
+  revealWithTutorial: 1
   trackable: 1
   loreText: 
+  loreSource: 

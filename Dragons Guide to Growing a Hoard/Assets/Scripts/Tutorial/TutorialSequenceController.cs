@@ -691,6 +691,15 @@ public class TutorialSequenceController : MonoBehaviour
             AdvanceToNextStep();
     }
 
+    /// <summary>Reveals every mission this sequence's steps link to (used when the sequence ends).</summary>
+    private void RevealLinkedMissions()
+    {
+        if (progressManager == null) return;
+        foreach (TutorialStep st in steps)
+            if (st != null && st.linkedMission != null)
+                progressManager.RevealMission(st.linkedMission);
+    }
+
     private void AdvanceToNextStep()
     {
         StopAutoAdvanceTimer();
@@ -717,6 +726,8 @@ public class TutorialSequenceController : MonoBehaviour
                 PlayerPrefs.Save();
             }
 
+            RevealLinkedMissions(); // sequence over: nothing stays hidden
+
             OnSequenceComplete?.Invoke();
 
             if (IsModule && Instance == this) Instance = moduleReturnTo;
@@ -725,6 +736,7 @@ public class TutorialSequenceController : MonoBehaviour
         }
 
         TutorialStep step = steps[currentIndex];
+        if (step != null && step.linkedMission != null) progressManager?.RevealMission(step.linkedMission); // tutorial reached it: show it in the Guide
         if (step == null)
         {
             Debug.LogWarning($"[TutorialSequenceController] Step {currentIndex} is null — skipping.");

@@ -54,6 +54,13 @@ public class MissionData : ScriptableObject
     [Tooltip("Optional. Shown BELOW the checklist once the mission's last task is finished. Leave blank for none.")]
     [TextArea(3, 12)] public string completionText;
 
+    [Header("Tutorial Reveal (Mission only)")]
+    [Tooltip("ON = this mission stays OUT of the Guide list until the tutorial reaches a step linked to it (or you call " +
+             "MissionProgressManager.RevealMission, e.g. from a step's On Step Shown event). Missions that already have " +
+             "progress, and every linked mission once the tutorial sequence ends, are shown regardless. Tick this on the " +
+             "tutorial-level missions.")]
+    public bool revealWithTutorial = false;
+
     [Header("Tracking (Mission only)")]
     [Tooltip("If ON, the Guide page shows a Track / Untrack button for this mission, and the tracked mission " +
              "is the one the Tutorial Objective banner displays.")]

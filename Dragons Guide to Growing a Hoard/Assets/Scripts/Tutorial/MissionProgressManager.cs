@@ -109,6 +109,25 @@ public class MissionProgressManager : MonoBehaviour
         }
     }
 
+    // ---- tutorial reveal (MissionData.revealWithTutorial) ----
+    private readonly HashSet<string> revealedMissions = new HashSet<string>();
+
+    /// <summary>Makes a tutorial-gated mission show up in the Guide list (the tutorial calls this when it reaches a step linked to it).</summary>
+    public void RevealMission(MissionData mission)
+    {
+        if (mission == null) return;
+        if (revealedMissions.Add(mission.ResolvedId)) OnProgressChanged?.Invoke();
+    }
+
+    /// <summary>False only for a revealWithTutorial mission the tutorial hasn't reached yet (and that has no progress).</summary>
+    public bool IsMissionRevealed(MissionData mission)
+    {
+        if (mission == null) return false;
+        if (!mission.revealWithTutorial || mission.IsLore) return true;
+        if (revealedMissions.Contains(mission.ResolvedId)) return true;
+        return completedTasks.TryGetValue(mission.ResolvedId, out HashSet<string> done) && done.Count > 0;
+    }
+
     /// <summary>Marks a task incomplete again — mainly useful for repeatable missions/testing.</summary>
     public void ResetTask(string missionId, string taskId)
     {
@@ -180,7 +199,7 @@ public class MissionProgressManager : MonoBehaviour
     // ------------------------------------------------------------
     // SAVE SLOT SNAPSHOT (SaveManager) — missions + tracked mission + collected lore as one JSON string
     // ------------------------------------------------------------
-    [Serializable] private class FullSnapshot { public SaveData progress = new SaveData(); public LoreSave lore = new LoreSave(); }
+    [Serializable] private class FullSnapshot { public SaveData progress = new SaveData(); public LoreSave lore = new LoreSave(); public List<string> revealed = new List<string>(); }
 
     public string CaptureJson()
     {
@@ -189,6 +208,7 @@ public class MissionProgressManager : MonoBehaviour
         foreach (KeyValuePair<string, HashSet<string>> kv in completedTasks)
             snap.progress.missions.Add(new MissionSave { missionId = kv.Key, taskIds = new List<string>(kv.Value) });
         snap.lore.ids = new List<string>(collectedLore);
+        snap.revealed = new List<string>(revealedMissions);
         return JsonUtility.ToJson(snap);
     }
 
@@ -206,6 +226,9 @@ public class MissionProgressManager : MonoBehaviour
         collectedLore.Clear();
         foreach (string id in snap.lore.ids) collectedLore.Add(id);
 
+        revealedMissions.Clear();
+        if (snap.revealed != null) foreach (string id in snap.revealed) revealedMissions.Add(id);
+
         Save();
         SaveLore();
         OnProgressChanged?.Invoke();
@@ -217,6 +240,7 @@ public class MissionProgressManager : MonoBehaviour
     {
         completedTasks.Clear();
         collectedLore.Clear();
+        revealedMissions.Clear();
         TrackedMissionId = "";
         PlayerPrefs.DeleteKey(LoreSaveKey);
         PlayerPrefs.DeleteKey(saveKey);

@@ -48,6 +48,8 @@ public class UiSoundAutoWire : MonoBehaviour
         {
             if (!hooked.Add(b.GetInstanceID())) continue;
             SoundId id = Classify(b.transform);
+            // Buttons inside the journal never use the generic menu click (that's the other menus' sound).
+            if (id == SoundId.MenuOpenClose && b.GetComponentInParent<JournalUIController>(true) != null) id = SoundId.ClickItem;
             Button captured = b;
             b.onClick.AddListener(() => { if (captured.interactable) StartCoroutine(Deferred(id)); });
         }

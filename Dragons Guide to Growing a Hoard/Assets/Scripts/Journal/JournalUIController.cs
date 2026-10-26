@@ -392,6 +392,7 @@ public class JournalUIController : MonoBehaviour
         else
         {
             MenuLayerManager.NotifyClosed(this);
+            GameAudio.Play(SoundId.OpenJournal); // book closing - same book sound as opening
             onJournalClosed?.Invoke();
             GameInputModeManager.Instance?.SetGameplayMode();
 

@@ -258,6 +258,7 @@ public class GuideUIController : MonoBehaviour
         {
             MissionData mission = activeDb.missions[i];
             if (mission == null) continue;
+            if (!mission.IsLore && progressManager != null && !progressManager.IsMissionRevealed(mission)) continue; // tutorial hasn't reached it yet
             if (mode == GuideMode.Lore && !debugShowAllLore && (progressManager == null || !progressManager.IsLoreCollected(mission))) continue;
 
             GuideMissionButtonUI button = Instantiate(missionButtonTemplate, missionListContainer);
