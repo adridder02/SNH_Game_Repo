@@ -31,6 +31,11 @@ public class StartingInventoryGrant : MonoBehaviour
     [SerializeField] private AbilityItemData consumableItem;
     [Min(0)] [SerializeField] private int consumableCount = 1;
 
+    [Header("Onboarding")]
+    [Tooltip("On (recommended in the tutorial scene): the starter items do NOT count as the player's first pickup, " +
+             "so the inventory icon / hotbar stay hidden until the tutorial (or a real pickup) reveals them.")]
+    [SerializeField] private bool keepOnboardingUIHidden = true;
+
     private void Start()
     {
         if (!string.IsNullOrEmpty(sceneName) && SceneManager.GetActiveScene().name != sceneName) return;
@@ -46,13 +51,15 @@ public class StartingInventoryGrant : MonoBehaviour
                 inventory.AddPlantToInventory(plantPrefab,
                     sp != null ? sp.journalIcon : null,
                     sp != null ? sp.InventoryImage : null,
-                    sp != null ? sp.displayName : null);
+                    sp != null ? sp.displayName : null,
+                    null,
+                    !keepOnboardingUIHidden);
         }
         else if (plantCount > 0)
             Debug.LogWarning("[StartingInventoryGrant] Plant prefab or PlayerInventory missing - no plant granted.", this);
 
         if (consumableItem != null && abilityInventory != null && consumableCount > 0)
-            abilityInventory.Add(consumableItem, consumableCount);
+            abilityInventory.Add(consumableItem, consumableCount, !keepOnboardingUIHidden);
         else if (consumableCount > 0)
             Debug.LogWarning("[StartingInventoryGrant] Consumable item or PlayerAbilityInventory missing - nothing granted.", this);
     }

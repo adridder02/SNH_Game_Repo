@@ -62,7 +62,7 @@ public class PlayerAbilityInventory : MonoBehaviour
     // ---------------------------------------------------------------
     // ADD — called by PotContents.HarvestPlant() for Consumable/Placeable kinds.
     // ---------------------------------------------------------------
-    public void Add(AbilityItemData data, int amount)
+    public void Add(AbilityItemData data, int amount, bool countsAsFirstPickup = true)
     {
         if (data == null || amount <= 0) return;
 
@@ -90,6 +90,10 @@ public class PlayerAbilityInventory : MonoBehaviour
 
         if (wallPlacementItem != null && data == wallPlacementItem)
             GetComponent<PlayerInventory>()?.UnlockWallPlacement();
+
+        // countsAsFirstPickup = false: starter items given by StartingInventoryGrant - they must not unlock the
+        // hotbar / start the first-hotbar-item tutorial. Those wait for the real first pickup.
+        if (!countsAsFirstPickup) return;
 
         if (!HasHarvestedFirstHotbarItem && AbilityHotbarSystem.CanAssign(data))
         {

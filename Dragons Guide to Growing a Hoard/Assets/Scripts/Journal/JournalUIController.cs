@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -354,6 +355,13 @@ public class JournalUIController : MonoBehaviour
     // ------------------------------------------------------------
     // OPEN / CLOSE
     // ------------------------------------------------------------
+    [Header("Open / Close Events")]
+    [Tooltip("Fires every time the journal opens - however it was opened (J key, inventory link, button).")]
+    public UnityEvent onJournalOpened;
+    [Tooltip("Fires every time the journal closes - back button, Esc, J key, anything. Put 'deactivate this object' " +
+             "style actions HERE instead of on the back button's On Click, which only fires when the button is clicked.")]
+    public UnityEvent onJournalClosed;
+
     public void ToggleJournal()
     {
         isJournalOpen = !isJournalOpen;
@@ -363,6 +371,7 @@ public class JournalUIController : MonoBehaviour
         if (isJournalOpen)
         {
             MenuLayerManager.NotifyOpened(this, CloseJournal);
+            onJournalOpened?.Invoke();
 
             GameInputModeManager.Instance?.SetMenuUIMode();
 
@@ -378,6 +387,7 @@ public class JournalUIController : MonoBehaviour
         else
         {
             MenuLayerManager.NotifyClosed(this);
+            onJournalClosed?.Invoke();
             GameInputModeManager.Instance?.SetGameplayMode();
 
             // Tutorial hook — matches a step reading "Press the back button to return to the

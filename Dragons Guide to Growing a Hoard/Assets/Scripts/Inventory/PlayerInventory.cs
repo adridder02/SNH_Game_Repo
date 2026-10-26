@@ -281,7 +281,7 @@ public class PlayerInventory : MonoBehaviour
     /// MainUIPopups for the "first time you pick this up" card; it decides itself whether it's the first time.</summary>
     public static event Action<PlantSpeciesData> PlantAcquired;
 
-    public bool AddPlantToInventory(GameObject plantPrefab, Sprite icon = null, Sprite displayImage = null, string displayName = null, PlantCondition condition = null)
+    public bool AddPlantToInventory(GameObject plantPrefab, Sprite icon = null, Sprite displayImage = null, string displayName = null, PlantCondition condition = null, bool countsAsFirstPickup = true)
     {
         if (plantPrefab == null)
         {
@@ -333,7 +333,9 @@ public class PlayerInventory : MonoBehaviour
             ? $"Added {plantPrefab.name} to grid at ({instance.gridX},{instance.gridY})"
             : $"Grid full — {plantPrefab.name} sent to Available");
 
-        if (!HasHarvestedFirstPlant)
+        // countsAsFirstPickup = false is for starter items handed to the player (StartingInventoryGrant): they
+        // must NOT unlock the onboarding UI (inventory icon...) - that waits for the real first pickup.
+        if (countsAsFirstPickup && !HasHarvestedFirstPlant)
         {
             HasHarvestedFirstPlant = true;
             OnFirstPlantHarvested?.Invoke();
