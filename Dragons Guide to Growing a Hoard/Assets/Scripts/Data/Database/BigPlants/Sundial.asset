@@ -26,11 +26,11 @@ MonoBehaviour:
 
 
     Its needles count the sun rather
-    than drink it, filling in stem by stem as the light grows and falling bare again
-    as it fades.'
-  descriptionSecondary: "Stays in its pot permanently and just reads its own light
-    level, showing 0 to 4 stems depending on how much direct sun it's getting right
-    now \u2014 a living light gauge, nothing more."
+    than drink it, filling in stem by stem as the light grows and dimming again as
+    it fades.'
+  descriptionSecondary: Stays in its pot permanently and just reads its own light
+    level, showing 0 to 4 lights on its stems depending on how much direct sun it's
+    getting right now.  A living light gauge, nothing more.
   journalIcon: {fileID: 21300000, guid: 4e07b70507f3d874687a9b3d0281023d, type: 3}
   journalImage: {fileID: 21300000, guid: ff807b72b4222b04992f72c758389467, type: 3}
   useAlternateJournalLayout: 0

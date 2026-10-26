@@ -9367,7 +9367,7 @@ MonoBehaviour:
   placementSystem: {fileID: 204426705}
   availableMushrooms:
   - {fileID: 11400000, guid: 4eea3bfabe17cdf40af5b4ccfd2bb0cf, type: 2}
-  abilityInventory: {fileID: 0}
+  abilityInventory: {fileID: 1028081827}
   showPreviewObject: 1
 --- !u!114 &204426705
 MonoBehaviour:
@@ -53599,7 +53599,7 @@ Transform:
   m_GameObject: {fileID: 891478188}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.97884953, z: -0, w: -0.20458153}
-  m_LocalPosition: {x: -177.3112, y: 51.400013, z: 282.22223}
+  m_LocalPosition: {x: -175.46, y: 51.9, z: 275.34}
   m_LocalScale: {x: 26.444448, y: 26.444445, z: 26.444448}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -59564,7 +59564,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1028081822}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d83c85a64c5a24241b888072edb1788f, type: 3}
   m_Name: 
@@ -59635,7 +59635,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1028081822}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 697e3af256b31644ab5223414bdc428e, type: 3}
   m_Name: 
@@ -73048,7 +73048,7 @@ Transform:
   m_GameObject: {fileID: 1384381320}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.9670904, z: -0, w: -0.2544331}
-  m_LocalPosition: {x: -197.90038, y: 39.633377, z: 315.9334}
+  m_LocalPosition: {x: -200.92, y: 39.633377, z: 320.36}
   m_LocalScale: {x: -3.4999988, y: 6.493133, z: 6.6666646}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -76563,7 +76563,7 @@ MonoBehaviour:
       the correct soil or water it needs to grow in, the correct amount of water
       it receives and the correct sunlight levels.'
     portablePrompt: {fileID: 0}
-    sidebarImage: {fileID: 0}
+    sidebarImage: {fileID: 21300000, guid: ebf8025ab37186847851f1f9f169e09e, type: 3}
     sidebarTitle: Plant Growth
     advanceOnClick: 0
     advanceOnSpacebar: 0
@@ -76613,7 +76613,7 @@ MonoBehaviour:
     message: If a plant is happy for a prolonged period, you'll be rewarded with
       the total completion of the plant
     portablePrompt: {fileID: 0}
-    sidebarImage: {fileID: 0}
+    sidebarImage: {fileID: 21300000, guid: 9c4f1e123ff5e704eab395206aaaf627, type: 3}
     sidebarTitle: Plant Completion
     advanceOnClick: 0
     advanceOnSpacebar: 0
@@ -76640,7 +76640,7 @@ MonoBehaviour:
       item but instead have a passive ability that is activated. See the Journal
       for information on each plant after it's reached completion.
     portablePrompt: {fileID: 0}
-    sidebarImage: {fileID: 0}
+    sidebarImage: {fileID: 21300000, guid: 13bc9f5d74a22204aa610fd1350e8e80, type: 3}
     sidebarTitle: Reward for Completion
     advanceOnClick: 0
     advanceOnSpacebar: 0
