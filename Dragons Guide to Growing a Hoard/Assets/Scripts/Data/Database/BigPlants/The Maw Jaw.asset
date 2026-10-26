@@ -33,8 +33,8 @@ MonoBehaviour:
   disabledIcon: {fileID: 21300000, guid: 73aaf3b8bf7bc904fbf7b30aa9937ede, type: 3}
   activeIcon: {fileID: 21300000, guid: 9ac4dfddaf006f84aa65fd65418bea2e, type: 3}
   goldIcon: {fileID: 21300000, guid: c2c589aa8b5209847af0cd2bf7c3262a, type: 3}
-  waterRequirement: 1
-  lightRequirement: 1
-  preferredSoilDisplay: 1
+  waterRequirement: 2
+  lightRequirement: 2
+  preferredSoilDisplay: 0
   requiresRoomUnlock: 1
   happinessThreshold: 70

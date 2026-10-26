@@ -36,7 +36,7 @@ MonoBehaviour:
   disabledIcon: {fileID: 21300000, guid: da73aae2586795f40a86cf9056a53d83, type: 3}
   activeIcon: {fileID: 21300000, guid: a0ac255c56a7c5f40bdae3188f2537e3, type: 3}
   goldIcon: {fileID: 21300000, guid: 8c348d8a27387504d814ed6a84185a0d, type: 3}
-  waterRequirement: 1
+  waterRequirement: 2
   lightRequirement: 2
   preferredSoilDisplay: 1
   requiresRoomUnlock: 0
