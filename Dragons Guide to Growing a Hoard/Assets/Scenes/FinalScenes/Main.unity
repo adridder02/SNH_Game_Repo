@@ -7324,7 +7324,7 @@ Animator:
   m_GameObject: {fileID: 74016807}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: e91ec2cea2a7a194a8354b8bab3c8a2c, type: 3}
-  m_Controller: {fileID: 9100000, guid: a590e308ddcd34742976b55a94481e3d, type: 2}
+  m_Controller: {fileID: 9100000, guid: f1961035ec503a64ab70948b079db385, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -7348,7 +7348,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9999d7c03b2d6444c9f8328b5ba079fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::playerAnimation
-  speedDampTime: 0.5
+  speedDampTime: 1
   jumpStateName: Jump
   flyStateName: Fly
   forceFlyCrossfade: 0.5

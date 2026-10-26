@@ -15,37 +15,37 @@ MonoBehaviour:
   sounds:
   - id: 0
     clip: {fileID: 8300000, guid: 510788070d16f1f44b34ac83a6ae6e90, type: 3}
-    volume: 1
+    volume: 0.3
     category: 0
     filenameHints:
     - shutter-click
   - id: 1
     clip: {fileID: 8300000, guid: 216e981ebf9c4454e9a28a8bcca5bf8c, type: 3}
-    volume: 1
+    volume: 0.4
     category: 0
     filenameHints:
     - click-sound
   - id: 2
     clip: {fileID: 8300000, guid: 5b5904db386b971409283c3f983d87f4, type: 3}
-    volume: 1
+    volume: 0.5
     category: 0
     filenameHints:
     - click-sfx
   - id: 3
     clip: {fileID: 8300000, guid: 55910ce5e473097499db1f8eb1def988, type: 3}
-    volume: 1
+    volume: 0.5
     category: 0
     filenameHints:
     - swimming-sounds
   - id: 4
     clip: {fileID: 8300000, guid: a7ad2f13a996d2849a8ed2026b45d45c, type: 3}
-    volume: 1
+    volume: 0.5
     category: 0
     filenameHints:
     - jumping-into
   - id: 5
     clip: {fileID: 8300000, guid: 1e15b93bfbe27d54f83cf736b7333f5c, type: 3}
-    volume: 1
+    volume: 0.5
     category: 0
     filenameHints:
     - running-water
@@ -68,7 +68,7 @@ MonoBehaviour:
     - static-electricity
   - id: 9
     clip: {fileID: 0}
-    volume: 1
+    volume: 0.5
     category: 2
     filenameHints:
     - fan-blowing
@@ -80,38 +80,38 @@ MonoBehaviour:
     - wind-blowing
   - id: 11
     clip: {fileID: 8300000, guid: 073c18656bfc3d04bb3ade83b8ae62b6, type: 3}
-    volume: 1
+    volume: 0.5
     category: 0
     filenameHints:
     - snd-fragment
     - retrieve
   - id: 12
     clip: {fileID: 8300000, guid: 400a3668064aa4b4ca35bd10288d89f6, type: 3}
-    volume: 1
+    volume: 0.5
     category: 0
     filenameHints:
     - news-ting
   - id: 13
     clip: {fileID: 8300000, guid: 1900a9bd8b3606e4b999769eba85fc6a, type: 3}
-    volume: 1
+    volume: 0.5
     category: 0
     filenameHints:
     - book-opening
   - id: 14
     clip: {fileID: 8300000, guid: 08db0a6a298b5cf49b032ed7c71d38e8, type: 3}
-    volume: 1
+    volume: 0.5
     category: 0
     filenameHints:
     - page-turn
   - id: 15
     clip: {fileID: 8300000, guid: 21f32f1ed5d16154e83416d404c37afa, type: 3}
-    volume: 1
+    volume: 0.5
     category: 0
     filenameHints:
     - turning-page
   - id: 16
     clip: {fileID: 8300000, guid: e286f6501f79ec849adb1d1305df7f26, type: 3}
-    volume: 1
+    volume: 0.7
     category: 0
     filenameHints:
     - bubble-pop
